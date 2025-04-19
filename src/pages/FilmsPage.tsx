@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import FilmList from '../components/films/FilmList'; // Adjust path if needed
 import { Film } from '../types/film'; // Adjust path if needed
 import filmsData from '../assets/films.json'; // Import the data

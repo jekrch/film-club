@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import FilmList from '../components/films/FilmList'; 
 import { Film } from '../types/film'; 
 import filmsData from '../assets/films.json'; 
@@ -45,20 +45,20 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 -mt-6">
       {/* Hero section */}
-      <div className="py-12 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg my-8 text-center">
-        <h1 className="text-4xl font-bold text-slate-200 sm:text-5xl tracking-tight">
-          Criterion Club
-        </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-xl text-slate-300">
+      <div className="py-12 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg my-8 text-center px-10">
+        <span className="text-2xl font-bold text-slate-200 sm:text-3xl tracking-tight">
+          our film club
+        </span>
+        <p className="mt-4 max-w-2xl mx-auto text-md text-slate-300">
          <i>podcast</i>: noun. a digital audio file that can be taken from the internet and played on a computer or a device that you can carry with you
         </p>
       </div>
 
       {/* Recent Club Picks */}
       {recentClubPicks.length > 0 && (
-          <FilmList films={recentClubPicks} title="Recent Club Watches" />
+          <FilmList films={recentClubPicks} title="Recent Club Picks" />
       )}
 
       {/* Top Club Rated Films */}

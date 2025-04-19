@@ -13,7 +13,7 @@ const Navbar = () => {
           {/* Logo and site name */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <span className="text-xl font-bold">Criterion Club</span>
+              <span className="text-xl font-bold text-slate-300">Criterion Club</span>
             </Link>
           </div>
 
