@@ -6,7 +6,6 @@ import { calculateClubAverage } from '../utils/ratingUtils';
 
 const HomePage = () => {
   const [topClubRatedFilms, setTopClubRatedFilms] = useState<Film[]>([]); 
-  const [recentlyReleased, setRecentlyReleased] = useState<Film[]>([]); 
   const [recentClubPicks, setRecentClubPicks] = useState<Film[]>([]); 
 
   useEffect(() => {
@@ -29,16 +28,6 @@ const HomePage = () => {
       })
       .slice(0, 5); // Show top 5 highest club rated films
 
-    // Sort for Recently Released (newest year first) - Remains the same
-    const recent = [...allFilms]
-      .sort((a, b) => {
-         // Ensure years are valid numbers before comparing
-         const yearA = parseInt(typeof a.year === 'string' ? a.year : '0') || 0;
-         const yearB = parseInt(typeof b.year === 'string' ? b.year : '0') || 0;
-         return yearB - yearA; // Descending order by year
-      })
-      .slice(0, 5); // Show 5 most recent releases
-
     // Filter and Sort for Recent Club Picks (most recent watchDate) - Remains the same
     const picks = [...allFilms]
        .filter(film => film.movieClubInfo?.watchDate)
@@ -51,8 +40,7 @@ const HomePage = () => {
        })
        .slice(0, 5);
 
-    setTopClubRatedFilms(topRated);
-    setRecentlyReleased(recent);
+    setTopClubRatedFilms(topRated);   
     setRecentClubPicks(picks);
   }, []);
 
@@ -79,10 +67,6 @@ const HomePage = () => {
           <FilmList films={topClubRatedFilms} title="Top Club Rated Films" />
       )}
 
-       {/* Recently Released Films */}
-       {recentlyReleased.length > 0 && (
-          <FilmList films={recentlyReleased} title="Recent Releases" />
-       )}
     </div>
   );
 };

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Film, ClubMemberRatings } from '../types/film'; // Adjust path if needed
+import { Film, ClubMemberRatings } from '../types/film'; 
 import filmsData from '../assets/films.json';
 import FilmCard from '../components/films/FilmCard';
-import { calculateClubAverage } from '../utils/ratingUtils'; // Adjust path to where you saved the helper
+import { calculateClubAverage } from '../utils/ratingUtils'; 
 
 // Helper to parse the genre string
 const parseGenres = (genreString: string): string[] => {

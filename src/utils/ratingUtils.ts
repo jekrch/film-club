@@ -1,4 +1,4 @@
-import { ClubMemberRatings } from '../../../types/film'; // Adjust path if needed
+import { ClubMemberRatings } from '../types/film'; 
 
 /**
  * Calculates the average club rating from the provided scores.

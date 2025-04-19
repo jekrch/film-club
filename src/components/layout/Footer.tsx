@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Left section - About */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">About Film Club</h3>
+            <h3 className="text-lg font-semibold mb-4">About Criterion Club</h3>
             <p className="text-gray-400">
               We watch movies on the criterion channel, we discuss them, we give them a score out of 9. Our opinions are entirely our own and do not represent the larger film industry, but perhaps they should be listening (?!)
             </p>
@@ -71,7 +71,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
           <p className="text-gray-400 text-sm">
-            © {currentYear} Film Club. All rights reserved.
+            © {currentYear} Criterion Club. All rights reserved.
           </p>
         </div>
       </div>

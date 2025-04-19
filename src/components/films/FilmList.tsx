@@ -1,5 +1,5 @@
 import React from 'react';
-import { Film } from '../../types/film'; // Adjust path if needed
+import { Film } from '../../types/film'; 
 import FilmCard from './FilmCard';
 
 interface FilmListProps {
