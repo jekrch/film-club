@@ -1,4 +1,3 @@
-// src/contexts/ViewSettingsContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 
 // Define the possible card sizes
@@ -37,7 +36,7 @@ export const ViewSettingsProvider: React.FC<ViewSettingsProviderProps> = ({ chil
         } catch (error) {
             console.error("Error reading view settings from localStorage", error);
         }
-        return 'standard'; // Default value
+        return 'compact'; // Default value
     });
 
     // Effect to save changes to localStorage whenever cardSize changes
@@ -70,7 +69,6 @@ export const ViewSettingsProvider: React.FC<ViewSettingsProviderProps> = ({ chil
     );
 };
 
-// Create a custom hook for easy consumption
 export const useViewSettings = (): ViewSettingsContextProps => {
     const context = useContext(ViewSettingsContext);
     if (context === undefined) {

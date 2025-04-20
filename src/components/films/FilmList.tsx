@@ -12,7 +12,7 @@ interface FilmListProps {
 
 const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
   const { cardSize, setCardSize } = useViewSettings();
-  const isCompact = cardSize === 'compact';
+  const isCompact = cardSize !== 'standard';
 
   // Define base styles for the toggle buttons - more minimal
   const buttonBaseClasses = "p-1.5 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800";
@@ -35,22 +35,6 @@ const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
 
         {/* View Mode Toggle Buttons - Minimal Style */}
         <div className="flex items-center space-x-2"> {/* Removed container bg */}
-          {/* Standard View Button */}
-          <button
-            onClick={() => setCardSize('standard')}
-            title="Standard View"
-            aria-pressed={!isCompact}
-            className={`
-              ${buttonBaseClasses}
-              ${!isCompact
-                ? 'text-white' // Active state: bright icon
-                : 'text-slate-400 hover:text-slate-100' // Inactive state: dimmer icon, brightens on hover
-              }
-            `}
-          >
-            <Squares2X2Icon className={iconClasses} />
-            <span className="sr-only">Standard View</span>
-          </button>
 
           {/* Compact View Button */}
           <button
@@ -67,6 +51,22 @@ const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
           >
             <RectangleGroupIcon className={iconClasses} />
             <span className="sr-only">Compact View</span>
+          </button>
+                    {/* Standard View Button */}
+                    <button
+            onClick={() => setCardSize('standard')}
+            title="Standard View"
+            aria-pressed={!isCompact}
+            className={`
+              ${buttonBaseClasses}
+              ${!isCompact
+                ? 'text-white' // Active state: bright icon
+                : 'text-slate-400 hover:text-slate-100' // Inactive state: dimmer icon, brightens on hover
+              }
+            `}
+          >
+            <Squares2X2Icon className={iconClasses} />
+            <span className="sr-only">Standard View</span>
           </button>
         </div>
       </div>

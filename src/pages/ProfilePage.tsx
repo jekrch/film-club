@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Link might be used elsewhere, keep it for now
+import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import CircularImage from '../components/common/CircularImage';
 import FilmList from '../components/films/FilmList'; // Using FilmList component
 import teamMembersData from '../assets/club.json';
 import filmsData from '../assets/films.json';
-import { Film } from '../types/film';
+import { Film, ClubMemberRatings } from '../types/film'; // Import ClubMemberRatings
 
 // Define TeamMember interface including the optional interview
 interface TeamMember {
@@ -27,14 +27,12 @@ interface InterviewItemProps {
 
 const InterviewItem: React.FC<InterviewItemProps> = ({ question, answer }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  // Determine if the answer needs an expander (e.g., based on length)
   const needsExpander = answer.length > 300; // Adjust threshold as needed
 
   return (
     <div className="py-5"> {/* Add padding between Q&A pairs */}
       <h4 className="text-lg font-semibold text-blue-400 mb-2">{question}</h4>
       <div className={`prose prose-sm prose-invert max-w-none text-slate-300 ${!isExpanded && needsExpander ? 'line-clamp-5' : ''}`}>
-         {/* Apply line-clamp only if needed and not expanded */}
         <ReactMarkdown>{answer}</ReactMarkdown>
       </div>
       {needsExpander && (
@@ -54,18 +52,23 @@ const InterviewItem: React.FC<InterviewItemProps> = ({ question, answer }) => {
 const ProfilePage: React.FC = () => {
   const { memberName } = useParams<{ memberName: string }>();
   const navigate = useNavigate();
-  // Use the updated TeamMember type
   const [member, setMember] = useState<TeamMember | null>(null);
   const [selectedFilms, setSelectedFilms] = useState<Film[]>([]);
+  // --- NEW STATE ---
+  const [topRatedFilms, setTopRatedFilms] = useState<Film[]>([]);
+  // --- END NEW STATE ---
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to top on component mount/update
+    window.scrollTo(0, 0);
     setLoading(true);
     setError(null);
     setMember(null);
     setSelectedFilms([]);
+    // --- Reset new state ---
+    setTopRatedFilms([]);
+    // --- End reset ---
 
     if (!memberName) {
       setError("Member name is missing in the URL.");
@@ -73,9 +76,7 @@ const ProfilePage: React.FC = () => {
       return;
     }
 
-    // Decode the member name from the URL parameter
     const decodedMemberName = decodeURIComponent(memberName);
-    // Ensure type compatibility when finding
     const foundMember = teamMembers.find(m => m.name === decodedMemberName);
 
     if (!foundMember) {
@@ -86,27 +87,61 @@ const ProfilePage: React.FC = () => {
 
     setMember(foundMember);
 
-    // Find films selected by this member
-    const films = allFilms.filter(film =>
-      film.movieClubInfo?.selector === foundMember.name
-    )
-    // Optional: Sort films (e.g., by watch date descending, then title)
-    .sort((a, b) => {
+    // --- Find films selected by this member ---
+    const filmsSelected = allFilms
+      .filter(film => film.movieClubInfo?.selector === foundMember.name)
+      .sort((a, b) => {
         const dateA = a.movieClubInfo?.watchDate ? new Date(a.movieClubInfo.watchDate).getTime() : 0;
         const dateB = b.movieClubInfo?.watchDate ? new Date(b.movieClubInfo.watchDate).getTime() : 0;
-        if (dateB !== dateA) return dateB - dateA; // Sort by date descending
-        return a.title.localeCompare(b.title); // Then by title ascending
-    });
+        if (dateB !== dateA) return dateB - dateA;
+        return a.title.localeCompare(b.title);
+      });
 
-    setSelectedFilms(films);
+    setSelectedFilms(filmsSelected);
+
+    // --- Calculate Top 3 Rated Films by this member ---
+    // Map member name to the rating key (assuming lowercase keys in ClubMemberRatings)
+    const ratingKey = decodedMemberName.toLowerCase() as keyof ClubMemberRatings;
+
+    // Check if the ratingKey is actually a valid key in ClubMemberRatings type.
+    // This is more for robustness if names/keys might not align perfectly.
+    // A simple check based on known keys:
+    const validRatingKeys: (keyof ClubMemberRatings)[] = ['andy', 'gabe', 'jacob', 'joey'];
+    if (validRatingKeys.includes(ratingKey)) {
+        const filmsRatedByMember = allFilms
+            .filter(film => {
+                // Ensure movieClubInfo and clubRatings exist, and the specific member's rating is a number
+                return typeof film.movieClubInfo?.clubRatings?.[ratingKey] === 'number';
+            })
+            .sort((a, b) => {
+                // Sort descending by the member's rating. Non-null assertions are safe due to the filter.
+                const ratingA = a.movieClubInfo!.clubRatings[ratingKey]!;
+                const ratingB = b.movieClubInfo!.clubRatings[ratingKey]!;
+                // Add secondary sort (e.g., by title) for ties
+                if (ratingB !== ratingA) {
+                    return ratingB - ratingA;
+                }
+                return a.title.localeCompare(b.title); // Sort alphabetically for ties
+            })
+            .slice(0, 3); // Get the top 3
+
+        setTopRatedFilms(filmsRatedByMember);
+    } else {
+        console.warn(`Could not find matching rating key for member: ${decodedMemberName}`);
+        // Optionally set topRatedFilms to empty or handle this case as needed
+        setTopRatedFilms([]);
+    }
+    // --- End Calculation ---
+
+
     setLoading(false);
 
-  }, [memberName]); // Re-run effect if memberName changes
+  }, [memberName]);
 
   // --- Loading State ---
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[calc(100vh-200px)] bg-slate-900"> {/* Adjust min-height if needed */}
+      <div className="flex justify-center items-center min-h-[calc(100vh-200px)] bg-slate-900">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
       </div>
     );
@@ -131,31 +166,27 @@ const ProfilePage: React.FC = () => {
 
   // --- Success State ---
   return (
-    // Overall container matching other pages
     <div className="bg-slate-900 text-slate-300 min-h-screen py-12 pt-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Back button */}
         <button onClick={() => navigate(-1)} className="mb-8 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" /></svg>
-          Back
-        </button>
+           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" /></svg>
+           Back
+         </button>
 
-        {/* Profile Header Section - Adjusted Layout for Better Spacing */}
+        {/* Profile Header Section */}
         <div className="bg-slate-800 rounded-lg overflow-hidden mb-2 border border-slate-700 shadow-xl shadow-slate-950/30">
-          {/* Increased space-x significantly for sm screens and up */}
-          <div className="p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-16"> {/* <-- Increased space-x to 16 */}
+          <div className="p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-16">
             <CircularImage
               src={member.image}
               alt={member.name}
-              size="w-52 h-52 sm:w-42 sm:h-42"
-              className="flex-shrink-0 border-2 border-slate-600 mb-6 sm:mb-0" // margin-bottom only on mobile (flex-col)
+              size="w-52 h-52 sm:w-42 sm:h-42" // Consistent sizing class
+              className="flex-shrink-0 border-2 border-slate-600 mb-6 sm:mb-0"
             />
-             {/* Text Content: Added min-width: 0 to prevent squeezing */}
-            <div className="text-center sm:text-left sm:ml-10 flex-grow min-w-0"> {/* <-- Added min-w-0 */}
+            <div className="text-center sm:text-left sm:ml-10 flex-grow min-w-0">
               <h1 className="text-3xl sm:text-4xl font-thin text-slate-100 mb-2">{member.name}</h1>
               <p className="text-lg text-blue-400/90 mb-4">{member.title}</p>
-              {/* max-w-xl helps readability, should not cause the squeezing */}
               <p className="text-slate-300 leading-relaxed max-w-xl mx-auto sm:mx-0">
                 {member.bio}
               </p>
@@ -169,7 +200,7 @@ const ProfilePage: React.FC = () => {
             <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3">
               Interview
             </h3>
-            <div className="divide-y divide-slate-700"> {/* Add dividers */}
+            <div className="divide-y divide-slate-700">
               {member.interview.map((item, index) => (
                 <InterviewItem key={index} question={item.question} answer={item.answer} />
               ))}
@@ -179,16 +210,27 @@ const ProfilePage: React.FC = () => {
         {/* End Interview Section */}
 
 
+        {/* --- NEW: Top Rated Films Section --- */}
+        {topRatedFilms.length > 0 && (
+            <div className="mb-12 mt-8"> {/* Add margin top */}
+                <FilmList
+                    films={topRatedFilms}
+                    title={`Top ${topRatedFilms.length} Rated Film${topRatedFilms.length !== 1 ? 's' : ''} by ${member.name}`} // Dynamic title based on count
+                    // No onFilmSelect needed here, unless you want clicking these to do something specific
+                />
+            </div>
+        )}
+        {/* --- END NEW SECTION --- */}
+
+
         {/* Selected Films Section - Using FilmList Component */}
-        <div className="mb-12"> {/* Add margin below the list if needed */}
+        <div className="mb-12 mt-8"> {/* Adjusted margin-top */}
             {/* Render FilmList only if member data is loaded */}
-            {member && (
-                 <FilmList
-                    films={selectedFilms}
-                    // Pass the dynamic title including the member's name
-                    title={`Films Selected by ${member.name}`}
-                 />
-            )}
+            {/* No need to check member again here, as it's checked above */}
+            <FilmList
+                films={selectedFilms}
+                title={`Films Selected by ${member.name}`}
+            />
             {/* The "No films found" message is handled inside FilmList */}
         </div>
 
