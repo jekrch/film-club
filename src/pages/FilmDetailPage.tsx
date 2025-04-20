@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Film } from '../types/film'; 
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Film } from '../types/film';
 import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import FilmList from '../components/films/FilmList';
@@ -79,11 +79,11 @@ const FilmDetailPage = () => {
         )
         // Optional: Sort these films, e.g., by watch date or title
         .sort((a, b) => {
-            // Example sort: newest watched first, then alphabetically
-            const dateA = a.movieClubInfo?.watchDate ? new Date(a.movieClubInfo.watchDate).getTime() : 0;
-            const dateB = b.movieClubInfo?.watchDate ? new Date(b.movieClubInfo.watchDate).getTime() : 0;
-            if (dateB !== dateA) return dateB - dateA; // Sort by date descending
-            return a.title.localeCompare(b.title); // Then by title ascending
+          // Example sort: newest watched first, then alphabetically
+          const dateA = a.movieClubInfo?.watchDate ? new Date(a.movieClubInfo.watchDate).getTime() : 0;
+          const dateB = b.movieClubInfo?.watchDate ? new Date(b.movieClubInfo.watchDate).getTime() : 0;
+          if (dateB !== dateA) return dateB - dateA; // Sort by date descending
+          return a.title.localeCompare(b.title); // Then by title ascending
         });
       setFilmsBySameSelector(otherFilms);
     } else {
@@ -126,7 +126,12 @@ const FilmDetailPage = () => {
   const clubAverageDisplay = calculateClubAverage(film.movieClubInfo?.clubRatings);
   const imdbRatingDisplay = getImdbRatingDisplay(film.imdbRating);
   const selectorName = film.movieClubInfo?.selector; // Get selector name for the title
+  const capitalizeFirstLetter = (str: string): string => {
+    if (!str) return str; 
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
 
+  
   return (
     // Overall container with dark background
     <div className="bg-slate-900 text-slate-300 min-h-screen py-8">
@@ -147,7 +152,7 @@ const FilmDetailPage = () => {
                 alt={`${film.title} poster`}
                 className="h-full w-full object-cover"
                 onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; }}
-               />
+              />
             </div>
 
             {/* Film Details */}
@@ -161,8 +166,8 @@ const FilmDetailPage = () => {
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-400 mb-5">
                 {clubAverageDisplay && (
                   <div className="flex items-center font-medium text-base" title="Average Club Rating">
-                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400 mr-1.5" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400 mr-1.5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                     </svg>
                     <span className="text-slate-200">{clubAverageDisplay}</span>
                     <span className="ml-1 text-slate-500">/ 9</span>
@@ -171,11 +176,11 @@ const FilmDetailPage = () => {
                 )}
                 {runtimeDisplay && <span className="border-l border-slate-600 pl-4">{runtimeDisplay}</span>}
                 {film.rated !== 'N/A' && <span className="border-l border-slate-600 pl-4">{film.rated}</span>}
-                 {imdbRatingDisplay && (
-                   <span className="border-l border-slate-600 pl-4 flex items-center text-xs text-slate-500" title="IMDb Rating">
-                     IMDb: {imdbRatingDisplay}/10
-                   </span>
-                 )}
+                {imdbRatingDisplay && (
+                  <span className="border-l border-slate-600 pl-4 flex items-center text-xs text-slate-500" title="IMDb Rating">
+                    IMDb: {imdbRatingDisplay}/10
+                  </span>
+                )}
               </div>
 
               {/* Plot with Read More */}
@@ -195,9 +200,9 @@ const FilmDetailPage = () => {
 
               {/* Director, Writer, Stars */}
               <div className="space-y-3 text-sm">
-                 <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Director</h2><p className="text-slate-300">{film.director}</p></div>
-                 <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Writer</h2><p className="text-slate-300">{film.writer}</p></div>
-                 <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Stars</h2><p className="text-slate-300">{film.actors}</p></div>
+                <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Director</h2><p className="text-slate-300">{film.director}</p></div>
+                <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Writer</h2><p className="text-slate-300">{film.writer}</p></div>
+                <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Stars</h2><p className="text-slate-300">{film.actors}</p></div>
               </div>
 
               {/* Genres */}
@@ -214,79 +219,91 @@ const FilmDetailPage = () => {
             </div>
           </div>
 
-           {/* Movie Club Info Section */}
+          {/* Movie Club Info Section */}
           {film.movieClubInfo && (
-              <div className="bg-slate-850 border-t-2 border-blue-700 p-6 md:p-8">
-                  <h2 className="text-2xl font-semibold text-slate-100 mb-5">Movie Club Facts</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 text-sm">
-                      <div>
-                         <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">
-                          Selected By:
-                          </p>
-                         {/* Display selector name */}
-                         <p className="text-slate-200 text-base">
-                          {selectorName ?? <span className="italic text-slate-400">N/A</span>}</p>
-                       </div>
-                      <div>
-                        <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Watch Date:</p>
-                        <p className="text-slate-200 text-base">{film.movieClubInfo.watchDate ?? <span className="italic text-slate-400">Not Watched Yet</span>}</p>
-                      </div>
+            <div className="bg-slate-850 border-t-2 border-blue-700 p-6 md:p-8">
+              <h2 className="text-2xl font-semibold text-slate-100 mb-5">Film Club Facts</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 text-sm">
+                <div>
+                  <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">
+                    Selected By:
+                  </p>
+                  {/* Display selector name */}
+                  <p className="text-slate-200 text-base">
+                    {selectorName ? (<Link
+                      key={selectorName}
+                      to={`/profile/${selectorName}`}
+                      className="text-gray-400 hover:text-white transition text-lg"
+                    >
+                      {selectorName}
+                    </Link>) : <span className="italic text-slate-400">N/A</span>}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Watch Date:</p>
+                  <p className="text-slate-200 text-base">{film.movieClubInfo.watchDate ?? <span className="italic text-slate-400">Not Watched Yet</span>}</p>
+                </div>
 
-                      {/* Ratings Section */}
-                      {clubAverageDisplay && (
-                         <div className="md:col-span-2 mt-2 pt-4 border-t border-slate-700">
-                              <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Club Ratings:</p>
-                               <div className="mb-4 flex items-baseline gap-x-2">
-                                   <span className="text-3xl font-bold text-blue-300">{clubAverageDisplay}</span>
-                                   <span className="text-slate-400 text-lg">/ 9</span>
-                                   <span className="text-slate-500 text-sm">(Average)</span>
-                               </div>
-                               <ul className="space-y-1.5 text-slate-300 columns-2 sm:columns-3">
-                                  {Object.entries(film.movieClubInfo.clubRatings)
-                                     .filter(([, rating]) => rating !== null && typeof rating === 'number')
-                                     .sort(([memberA], [memberB]) => memberA.localeCompare(memberB))
-                                     .map(([member, rating]) => (
-                                          <li key={member} className="flex justify-between items-center text-sm pr-4">
-                                              <span className="capitalize text-slate-400">{member}:</span>
-                                              <span className="font-semibold text-slate-200">{rating}</span>
-                                          </li>
-                                  ))}
-                              </ul>
-                          </div>
-                      )}
-
-                    {/* Trophy Info */}
-                    {film.movieClubInfo.trophyInfo && (
-                       <div className="md:col-span-2 mt-2 pt-4 border-t border-slate-700">
-                          <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Info:</p>
-                          <p className="text-slate-300">{film.movieClubInfo.trophyInfo}</p>
-                       </div>
-                    )}
-                    {film.movieClubInfo.trophyNotes && (
-                        <div className={film.movieClubInfo.trophyInfo ? '' : 'md:col-span-2 mt-2 pt-4 border-t border-slate-700'}>
-                           <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Notes:</p>
-                           <p className="text-slate-300">{film.movieClubInfo.trophyNotes}</p>
-                        </div>
-                    )}
+                {/* Ratings Section */}
+                {clubAverageDisplay && (
+                  <div className="md:col-span-2 mt-2 pt-4 border-t border-slate-700">
+                    <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Club Ratings:</p>
+                    <div className="mb-4 flex items-baseline gap-x-2">
+                      <span className="text-3xl font-bold text-blue-300">{clubAverageDisplay}</span>
+                      <span className="text-slate-400 text-lg">/ 9</span>
+                      <span className="text-slate-500 text-sm">(Average)</span>
+                    </div>
+                    <ul className="space-y-1.5 text-slate-300 columns-2 sm:columns-3">
+                      {Object.entries(film.movieClubInfo.clubRatings)
+                        .filter(([, rating]) => rating !== null && typeof rating === 'number')
+                        .sort(([memberA], [memberB]) => memberA.localeCompare(memberB))
+                        .map(([member, rating]) => (
+                          <li key={member} className="flex justify-between items-center text-sm pr-4">
+                            <span className="capitalize text-slate-400"><Link
+                              key={member}
+                              to={`/profile/${capitalizeFirstLetter(member)}`}
+                              className="text-slate-400 hover:text-white transition text-md"
+                            >
+                              {member}
+                            </Link>:</span>
+                            <span className="font-semibold text-slate-200">{rating}</span>
+                          </li>
+                        ))}
+                    </ul>
                   </div>
+                )}
+
+                {/* Trophy Info */}
+                {film.movieClubInfo.trophyInfo && (
+                  <div className="md:col-span-2 mt-2 pt-4 border-t border-slate-700">
+                    <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Info:</p>
+                    <p className="text-slate-300">{film.movieClubInfo.trophyInfo}</p>
+                  </div>
+                )}
+                {film.movieClubInfo.trophyNotes && (
+                  <div className={film.movieClubInfo.trophyInfo ? '' : 'md:col-span-2 mt-2 pt-4 border-t border-slate-700'}>
+                    <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Notes:</p>
+                    <p className="text-slate-300">{film.movieClubInfo.trophyNotes}</p>
+                  </div>
+                )}
               </div>
+            </div>
           )}
         </div>
 
 
         <div className="mb-12"> {/* Add margin below the list if needed */}
-            {/* Render FilmList only if member data is loaded */}
-            {selectorName && (
-                 <FilmList
-                    films={filmsBySameSelector}
-                    // Pass the dynamic title including the member's name
-                    title={`Other Films Selected by ${selectorName}`}
-                 />
-            )}
-            {/* The "No films found" message is handled inside FilmList */}
+          {/* Render FilmList only if member data is loaded */}
+          {selectorName && (
+            <FilmList
+              films={filmsBySameSelector}
+              // Pass the dynamic title including the member's name
+              title={`Other Films Selected by ${selectorName}`}
+            />
+          )}
+          {/* The "No films found" message is handled inside FilmList */}
         </div>
-        
-    
+
+
         {/* --- End of New Section --- */}
 
       </div>

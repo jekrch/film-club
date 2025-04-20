@@ -7,31 +7,34 @@ import FilmsPage from './pages/FilmsPage';
 import FilmDetailPage from './pages/FilmDetailPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
-import "./index.css"; 
+import "./index.css";
+import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 
 function App() {
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen bg-slate-900"> {/* Set default bg */}
+    <ViewSettingsProvider>
+      <Router>
+        <div className="flex flex-col min-h-screen bg-slate-900"> {/* Set default bg */}
 
-        <Navbar />
+          <Navbar />
 
-        {/* Main content area - remove padding/max-width here, apply within pages */}
-        <main className="flex-grow w-full">
-          {/* Routes handle their own layout/padding */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/films" element={<FilmsPage />} />
-            <Route path="/films/:imdbId" element={<FilmDetailPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            {/* Add the profile page route */}
-            <Route path="/profile/:memberName" element={<ProfilePage />} /> {/* <-- Add Route */}
-          </Routes>
-        </main>
+          {/* Main content area - remove padding/max-width here, apply within pages */}
+          <main className="flex-grow w-full">
+            {/* Routes handle their own layout/padding */}
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/films" element={<FilmsPage />} />
+              <Route path="/films/:imdbId" element={<FilmDetailPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              {/* Add the profile page route */}
+              <Route path="/profile/:memberName" element={<ProfilePage />} /> {/* <-- Add Route */}
+            </Routes>
+          </main>
 
-        <Footer />
-      </div>
-    </Router>
+          <Footer />
+        </div>
+      </Router>
+    </ViewSettingsProvider>
   );
 }
 

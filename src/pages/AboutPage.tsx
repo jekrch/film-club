@@ -1,18 +1,8 @@
-// src/pages/AboutPage.tsx
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom'; 
 import CircularImage from '../components/common/CircularImage';
-import teamMembersData from '../assets/club.json';
+import { teamMembers } from '../types/team';
 
-// Define TeamMember interface locally or import if defined elsewhere
-interface TeamMember {
-  name: string;
-  title: string;
-  bio: string;
-  image: string;
-}
-
-const teamMembers: TeamMember[] = teamMembersData;
 
 const AboutPage: React.FC = () => {
 
@@ -34,7 +24,7 @@ const AboutPage: React.FC = () => {
                 Our Mission
               </h2>
               <p className="text-slate-300 leading-relaxed">
-              We watch movies on the criterion channel, we discuss them, we give them a score out of 9. Our opinions are entirely our own and do not represent the larger film industry, but perhaps they should be listening (?!)
+                We watch movies on the criterion channel, we discuss them, we give them a score out of 9. Our opinions are entirely our own and do not represent the larger film industry, but perhaps they should be listening (?!)
               </p>
             </div>
           </div>

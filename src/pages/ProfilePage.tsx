@@ -148,8 +148,8 @@ const ProfilePage: React.FC = () => {
             <CircularImage
               src={member.image}
               alt={member.name}
-              size="w-32 h-32 sm:w-40 sm:h-40"
-              className="flex-shrink-0 border-4 border-slate-600 mb-6 sm:mb-0" // margin-bottom only on mobile (flex-col)
+              size="w-52 h-52 sm:w-42 sm:h-42"
+              className="flex-shrink-0 border-2 border-slate-600 mb-6 sm:mb-0" // margin-bottom only on mobile (flex-col)
             />
              {/* Text Content: Added min-width: 0 to prevent squeezing */}
             <div className="text-center sm:text-left sm:ml-10 flex-grow min-w-0"> {/* <-- Added min-w-0 */}
