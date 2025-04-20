@@ -1,4 +1,4 @@
-# Film Club Website
+# Criterion Club Website
 
 https://jekrch.github.io/film-club
 
