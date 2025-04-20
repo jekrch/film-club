@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Film } from '../types/film'; // Assuming ClubMemberRatings is part of Film type or not needed directly here
+import { Film } from '../types/film'; 
 import filmsData from '../assets/films.json';
-import FilmCard from '../components/films/FilmCard';
 import { calculateClubAverage } from '../utils/ratingUtils';
+import FilmList from '../components/films/FilmList';
 
-// Helper functions remain the same
 const parseGenres = (genreString: string): string[] => {
   if (!genreString || typeof genreString !== 'string') return [];
   return genreString.split(',').map(g => g.trim()).filter(g => g);
@@ -187,7 +186,7 @@ const FilmDetailPage = () => {
                 {film.plot.length > 150 && (
                   <button
                     onClick={() => setIsPlotExpanded(!isPlotExpanded)}
-                    className="text-blue-400 hover:text-blue-300 text-sm font-medium mt-1"
+                    className="text-blue-400 hover:text-blue-300 text-sm font-medium mt-4"
                   >
                     {isPlotExpanded ? 'Read Less' : 'Read More'}
                   </button>
@@ -221,9 +220,12 @@ const FilmDetailPage = () => {
                   <h2 className="text-2xl font-semibold text-slate-100 mb-5">Movie Club Facts</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 text-sm">
                       <div>
-                         <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Selected By:</p>
+                         <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">
+                          Selected By:
+                          </p>
                          {/* Display selector name */}
-                         <p className="text-slate-200 text-base">{selectorName ?? <span className="italic text-slate-400">N/A</span>}</p>
+                         <p className="text-slate-200 text-base">
+                          {selectorName ?? <span className="italic text-slate-400">N/A</span>}</p>
                        </div>
                       <div>
                         <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Watch Date:</p>
@@ -272,21 +274,19 @@ const FilmDetailPage = () => {
         </div>
 
 
-        {/* --- NEW: Other Films By Selector Section --- */}
-        {filmsBySameSelector.length > 0 && selectorName && (
-          <div className="mt-16">
-            {/* Updated title */}
-            <h2 className="text-2xl font-bold mb-6 text-slate-200">
-              Other Films Selected by {selectorName}
-            </h2>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-               {/* Map over the new state variable */}
-               {filmsBySameSelector.map(otherFilm => (
-                 <FilmCard key={otherFilm.imdbID} film={otherFilm} />
-               ))}
-             </div>
-          </div>
-        )}
+        <div className="mb-12"> {/* Add margin below the list if needed */}
+            {/* Render FilmList only if member data is loaded */}
+            {selectorName && (
+                 <FilmList
+                    films={filmsBySameSelector}
+                    // Pass the dynamic title including the member's name
+                    title={`Other Films Selected by ${selectorName}`}
+                 />
+            )}
+            {/* The "No films found" message is handled inside FilmList */}
+        </div>
+        
+    
         {/* --- End of New Section --- */}
 
       </div>

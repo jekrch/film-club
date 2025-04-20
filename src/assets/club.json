@@ -1,0 +1,36 @@
+[
+    {
+      "name": "Andy",
+      "title": "Filmmaker & Director",
+      "bio": "Bio coming soon (?)",
+      "image": "/film-club/images/andy.jpg"
+    },
+    {
+      "name": "Gabe",
+      "title": "Scientist & Professor",
+      "bio": "We're learning more every day",
+      "image": "/film-club/images/gabe.jpg"
+    },
+    {
+      "name": "Jacob",
+      "title": "Technologist & Ex-Philosopher",
+      "bio": "This www is under construction",
+      "image": "/film-club/images/jacob.jpg",
+      "interview": [
+      {
+        "question": "What is your favorite film?",
+        "answer": "Let me think about that and my people will get back to you. "
+      },
+      {
+        "question": "What do you think about the Criterion Collection?",
+        "answer": "That's a good question!"
+      }
+    ]
+    },
+    {
+      "name": "Joey",
+      "title": "Education Leader & Artist",
+      "bio": "Our researchers are on it",
+      "image": "/film-club/images/joey.jpg"
+    }
+  ]

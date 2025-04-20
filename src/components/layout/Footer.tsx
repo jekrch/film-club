@@ -13,7 +13,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">About Criterion Club</h3>
             <p className="text-gray-400">
-              We watch movies on the criterion channel, we discuss them, we give them a score out of 9. Our opinions are entirely our own and do not represent the larger film industry, but perhaps they should be listening (?!)
+                Four friends who watch Criterion Channel films and rate them on a 9-point scale. Is this a podcast?
             </p>
           </div>
 
