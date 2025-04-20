@@ -328,7 +328,7 @@ const FilmDetailPage = () => {
                 {selectorName && (
                   <Link
                     to={`/profile/${encodeURIComponent(selectorName)}`}
-                    className="flex flex-col items-center md:ml-8 mb-6"
+                    className="flex flex-col items-center md:ml-8 mb-8"
                   >
                     <div className="relative group">
                       <CircularImage
