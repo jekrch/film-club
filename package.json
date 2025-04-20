@@ -7,10 +7,10 @@
   "scripts": {
     "predeploy": "bun run build",
     "deploy": "gh-pages -d dist",
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "bun vite",
+    "build": "tsc -b && bun vite build",
+    "lint": "bun eslint .",
+    "preview": "bun vite preview"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.4",
