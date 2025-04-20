@@ -4,15 +4,16 @@ import { Film } from '../types/film';
 import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import FilmList from '../components/films/FilmList';
+import CircularImage from '../components/common/CircularImage';
 
 // --- Popcorn Icon Component ---
 const PopcornIcon = ({ filled, size = 'regular', partial = false }: { filled: boolean; size?: 'regular' | 'small'; partial?: boolean }) => {
   // Use CSS filters to make unfilled icons appear darker/greyed out
   const filterClass = filled ? '' : 'brightness-50 opacity-60'; // Darkens and reduces opacity for unfilled
-  
+
   // Dynamic sizing based on the size prop
   const sizeClass = size === 'small' ? 'w-4 h-4' : 'w-7 h-7';
-  
+
   // For partial fill effect, use a linear gradient overlay
   const partialStyle = partial ? {
     maskImage: 'linear-gradient(to right, white 50%, transparent 50%)',
@@ -163,7 +164,6 @@ const FilmDetailPage = () => {
   // --- Popcorn Rating Calculation ---
   const MAX_RATING = 9; // Define the maximum possible rating
   const numericClubRating = clubAverageDisplay ? parseFloat(clubAverageDisplay) : NaN;
-  const roundedClubRating = !isNaN(numericClubRating) ? Math.round(numericClubRating) : 0; // Round to nearest whole number, default 0 if NaN
 
   return (
     <div className="bg-slate-900 text-slate-300 min-h-screen py-8">
@@ -248,89 +248,64 @@ const FilmDetailPage = () => {
           {/* Movie Club Info Section */}
           {film.movieClubInfo && (
             <div className="bg-slate-850 border-t-2 border-blue-700 p-6 md:p-8">
-              <h2 className="text-2xl font-semibold text-slate-100 mb-5">Film Club Facts</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 text-sm">
-                {/* Selected By */}
-                <div>
-                  <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Selected By:</p>
-                  <p className="text-slate-200 text-base">
-                    {selectorName ? (
-                      <Link
-                        key={selectorName}
-                        to={`/profile/${selectorName}`}
-                        className="text-blue-300 hover:text-blue-100 transition font-medium text-lg"
-                      >
-                        {selectorName}
-                      </Link>
-                    ) : <span className="italic text-slate-400">N/A</span>}
-                  </p>
-                </div>
-                {/* Watch Date */}
-                <div>
-                  <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Watch Date:</p>
-                  <p className="text-slate-200 text-base">{film.movieClubInfo.watchDate ?? <span className="italic text-slate-400">Not Watched Yet</span>}</p>
-                </div>
+              <h2 className="text-2xl font-semibold text-slate-100 mb-4">Film Club Facts</h2>
 
-                {/* Ratings Section (with Popcorn) */}
-                {clubAverageDisplay && !isNaN(numericClubRating) && (
-                  <div className="md:col-span-2 mt-2 pt-4 border-t border-slate-700">
-                    <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Club Ratings:</p>
-                    {/* Combined Average Display */}
-                    <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-                      {/* Numerical Average */}
-                      <div className="flex items-baseline">
-                        <span className="text-3xl font-bold text-blue-300">{clubAverageDisplay}</span>
-                        <span className="text-slate-400 text-lg">/ {MAX_RATING}</span>
-                        <span className="text-slate-500 text-sm ml-2">(Avg)</span>
-                      </div>
-                      {/* Popcorn Visualization */}
-                      <div
-                        className="flex items-center space-x-1"
-                        title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}
-                      >
-                        {[...Array(MAX_RATING)].map((_, index) => {
-                          const ratingAsNumber = parseFloat(clubAverageDisplay);
-                          const hasPartial = ratingAsNumber % 1 >= 0.25 && ratingAsNumber % 1 < 0.75;
-                          const partialIndex = hasPartial ? Math.floor(ratingAsNumber) : -1;
-                          
-                          if (index === partialIndex) {
-                            return <PopcornIcon key={index} filled={true} partial={true} />;
-                          } else if (index < Math.floor(ratingAsNumber)) {
-                            return <PopcornIcon key={index} filled={true} />;
-                          } else {
-                            return <PopcornIcon key={index} filled={false} />;
-                          }
-                        })}
-                      </div>
-                    </div>
+              <div className="md:flex md:justify-between md:items-start">
+                {/* Left side - Watch Date and Ratings */}
+                <div className="flex-1 mb-6 md:mb-0">
+                  {/* Compact Watch Date */}
+                  <div className="mb-4">
+                    <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Watch Date: </span>
+                    <span className="text-slate-200">{film.movieClubInfo.watchDate ?? <span className="italic text-slate-400">Not Watched Yet</span>}</span>
+                  </div>
 
-                    {/* Individual Ratings List with Popcorn Icons */}
-                    <ul className="space-y-3 text-slate-300">
-                      {Object.entries(film.movieClubInfo.clubRatings)
-                        .filter(([, rating]) => rating !== null && typeof rating === 'number')
-                        .sort(([memberA], [memberB]) => memberA.localeCompare(memberB))
-                        .map(([member, rating]) => {
-                          const roundedRating = Math.round(rating);
-                          const hasPartial = rating % 1 >= 0.25 && rating % 1 < 0.75;
-                          const partialIndex = hasPartial ? Math.floor(rating) : -1;
-                          
-                          return (
-                            <li key={member} className="flex items-center">
-                              <div className="w-20">
+                  {/* Combined Ratings Section */}
+                  {clubAverageDisplay && !isNaN(numericClubRating) && (
+                    <div>
+                      {/* Compact Average Display */}
+                      <div className="mb-3 flex items-center gap-4">
+                        <div className="flex items-baseline">
+                          <span className="text-3xl font-bold text-blue-300">{clubAverageDisplay}</span>
+                          <span className="text-slate-400">/ {MAX_RATING}</span>
+                          <span className="text-slate-500 text-sm ml-2">(Avg)</span>
+                        </div>
+                        {/* Popcorn Icons inline with average */}
+                        <div className="flex items-center space-x-0.5" title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}>
+                          {[...Array(MAX_RATING)].map((_, index) => {
+                            const ratingAsNumber = parseFloat(clubAverageDisplay);
+                            const hasPartial = ratingAsNumber % 1 >= 0.25 && ratingAsNumber % 1 < 0.75;
+                            const partialIndex = hasPartial ? Math.floor(ratingAsNumber) : -1;
+
+                            if (index === partialIndex) {
+                              return <PopcornIcon key={index} filled={true} partial={true} size="regular" />;
+                            } else if (index < Math.floor(ratingAsNumber)) {
+                              return <PopcornIcon key={index} filled={true} size="regular" />;
+                            } else {
+                              return <PopcornIcon key={index} filled={false} size="regular" />;
+                            }
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Compact Individual Ratings */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-6">
+                        {Object.entries(film.movieClubInfo.clubRatings)
+                          .filter(([, rating]) => rating !== null && typeof rating === 'number')
+                          .sort(([memberA], [memberB]) => memberA.localeCompare(memberB))
+                          .map(([member, rating]) => {
+                            const hasPartial = rating % 1 >= 0.25 && rating % 1 < 0.75;
+                            const partialIndex = hasPartial ? Math.floor(rating) : -1;
+
+                            return (
+                              <div key={member} className="flex items-center">
                                 <Link
-                                  key={member}
                                   to={`/profile/${capitalizeFirstLetter(member)}`}
-                                  className="text-slate-200 hover:text-white transition font-medium text-base capitalize"
+                                  className="text-slate-300 hover:text-white transition font-medium capitalize w-16"
                                 >
                                   {member}:
                                 </Link>
-                              </div>
-                              <div className="flex items-center ml-4">
-                                <span className="font-semibold text-slate-200 w-8 text-base">{rating}</span>
-                                <div 
-                                  className="flex items-center space-x-0.5" 
-                                  title={`${member}'s rating: ${rating} out of ${MAX_RATING}`}
-                                >
+                                <span className="font-semibold text-slate-200 w-8">{rating}</span>
+                                <div className="flex items-center space-x-0.5" title={`${member}'s rating: ${rating} out of ${MAX_RATING}`}>
                                   {[...Array(MAX_RATING)].map((_, index) => {
                                     if (index === partialIndex) {
                                       return <PopcornIcon key={index} filled={true} size="small" partial={true} />;
@@ -342,27 +317,56 @@ const FilmDetailPage = () => {
                                   })}
                                 </div>
                               </div>
-                            </li>
-                          );
-                        })}
-                    </ul>
-                  </div>
-                )}
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-                {/* Trophy Info */}
-                {film.movieClubInfo.trophyInfo && (
-                  <div className="md:col-span-2 mt-2 pt-4 border-t border-slate-700">
-                    <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Info:</p>
-                    <p className="text-slate-300">{film.movieClubInfo.trophyInfo}</p>
-                  </div>
-                )}
-                {film.movieClubInfo.trophyNotes && (
-                  <div className={film.movieClubInfo.trophyInfo ? 'mt-2' : 'md:col-span-2 mt-2 pt-4 border-t border-slate-700'}>
-                    <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Notes:</p>
-                    <p className="text-slate-300">{film.movieClubInfo.trophyNotes}</p>
-                  </div>
+                {/* Right side - Selector with Banner */}
+                {selectorName && (
+                  <Link
+                    to={`/profile/${encodeURIComponent(selectorName)}`}
+                    className="flex flex-col items-center md:ml-8 mb-6"
+                  >
+                    <div className="relative group">
+                      <CircularImage
+                        alt={selectorName}
+                        size="w-32 h-32 md:w-36 md:h-36"
+                      />
+                      {/* Tilted Banner */}
+                      <div
+                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 bg-emerald-600 text-slate-200 px-4 py-1.5 rounded-sm text-lg font-medium whitespace-nowrap shadow-md "
+                        style={{
+                          transform: 'translateX(2%) translateY(25%) rotate(-5deg)',
+                          transformOrigin: 'center'
+                        }}
+                      >
+                        {selectorName}'s Pick
+                      </div>
+                    </div>
+                  </Link>
                 )}
               </div>
+
+              {/* Trophy Info - Compact Display */}
+              {(film.movieClubInfo.trophyInfo || film.movieClubInfo.trophyNotes) && (
+                <div className="mt-6 pt-4 border-t border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {film.movieClubInfo.trophyInfo && (
+                    <div>
+                      <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Trophy Info: </span>
+                      <span className="text-slate-300">{film.movieClubInfo.trophyInfo}</span>
+                    </div>
+                  )}
+                  {film.movieClubInfo.trophyNotes && (
+                    <div>
+                      <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Trophy Notes: </span>
+                      <span className="text-slate-300">{film.movieClubInfo.trophyNotes}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
