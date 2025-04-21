@@ -5,45 +5,7 @@ import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import FilmList from '../components/films/FilmList';
 import CircularImage from '../components/common/CircularImage';
-
-// --- Popcorn Icon Component ---
-const PopcornIcon = ({ filled, size = 'regular', partial = false }: { filled: boolean; size?: 'regular' | 'small'; partial?: boolean }) => {
-  // Use CSS filters to make unfilled icons appear darker/greyed out
-  const filterClass = filled ? '' : 'brightness-50 opacity-60'; // Darkens and reduces opacity for unfilled
-
-  // Dynamic sizing based on the size prop
-  const sizeClass = size === 'small' ? 'w-4 h-4' : 'w-7 h-7';
-
-  // For partial fill effect, use a linear gradient overlay
-  const partialStyle = partial ? {
-    maskImage: 'linear-gradient(to right, white 50%, transparent 50%)',
-    WebkitMaskImage: 'linear-gradient(to right, white 50%, transparent 50%)',
-    position: 'relative' as const
-  } : {};
-
-  return (
-    <div className="relative inline-block">
-      <img
-        src="/film-club/popcorn.svg"
-        alt={filled ? (partial ? "Half-filled popcorn" : "Filled popcorn") : "Empty popcorn"}
-        className={`inline-block ${sizeClass} ${filterClass}`}
-        style={partial ? partialStyle : {}}
-      />
-      {partial && (
-        <img
-          src="/film-club/popcorn.svg"
-          alt="Empty portion"
-          className={`inline-block ${sizeClass} brightness-50 opacity-60 absolute top-0 left-0`}
-          style={{
-            clipPath: 'inset(0 0 0 50%)',
-            WebkitClipPath: 'inset(0 0 0 50%)'
-          }}
-        />
-      )}
-    </div>
-  );
-};
-// --- End of Popcorn Icon Component ---
+import PopcornRating from '../components/common/PopcornRating';
 
 const parseGenres = (genreString: string): string[] => {
   if (!genreString || typeof genreString !== 'string') return [];
@@ -267,24 +229,14 @@ const FilmDetailPage = () => {
                         <div className="flex items-baseline whitespace-nowrap">
                           <span className="text-3xl font-bold text-blue-300">{clubAverageDisplay}</span>
                           <span className="text-slate-400"> / {MAX_RATING}</span>
-                          {/* <span className="text-slate-500 text-sm ml-2">(Avg)</span> */}
                         </div>
                         {/* Popcorn Icons inline with average */}
-                        <div className="flex items-center space-x-0.5" title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}>
-                          {[...Array(MAX_RATING)].map((_, index) => {
-                            const ratingAsNumber = parseFloat(clubAverageDisplay);
-                            const hasPartial = ratingAsNumber % 1 >= 0.25 && ratingAsNumber % 1 < 0.75;
-                            const partialIndex = hasPartial ? Math.floor(ratingAsNumber) : -1;
-
-                            if (index === partialIndex) {
-                              return <PopcornIcon key={index} filled={true} partial={true} size="regular" />;
-                            } else if (index < Math.floor(ratingAsNumber)) {
-                              return <PopcornIcon key={index} filled={true} size="regular" />;
-                            } else {
-                              return <PopcornIcon key={index} filled={false} size="regular" />;
-                            }
-                          })}
-                        </div>
+                        <PopcornRating 
+                          rating={parseFloat(clubAverageDisplay)} 
+                          maxRating={MAX_RATING}
+                          size="regular"
+                          title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}
+                        />
                       </div>
 
                       {/* Compact Individual Ratings */}
@@ -292,33 +244,23 @@ const FilmDetailPage = () => {
                         {Object.entries(film.movieClubInfo.clubRatings)
                           .filter(([, rating]) => rating !== null && typeof rating === 'number')
                           .sort(([memberA], [memberB]) => memberA.localeCompare(memberB))
-                          .map(([member, rating]) => {
-                            const hasPartial = rating % 1 >= 0.25 && rating % 1 < 0.75;
-                            const partialIndex = hasPartial ? Math.floor(rating) : -1;
-
-                            return (
-                              <div key={member} className="flex items-center">
-                                <Link
-                                  to={`/profile/${capitalizeFirstLetter(member)}`}
-                                  className="text-slate-300 hover:text-white transition font-medium capitalize w-16"
-                                >
-                                  {member}:
-                                </Link>
-                                <span className="font-semibold text-slate-200 w-8">{rating}</span>
-                                <div className="flex items-center space-x-0.5" title={`${member}'s rating: ${rating} out of ${MAX_RATING}`}>
-                                  {[...Array(MAX_RATING)].map((_, index) => {
-                                    if (index === partialIndex) {
-                                      return <PopcornIcon key={index} filled={true} size="small" partial={true} />;
-                                    } else if (index < Math.floor(rating)) {
-                                      return <PopcornIcon key={index} filled={true} size="small" />;
-                                    } else {
-                                      return <PopcornIcon key={index} filled={false} size="small" />;
-                                    }
-                                  })}
-                                </div>
-                              </div>
-                            );
-                          })}
+                          .map(([member, rating]) => (
+                            <div key={member} className="flex items-center">
+                              <Link
+                                to={`/profile/${capitalizeFirstLetter(member)}`}
+                                className="text-slate-300 hover:text-white transition font-medium capitalize w-16"
+                              >
+                                {member}:
+                              </Link>
+                              <span className="font-semibold text-slate-200 w-8">{rating}</span>
+                              <PopcornRating 
+                                rating={rating} 
+                                maxRating={MAX_RATING}
+                                size="small"
+                                title={`${member}'s rating: ${rating} out of ${MAX_RATING}`}
+                              />
+                            </div>
+                          ))}
                       </div>
                     </div>
                   )}
