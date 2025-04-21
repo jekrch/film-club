@@ -264,9 +264,9 @@ const FilmDetailPage = () => {
                     <div>
                       {/* Compact Average Display */}
                       <div className="mb-3 flex items-center gap-4">
-                        <div className="flex items-baseline">
+                        <div className="flex items-baseline whitespace-nowrap">
                           <span className="text-3xl font-bold text-blue-300">{clubAverageDisplay}</span>
-                          <span className="text-slate-400">/ {MAX_RATING}</span>
+                          <span className="text-slate-400"> / {MAX_RATING}</span>
                           {/* <span className="text-slate-500 text-sm ml-2">(Avg)</span> */}
                         </div>
                         {/* Popcorn Icons inline with average */}
