@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import FilmList from '../components/films/FilmList';
-import { Film, ClubMemberRatings } from '../types/film';
+import { Film, ClubMemberRatings } from '../types/film'; // Added MovieClubDetails for clarity
 import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
 
@@ -23,10 +23,23 @@ const getAllGenres = (films: Film[]): string[] => {
   return Array.from(genreSet).sort();
 };
 
-// Define Member Names
-const clubMemberNames: (keyof ClubMemberRatings)[] = ['andy', 'gabe', 'jacob', 'joey'];
+// NEW: Get all unique selectors from the loaded films
+const getAllSelectors = (films: Film[]): string[] => {
+  const selectorSet = new Set<string>();
+  films.forEach(film => {
+    // Check if movieClubInfo and selector exist and are non-empty strings
+    if (film?.movieClubInfo?.selector && typeof film.movieClubInfo.selector === 'string' && film.movieClubInfo.selector.trim()) {
+      selectorSet.add(film.movieClubInfo.selector.trim());
+    }
+  });
+  return Array.from(selectorSet).sort(); // Sort alphabetically
+};
 
-// UPDATED SortOption type
+
+// Define Member Names (used for rating sorts)
+const clubMemberNames: (keyof ClubMemberRatings)[] = ['andy', 'gabe', 'jacob', 'joey']; // Assuming Mark isn't a regular selector shown here
+
+// UPDATED SortOption type (remains the same)
 type BaseSortOption = 'title' | 'year' | 'clubRating' | 'watchDate';
 type MemberSortOption = keyof ClubMemberRatings;
 type SortOption = BaseSortOption | MemberSortOption;
@@ -43,11 +56,11 @@ const getSortOptionDisplayName = (option: SortOption): string => {
     case 'jacob': return 'Jacob';
     case 'joey': return 'Joey';
     default:
-      return '';
+        return '';
   }
 };
 
-// Helper function to check if a film has any club ratings
+// Helper function to check if a film has any club ratings (remains the same)
 const hasAnyClubRating = (film: Film): boolean => {
   const ratings = film.movieClubInfo?.clubRatings;
   if (!ratings) return false;
@@ -61,14 +74,23 @@ const FilmsPage = () => {
   const [filteredFilms, setFilteredFilms] = useState<Film[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGenre, setSelectedGenre] = useState<string>('');
-  const [sortBy, setSortBy] = useState<SortOption>('title');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [selectedSelector, setSelectedSelector] = useState<string>(''); // NEW: State for selector filter
+  const [sortBy, setSortBy] = useState<SortOption>('watchDate'); // CHANGED: Default sort by watchDate
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc'); // Default sort direction desc
   const [allGenres, setAllGenres] = useState<string[]>([]);
+  const [allSelectors, setAllSelectors] = useState<string[]>([]); // NEW: State for unique selectors list
 
   useEffect(() => {
-    const loadedFilms = (filmsData || []).filter(f => f && typeof f === 'object') as unknown as Film[];
-    setFilms(loadedFilms);
-    setAllGenres(getAllGenres(loadedFilms));
+    // Ensure filmsData is an array before processing
+    const loadedFilmsData = Array.isArray(filmsData) ? filmsData : [];
+    // Basic validation for each film object (can be enhanced)
+    const validFilms = loadedFilmsData.filter(f => f && typeof f === 'object' && f.imdbID) as unknown as Film[];
+
+    // Process films (e.g., parse dates if needed, ensure structure)
+    // For now, just setting the validated films
+    setFilms(validFilms);
+    setAllGenres(getAllGenres(validFilms));
+    setAllSelectors(getAllSelectors(validFilms)); // NEW: Populate selectors list
   }, []);
 
   useEffect(() => {
@@ -92,24 +114,31 @@ const FilmsPage = () => {
       );
     }
 
-    // 3. Member Rating Filter (ONLY if sorting by a specific member)
+    // 3. NEW: Selector Filter
+    if (selectedSelector) {
+        workingFiltered = workingFiltered.filter(film =>
+            film?.movieClubInfo?.selector && film.movieClubInfo.selector === selectedSelector
+        );
+    }
+
+    // 4. Member Rating Filter (ONLY if sorting by a specific member)
     if (clubMemberNames.includes(sortBy as MemberSortOption)) {
       const memberKey = sortBy as MemberSortOption;
       workingFiltered = workingFiltered.filter(film =>
         film.movieClubInfo?.clubRatings?.[memberKey] != null // Film MUST have a rating from this member
       );
     }
-    // 4. Club Rating Filter (ONLY if sorting by Club Rating)
+    // 5. Club Rating Filter (ONLY if sorting by Club Rating)
     else if (sortBy === 'clubRating') {
       workingFiltered = workingFiltered.filter(film =>
         hasAnyClubRating(film) // Film MUST have at least one rating from any member
       );
     }
-    // NOTE: 'watchDate' sort does NOT filter, it just sorts (null dates go to start/end)
+    // NOTE: 'watchDate' sort does NOT filter based on having a date, it just sorts (null/invalid dates go to start/end depending on direction)
 
     // --- Sorting Logic ---
-    // Sort the `workingFiltered` array
     workingFiltered.sort((a, b) => {
+      // Basic null checks for safety
       if (!a) return sortDirection === 'asc' ? 1 : -1;
       if (!b) return sortDirection === 'asc' ? -1 : 1;
 
@@ -117,9 +146,9 @@ const FilmsPage = () => {
 
       if (clubMemberNames.includes(sortBy as MemberSortOption)) {
         const memberKey = sortBy as MemberSortOption;
-        // We already filtered, so ratings should exist, but default for safety
-        const ratingA = a.movieClubInfo?.clubRatings?.[memberKey] ?? 0;
-        const ratingB = b.movieClubInfo?.clubRatings?.[memberKey] ?? 0;
+        // We already filtered, so ratings should exist for these films, but default for safety
+        const ratingA = a.movieClubInfo?.clubRatings?.[memberKey] ?? (sortDirection === 'asc' ? Infinity : -Infinity); // Push nulls to end/start
+        const ratingB = b.movieClubInfo?.clubRatings?.[memberKey] ?? (sortDirection === 'asc' ? Infinity : -Infinity);
         comparison = ratingA - ratingB;
       } else {
         switch (sortBy) {
@@ -129,46 +158,50 @@ const FilmsPage = () => {
             comparison = titleA.localeCompare(titleB);
             break;
           case 'year':
-            const yearA = parseInt(typeof a.year === 'string' ? a.year : '0', 10) || 0;
-            const yearB = parseInt(typeof b.year === 'string' ? b.year : '0', 10) || 0;
+             // Safely parse year, treat invalid/missing as 0 or handle differently if needed
+             const yearA = parseInt(String(a.year), 10) || (sortDirection === 'asc' ? Infinity : -Infinity);
+             const yearB = parseInt(String(b.year), 10) || (sortDirection === 'asc' ? Infinity : -Infinity);
             comparison = yearA - yearB;
             break;
           case 'clubRating':
-            // We already filtered, so films should have ratings, but calculate safely
+            // We filtered, but calculate safely. Assign score based on sort direction for unrated films.
             const avgStrA = calculateClubAverage(a.movieClubInfo?.clubRatings);
             const avgStrB = calculateClubAverage(b.movieClubInfo?.clubRatings);
-            const ratingA = parseFloat(avgStrA ?? '0') || 0;
-            const ratingB = parseFloat(avgStrB ?? '0') || 0;
+            const ratingA = parseFloat(avgStrA ?? 'NaN') || (sortDirection === 'asc' ? Infinity : -Infinity);
+            const ratingB = parseFloat(avgStrB ?? 'NaN') || (sortDirection === 'asc' ? Infinity : -Infinity);
             comparison = ratingA - ratingB;
             break;
           case 'watchDate':
             const dateStrA = a.movieClubInfo?.watchDate;
             const dateStrB = b.movieClubInfo?.watchDate;
-            // Handle null/invalid dates during sort
+             // Handle null/invalid dates: push them to the 'end' relative to the sort direction
+             // Ascending: Nulls/invalid dates are treated as 'latest' (Infinity)
+             // Descending: Nulls/invalid dates are treated as 'earliest' (-Infinity)
             const timeA = dateStrA ? new Date(dateStrA).getTime() : NaN;
             const timeB = dateStrB ? new Date(dateStrB).getTime() : NaN;
+             // Assign comparable values based on validity and sort direction
             const valA = isNaN(timeA) ? (sortDirection === 'asc' ? Infinity : -Infinity) : timeA;
             const valB = isNaN(timeB) ? (sortDirection === 'asc' ? Infinity : -Infinity) : timeB;
             comparison = valA - valB;
             break;
-          default:
-            console.warn("Unhandled sort option:", sortBy);
-            break;
+          // Default case removed as SortOption should cover all possibilities
         }
       }
 
+      // Apply direction multiplier
       return sortDirection === 'asc' ? comparison : comparison * -1;
     });
 
     setFilteredFilms(workingFiltered);
 
-  }, [films, searchTerm, selectedGenre, sortBy, sortDirection]);
+  }, [films, searchTerm, selectedGenre, selectedSelector, sortBy, sortDirection]); // ADDED selectedSelector to dependencies
 
   const handleSortChange = (option: SortOption) => {
     if (sortBy === option) {
       setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortBy(option);
+      // Typically reset to descending when changing sort column, unless specific UX desired
       setSortDirection('desc');
     }
   };
@@ -176,7 +209,7 @@ const FilmsPage = () => {
   // Custom background SVG for the select dropdown arrow (remains the same)
   const customSelectArrow = `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`;
 
-  // Define all sort options for the UI
+  // Define all sort options for the UI (remains the same)
   const allSortOptions: SortOption[] = [
     'title',
     'year',
@@ -185,15 +218,20 @@ const FilmsPage = () => {
     ...clubMemberNames
   ];
 
-  // --- Determine results text ---
-  let resultsText = `Showing ${filteredFilms.length} of ${films.length} films.`; // Default
+  // --- Determine results text --- (remains the same, accurately reflects count after ALL filters)
+  let resultsText = `Showing ${filteredFilms.length} of ${films.length} films.`;
   if (clubMemberNames.includes(sortBy as MemberSortOption)) {
+    // This text is only accurate *if* the member filter is the *only* active filter.
+    // Keeping it simple: shows count of films rated by member *after* other filters applied.
     resultsText = `Showing ${filteredFilms.length} films rated by ${getSortOptionDisplayName(sortBy)}.`;
   } else if (sortBy === 'clubRating') {
-    // Now accurate because we added the filter step
     resultsText = `Showing ${filteredFilms.length} films with Club Ratings.`;
   }
-  // For title, year, watchDate sort, the default text is appropriate as no rating-specific filtering occurs for them.
+  // Add text specific to selector filter if desired, e.g.:
+  // if (selectedSelector) {
+  //   resultsText += ` Selected by ${selectedSelector}.`;
+  // }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -202,17 +240,17 @@ const FilmsPage = () => {
       {/* --- Improved Filters and Sort Container --- */}
       <div className="bg-slate-700 rounded-lg shadow-lg p-6 mb-8 text-sm">
 
-        {/* Row 1: Search and Genre (remains the same) */}
-        <div className="flex flex-col md:flex-row gap-4 mb-4">
+        {/* Row 1: Search, Genre, and Selector */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {/* Search Input */}
-          <div className="flex-1 md:w-1/2 lg:w-2/3">
+          <div className="md:col-span-1">
             <label htmlFor="search" className="block font-medium text-slate-300 mb-1">
               Search Films
             </label>
             <input
               type="text"
               id="search"
-              placeholder="Search by title or director..."
+              placeholder="Search title or director..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-4 py-2 border border-slate-500 bg-slate-600 text-slate-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-slate-400"
@@ -220,7 +258,7 @@ const FilmsPage = () => {
           </div>
 
           {/* Genre Filter */}
-          <div className="flex-1 md:w-1/2 lg:w-1/3">
+          <div className="md:col-span-1">
             <label htmlFor="genre" className="block font-medium text-slate-300 mb-1">
               Filter by Genre
             </label>
@@ -246,9 +284,37 @@ const FilmsPage = () => {
               </select>
             </div>
           </div>
+
+          {/* NEW: Selector Filter */}
+          <div className="md:col-span-1">
+            <label htmlFor="selector" className="block font-medium text-slate-300 mb-1">
+              Filter by Selector
+            </label>
+            <div className="relative">
+              <select
+                id="selector"
+                value={selectedSelector}
+                onChange={(e) => setSelectedSelector(e.target.value)}
+                className="w-full pl-4 pr-10 py-2 border border-slate-500 bg-slate-600 text-slate-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                style={{
+                  backgroundImage: customSelectArrow,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: `right 0.75rem center`,
+                  backgroundSize: `1.5em 1.5em`
+                }}
+              >
+                <option value="">All Selectors</option>
+                {allSelectors.map((selector) => (
+                  <option key={selector} value={selector}>
+                    {selector}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
 
-        {/* Row 2: Sort By --- Button Styling Reverted --- */}
+        {/* Row 2: Sort By Buttons */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
           <label className="block font-medium text-slate-300 flex-shrink-0 sm:mb-0">
             Sort By:
@@ -258,9 +324,9 @@ const FilmsPage = () => {
               <button
                 key={option}
                 onClick={() => handleSortChange(option)}
-                className={`px-3 py-1.5 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-700 focus:ring-blue-500 ${sortBy === option
-                  ? 'bg-blue-600 text-white font-semibold shadow-sm' // Active state (Original)
-                  : 'bg-slate-500 text-slate-100 hover:bg-slate-400 hover:text-slate-500' // Inactive state (Original)
+                className={`px-3 py-1.5 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-700 focus:ring-blue-500 text-xs sm:text-sm ${sortBy === option
+                  ? 'bg-blue-600 text-white font-semibold shadow-sm'
+                  : 'bg-slate-500 text-slate-100 hover:bg-slate-400 hover:text-slate-50' // Adjusted hover text color
                   }`}
               >
                 {getSortOptionDisplayName(option)}

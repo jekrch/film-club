@@ -106,7 +106,7 @@ const ProfilePage: React.FC = () => {
     // Check if the ratingKey is actually a valid key in ClubMemberRatings type.
     // This is more for robustness if names/keys might not align perfectly.
     // A simple check based on known keys:
-    const validRatingKeys: (keyof ClubMemberRatings)[] = ['andy', 'gabe', 'jacob', 'joey'];
+    const validRatingKeys: (keyof ClubMemberRatings)[] = ['andy', 'gabe', 'jacob', 'joey', 'mark'];
     if (validRatingKeys.includes(ratingKey)) {
         const filmsRatedByMember = allFilms
             .filter(film => {

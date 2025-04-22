@@ -1,4 +1,3 @@
-// src/components/FilmList/FilmCard.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Film } from '../../types/film';
@@ -46,7 +45,9 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     const clubAverageDisplay = calculateClubAverage(clubRatings);
     const watchedDateDisplay = film.movieClubInfo?.watchDate
         ? new Date(film.movieClubInfo.watchDate).toLocaleDateString('en-US', {
-            day: '2-digit', month: '2-digit', year: 'numeric'
+            day: '2-digit', month: '2-digit', year: 'numeric' // e.g., 07/15/2024
+            // Or consider a shorter format if needed for compact:
+            // day: 'numeric', month: 'short', year: '2-digit' // e.g., Jul 15, 24
         }) : null;
 
     return (
@@ -142,16 +143,22 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             text-slate-400 mt-auto
                             ${isCompact ? 'text-xs pt-1' : 'text-sm pt-2'}
                         `}>
+                            {/* Year and Watch Date Container */}
                             <div className="flex items-center space-x-1.5">
                                 <span>{film.year}</span>
-                                {watchedDateDisplay && !isCompact && (
+                                {/* --- CHANGE HERE: Removed !isCompact --- */}
+                                {/* Always show watched date if available */}
+                                {watchedDateDisplay && (
                                     <>
                                         <span className="text-slate-600 text-xs scale-90">•</span>
+                                        {/* Title provides full context on hover, useful in compact mode */}
                                         <span title={`Watched: ${watchedDateDisplay}`}>{watchedDateDisplay}</span>
                                     </>
                                 )}
+                                {/* --- END CHANGE --- */}
                             </div>
 
+                            {/* Club Average Rating */}
                             {clubAverageDisplay && (
                                 <span className="flex items-center shrink-0" title="Average Club Rating">
                                     <svg xmlns="http://www.w3.org/2000/svg" className={`text-blue-400 mr-0.5 flex-shrink-0 ${isCompact ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} viewBox="0 0 20 20" fill="currentColor">

@@ -32,5 +32,11 @@
       "title": "Education Leader & Artist",
       "bio": "Our researchers are on it",
       "image": "/film-club/images/joey.jpg"
+    },
+    {
+      "name": "Mark",
+      "title": "Unionizer & Filmologist",
+      "bio": "Emeritus member of the film club (unless?)",
+      "image": "/film-club/images/mark.jpg"
     }
   ]

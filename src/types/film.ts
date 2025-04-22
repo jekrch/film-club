@@ -32,6 +32,7 @@ export interface ClubMemberRatings {
     gabe: number | null;
     jacob: number | null;
     joey: number | null;
+    mark: number | null;
 }
 
 /**
