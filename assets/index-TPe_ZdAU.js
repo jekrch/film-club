@@ -71,7 +71,7 @@ Please change the parent <Route path="${j}"> to <Route path="${j==="/"?"*":`${j}
                         transition-all duration-300 ease-out
                         group-hover:scale-105 group-hover:rotate-[-2deg] // Subtle hover effect
                         ${u?"text-md px-3 py-1 !left-30":"text-2xl"}
-                    `,style:{transformOrigin:"center"},children:["Up next from ",A.jsxs("span",{className:"font-bold",children:[h,"!"]})]}),A.jsx(wn,{to:`/films/${t.imdbID}`,className:"block h-full",children:A.jsxs("div",{className:`
+                    `,style:{transformOrigin:"center"},children:["Up next from ",A.jsx("span",{className:"font-bold",children:h})]}),A.jsx(wn,{to:`/films/${t.imdbID}`,className:"block h-full",children:A.jsxs("div",{className:`
                     bg-slate-700 overflow-hidden h-full flex flex-col
                     border border-slate-700 group-hover:border-slate-600
                     transition-all duration-300 ease-in-out
