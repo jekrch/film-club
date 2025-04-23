@@ -63,8 +63,8 @@ Please change the parent <Route path="${O}"> to <Route path="${O==="/"?"*":`${O}
                 relative group // Add relative positioning and group here for hover states if needed on new elements
             `,children:[y&&A.jsxs("div",{className:`
                         absolute top-0 left-40 transform -translate-x-3/4
-                        -translate-y-1/2x rotate-[-3deg]x // Position slightly above and rotate
-                         bg-emerald-600 
+                        -translate-y-1/2x rotate-[-4deg] // Position slightly above and rotate
+                         bg-emerald-700 
                         text-white px-4 py-1.5 rounded z-10 // Styling
                         whitespace-nowrap // Prevent wrapping
                         pointer-events-none // Don't interfere with link clicks
