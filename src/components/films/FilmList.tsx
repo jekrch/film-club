@@ -1,17 +1,23 @@
 import React from 'react';
 import { Film } from '../../types/film';
 import FilmCard from './FilmCard';
+import AllFilmsCard from './AllFilmsCard'; // 1. Import the new card component
 import { useViewSettings } from '../../contexts/ViewSettingsContext';
 import { Squares2X2Icon, RectangleGroupIcon } from '@heroicons/react/24/outline';
 
 interface FilmListProps {
   films: Film[];
   title?: string;
+  appendAllFilmsCard?: boolean; // 2. Add the new prop
 }
 
-const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
+// Set default value for the new prop in the function signature
+const FilmList: React.FC<FilmListProps> = ({ films, title, appendAllFilmsCard = false }) => {
   const { cardSize, setCardSize } = useViewSettings();
-  const isCompact = cardSize !== 'standard';
+  // Determine cardSize string literal type ('compact' or 'standard')
+  const currentCardSize = cardSize === 'compact' ? 'compact' : 'standard';
+  const isCompact = currentCardSize === 'compact';
+
 
   // Define base styles for the toggle buttons - more minimal
   const buttonBaseClasses = "p-1.5 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800";
@@ -24,6 +30,9 @@ const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
 
   const gapClass = isCompact ? 'gap-3 md:gap-4' : 'gap-6';
 
+  // Determine if there's anything to display in the grid
+  const hasContent = films.length > 0 || appendAllFilmsCard;
+
   return (
     <div className="py-8">
       {/* Header Section with Title and View Toggle */}
@@ -33,7 +42,7 @@ const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
         )}
 
         {/* View Mode Toggle Buttons - Minimal Style */}
-        <div className="flex items-center space-x-2"> {/* Removed container bg */}
+        <div className="flex items-center space-x-2">
 
           {/* Compact View Button */}
           <button
@@ -43,24 +52,25 @@ const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
             className={`
               ${buttonBaseClasses}
               ${isCompact
-                ? 'text-white' // Active state: bright icon
-                : 'text-slate-400 hover:text-slate-100' // Inactive state: dimmer icon, brightens on hover
+                ? 'text-white'
+                : 'text-slate-400 hover:text-slate-100'
               }
             `}
           >
             <RectangleGroupIcon className={iconClasses} />
             <span className="sr-only">Compact View</span>
           </button>
-                    {/* Standard View Button */}
-                    <button
+
+          {/* Standard View Button */}
+          <button
             onClick={() => setCardSize('standard')}
             title="Standard View"
             aria-pressed={!isCompact}
             className={`
               ${buttonBaseClasses}
               ${!isCompact
-                ? 'text-white' // Active state: bright icon
-                : 'text-slate-400 hover:text-slate-100' // Inactive state: dimmer icon, brightens on hover
+                ? 'text-white'
+                : 'text-slate-400 hover:text-slate-100'
               }
             `}
           >
@@ -71,15 +81,22 @@ const FilmList: React.FC<FilmListProps> = ({ films, title }) => {
       </div>
 
       {/* Film Grid Section */}
-      {films.length === 0 ? (
+      {!hasContent ? ( // Check if there is neither films nor the AllFilmsCard to show
         <div className="text-center py-10">
+          {/* Modify empty state message slightly if needed, or keep as is */}
           <p className="text-gray-500">No films found.</p>
         </div>
       ) : (
         <div className={`grid ${gridClasses} ${gapClass}`}>
+          {/* Map existing films */}
           {films.map((film) => (
-            <FilmCard key={film.imdbID} film={film} cardSize={cardSize} />
+            <FilmCard key={film.imdbID} film={film} cardSize={currentCardSize} />
           ))}
+
+          {/* 3. Conditionally render AllFilmsCard at the end */}
+          {appendAllFilmsCard && (
+            <AllFilmsCard cardSize={currentCardSize} />
+          )}
         </div>
       )}
     </div>

@@ -188,7 +188,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             <div className={`
                                 text-xs text-slate-500 truncate leading-tight
                                 ${isCompact ? 'mt-0 mb-1' : 'mt-1 mb-2'}
-                                ${showUpNext ? 'opacity-70' : ''} // Optionally dim if Up Next elements are shown
+                                ${showUpNext ? 'opacity-70' : ''} 
                             `}>
                                 Selected by: <span className="text-slate-300 font-medium">{selectorName}</span>
                             </div>
