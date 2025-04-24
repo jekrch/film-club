@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Film } from '../../types/film';
-import { calculateClubAverage } from '../../utils/ratingUtils';
-import { CardSize } from '../../contexts/ViewSettingsContext';
+import { Film } from '../../types/film'; // Assuming types are correctly defined
+import { calculateClubAverage } from '../../utils/ratingUtils'; // Assuming utils exist
+import { CardSize } from '../../contexts/ViewSettingsContext'; // Assuming context exists
+
 
 interface FilmCardProps {
     film: Film;
@@ -36,6 +37,8 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     }, []);
 
     const clubRatings = film.movieClubInfo?.clubRatings;
+    const selectorName = film.movieClubInfo?.selector;
+
     const ratingEntries = clubRatings
         ? Object.entries(clubRatings)
             .filter(([, rating]) => rating != null && rating !== '')
@@ -45,10 +48,11 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     const clubAverageDisplay = calculateClubAverage(clubRatings);
     const watchedDateDisplay = film.movieClubInfo?.watchDate
         ? new Date(film.movieClubInfo.watchDate).toLocaleDateString('en-US', {
-            day: '2-digit', month: '2-digit', year: 'numeric' // e.g., 07/15/2024
-            // Or consider a shorter format if needed for compact:
-            // day: 'numeric', month: 'short', year: '2-digit' // e.g., Jul 15, 24
+            day: '2-digit', month: '2-digit', year: 'numeric'
         }) : null;
+
+    // Determine if the "Up Next" elements should be shown
+    const showUpNext = !watchedDateDisplay && selectorName;
 
     return (
         <div
@@ -56,17 +60,69 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
             className={`
                 transition-opacity duration-500 ease-out
                 ${isVisible ? 'opacity-100' : 'opacity-30'}
+                relative group // Add relative positioning and group here for hover states if needed on new elements
             `}
         >
-            <Link to={`/films/${film.imdbID}`} className="block group h-full">
+            {/* --- UP NEXT BANNER --- */}
+            {showUpNext && (
+                <div
+                    className={`
+                        absolute top-0 left-40 transform -translate-x-3/4
+                        -translate-y-1/2x rotate-[-4deg] // Position slightly above and rotate
+                         bg-emerald-700 
+                        text-white px-4 py-1.5 rounded z-10 // Styling
+                        whitespace-nowrap // Prevent wrapping
+                        pointer-events-none // Don't interfere with link clicks
+                        transition-all duration-300 ease-out
+                        group-hover:scale-105 group-hover:rotate-[-2deg] // Subtle hover effect
+                        ${isCompact ? 'text-md px-3 py-1 !left-30' : 'text-2xl'}
+                    `}
+                    style={{ transformOrigin: 'center' }} // Ensure rotation is centered
+                >
+                    Up next from <span className="font-bold">{selectorName}</span>
+                </div>
+            )}
+
+            {/* --- UP NEXT SELECTOR IMAGE --- */}
+            {/* {showUpNext && (
+                 <div
+                    className={`
+                        absolute -top-10 right-2
+                        transform translate-x-[25%] translate-y-[25%] // Position slightly outside bottom-right
+                        z-1 // Ensure it's above the card content
+                        pointer-events-none // Don't interfere with link clicks
+                        transition-transform duration-300 ease-out p-2 bg-emerald-500 rounded-full
+                    ` + 
+                    (isCompact ? '-top-[2em]' : '')}
+                 >
+                    <CircularImage
+                        // Pass the actual selector image URL if you have it
+                        // src={selectorImageUrl}
+                        src={`/film-club/images/${selectorName?.toLowerCase()}.jpg`}
+                        alt={selectorName}
+                        // Adjust size based on cardSize
+                        size={isCompact ? 'w-18 h-18' : 'w-28 h-28'}
+                        // Add extra styling if needed
+                        className="border-2 border-slate-400 "
+                    />
+                </div>
+            )} */}
+
+            {/* --- Original Card Structure --- */}
+            <Link to={`/films/${film.imdbID}`} className="block h-full">
+                {/* Add 'overflow-visible' IF the above absolute elements get clipped,
+                    but be careful as it might affect internal layout. Usually better
+                    to have the absolute elements as siblings like above. */}
                 <div className={`
                     bg-slate-700 overflow-hidden h-full flex flex-col
                     border border-slate-700 group-hover:border-slate-600
                     transition-all duration-300 ease-in-out
                     shadow-md group-hover:shadow-lg shadow-slate-900/30
                     ${isCompact ? 'rounded-md' : 'rounded-lg'}
+                    ${showUpNext ? 'pt-3 pb-3' : ''} // Add padding top/bottom if banner/image overlap too much content visually
                 `}>
                     <div className="relative pb-[150%] overflow-hidden">
+                        {/* Poster Image */}
                         <img
                             src={film.poster}
                             alt={`${film.title} poster`}
@@ -80,7 +136,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; }}
                         />
 
-                        {/* Member ratings - Now ALWAYS shown, styled conditionally */}
+                        {/* Member ratings */}
                         {ratingEntries.map(([name, rating], index) => (
                             <div
                                 key={name}
@@ -89,20 +145,18 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     absolute ${getCornerPositionClasses(index)}
                                     bg-black/65 backdrop-blur-sm rounded flex items-baseline shadow-md
                                     pointer-events-none space-x-1
-                                    ${isCompact // Conditional padding and base text size
+                                    ${isCompact
                                         ? 'px-1.5 py-0.5 text-xs'
                                         : 'px-2 py-1 text-sm space-x-1.5'
                                     }
                                 `}
                             >
-                                {/* Name initials - size adjusted */}
                                 <span className={`
                                     font-semibold text-slate-300 uppercase leading-none tracking-wide
                                     ${isCompact ? 'text-[10px]' : 'text-xs'}
                                 `}>
                                     {name.substring(0, 2)}
                                 </span>
-                                {/* Rating value - size adjusted */}
                                 <span className={`
                                     font-bold text-white leading-none
                                     ${isCompact ? 'text-sm' : 'text-base'}
@@ -129,12 +183,14 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             </span>
                         )}
 
-                        {film.movieClubInfo?.selector && (
+                        {/* Selector info - now always shown if available, styling adjusted slightly */}
+                        {selectorName && (
                             <div className={`
                                 text-xs text-slate-500 truncate leading-tight
                                 ${isCompact ? 'mt-0 mb-1' : 'mt-1 mb-2'}
+                                ${showUpNext ? 'opacity-70' : ''} // Optionally dim if Up Next elements are shown
                             `}>
-                                Selected by: <span className="text-slate-300 font-medium">{film.movieClubInfo.selector}</span>
+                                Selected by: <span className="text-slate-300 font-medium">{selectorName}</span>
                             </div>
                         )}
 
@@ -146,16 +202,14 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             {/* Year and Watch Date Container */}
                             <div className="flex items-center space-x-1.5">
                                 <span>{film.year}</span>
-                                {/* --- CHANGE HERE: Removed !isCompact --- */}
-                                {/* Always show watched date if available */}
+                                {/* --- Show watch date only if it exists --- */}
                                 {watchedDateDisplay && (
                                     <>
                                         <span className="text-slate-600 text-xs scale-90">•</span>
-                                        {/* Title provides full context on hover, useful in compact mode */}
                                         <span title={`Watched: ${watchedDateDisplay}`}>{watchedDateDisplay}</span>
                                     </>
                                 )}
-                                {/* --- END CHANGE --- */}
+                                {/* --- No else needed, hide if no date --- */}
                             </div>
 
                             {/* Club Average Rating */}

@@ -5,6 +5,7 @@ export interface TeamMember {
   title: string;
   bio: string;
   image: string;
+  queue?: number;
 }
 
 export const teamMembers: TeamMember[] = teamMembersData;

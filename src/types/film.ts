@@ -40,7 +40,7 @@ export interface ClubMemberRatings {
  */
 export interface MovieClubDetails {
     selector: string; // Who chose the movie
-    watchDate: string | null; // Date the movie was reviewed/discussed (or null if not yet reviewed)
+    watchDate: string | null; // Date the movie was reviewed/discussed (or null if not yet reviewed) e.g. 10/11/2025
     clubRatings: ClubMemberRatings; // Individual scores from members
     trophyInfo?: string; // Optional: Main description or recipient of the togetherness trophy
     trophyNotes?: string; // Optional: Additional notes or recipients for trophies/awards

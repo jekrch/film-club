@@ -13,7 +13,7 @@ const AboutPage: React.FC = () => {
         {/* Center the main content */}
         <div className="max-w-3xl mx-auto">
           {/* Main Page Title - Brighter text */}
-          <h1 className="!text-3xl sm:text-4xl font-bold text-slate-100 mb-10 text-center border-b border-slate-700 pb-4">
+          <h1 className="!text-2xl sm:text-4xl font-bold text-slate-300 mb-10 text-center border-b border-slate-700 pb-4">
             About Our Film Club
           </h1>
 

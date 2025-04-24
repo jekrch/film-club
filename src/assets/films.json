@@ -168,8 +168,48 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "09/16/2020"
+      "watchDate": "09/15/2020"
     }
+  },
+  {
+      "title": "Cure",
+      "year": "1997",
+      "rated": "Not Rated",
+      "released": "08 Jul 2001",
+      "runtime": "111 min",
+      "genre": "Crime, Horror, Mystery",
+      "director": "Kiyoshi Kurosawa",
+      "writer": "Kiyoshi Kurosawa",
+      "actors": "Masato Hagiwara, Kôji Yakusho, Tsuyoshi Ujiki",
+      "plot": "A wave of gruesome murders is sweeping Tokyo. The only connection is a bloody X carved into the neck of each of the victims. In each case, the murderer is found near the victim and remembers nothing of the crime. Detective Takabe and psychologist Sakuma are called in to figure out the connection, but their investigation goes nowhere. An odd young man is arrested near the scene of the latest murder, who has a strange effect on everyone who comes into contact with him. Detective Takabe starts a series of interrogations to determine the man's connection with the killings.",
+      "language": "Japanese, Spanish",
+      "country": "Japan",
+      "awards": "9 wins & 2 nominations total",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNDcyMTRiMWQtMjA4MS00OTk3LTkxYmMtMjI4ODAyNGVlZTU0XkEyXkFqcGc@._V1_SX300.jpg",
+      "ratings": [{
+              "source": "Internet Movie Database",
+              "value": "7.5/10"
+          }, {
+              "source": "Rotten Tomatoes",
+              "value": "94%"
+          }, {
+              "source": "Metacritic",
+              "value": "70/100"
+          }
+      ],
+      "metascore": "70",
+      "imdbRating": "7.5",
+      "imdbVotes": "27,490",
+      "imdbID": "tt0123948",
+      "type": "movie",
+      "dVD": "N/A",
+      "boxOffice": "N/A",
+      "production": "N/A",
+      "website": "N/A",
+      "movieClubInfo": {
+        "selector": "Joey",
+        "watchDate": "09/23/2020"
+      }
   },
   {
     "title": "Lost in America",
@@ -203,7 +243,7 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "09/23/2020"
+      "watchDate": "10/01/2020"
     }
   },
   {
@@ -1283,7 +1323,7 @@
     "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
-      "selector": "Andy",
+      "selector": "Jacob",
       "watchDate": "08/23/2022"
     }
   },

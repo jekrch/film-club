@@ -7,30 +7,60 @@ import FilmList from '../components/films/FilmList';
 import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 
+/**
+ * Parses a comma-separated string of genres into an array of strings.
+ * Handles null, undefined, non-string inputs, and trims whitespace.
+ * @param genreString - The string containing genres.
+ * @returns An array of genre strings, or an empty array if input is invalid.
+ */
 const parseGenres = (genreString: string): string[] => {
   if (!genreString || typeof genreString !== 'string') return [];
   return genreString.split(',').map(g => g.trim()).filter(g => g);
 };
 
+/**
+ * Formats a runtime string (e.g., "120 min") into a more readable format (e.g., "2h 0m").
+ * Handles invalid or missing "min" suffix and non-numeric inputs.
+ * @param runtimeString - The runtime string (expected to include " min").
+ * @returns Formatted runtime string (e.g., "1h 30m") or null if input is invalid.
+ */
 const formatRuntime = (runtimeString: string): string | null => {
   if (!runtimeString || typeof runtimeString !== 'string' || !runtimeString.includes('min')) {
     return null;
   }
+  // Extract numeric part, ignoring potential non-numeric characters before " min"
   const minutes = parseInt(runtimeString);
   if (isNaN(minutes)) {
     return null;
   }
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
-  return `${hours > 0 ? hours + 'h ' : ''}${mins}m`;
+  // Construct the display string
+  let result = '';
+  if (hours > 0) {
+    result += `${hours}h `;
+  }
+  result += `${mins}m`;
+  return result.trim(); // Trim potential trailing space if hours is 0
 };
 
+/**
+ * Formats the IMDb rating string for display.
+ * Handles "N/A" and attempts to parse the rating as a float, formatting to one decimal place.
+ * @param rating - The IMDb rating string.
+ * @returns The formatted rating string (e.g., "7.8") or null if "N/A" or parsing fails.
+ */
 const getImdbRatingDisplay = (rating: string): string | null => {
   if (rating === 'N/A') return null;
   const parsed = parseFloat(rating);
   return isNaN(parsed) ? null : parsed.toFixed(1);
 };
 
+/**
+ * Renders the detailed view page for a specific film.
+ * Fetches film data based on the imdbId from the URL parameters,
+ * displays film details, club ratings, and related films by the same selector.
+ */
 const FilmDetailPage = () => {
   const { imdbId } = useParams<{ imdbId: string }>();
   const navigate = useNavigate();
@@ -41,6 +71,7 @@ const FilmDetailPage = () => {
   const [isPlotExpanded, setIsPlotExpanded] = useState(false);
 
   useEffect(() => {
+    // Reset state and scroll to top on imdbId change
     window.scrollTo(0, 0);
     setIsPlotExpanded(false);
     setFilm(null);
@@ -54,6 +85,7 @@ const FilmDetailPage = () => {
       return;
     }
 
+    // Load all films from the static JSON data
     const allFilms = filmsData as unknown as Film[];
     const foundFilm = allFilms.find(f => f.imdbID === imdbId);
 
@@ -65,6 +97,7 @@ const FilmDetailPage = () => {
 
     setFilm(foundFilm);
 
+    // Find other films selected by the same person
     const currentSelector = foundFilm.movieClubInfo?.selector;
     if (currentSelector) {
       const otherFilms = allFilms
@@ -124,7 +157,7 @@ const FilmDetailPage = () => {
   };
 
   // --- Popcorn Rating Calculation ---
-  const MAX_RATING = 9; // Define the maximum possible rating
+  const MAX_RATING = 9;
   const numericClubRating = clubAverageDisplay ? parseFloat(clubAverageDisplay) : NaN;
 
   return (
@@ -151,6 +184,7 @@ const FilmDetailPage = () => {
 
             {/* Film Details */}
             <div className="p-6 md:p-8 flex-grow">
+              {/* Title and Year */}
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
                 <h1 className="text-3xl lg:text-4xl font-bold text-slate-100 mb-1 sm:mb-0 pr-4">{film.title}</h1>
                 <span className="text-xl font-semibold text-slate-400 flex-shrink-0">({film.year})</span>
@@ -158,7 +192,8 @@ const FilmDetailPage = () => {
 
               {/* Metadata Display */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-400 mb-5">
-                {clubAverageDisplay && (
+                 {/* Club Average Rating */}
+                 {clubAverageDisplay && (
                   <div className="flex items-center font-medium text-base" title="Average Club Rating">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-400 mr-1.5" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" /></svg>
                     <span className="text-slate-200">{clubAverageDisplay}</span><span className="ml-1 text-slate-500">/ {MAX_RATING}</span> <span className="ml-1 text-xs">(Club Avg)</span>
@@ -176,7 +211,7 @@ const FilmDetailPage = () => {
               {/* Plot */}
               <div className="mb-5 text-slate-300">
                 <p className={isPlotExpanded ? '' : 'line-clamp-3'}>{film.plot}</p>
-                {film.plot.length > 150 && (
+                {film.plot && film.plot.length > 150 && (
                   <button
                     onClick={() => setIsPlotExpanded(!isPlotExpanded)}
                     className="text-blue-400 hover:text-blue-300 text-sm font-medium mt-2"
@@ -186,12 +221,48 @@ const FilmDetailPage = () => {
                 )}
               </div>
 
-              {/* Director, Writer, Stars */}
-              <div className="space-y-3 text-sm mb-5">
-                <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Director</h2><p className="text-slate-300">{film.director}</p></div>
-                <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Writer</h2><p className="text-slate-300">{film.writer}</p></div>
-                <div><h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Stars</h2><p className="text-slate-300">{film.actors}</p></div>
-              </div>
+              {/* Director, Writer, Stars, Language, Country - **TWO COLUMN GRID** */}
+              {/* Uses grid layout: 1 column on small screens, 2 columns on medium screens and up */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-5">
+                {/* Director */}
+                {film.director && film.director !== 'N/A' && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Director</h2>
+                    <p className="text-slate-300">{film.director}</p>
+                  </div>
+                )}
+                {/* Writer */}
+                {film.writer && film.writer !== 'N/A' && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Writer</h2>
+                    <p className="text-slate-300">{film.writer}</p>
+                  </div>
+                )}
+                 {/* Stars */}
+                 {film.actors && film.actors !== 'N/A' && (
+                    // Make Stars potentially span two columns if it's the last prominent item before Language/Country
+                    // You might adjust this based on how many items typically appear.
+                    // If Language/Country are always present, remove col-span-1 md:col-span-2
+                  <div className="col-span-1 md:col-span-2"> {/* Example: Let Stars take full width if needed */}
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Stars</h2>
+                    <p className="text-slate-300">{film.actors}</p>
+                  </div>
+                )}
+                 {/* Language */}
+                 {film.language && film.language !== 'N/A' && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Language</h2>
+                    <p className="text-slate-300">{film.language}</p>
+                  </div>
+                )}
+                {/* Country */}
+                {film.country && film.country !== 'N/A' && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Country</h2>
+                    <p className="text-slate-300">{film.country}</p>
+                  </div>
+                )}
+              </div> {/* End Grid */}
 
               {/* Genres */}
               {filmGenres.length > 0 && (
@@ -209,55 +280,60 @@ const FilmDetailPage = () => {
 
           {/* Movie Club Info Section */}
           {film.movieClubInfo && (
-            <div className="bg-slate-850 border-t-2 border-blue-700 p-6 md:p-8">
-              <h2 className="text-2xl font-semibold text-slate-100 mb-4">Film Club Facts</h2>
+             <div className="bg-slate-850 border-t-2 border-blue-700 p-6 md:p-8">
+              <h2 className="text-2xl font-semibold text-slate-100 mb-6">Film Club Facts</h2>
 
               <div className="md:flex md:justify-between md:items-start">
                 {/* Left side - Watch Date and Ratings */}
-                <div className="flex-1 mb-6 md:mb-0">
-                  {/* Compact Watch Date */}
-                  <div className="mb-4">
-                    <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Watch Date: </span>
-                    <span className="text-slate-200">{film.movieClubInfo.watchDate ?? <span className="italic text-slate-400">Not Watched Yet</span>}</span>
+                <div className="flex-1 mb-6 md:mb-0 md:pr-6">
+                  {/* Watch Date */}
+                  <div className="mb-6">
+                    <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider block mb-1">Watch Date</span>
+                    <span className="text-slate-200 text-lg">
+                      {film.movieClubInfo.watchDate ?? <span className="italic text-slate-400">Not Watched Yet</span>}
+                    </span>
                   </div>
 
-                  {/* Combined Ratings Section */}
+                  {/* Club Ratings Section */}
                   {clubAverageDisplay && !isNaN(numericClubRating) && (
                     <div>
-                      {/* Compact Average Display */}
-                      <div className="mb-3 flex items-center gap-4">
+                      <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Club Rating</h3>
+                      {/* Average Rating Display */}
+                      <div className="mb-5 flex items-center gap-x-4 gap-y-2 flex-wrap">
                         <div className="flex items-baseline whitespace-nowrap">
-                          <span className="text-3xl font-bold text-blue-300">{clubAverageDisplay}</span>
-                          <span className="text-slate-400"> / {MAX_RATING}</span>
+                          <span className="text-4xl font-bold text-blue-300">{clubAverageDisplay}</span>
+                          <span className="text-slate-400 text-lg"> / {MAX_RATING}</span>
                         </div>
-                        {/* Popcorn Icons inline with average */}
-                        <PopcornRating 
-                          rating={parseFloat(clubAverageDisplay)} 
+                        {/* Popcorn Icons for Average */}
+                        <PopcornRating
+                          rating={numericClubRating}
                           maxRating={MAX_RATING}
                           size="regular"
                           title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}
                         />
                       </div>
 
-                      {/* Compact Individual Ratings */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-6">
+                      {/* Individual Ratings */}
+                      <h4 className="text-sm font-semibold text-slate-300 mb-3 mt-4">Individual Ratings:</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
                         {Object.entries(film.movieClubInfo.clubRatings)
                           .filter(([, rating]) => rating !== null && typeof rating === 'number')
                           .sort(([memberA], [memberB]) => memberA.localeCompare(memberB))
                           .map(([member, rating]) => (
-                            <div key={member} className="flex items-center">
+                            <div key={member} className="flex items-center space-x-2">
                               <Link
-                                to={`/profile/${capitalizeFirstLetter(member)}`}
-                                className="text-slate-300 hover:text-white transition font-medium capitalize w-16"
+                                to={`/profile/${encodeURIComponent(capitalizeFirstLetter(member))}`}
+                                className="text-slate-300 hover:text-white transition font-medium capitalize w-16 truncate"
+                                title={capitalizeFirstLetter(member)}
                               >
                                 {member}:
                               </Link>
-                              <span className="font-semibold text-slate-200 w-8">{rating}</span>
-                              <PopcornRating 
-                                rating={rating} 
+                              <span className="font-semibold text-slate-200 w-8 text-right">{rating}</span>
+                              <PopcornRating
+                                rating={rating as number}
                                 maxRating={MAX_RATING}
                                 size="small"
-                                title={`${member}'s rating: ${rating} out of ${MAX_RATING}`}
+                                title={`${capitalizeFirstLetter(member)}'s rating: ${rating} out of ${MAX_RATING}`}
                               />
                             </div>
                           ))}
@@ -269,23 +345,24 @@ const FilmDetailPage = () => {
                 {/* Right side - Selector with Banner */}
                 {selectorName && (
                   <Link
-                    to={`/profile/${encodeURIComponent(selectorName)}`}
-                    className="flex flex-col items-center md:ml-8 mb-8"
+                    to={`/profile/${encodeURIComponent(capitalizeFirstLetter(selectorName))}`}
+                    className="flex flex-col items-center md:ml-8 md:flex-shrink-0"
+                    title={`View ${capitalizeFirstLetter(selectorName)}'s profile`}
                   >
-                    <div className="relative group">
+                    <div className="relative group mb-2">
                       <CircularImage
-                        alt={selectorName}
+                        alt={capitalizeFirstLetter(selectorName)}
                         size="w-32 h-32 md:w-36 md:h-36"
                       />
                       {/* Tilted Banner */}
                       <div
-                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 bg-emerald-600 text-slate-200 px-4 py-1.5 rounded-sm text-lg font-medium whitespace-nowrap shadow-md "
+                        className="absolute bottom-0 transform -translate-x-1/2 translate-y-1/4 bg-emerald-600 text-slate-100 px-4 py-1 rounded text-base font-semibold whitespace-nowrap shadow-lg group-hover:scale-105 transition-transform"
                         style={{
-                          transform: 'translateX(2%) translateY(25%) rotate(-5deg)',
-                          transformOrigin: 'center'
+                          transform: 'translateX(55%) translateY(5%) rotate(-7deg)',
+                          transformOrigin: 'center bottom'
                         }}
                       >
-                        {selectorName}'s Pick
+                        {capitalizeFirstLetter(selectorName)}'s Pick
                       </div>
                     </div>
                   </Link>
@@ -294,17 +371,17 @@ const FilmDetailPage = () => {
 
               {/* Trophy Info - Compact Display */}
               {(film.movieClubInfo.trophyInfo || film.movieClubInfo.trophyNotes) && (
-                <div className="mt-6 pt-4 border-t border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mt-8 pt-6 border-t border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                   {film.movieClubInfo.trophyInfo && (
                     <div>
-                      <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Trophy Info: </span>
-                      <span className="text-slate-300">{film.movieClubInfo.trophyInfo}</span>
+                      <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Info</h3>
+                      <p className="text-slate-300">{film.movieClubInfo.trophyInfo}</p>
                     </div>
                   )}
                   {film.movieClubInfo.trophyNotes && (
                     <div>
-                      <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Trophy Notes: </span>
-                      <span className="text-slate-300">{film.movieClubInfo.trophyNotes}</span>
+                       <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Notes</h3>
+                       <p className="text-slate-300">{film.movieClubInfo.trophyNotes}</p>
                     </div>
                   )}
                 </div>
@@ -314,11 +391,11 @@ const FilmDetailPage = () => {
         </div>
 
         {/* Other Films by Selector Section */}
-        {selectorName && (
+        {selectorName && filmsBySameSelector.length > 0 && (
           <div className="mb-12">
             <FilmList
               films={filmsBySameSelector}
-              title={`Other Films Selected by ${selectorName}`}
+              title={`More Films Selected by ${capitalizeFirstLetter(selectorName)}`}
             />
           </div>
         )}
