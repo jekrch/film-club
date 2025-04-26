@@ -1,5 +1,4 @@
 [
-  
   {
     "title": "Naked",
     "year": "1993",
@@ -16,9 +15,18 @@
     "awards": "Nominated for 1 BAFTA Award8 wins & 7 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BNDM1ZjQ0ZGQtZTdhMC00MmM3LWI5NTMtMzhjZWUwNzZiYzA3XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.7/10" },
-      { "source": "Rotten Tomatoes", "value": "88%" },
-      { "source": "Metacritic", "value": "85/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "85/100"
+      }
     ],
     "metascore": "85",
     "imdbRating": "7.7",
@@ -51,8 +59,14 @@
     "awards": "3 wins",
     "poster": "https://m.media-amazon.com/images/M/MV5BNDlkZmVkZDAtZGFmMS00OWIzLWJkY2YtNWE5NjNhNjhiZGE3XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "8.4/10" },
-      { "source": "Rotten Tomatoes", "value": "89%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "8.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "89%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "8.4",
@@ -85,8 +99,14 @@
     "awards": "4 wins & 1 nomination",
     "poster": "https://m.media-amazon.com/images/M/MV5BYzRmNmRjNTktZGRjNC00YzkxLTgxNjEtYzY3MTI5MjgwY2ZiXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "8.0/10" },
-      { "source": "Rotten Tomatoes", "value": "100%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "8.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "8.0",
@@ -119,8 +139,14 @@
     "awards": "Won 1 Oscar. 20 wins & 9 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BMDFiMDIwMjQtNGFjYS00YTNiLTk5MjctZDYxMmRiNDUyNDZjXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.8/10" },
-      { "source": "Rotten Tomatoes", "value": "88%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.8",
@@ -153,8 +179,14 @@
     "awards": "2 wins",
     "poster": "https://m.media-amazon.com/images/M/MV5BNTA4M2JlYzEtM2FhYy00NDVhLWI0MTgtMDVkYmVlNmUyYjMzXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.9/10" },
-      { "source": "Rotten Tomatoes", "value": "89%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "89%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.9",
@@ -172,44 +204,47 @@
     }
   },
   {
-      "title": "Cure",
-      "year": "1997",
-      "rated": "Not Rated",
-      "released": "08 Jul 2001",
-      "runtime": "111 min",
-      "genre": "Crime, Horror, Mystery",
-      "director": "Kiyoshi Kurosawa",
-      "writer": "Kiyoshi Kurosawa",
-      "actors": "Masato Hagiwara, Kôji Yakusho, Tsuyoshi Ujiki",
-      "plot": "A wave of gruesome murders is sweeping Tokyo. The only connection is a bloody X carved into the neck of each of the victims. In each case, the murderer is found near the victim and remembers nothing of the crime. Detective Takabe and psychologist Sakuma are called in to figure out the connection, but their investigation goes nowhere. An odd young man is arrested near the scene of the latest murder, who has a strange effect on everyone who comes into contact with him. Detective Takabe starts a series of interrogations to determine the man's connection with the killings.",
-      "language": "Japanese, Spanish",
-      "country": "Japan",
-      "awards": "9 wins & 2 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNDcyMTRiMWQtMjA4MS00OTk3LTkxYmMtMjI4ODAyNGVlZTU0XkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [{
-              "source": "Internet Movie Database",
-              "value": "7.5/10"
-          }, {
-              "source": "Rotten Tomatoes",
-              "value": "94%"
-          }, {
-              "source": "Metacritic",
-              "value": "70/100"
-          }
-      ],
-      "metascore": "70",
-      "imdbRating": "7.5",
-      "imdbVotes": "27,490",
-      "imdbID": "tt0123948",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "movieClubInfo": {
-        "selector": "Joey",
-        "watchDate": "09/23/2020"
+    "title": "Cure",
+    "year": "1997",
+    "rated": "Not Rated",
+    "released": "08 Jul 2001",
+    "runtime": "111 min",
+    "genre": "Crime, Horror, Mystery",
+    "director": "Kiyoshi Kurosawa",
+    "writer": "Kiyoshi Kurosawa",
+    "actors": "Masato Hagiwara, Kôji Yakusho, Tsuyoshi Ujiki",
+    "plot": "A wave of gruesome murders is sweeping Tokyo. The only connection is a bloody X carved into the neck of each of the victims. In each case, the murderer is found near the victim and remembers nothing of the crime. Detective Takabe and psychologist Sakuma are called in to figure out the connection, but their investigation goes nowhere. An odd young man is arrested near the scene of the latest murder, who has a strange effect on everyone who comes into contact with him. Detective Takabe starts a series of interrogations to determine the man's connection with the killings.",
+    "language": "Japanese, Spanish",
+    "country": "Japan",
+    "awards": "9 wins & 2 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNDcyMTRiMWQtMjA4MS00OTk3LTkxYmMtMjI4ODAyNGVlZTU0XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "70/100"
       }
+    ],
+    "metascore": "70",
+    "imdbRating": "7.5",
+    "imdbVotes": "27,490",
+    "imdbID": "tt0123948",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": "09/23/2020"
+    }
   },
   {
     "title": "Lost in America",
@@ -227,9 +262,18 @@
     "awards": "1 win & 1 nomination total",
     "poster": "https://m.media-amazon.com/images/M/MV5BOTkzZTk0NjQtODBkMi00ZDUxLWFjYmQtMWVjYmE0YzFmZDY4XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.0/10" },
-      { "source": "Rotten Tomatoes", "value": "95%" },
-      { "source": "Metacritic", "value": "78/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "95%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "78/100"
+      }
     ],
     "metascore": "78",
     "imdbRating": "7.0",
@@ -262,9 +306,18 @@
     "awards": "3 wins & 5 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BMjA5NDEyMjQwNV5BMl5BanBnXkFtZTgwNDQ1MjMwMDI@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "6.2/10" },
-      { "source": "Rotten Tomatoes", "value": "95%" },
-      { "source": "Metacritic", "value": "82/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "6.2/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "95%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "82/100"
+      }
     ],
     "metascore": "82",
     "imdbRating": "6.2",
@@ -297,8 +350,14 @@
     "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BZGZiMTVjNDYtYjhmNy00ODhlLWI0YjEtN2FmZmI2ZDAyMjM0XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.0/10" },
-      { "source": "Rotten Tomatoes", "value": "87%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "87%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.0",
@@ -331,9 +390,18 @@
     "awards": "5 wins & 8 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BYjgzODFlMTgtNDhiMS00ZGZmLTliOTUtMjU5NjBkYmU4NGNkXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.4/10" },
-      { "source": "Rotten Tomatoes", "value": "94%" },
-      { "source": "Metacritic", "value": "79/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "79/100"
+      }
     ],
     "metascore": "79",
     "imdbRating": "7.4",
@@ -366,8 +434,14 @@
     "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BOGJjODNhNzQtMWQzYi00NDFlLTllMDktYzA4MzM0OGFkNzJhXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.5/10" },
-      { "source": "Rotten Tomatoes", "value": "100%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.5",
@@ -384,7 +458,7 @@
       "watchDate": "11/15/2020"
     }
   },
-    {
+  {
     "title": "The Virgin Spring",
     "year": "1960",
     "rated": "Not Rated",
@@ -419,7 +493,7 @@
     "production": "N/A",
     "website": "N/A",
     "Response": "True",
-     "movieClubInfo": {
+    "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "11/24/2020"
     }
@@ -440,8 +514,14 @@
     "awards": "3 wins",
     "poster": "https://m.media-amazon.com/images/M/MV5BN2JlYzYwZDktZGIxMi00NDFiLTk4MTAtZGI5YzJmYzY5NjRhXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "8.0/10" },
-      { "source": "Rotten Tomatoes", "value": "88%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "8.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "8.0",
@@ -474,8 +554,14 @@
     "awards": "Nominated for 1 Oscar. 2 wins & 4 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BMjkxOTkxY2ItY2FmZC00YjYzLThjNTktNzU2NWFmZTAyNWM0XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.5/10" },
-      { "source": "Rotten Tomatoes", "value": "94%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.5",
@@ -508,9 +594,18 @@
     "awards": "2 wins & 1 nomination total",
     "poster": "https://m.media-amazon.com/images/M/MV5BZmZmOWEzYjktZWYxMi00MjlmLTlmNTAtMzI4ZDVlZmIxZGIzXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "8.0/10" },
-      { "source": "Rotten Tomatoes", "value": "93%" },
-      { "source": "Metacritic", "value": "97/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "8.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "97/100"
+      }
     ],
     "metascore": "97",
     "imdbRating": "8.0",
@@ -543,9 +638,18 @@
     "awards": "1 win & 1 nomination total",
     "poster": "https://m.media-amazon.com/images/M/MV5BYTRjOGMzNDAtNGMzOS00ZjI2LWE3ZWEtNTVmNzA3OWNkOTkxXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.9/10" },
-      { "source": "Rotten Tomatoes", "value": "79%" },
-      { "source": "Metacritic", "value": "84/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "79%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "84/100"
+      }
     ],
     "metascore": "84",
     "imdbRating": "7.9",
@@ -578,9 +682,18 @@
     "awards": "4 wins & 1 nomination total",
     "poster": "https://m.media-amazon.com/images/M/MV5BNTE1MDliZjgtYTU2Yy00YjAxLTljYTItNDE2ZGYwYTY1MGQ1XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "8.1/10" },
-      { "source": "Rotten Tomatoes", "value": "98%" },
-      { "source": "Metacritic", "value": "98/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "8.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "98%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "98/100"
+      }
     ],
     "metascore": "98",
     "imdbRating": "8.1",
@@ -613,9 +726,18 @@
     "awards": "Nominated for 1 BAFTA Award5 wins & 3 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BNmQ2NmI2ODYtMDQzNS00NzQyLTkzZjgtZmZlYTQ5MTc1OWU3XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "8.4/10" },
-      { "source": "Rotten Tomatoes", "value": "96%" },
-      { "source": "Metacritic", "value": "90/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "8.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "96%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "90/100"
+      }
     ],
     "metascore": "90",
     "imdbRating": "8.4",
@@ -648,9 +770,18 @@
     "awards": "2 wins & 6 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BZGI4MzkzNzQtYjA3MC00ZjE1LWI0NWUtMDdjNWQ3OTgxZTkwXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "6.9/10" },
-      { "source": "Rotten Tomatoes", "value": "70%" },
-      { "source": "Metacritic", "value": "56/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "70%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "56/100"
+      }
     ],
     "metascore": "56",
     "imdbRating": "6.9",
@@ -683,9 +814,18 @@
     "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BYTE3OThhNzEtZGMwOS00YWYxLThlMWEtODk1ZTI2YzcyM2NiXkEyXkFqcGc@._V1_.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "5.2/10" },
-      { "source": "Rotten Tomatoes", "value": "64%" },
-      { "source": "Metacritic", "value": "66/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "5.2/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "64%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "66/100"
+      }
     ],
     "metascore": "66",
     "imdbRating": "5.2",
@@ -718,9 +858,18 @@
     "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BMjMyMDg1NjMyNl5BMl5BanBnXkFtZTgwNzQzMTE2ODE@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "6.7/10" },
-      { "source": "Rotten Tomatoes", "value": "65%" },
-      { "source": "Metacritic", "value": "44/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "6.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "65%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "44/100"
+      }
     ],
     "metascore": "44",
     "imdbRating": "6.7",
@@ -753,9 +902,18 @@
     "awards": "3 wins & 6 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BOWQwMmI3NjktOGZjNC00Y2Y2LTk5YjEtM2U5YmZmZWI2ODFiXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "6.9/10" },
-      { "source": "Rotten Tomatoes", "value": "88%" },
-      { "source": "Metacritic", "value": "84/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "84/100"
+      }
     ],
     "metascore": "84",
     "imdbRating": "6.9",
@@ -788,9 +946,18 @@
     "awards": "8 wins & 19 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BMWNmYjc5ZGQtNjY4Mi00NGIzLTg4MjgtODUyMWY3NmI2NTFjXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.5/10" },
-      { "source": "Rotten Tomatoes", "value": "91%" },
-      { "source": "Metacritic", "value": "79/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "91%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "79/100"
+      }
     ],
     "metascore": "79",
     "imdbRating": "7.5",
@@ -823,8 +990,14 @@
     "awards": "7 wins & 2 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BYTE3ZTVlOTktZjg2Ni00MTM3LTk5ZTAtYTY5YzVkNmQ0YzAxXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.8/10" },
-      { "source": "Rotten Tomatoes", "value": "100%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.8",
@@ -857,9 +1030,18 @@
     "awards": "1 win & 2 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BNTE4ODE4MzktMTYzNy00YWFmLWE4OTMtMDg5OTYxYzRjZDhjXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.0/10" },
-      { "source": "Rotten Tomatoes", "value": "100%" },
-      { "source": "Metacritic", "value": "90/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "90/100"
+      }
     ],
     "metascore": "90",
     "imdbRating": "7.0",
@@ -892,9 +1074,18 @@
     "awards": "Nominated for 1 BAFTA Award6 wins & 17 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BMzc1NzgwMzgyM15BMl5BanBnXkFtZTgwMzAwMzQ1ODE@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.2/10" },
-      { "source": "Rotten Tomatoes", "value": "87%" },
-      { "source": "Metacritic", "value": "76/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.2/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "87%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "76/100"
+      }
     ],
     "metascore": "76",
     "imdbRating": "7.2",
@@ -927,8 +1118,14 @@
     "awards": "Nominated for 1 BAFTA Award11 wins & 2 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BNmZhNzc0ZDMtZDg2My00MjkxLWJjZTctNTljODc2ZjQzMzJkXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "8.2/10" },
-      { "source": "Rotten Tomatoes", "value": "98%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "8.2/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "98%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "8.2",
@@ -961,9 +1158,18 @@
     "awards": "2 wins & 1 nomination",
     "poster": "https://m.media-amazon.com/images/M/MV5BMDA4NTU0YzItNjc0MS00ODE2LWE1MDYtMWY3ZTk3MWE2N2M5XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.8/10" },
-      { "source": "Rotten Tomatoes", "value": "98%" },
-      { "source": "Metacritic", "value": "99/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "98%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "99/100"
+      }
     ],
     "metascore": "99",
     "imdbRating": "7.8",
@@ -996,9 +1202,18 @@
     "awards": "17 wins & 5 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BMTZlZGU3YzQtNWQwMy00YzJiLWFhZDMtMzg2MjUzMDY1MTEzXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.7/10" },
-      { "source": "Rotten Tomatoes", "value": "95%" },
-      { "source": "Metacritic", "value": "82/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "95%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "82/100"
+      }
     ],
     "metascore": "82",
     "imdbRating": "7.7",
@@ -1031,9 +1246,18 @@
     "awards": "2 wins & 6 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BNzk2MGQ3NjMtNDc4Yy00NzEwLTk5ZDQtNzYwMjhmMzcwN2JiXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.4/10" },
-      { "source": "Rotten Tomatoes", "value": "80%" },
-      { "source": "Metacritic", "value": "78/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "80%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "78/100"
+      }
     ],
     "metascore": "78",
     "imdbRating": "7.4",
@@ -1066,9 +1290,18 @@
     "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BNzhkNWQyMjEtM2RkNC00NmE4LThmYjMtMzU5Yzk5MGVkYWU0XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.4/10" },
-      { "source": "Rotten Tomatoes", "value": "98%" },
-      { "source": "Metacritic", "value": "84/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "98%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "84/100"
+      }
     ],
     "metascore": "84",
     "imdbRating": "7.4",
@@ -1101,8 +1334,14 @@
     "awards": "1 win & 1 nomination",
     "poster": "https://m.media-amazon.com/images/M/MV5BOWVmNmU3YjUtYzE2NC00OTA2LWI2OTgtZTUwMDk3ZTkyOTJmXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.3/10" },
-      { "source": "Rotten Tomatoes", "value": "88%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.3",
@@ -1135,9 +1374,18 @@
     "awards": "Nominated for 1 Oscar. 2 wins & 3 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BMDFhMzBlYzctMDhkOC00OTFiLTgyYzEtZTBkNmQzNGRlMmNlXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.8/10" },
-      { "source": "Rotten Tomatoes", "value": "100%" },
-      { "source": "Metacritic", "value": "94/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "94/100"
+      }
     ],
     "metascore": "94",
     "imdbRating": "7.8",
@@ -1170,9 +1418,18 @@
     "awards": "Won 1 Oscar. 15 wins & 33 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BMzFkYjQzZjUtY2NjNi00ZDFkLWI4M2MtN2RjODQ0NDJkMWM0XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.2/10" },
-      { "source": "Rotten Tomatoes", "value": "88%" },
-      { "source": "Metacritic", "value": "90/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.2/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "90/100"
+      }
     ],
     "metascore": "90",
     "imdbRating": "7.2",
@@ -1205,8 +1462,14 @@
     "awards": "1 win & 1 nomination",
     "poster": "https://m.media-amazon.com/images/M/MV5BNDgzNzI0NTEtMTA0NS00ODBiLWI4NTQtMTUyOGIxYmY3NjgxXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.1/10" },
-      { "source": "Rotten Tomatoes", "value": "81%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "81%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.1",
@@ -1239,9 +1502,18 @@
     "awards": "Won 1 BAFTA Award12 wins & 6 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BZTFlNTE3YzYtYzcyNy00YWVjLWFkOTgtZGZhMzAwNzFkOTRkXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.5/10" },
-      { "source": "Rotten Tomatoes", "value": "87%" },
-      { "source": "Metacritic", "value": "77/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "87%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "77/100"
+      }
     ],
     "metascore": "77",
     "imdbRating": "7.5",
@@ -1274,8 +1546,14 @@
     "awards": "9 wins & 11 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BNjA1YWVhNTMtMDhiMS00ZmFkLWI5MWUtZGUxODIxNDA5OTMxXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.5/10" },
-      { "source": "Rotten Tomatoes", "value": "94%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.5",
@@ -1308,9 +1586,18 @@
     "awards": "Nominated for 1 Oscar. 6 wins & 10 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BOTQ5OWQ4ZDUtZWU4ZS00YWZiLTk5ODktNzg4YzMwMDIwYTFjXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.3/10" },
-      { "source": "Rotten Tomatoes", "value": "93%" },
-      { "source": "Metacritic", "value": "77/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "77/100"
+      }
     ],
     "metascore": "77",
     "imdbRating": "7.3",
@@ -1343,8 +1630,14 @@
     "awards": "7 wins & 4 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BOGI2YzgyNjgtNDcxZi00ZTVjLThhMDAtMTdlYTBlNmIxYzExXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "7.4/10" },
-      { "source": "Rotten Tomatoes", "value": "94%" }
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      }
     ],
     "metascore": "N/A",
     "imdbRating": "7.4",
@@ -1377,9 +1670,18 @@
     "awards": "1 win & 9 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BOWQ5YTQ0YmMtOWVjYi00M2M2LWIwZjktYjcwZTRlMDg5ODlmXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "6.9/10" },
-      { "source": "Rotten Tomatoes", "value": "83%" },
-      { "source": "Metacritic", "value": "78/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "83%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "78/100"
+      }
     ],
     "metascore": "78",
     "imdbRating": "6.9",
@@ -1412,9 +1714,18 @@
     "awards": "9 wins & 23 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BMjMzNjMyMjU2M15BMl5BanBnXkFtZTgwMzA3NjQ0MzE@._V1_SX300.jpg",
     "ratings": [
-      { "source": "Internet Movie Database", "value": "6.9/10" },
-      { "source": "Rotten Tomatoes", "value": "96%" },
-      { "source": "Metacritic", "value": "81/100" }
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "96%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "81/100"
+      }
     ],
     "metascore": "81",
     "imdbRating": "6.9",
@@ -1431,887 +1742,929 @@
       "watchDate": "11/29/2022"
     }
   },
-    {
-      "title": "Police Story",
-      "year": "1985",
-      "rated": "PG-13",
-      "released": "14 Dec 1985",
-      "runtime": "100 min",
-      "genre": "Action, Comedy, Crime",
-      "director": "Jackie Chan",
-      "writer": "Jackie Chan, Edward Tang",
-      "actors": "Jackie Chan, Maggie Cheung, Brigitte Lin",
-      "plot": "Kevin Chan (aka Jackie) is a Hong-Kong cop, who scores his first big hit by virtually single-handedly capturing and arresting a big drug- lord. Of course, the drug-lord isn't too happy about this, and frames Kevin with the murder of another cop (who happened to be on the take). Kevin has to clear his name, whilst keeping himself from getting killed or arrested, and keeping his girlfriend from leaving him.",
-      "language": "Cantonese",
-      "country": "Hong Kong",
-      "awards": "2 wins & 5 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BZTMxMWUxNjctOGNiOC00MzRkLWI1NjktZWUzOGJiZTM2ZDg1XkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.5/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "93%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "78/100"
-        }
-      ],
-      "metascore": "78",
-      "imdbRating": "7.5",
-      "imdbVotes": "44,228",
-      "imdbID": "tt0089374",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$113,164",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Joey",
-        "watchDate": "3/14/23",
-        "clubRatings": {
-          "andy": null,
-          "gabe": null,
-          "jacob": null,
-          "joey": null
-        },
-        "trophyInfo": "Somebody Picks a Good Movie!"
+  {
+    "title": "Police Story",
+    "year": "1985",
+    "rated": "PG-13",
+    "released": "14 Dec 1985",
+    "runtime": "100 min",
+    "genre": "Action, Comedy, Crime",
+    "director": "Jackie Chan",
+    "writer": "Jackie Chan, Edward Tang",
+    "actors": "Jackie Chan, Maggie Cheung, Brigitte Lin",
+    "plot": "Kevin Chan (aka Jackie) is a Hong-Kong cop, who scores his first big hit by virtually single-handedly capturing and arresting a big drug- lord. Of course, the drug-lord isn't too happy about this, and frames Kevin with the murder of another cop (who happened to be on the take). Kevin has to clear his name, whilst keeping himself from getting killed or arrested, and keeping his girlfriend from leaving him.",
+    "language": "Cantonese",
+    "country": "Hong Kong",
+    "awards": "2 wins & 5 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZTMxMWUxNjctOGNiOC00MzRkLWI1NjktZWUzOGJiZTM2ZDg1XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "78/100"
       }
-    },
-    {
-      "title": "The Long Good Friday",
-      "year": "1980",
-      "rated": "R",
-      "released": "02 Apr 1982",
-      "runtime": "114 min",
-      "genre": "Crime, Drama, Mystery",
-      "director": "John Mackenzie",
-      "writer": "Barrie Keeffe",
-      "actors": "Bob Hoskins, Helen Mirren, Paul Freeman",
-      "plot": "Harold (Bob Hoskins), a prosperous English gangster, is about to close a lucrative new deal when bombs start showing up in very inconvenient places. A mysterious syndicate is trying to muscle in on his action, and Harold wants to know who they are. He finds out soon enough, and bloody mayhem ensues.",
-      "language": "English, French",
-      "country": "United Kingdom",
-      "awards": "Nominated for 1 BAFTA Award2 wins & 2 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNWI1MDFlZTEtMDY2My00MGIxLWFhOTEtYTdhMmU4M2UxY2RkXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.5/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "97%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "82/100"
-        }
-      ],
-      "metascore": "82",
-      "imdbRating": "7.5",
-      "imdbVotes": "27,071",
-      "imdbID": "tt0081070",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Gabe",
-        "watchDate": "5/10/23",
-        "clubRatings": {
-          "andy": null,
-          "gabe": null,
-          "jacob": null,
-          "joey": null
-        },
-        "trophyInfo": "Andy",
-        "trophyNotes": "5.8"
+    ],
+    "metascore": "78",
+    "imdbRating": "7.5",
+    "imdbVotes": "44,228",
+    "imdbID": "tt0089374",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$113,164",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": "3/14/23",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": "Somebody Picks a Good Movie!"
+    }
+  },
+  {
+    "title": "The Long Good Friday",
+    "year": "1980",
+    "rated": "R",
+    "released": "02 Apr 1982",
+    "runtime": "114 min",
+    "genre": "Crime, Drama, Mystery",
+    "director": "John Mackenzie",
+    "writer": "Barrie Keeffe",
+    "actors": "Bob Hoskins, Helen Mirren, Paul Freeman",
+    "plot": "Harold (Bob Hoskins), a prosperous English gangster, is about to close a lucrative new deal when bombs start showing up in very inconvenient places. A mysterious syndicate is trying to muscle in on his action, and Harold wants to know who they are. He finds out soon enough, and bloody mayhem ensues.",
+    "language": "English, French",
+    "country": "United Kingdom",
+    "awards": "Nominated for 1 BAFTA Award2 wins & 2 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNWI1MDFlZTEtMDY2My00MGIxLWFhOTEtYTdhMmU4M2UxY2RkXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "97%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "82/100"
       }
-    },
-    {
-      "title": "Dogtooth",
-      "year": "2009",
-      "rated": "Not Rated",
-      "released": "11 Nov 2009",
-      "runtime": "97 min",
-      "genre": "Drama, Thriller",
-      "director": "Yorgos Lanthimos",
-      "writer": "Efthimis Filippou, Yorgos Lanthimos",
-      "actors": "Christos Stergioglou, Michele Valley, Angeliki Papoulia",
-      "plot": "Kept on a short leash through a volatile mixture of indoctrination, misinformation and fear, three grown-up siblings--two sisters and one brother--find themselves confined to their lavish, isolated villa. As a result, holed up in their beautiful, high-walled prison, the siblings rely on their cold, manipulative parents to learn about the ways of the world, taking reality-defying lessons from instructional cassette tapes. And, as the cruel patriarch and his frigid wife deliberately keep their unsuspecting, submissive children in the dark, freedom is nothing but a word. Then, a bad influence in the shape of security guard Christina enters the equation, and suddenly, sweet, baffling temptation threatens years of meticulous mind-programming. Is the grass greener on the other side of the fence? With this in mind, how can an ordinary dogtooth stand in the way of happiness?",
-      "language": "Greek",
-      "country": "Greece",
-      "awards": "Nominated for 1 Oscar. 20 wins & 21 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMjIyOTkyMDE5N15BMl5BanBnXkFtZTcwNjIwNzQwMw@@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.1/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "93%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "73/100"
-        }
-      ],
-      "metascore": "73",
-      "imdbRating": "7.1",
-      "imdbVotes": "115,606",
-      "imdbID": "tt1379182",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$110,248",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Jacob",
-        "watchDate": "6/13/23",
-        "clubRatings": {
-          "andy": null,
-          "gabe": null,
-          "jacob": null,
-          "joey": null
-        },
-        "trophyInfo": "Gabe",
-        "trophyNotes": "5.7"
+    ],
+    "metascore": "82",
+    "imdbRating": "7.5",
+    "imdbVotes": "27,071",
+    "imdbID": "tt0081070",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": "5/10/23",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": "Andy",
+      "trophyNotes": "5.8"
+    }
+  },
+  {
+    "title": "Dogtooth",
+    "year": "2009",
+    "rated": "Not Rated",
+    "released": "11 Nov 2009",
+    "runtime": "97 min",
+    "genre": "Drama, Thriller",
+    "director": "Yorgos Lanthimos",
+    "writer": "Efthimis Filippou, Yorgos Lanthimos",
+    "actors": "Christos Stergioglou, Michele Valley, Angeliki Papoulia",
+    "plot": "Kept on a short leash through a volatile mixture of indoctrination, misinformation and fear, three grown-up siblings--two sisters and one brother--find themselves confined to their lavish, isolated villa. As a result, holed up in their beautiful, high-walled prison, the siblings rely on their cold, manipulative parents to learn about the ways of the world, taking reality-defying lessons from instructional cassette tapes. And, as the cruel patriarch and his frigid wife deliberately keep their unsuspecting, submissive children in the dark, freedom is nothing but a word. Then, a bad influence in the shape of security guard Christina enters the equation, and suddenly, sweet, baffling temptation threatens years of meticulous mind-programming. Is the grass greener on the other side of the fence? With this in mind, how can an ordinary dogtooth stand in the way of happiness?",
+    "language": "Greek",
+    "country": "Greece",
+    "awards": "Nominated for 1 Oscar. 20 wins & 21 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjIyOTkyMDE5N15BMl5BanBnXkFtZTcwNjIwNzQwMw@@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "73/100"
       }
-    },
-    {
-      "title": "Wise Blood",
-      "year": "1979",
-      "rated": "PG",
-      "released": "17 Feb 1980",
-      "runtime": "106 min",
-      "genre": "Comedy, Drama",
-      "director": "John Huston",
-      "writer": "Flannery O'Connor, Benedict Fitzgerald, Michael Fitzgerald",
-      "actors": "Brad Dourif, John Huston, Dan Shor",
-      "plot": "US Army war veteran Hazel Motes may not be a believing Christian, somehow observations like the state of a run-down country church, meeting the ridiculous frauds on the streets and memories inspire him to take up, after initially fierce refusal, the part of a traveling preacher when a cab driver insists he looks like one in his new hat. He starts his own new Church of Truth, without the crucified Jesus, his first disciple being an 18-year old simpleton with a 'prophetic gift'...",
-      "language": "English",
-      "country": "United States",
-      "awards": "5 nominations",
-      "poster": "https://m.media-amazon.com/images/M/MV5BZTI3ZGY5ZjgtZDUwYi00NTQ2LWFiOTgtMjQ4NjRhN2NiZWIwXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "6.9/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "88%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "84/100"
-        }
-      ],
-      "metascore": "84",
-      "imdbRating": "6.9",
-      "imdbVotes": "6,605",
-      "imdbID": "tt0080140",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Andy",
-        "watchDate": "7/13/23",
-        "clubRatings": {
-          "andy": 6,
-          "gabe": 5,
-          "jacob": 6,
-          "joey": 3
-        },
-        "trophyInfo": "Jacob",
-        "trophyNotes": "6.3"
+    ],
+    "metascore": "73",
+    "imdbRating": "7.1",
+    "imdbVotes": "115,606",
+    "imdbID": "tt1379182",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$110,248",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": "6/13/23",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": "Gabe",
+      "trophyNotes": "5.7"
+    }
+  },
+  {
+    "title": "Wise Blood",
+    "year": "1979",
+    "rated": "PG",
+    "released": "17 Feb 1980",
+    "runtime": "106 min",
+    "genre": "Comedy, Drama",
+    "director": "John Huston",
+    "writer": "Flannery O'Connor, Benedict Fitzgerald, Michael Fitzgerald",
+    "actors": "Brad Dourif, John Huston, Dan Shor",
+    "plot": "US Army war veteran Hazel Motes may not be a believing Christian, somehow observations like the state of a run-down country church, meeting the ridiculous frauds on the streets and memories inspire him to take up, after initially fierce refusal, the part of a traveling preacher when a cab driver insists he looks like one in his new hat. He starts his own new Church of Truth, without the crucified Jesus, his first disciple being an 18-year old simpleton with a 'prophetic gift'...",
+    "language": "English",
+    "country": "United States",
+    "awards": "5 nominations",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZTI3ZGY5ZjgtZDUwYi00NTQ2LWFiOTgtMjQ4NjRhN2NiZWIwXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "84/100"
       }
-    },
-    {
-      "title": "Johnny Mnemonic",
-      "year": "1995",
-      "rated": "R",
-      "released": "26 May 1995",
-      "runtime": "96 min",
-      "genre": "Action, Drama, Sci-Fi",
-      "director": "Robert Longo",
-      "writer": "William Gibson",
-      "actors": "Keanu Reeves, Dolph Lundgren, Dina Meyer",
-      "plot": "In 2021, the whole world is connected by the gigantic Internet, and almost a half of the population is suffering from the Nerve Attenuation Syndrome (NAS).Johnny with an implanted memory chip in his brain was ordered to transport the over loaded information from Beijing to Newark. While Pharmakom Industries supported by Yakuza tries to capture him to get the information back, the Low-tech group led by J-Bone tries to break the missing code to download the cure of NAS which Johnny carries.",
-      "language": "English, Japanese",
-      "country": "Canada, United States",
-      "awards": "2 wins & 3 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BZGFjNWVhMzktZjJkZi00NWI3LWJiY2MtMTM1MGMxYzI0NmFjXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "5.6/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "20%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "36/100"
-        }
-      ],
-      "metascore": "36",
-      "imdbRating": "5.6",
-      "imdbVotes": "78,293",
-      "imdbID": "tt0113481",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$19,075,720",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Joey",
-        "watchDate": "8/23/23",
-        "clubRatings": {
-          "andy": 2,
-          "gabe": 2,
-          "jacob": 2,
-          "joey": 2
-        },
-        "trophyInfo": "Johnny Mnemonic!",
-        "trophyNotes": "Joey, 5.3"
+    ],
+    "metascore": "84",
+    "imdbRating": "6.9",
+    "imdbVotes": "6,605",
+    "imdbID": "tt0080140",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Andy",
+      "watchDate": "7/13/23",
+      "clubRatings": {
+        "andy": 6,
+        "gabe": 5,
+        "jacob": 6,
+        "joey": 3
+      },
+      "trophyInfo": "Jacob",
+      "trophyNotes": "6.3"
+    }
+  },
+  {
+    "title": "Johnny Mnemonic",
+    "year": "1995",
+    "rated": "R",
+    "released": "26 May 1995",
+    "runtime": "96 min",
+    "genre": "Action, Drama, Sci-Fi",
+    "director": "Robert Longo",
+    "writer": "William Gibson",
+    "actors": "Keanu Reeves, Dolph Lundgren, Dina Meyer",
+    "plot": "In 2021, the whole world is connected by the gigantic Internet, and almost a half of the population is suffering from the Nerve Attenuation Syndrome (NAS).Johnny with an implanted memory chip in his brain was ordered to transport the over loaded information from Beijing to Newark. While Pharmakom Industries supported by Yakuza tries to capture him to get the information back, the Low-tech group led by J-Bone tries to break the missing code to download the cure of NAS which Johnny carries.",
+    "language": "English, Japanese",
+    "country": "Canada, United States",
+    "awards": "2 wins & 3 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZGFjNWVhMzktZjJkZi00NWI3LWJiY2MtMTM1MGMxYzI0NmFjXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "5.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "20%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "36/100"
       }
-    },
-    {
-      "title": "Modern Times",
-      "year": "1936",
-      "rated": "G",
-      "released": "25 Feb 1936",
-      "runtime": "87 min",
-      "genre": "Comedy, Drama, Romance",
-      "director": "Charles Chaplin",
-      "writer": "Charles Chaplin",
-      "actors": "Charles Chaplin, Paulette Goddard, Henry Bergman",
-      "plot": "Chaplin's last 'silent' film, filled with sound effects, was made when everyone else was making talkies. Charlie turns against modern society, the machine age, (The use of sound in films ?) and progress. Firstly we see him frantically trying to keep up with a production line, tightening bolts. He is selected for an experiment with an automatic feeding machine, but various mishaps leads his boss to believe he has gone mad, and Charlie is sent to a mental hospital - When he gets out, he is mistaken for a communist while waving a red flag, sent to jail, foils a jailbreak, and is let out again. We follow Charlie through many more escapades before the film is out.",
-      "language": "English",
-      "country": "United States",
-      "awards": "4 wins & 1 nomination total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BODVkZGFhNGQtYjdiYi00Njc4LWFmYTItNTlmNzJjMTg1ZDc5XkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "8.5/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "98%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "96/100"
-        }
-      ],
-      "metascore": "96",
-      "imdbRating": "8.5",
-      "imdbVotes": "269,492",
-      "imdbID": "tt0027977",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$163,577",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Gabe",
-        "watchDate": "9/13/23",
-        "clubRatings": {
-          "andy": 6,
-          "gabe": 8,
-          "jacob": 6,
-          "joey": 6
-        }
+    ],
+    "metascore": "36",
+    "imdbRating": "5.6",
+    "imdbVotes": "78,293",
+    "imdbID": "tt0113481",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$19,075,720",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": "8/23/23",
+      "clubRatings": {
+        "andy": 2,
+        "gabe": 2,
+        "jacob": 2,
+        "joey": 2
+      },
+      "trophyInfo": "Johnny Mnemonic!",
+      "trophyNotes": "Joey, 5.3"
+    }
+  },
+  {
+    "title": "Modern Times",
+    "year": "1936",
+    "rated": "G",
+    "released": "25 Feb 1936",
+    "runtime": "87 min",
+    "genre": "Comedy, Drama, Romance",
+    "director": "Charles Chaplin",
+    "writer": "Charles Chaplin",
+    "actors": "Charles Chaplin, Paulette Goddard, Henry Bergman",
+    "plot": "Chaplin's last 'silent' film, filled with sound effects, was made when everyone else was making talkies. Charlie turns against modern society, the machine age, (The use of sound in films ?) and progress. Firstly we see him frantically trying to keep up with a production line, tightening bolts. He is selected for an experiment with an automatic feeding machine, but various mishaps leads his boss to believe he has gone mad, and Charlie is sent to a mental hospital - When he gets out, he is mistaken for a communist while waving a red flag, sent to jail, foils a jailbreak, and is let out again. We follow Charlie through many more escapades before the film is out.",
+    "language": "English",
+    "country": "United States",
+    "awards": "4 wins & 1 nomination total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BODVkZGFhNGQtYjdiYi00Njc4LWFmYTItNTlmNzJjMTg1ZDc5XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "98%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "96/100"
       }
-    },
-    {
-      "title": "Involuntary",
-      "year": "2008",
-      "rated": "N/A",
-      "released": "28 Nov 2008",
-      "runtime": "98 min",
-      "genre": "Drama",
-      "director": "Ruben Östlund",
-      "writer": "Erik Hemmendorff, Ruben Östlund",
-      "actors": "Villmar Björkman, Lola Ewerlund, Maria Lundqvist",
-      "plot": "It's almost summer in Sweden and minor indiscretions and misbehavior abound. Leffe likes to show off for his friends and play salacious pranks, especially when he's drinking. Meanwhile, a righteous grade-school teacher doesn't know where to draw the line: she insists her fellow educators need a bit of instruction. Then there are two young teenage girls who like to pose for sexy photos and to party, but one night in a park, one of them is found passed out drunk by a complete stranger.",
-      "language": "Swedish, English",
-      "country": "Sweden, France",
-      "awards": "10 wins & 9 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BOGNjNmMwYzYtYWRkZC00NmY0LTk5OWUtZDg0ZDAzNTk2YzE1XkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "6.9/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "81%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "74/100"
-        }
-      ],
-      "metascore": "74",
-      "imdbRating": "6.9",
-      "imdbVotes": "6,686",
-      "imdbID": "tt1232826",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Jacob",
-        "watchDate": "10/9/23",
-        "clubRatings": {
-          "andy": 7,
-          "gabe": 6,
-          "jacob": 7,
-          "joey": 8
-        }
-      }
-    },
-    {
-      "title": "Diabolique",
-      "year": "1955",
-      "rated": "Not Rated",
-      "released": "21 Nov 1955",
-      "runtime": "117 min",
-      "genre": "Crime, Drama, Horror",
-      "director": "Henri-Georges Clouzot",
-      "writer": "Pierre Boileau, Thomas Narcejac, Henri-Georges Clouzot",
-      "actors": "Simone Signoret, Véra Clouzot, Paul Meurisse",
-      "plot": "Christina Delassalle suffers greatly at the hands of her brutish husband Michel. She inherited the boys' boarding school they run but it's clearly Michel who is in charge. She and Nicole Horner, one of the teachers and Michel's former lover, decide to kill him. Christina, who has a serious condition, is terrified when, by chance, she meets a retired police inspector who decides to look into the case.",
-      "language": "French, English",
-      "country": "France",
-      "awards": "5 wins total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMDg5OTRmOTgtYzk0ZC00M2E5LWFmNzItMDc5NmNlMDM0MTdmXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "8.1/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "95%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "8.1",
-      "imdbVotes": "71,134",
-      "imdbID": "tt0046911",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Andy",
-        "watchDate": "12/20/23",
-        "clubRatings": {
-          "andy": 5,
-          "gabe": 7,
-          "jacob": 7,
-          "joey": 6
-        }
-      }
-    },
-    {
-      "title": "The Thief of Bagdad",
-      "year": "1940",
-      "rated": "Approved",
-      "released": "25 Dec 1940",
-      "runtime": "106 min",
-      "genre": "Adventure, Family, Fantasy",
-      "director": "Ludwig Berger, Michael Powell, Tim Whelan",
-      "writer": "Miles Malleson, Lajos Biró, Miklós Rózsa",
-      "actors": "Conrad Veidt, Sabu, June Duprez",
-      "plot": "In Bagdad, the young and naive Sultan Ahmad is curious about the behavior of his people. The Grand Vizier Jaffar convinces Ahmad to walk through the city disguised as a subject to know his people. Then he seizes the power telling to the inhabitants that Ahmad has died while he sends his army to arrest the Sultan that is thrown into the dungeons and sentenced to death. Ahmad befriends the young thief Abu that helps him to escape from the prison. They flee to Basra and plan to travel abroad with Sinbad. However Ahmad stumbles upon the beautiful princess and they fall in love with each other. But the evil Jaffar has also traveled to Basra to propose to marry the princess. When they see each other, Jaffar uses magic to blind Ahmad and turn Abu into a dog. Is their love doomed?",
-      "language": "English",
-      "country": "United Kingdom, United States",
-      "awards": "Won 3 Oscars. 4 wins & 4 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYjcyOTFmOGItMzNkNC00MjFhLTk1NzEtOThkMGEzNTRmYzJkXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.4/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "100%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "7.4",
-      "imdbVotes": "15,019",
-      "imdbID": "tt0033152",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$2,180,000",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Gabe",
-        "watchDate": "1/2/24",
-        "clubRatings": {
-          "andy": 4.5,
-          "gabe": 5,
-          "jacob": 4,
-          "joey": 5
-        }
-      }
-    },
-    {
-      "title": "The Devils",
-      "year": "1971",
-      "rated": "R",
-      "released": "16 Jul 1971",
-      "runtime": "111 min",
-      "genre": "Biography, Drama, History",
-      "director": "Ken Russell",
-      "writer": "Ken Russell, John Whiting, Aldous Huxley",
-      "actors": "Vanessa Redgrave, Oliver Reed, Dudley Sutton",
-      "plot": "Cardinal Richelieu and his power-hungry entourage seek to take control of 17th-century France, but need to destroy Father Grandier, the priest who runs the fortified town that prevents them from exerting total control. So they seek to destroy him by setting him up as a warlock in control of a devil-possessed nunnery, the Mother Superior of which is sexually obsessed with him. A mad witch-hunter is brought in to gather evidence against the priest, ready for the big trial.",
-      "language": "English, Latin",
-      "country": "United Kingdom, United States",
-      "awards": "4 wins",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYjQzYzFmNmUtMWVkNS00MmU1LTkyMzUtYzhmNjIwM2ZjOWZmXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.7/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "70%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "49/100"
-        }
-      ],
-      "metascore": "49",
-      "imdbRating": "7.7",
-      "imdbVotes": "19,282",
-      "imdbID": "tt0066993",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$1,133,022",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Joey",
-        "watchDate": "1/24/24",
-        "clubRatings": {
-          "andy": 5,
-          "gabe": 5,
-          "jacob": 9,
-          "joey": 6
-        }
-      }
-    },
-    {
-      "title": "Ear for Eye",
-      "year": "2021",
-      "rated": "N/A",
-      "released": "16 Oct 2021",
-      "runtime": "88 min",
-      "genre": "Drama",
-      "director": "Debbie Tucker Green",
-      "writer": "Debbie Tucker Green",
-      "actors": "Hayden Mclean, Sharlene Whyte, David Gyasi",
-      "plot": "Follows British and American Black characters of different generations navigating their way through today's society, offering a critical perspective on the state of the nation.",
-      "language": "English",
-      "country": "United Kingdom",
-      "awards": "1 nomination",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYTRhNTFmOGYtZDU3Yy00YjgxLThkNGYtNzFmNGNkMDlmZmM1XkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "6.6/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "100%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "88/100"
-        }
-      ],
-      "metascore": "88",
-      "imdbRating": "6.6",
-      "imdbVotes": "178",
-      "imdbID": "tt13599944",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Jacob",
-        "watchDate": "2/22/24",
-        "clubRatings": {
-          "andy": 7,
-          "gabe": 8,
-          "jacob": 8,
-          "joey": 8
-        }
-      }
-    },
-    {
-      "title": "Ashes and Diamonds",
-      "year": "1958",
-      "rated": "Not Rated",
-      "released": "29 May 1961",
-      "runtime": "103 min",
-      "genre": "Drama, Romance, War",
-      "director": "Andrzej Wajda",
-      "writer": "Jerzy Andrzejewski, Andrzej Wajda",
-      "actors": "Zbigniew Cybulski, Ewa Krzyzewska, Waclaw Zastrzezynski",
-      "plot": "Maciek, a young Resistance fighter, is ordered to kill Szczuka, a Communist district leader, on the last day of World War II. Though killing has been easy for him in the past, Szczuka was a fellow soldier, and Maciek must decide whether to follow his orders.",
-      "language": "Polish",
-      "country": "Poland",
-      "awards": "Nominated for 2 BAFTA 1 win & 2 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNjc4ZGEwMmItZGI3OS00Y2NiLWFlMDUtNmIwY2NhZGFmNjAxXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.7/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "96%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "7.7",
-      "imdbVotes": "13,887",
-      "imdbID": "tt0052080",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Andy",
-        "watchDate": "3/18/24",
-        "clubRatings": {
-          "andy": 7,
-          "gabe": 6,
-          "jacob": 6,
-          "joey": 7
-        }
-      }
-    },
-    {
-      "title": "The Music Room",
-      "year": "1958",
-      "rated": "Not Rated",
-      "released": "10 Oct 1958",
-      "runtime": "95 min",
-      "genre": "Drama, Music",
-      "director": "Satyajit Ray",
-      "writer": "Tarashankar Banerjee, Satyajit Ray, Santi P. Choudhury",
-      "actors": "Chhabi Biswas, Gangapada Basu, Padmadevi",
-      "plot": "Huzur Biswamghar Roy is a rich landowner who lives in a palace with his wife and son and his many servants. His passion - his wife would call it his addiction - is music and he spends a great deal of his fortune on concerts held for the locals in his magnificent music room. His wealth is in decline however. His lands are being eroded by the local river and he pays for the concert he arranges for his son's coming of age party by selling some of the family jewels. When his neighbor Ganguli invites him to a party at his house, Roy decides to one up him and organizes a lavish party for the same day - costing him the last of the jewels. After his wife and son are killed in a storm, Roy becomes something of a recluse, closing up the music room. Now, many years later he decides to have one final concert, spending the last of his money to again outdo - and spite - Ganguli.",
-      "language": "Bengali, English",
-      "country": "India",
-      "awards": "2 wins & 2 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYTQ3ZGEyYjQtMWI5Mi00Zjc2LTk0YTYtZmY2OGQzNDc1ZDFkXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.9/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "100%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "7.9",
-      "imdbVotes": "6,968",
-      "imdbID": "tt0051792",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$94,886",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Gabe",
-        "watchDate": "8/15/24",
-        "clubRatings": {
-          "andy": 6,
-          "gabe": 6,
-          "jacob": 6,
-          "joey": 6
-        },
-        "trophyInfo": "Music Room!"
-      }
-    },
-    {
-      "title": "Andrei Rublev",
-      "year": "1966",
-      "rated": "R",
-      "released": "01 Oct 1973",
-      "runtime": "189 min",
-      "genre": "Biography, Drama, History",
-      "director": "Andrei Tarkovsky",
-      "writer": "Andrei Konchalovsky, Andrei Tarkovsky",
-      "actors": "Anatoliy Solonitsyn, Ivan Lapikov, Nikolay Grinko",
-      "plot": "Andreiv Rublev charts the life of the great icon painter through a turbulent period of 15th Century Russian history, a period marked by endless fighting between rival Princes and by Tatar invasions.",
-      "language": "Russian, Italian, Tatar",
-      "country": "Soviet Union",
-      "awards": "4 wins & 1 nomination total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BY2I4YzZjZDgtNWQzNC00MDdhLWFiZTItZTAwODY2ZmQzMDQwXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "8.0/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "96%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "8.0",
-      "imdbVotes": "58,379",
-      "imdbID": "tt0060107",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$124,189",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Joey",
-        "watchDate": "10/9/24",
-        "clubRatings": {
-          "andy": 8,
-          "gabe": 7,
-          "jacob": 7,
-          "joey": 9
-        },
-        "trophyInfo": "Joey"
-      }
-    },
-    {
-      "title": "In a Year with 13 Moons",
-      "year": "1978",
-      "rated": "Not Rated",
-      "released": "11 Jun 1980",
-      "runtime": "124 min",
-      "genre": "Drama",
-      "director": "Rainer Werner Fassbinder",
-      "writer": "Rainer Werner Fassbinder",
-      "actors": "Volker Spengler, Ingrid Caven, Gottfried John",
-      "plot": "Driven by the agony of unrequited love, slaughterhouse worker and married father-of-one Erwin Weishaupt summons up the courage to become Elvira. As a result, rejected by friends and family, desperate Elvira seeks solace in all the wrong places, exposing herself to vitriolic contempt and vicious ridicule. As pained Elvira meanders through the grim roads of Frankfurt with streetwalker Zora, struggling to survive in a faceless urban environment defined by brutality, loneliness, and despair, she retraces memories of her troubled past. Can she unearth something worth keeping?",
-      "language": "German",
-      "country": "West Germany",
-      "awards": "1 win",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNTZiYzdjNWItM2QwOS00YjBlLWJmOTItOWUyN2ZmNmM3NGM0XkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.4/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "76%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "7.4",
-      "imdbVotes": "4,888",
-      "imdbID": "tt0077729",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Jacob",
-        "watchDate": "11/26/24",
-        "clubRatings": {
-          "andy": 5,
-          "gabe": 2,
-          "jacob": 7,
-          "joey": 2
-        },
-        "trophyInfo": "Gabe"
-      }
-    },
-    {
-      "title": "The Battle of Algiers",
-      "year": "1966",
-      "rated": "Not Rated",
-      "released": "20 Sep 1967",
-      "runtime": "121 min",
-      "genre": "Drama, War",
-      "director": "Gillo Pontecorvo",
-      "writer": "Franco Solinas, Gillo Pontecorvo",
-      "actors": "Brahim Hadjadj, Jean Martin, Yacef Saadi",
-      "plot": "A film commissioned by the Algerian government that shows the Algerian revolution from both sides. The French foreign legion has left Vietnam in defeat and has something to prove. The Algerians are seeking independence. The two clash. The torture used by the French is contrasted with the Algerian's use of bombs in soda shops. A look at war as a nasty thing that harms and sullies everyone who participates in it.",
-      "language": "Arabic, French, English, Spanish",
-      "country": "Italy, Algeria",
-      "awards": "Nominated for 3 Oscars. 9 wins & 8 nominations total",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMTY2Mjk0OGEtYTM3Yy00ZWZiLWFhNjAtNGExMjEzNGVmMDMxXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "8.1/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "99%"
-        },
-        {
-          "source": "Metacritic",
-          "value": "96/100"
-        }
-      ],
-      "metascore": "96",
-      "imdbRating": "8.1",
-      "imdbVotes": "69,287",
-      "imdbID": "tt0058946",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "$879,794",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Andy",
-        "watchDate": "2/18/25",
-        "clubRatings": {
-          "andy": 6,
-          "gabe": 6,
-          "jacob": 4,
-          "joey": 6
-        },
-        "trophyInfo": "Gabe"
-      }
-    },
-    {
-      "title": "The Color of Pomegranates",
-      "year": "1969",
-      "rated": "Not Rated",
-      "released": "27 Jan 1982",
-      "runtime": "79 min",
-      "genre": "Biography, Drama, History",
-      "director": "Sergei Parajanov",
-      "writer": "Sayat Nova, Sergei Parajanov",
-      "actors": "Sofiko Chiaureli, Melkon Alekyan, Vilen Galstyan",
-      "plot": "One of cinema's greatest masterpieces, Sergei Parajanov's \"The Color of Pomegranates,\" a biography of the Armenian troubadour Sayat Nova (King of Song) reveals the poet's life more through his poetry than a conventional narration of important events in Sayat Nova's life. We see the poet grow up, fall in love, enter a monastery and die, but these incidents are depicted in the context of what are images from Sergei Parajanov's imagination and Sayat Nova's poems, poems that are seen and rarely heard. Sofiko Chiaureli plays 5 roles, both male and female, and Sergei Parajanov writes, directs, edits, choreographs, works on costumes, design and decor and virtually every aspect of this one-of-a-kind work hailed as revolutionary by Mikhail Vartanov.",
-      "language": "Armenian, Azerbaijani, Georgian",
-      "country": "Soviet Union",
-      "awards": "1 win & 1 nomination",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMTIwZWRlYzItYzFkYS00NmUzLTg2NDctZWExZjIwNDkzZTA0XkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "7.6/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "94%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "7.6",
-      "imdbVotes": "14,428",
-      "imdbID": "tt0063555",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Gabe",
-        "watchDate": "3/25/25",
-        "clubRatings": {
-          "andy": 5,
-          "gabe": 5,
-          "jacob": 8,
-          "joey": 4
-        },
-        "trophyInfo": "Joey",
-        "trophyNotes": "Andy gets a Special Connection Award for his Parajanov-Vartanov award,Joey gets a Bad Boy trophy for having a lot of work to do."
-      }
-    },
-    {
-      "title": "Only the River Flows",
-      "year": "2023",
-      "rated": "N/A",
-      "released": "21 Oct 2023",
-      "runtime": "101 min",
-      "genre": "Crime, Drama, Mystery",
-      "director": "Wei Shujun",
-      "writer": "Yu Hua, Chunlei Kang, Wei Shujun",
-      "actors": "Yilong Zhu, Chloe Maayan, Tianlai Hou",
-      "plot": "Chief police investigates a series of murders in a riverside town in rural China in the 1990s. An arrest is made quickly, clues push the policeman to dive deeper into the hidden behaviour of the locals.",
-      "language": "Chinese",
-      "country": "China",
-      "awards": "10 wins & 22 nominations",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYzcxMTYxNjAtMWNlMy00YzI2LWJlNDItNjg5MjU0MDNiOTFhXkEyXkFqcGc@._V1_SX300.jpg",
-      "ratings": [
-        {
-          "source": "Internet Movie Database",
-          "value": "6.6/10"
-        },
-        {
-          "source": "Rotten Tomatoes",
-          "value": "85%"
-        }
-      ],
-      "metascore": "N/A",
-      "imdbRating": "6.6",
-      "imdbVotes": "2,828",
-      "imdbID": "tt27590147",
-      "type": "movie",
-      "dVD": "N/A",
-      "boxOffice": "N/A",
-      "production": "N/A",
-      "website": "N/A",
-      "response": "True",
-      "movieClubInfo": {
-        "selector": "Joey",
-        "watchDate": null,
-        "clubRatings": {
-          "andy": null,
-          "gabe": null,
-          "jacob": null,
-          "joey": null
-        }
+    ],
+    "metascore": "96",
+    "imdbRating": "8.5",
+    "imdbVotes": "269,492",
+    "imdbID": "tt0027977",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$163,577",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": "9/13/23",
+      "clubRatings": {
+        "andy": 6,
+        "gabe": 8,
+        "jacob": 6,
+        "joey": 6
       }
     }
-  ]
+  },
+  {
+    "title": "Involuntary",
+    "year": "2008",
+    "rated": "N/A",
+    "released": "28 Nov 2008",
+    "runtime": "98 min",
+    "genre": "Drama",
+    "director": "Ruben Östlund",
+    "writer": "Erik Hemmendorff, Ruben Östlund",
+    "actors": "Villmar Björkman, Lola Ewerlund, Maria Lundqvist",
+    "plot": "It's almost summer in Sweden and minor indiscretions and misbehavior abound. Leffe likes to show off for his friends and play salacious pranks, especially when he's drinking. Meanwhile, a righteous grade-school teacher doesn't know where to draw the line: she insists her fellow educators need a bit of instruction. Then there are two young teenage girls who like to pose for sexy photos and to party, but one night in a park, one of them is found passed out drunk by a complete stranger.",
+    "language": "Swedish, English",
+    "country": "Sweden, France",
+    "awards": "10 wins & 9 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BOGNjNmMwYzYtYWRkZC00NmY0LTk5OWUtZDg0ZDAzNTk2YzE1XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "81%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "74/100"
+      }
+    ],
+    "metascore": "74",
+    "imdbRating": "6.9",
+    "imdbVotes": "6,686",
+    "imdbID": "tt1232826",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": "10/9/23",
+      "clubRatings": {
+        "andy": 7,
+        "gabe": 6,
+        "jacob": 7,
+        "joey": 8
+      }
+    }
+  },
+  {
+    "title": "Diabolique",
+    "year": "1955",
+    "rated": "Not Rated",
+    "released": "21 Nov 1955",
+    "runtime": "117 min",
+    "genre": "Crime, Drama, Horror",
+    "director": "Henri-Georges Clouzot",
+    "writer": "Pierre Boileau, Thomas Narcejac, Henri-Georges Clouzot",
+    "actors": "Simone Signoret, Véra Clouzot, Paul Meurisse",
+    "plot": "Christina Delassalle suffers greatly at the hands of her brutish husband Michel. She inherited the boys' boarding school they run but it's clearly Michel who is in charge. She and Nicole Horner, one of the teachers and Michel's former lover, decide to kill him. Christina, who has a serious condition, is terrified when, by chance, she meets a retired police inspector who decides to look into the case.",
+    "language": "French, English",
+    "country": "France",
+    "awards": "5 wins total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDg5OTRmOTgtYzk0ZC00M2E5LWFmNzItMDc5NmNlMDM0MTdmXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "95%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "8.1",
+    "imdbVotes": "71,134",
+    "imdbID": "tt0046911",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Andy",
+      "watchDate": "12/20/23",
+      "clubRatings": {
+        "andy": 5,
+        "gabe": 7,
+        "jacob": 7,
+        "joey": 6
+      }
+    }
+  },
+  {
+    "title": "The Thief of Bagdad",
+    "year": "1940",
+    "rated": "Approved",
+    "released": "25 Dec 1940",
+    "runtime": "106 min",
+    "genre": "Adventure, Family, Fantasy",
+    "director": "Ludwig Berger, Michael Powell, Tim Whelan",
+    "writer": "Miles Malleson, Lajos Biró, Miklós Rózsa",
+    "actors": "Conrad Veidt, Sabu, June Duprez",
+    "plot": "In Bagdad, the young and naive Sultan Ahmad is curious about the behavior of his people. The Grand Vizier Jaffar convinces Ahmad to walk through the city disguised as a subject to know his people. Then he seizes the power telling to the inhabitants that Ahmad has died while he sends his army to arrest the Sultan that is thrown into the dungeons and sentenced to death. Ahmad befriends the young thief Abu that helps him to escape from the prison. They flee to Basra and plan to travel abroad with Sinbad. However Ahmad stumbles upon the beautiful princess and they fall in love with each other. But the evil Jaffar has also traveled to Basra to propose to marry the princess. When they see each other, Jaffar uses magic to blind Ahmad and turn Abu into a dog. Is their love doomed?",
+    "language": "English",
+    "country": "United Kingdom, United States",
+    "awards": "Won 3 Oscars. 4 wins & 4 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYjcyOTFmOGItMzNkNC00MjFhLTk1NzEtOThkMGEzNTRmYzJkXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.4",
+    "imdbVotes": "15,019",
+    "imdbID": "tt0033152",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$2,180,000",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": "1/2/24",
+      "clubRatings": {
+        "andy": 4.5,
+        "gabe": 5,
+        "jacob": 4,
+        "joey": 5
+      }
+    }
+  },
+  {
+    "title": "The Devils",
+    "year": "1971",
+    "rated": "R",
+    "released": "16 Jul 1971",
+    "runtime": "111 min",
+    "genre": "Biography, Drama, History",
+    "director": "Ken Russell",
+    "writer": "Ken Russell, John Whiting, Aldous Huxley",
+    "actors": "Vanessa Redgrave, Oliver Reed, Dudley Sutton",
+    "plot": "Cardinal Richelieu and his power-hungry entourage seek to take control of 17th-century France, but need to destroy Father Grandier, the priest who runs the fortified town that prevents them from exerting total control. So they seek to destroy him by setting him up as a warlock in control of a devil-possessed nunnery, the Mother Superior of which is sexually obsessed with him. A mad witch-hunter is brought in to gather evidence against the priest, ready for the big trial.",
+    "language": "English, Latin",
+    "country": "United Kingdom, United States",
+    "awards": "4 wins",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYjQzYzFmNmUtMWVkNS00MmU1LTkyMzUtYzhmNjIwM2ZjOWZmXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "70%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "49/100"
+      }
+    ],
+    "metascore": "49",
+    "imdbRating": "7.7",
+    "imdbVotes": "19,282",
+    "imdbID": "tt0066993",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$1,133,022",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": "1/24/24",
+      "clubRatings": {
+        "andy": 5,
+        "gabe": 5,
+        "jacob": 9,
+        "joey": 6
+      }
+    }
+  },
+  {
+    "title": "Ear for Eye",
+    "year": "2021",
+    "rated": "N/A",
+    "released": "16 Oct 2021",
+    "runtime": "88 min",
+    "genre": "Drama",
+    "director": "Debbie Tucker Green",
+    "writer": "Debbie Tucker Green",
+    "actors": "Hayden Mclean, Sharlene Whyte, David Gyasi",
+    "plot": "Follows British and American Black characters of different generations navigating their way through today's society, offering a critical perspective on the state of the nation.",
+    "language": "English",
+    "country": "United Kingdom",
+    "awards": "1 nomination",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYTRhNTFmOGYtZDU3Yy00YjgxLThkNGYtNzFmNGNkMDlmZmM1XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "88/100"
+      }
+    ],
+    "metascore": "88",
+    "imdbRating": "6.6",
+    "imdbVotes": "178",
+    "imdbID": "tt13599944",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": "2/22/24",
+      "clubRatings": {
+        "andy": 7,
+        "gabe": 8,
+        "jacob": 8,
+        "joey": 8
+      }
+    }
+  },
+  {
+    "title": "Ashes and Diamonds",
+    "year": "1958",
+    "rated": "Not Rated",
+    "released": "29 May 1961",
+    "runtime": "103 min",
+    "genre": "Drama, Romance, War",
+    "director": "Andrzej Wajda",
+    "writer": "Jerzy Andrzejewski, Andrzej Wajda",
+    "actors": "Zbigniew Cybulski, Ewa Krzyzewska, Waclaw Zastrzezynski",
+    "plot": "Maciek, a young Resistance fighter, is ordered to kill Szczuka, a Communist district leader, on the last day of World War II. Though killing has been easy for him in the past, Szczuka was a fellow soldier, and Maciek must decide whether to follow his orders.",
+    "language": "Polish",
+    "country": "Poland",
+    "awards": "Nominated for 2 BAFTA 1 win & 2 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNjc4ZGEwMmItZGI3OS00Y2NiLWFlMDUtNmIwY2NhZGFmNjAxXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "96%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.7",
+    "imdbVotes": "13,887",
+    "imdbID": "tt0052080",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Andy",
+      "watchDate": "3/18/24",
+      "clubRatings": {
+        "andy": 7,
+        "gabe": 6,
+        "jacob": 6,
+        "joey": 7
+      }
+    }
+  },
+  {
+    "title": "The Music Room",
+    "year": "1958",
+    "rated": "Not Rated",
+    "released": "10 Oct 1958",
+    "runtime": "95 min",
+    "genre": "Drama, Music",
+    "director": "Satyajit Ray",
+    "writer": "Tarashankar Banerjee, Satyajit Ray, Santi P. Choudhury",
+    "actors": "Chhabi Biswas, Gangapada Basu, Padmadevi",
+    "plot": "Huzur Biswamghar Roy is a rich landowner who lives in a palace with his wife and son and his many servants. His passion - his wife would call it his addiction - is music and he spends a great deal of his fortune on concerts held for the locals in his magnificent music room. His wealth is in decline however. His lands are being eroded by the local river and he pays for the concert he arranges for his son's coming of age party by selling some of the family jewels. When his neighbor Ganguli invites him to a party at his house, Roy decides to one up him and organizes a lavish party for the same day - costing him the last of the jewels. After his wife and son are killed in a storm, Roy becomes something of a recluse, closing up the music room. Now, many years later he decides to have one final concert, spending the last of his money to again outdo - and spite - Ganguli.",
+    "language": "Bengali, English",
+    "country": "India",
+    "awards": "2 wins & 2 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYTQ3ZGEyYjQtMWI5Mi00Zjc2LTk0YTYtZmY2OGQzNDc1ZDFkXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.9",
+    "imdbVotes": "6,968",
+    "imdbID": "tt0051792",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$94,886",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": "8/15/24",
+      "clubRatings": {
+        "andy": 6,
+        "gabe": 6,
+        "jacob": 6,
+        "joey": 6
+      },
+      "trophyInfo": "Music Room!"
+    }
+  },
+  {
+    "title": "Andrei Rublev",
+    "year": "1966",
+    "rated": "R",
+    "released": "01 Oct 1973",
+    "runtime": "189 min",
+    "genre": "Biography, Drama, History",
+    "director": "Andrei Tarkovsky",
+    "writer": "Andrei Konchalovsky, Andrei Tarkovsky",
+    "actors": "Anatoliy Solonitsyn, Ivan Lapikov, Nikolay Grinko",
+    "plot": "Andreiv Rublev charts the life of the great icon painter through a turbulent period of 15th Century Russian history, a period marked by endless fighting between rival Princes and by Tatar invasions.",
+    "language": "Russian, Italian, Tatar",
+    "country": "Soviet Union",
+    "awards": "4 wins & 1 nomination total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BY2I4YzZjZDgtNWQzNC00MDdhLWFiZTItZTAwODY2ZmQzMDQwXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "96%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "8.0",
+    "imdbVotes": "58,379",
+    "imdbID": "tt0060107",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$124,189",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": "10/9/24",
+      "clubRatings": {
+        "andy": 8,
+        "gabe": 7,
+        "jacob": 7,
+        "joey": 9
+      },
+      "trophyInfo": "Joey"
+    }
+  },
+  {
+    "title": "In a Year with 13 Moons",
+    "year": "1978",
+    "rated": "Not Rated",
+    "released": "11 Jun 1980",
+    "runtime": "124 min",
+    "genre": "Drama",
+    "director": "Rainer Werner Fassbinder",
+    "writer": "Rainer Werner Fassbinder",
+    "actors": "Volker Spengler, Ingrid Caven, Gottfried John",
+    "plot": "Driven by the agony of unrequited love, slaughterhouse worker and married father-of-one Erwin Weishaupt summons up the courage to become Elvira. As a result, rejected by friends and family, desperate Elvira seeks solace in all the wrong places, exposing herself to vitriolic contempt and vicious ridicule. As pained Elvira meanders through the grim roads of Frankfurt with streetwalker Zora, struggling to survive in a faceless urban environment defined by brutality, loneliness, and despair, she retraces memories of her troubled past. Can she unearth something worth keeping?",
+    "language": "German",
+    "country": "West Germany",
+    "awards": "1 win",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNTZiYzdjNWItM2QwOS00YjBlLWJmOTItOWUyN2ZmNmM3NGM0XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "76%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.4",
+    "imdbVotes": "4,888",
+    "imdbID": "tt0077729",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": "11/26/24",
+      "clubRatings": {
+        "andy": 5,
+        "gabe": 2,
+        "jacob": 7,
+        "joey": 2
+      },
+      "trophyInfo": "Gabe"
+    }
+  },
+  {
+    "title": "The Battle of Algiers",
+    "year": "1966",
+    "rated": "Not Rated",
+    "released": "20 Sep 1967",
+    "runtime": "121 min",
+    "genre": "Drama, War",
+    "director": "Gillo Pontecorvo",
+    "writer": "Franco Solinas, Gillo Pontecorvo",
+    "actors": "Brahim Hadjadj, Jean Martin, Yacef Saadi",
+    "plot": "A film commissioned by the Algerian government that shows the Algerian revolution from both sides. The French foreign legion has left Vietnam in defeat and has something to prove. The Algerians are seeking independence. The two clash. The torture used by the French is contrasted with the Algerian's use of bombs in soda shops. A look at war as a nasty thing that harms and sullies everyone who participates in it.",
+    "language": "Arabic, French, English, Spanish",
+    "country": "Italy, Algeria",
+    "awards": "Nominated for 3 Oscars. 9 wins & 8 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTY2Mjk0OGEtYTM3Yy00ZWZiLWFhNjAtNGExMjEzNGVmMDMxXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "99%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "96/100"
+      }
+    ],
+    "metascore": "96",
+    "imdbRating": "8.1",
+    "imdbVotes": "69,287",
+    "imdbID": "tt0058946",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$879,794",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Andy",
+      "watchDate": "2/18/25",
+      "clubRatings": {
+        "andy": 6,
+        "gabe": 6,
+        "jacob": 4,
+        "joey": 6
+      },
+      "trophyInfo": "Gabe"
+    }
+  },
+  {
+    "title": "The Color of Pomegranates",
+    "year": "1969",
+    "rated": "Not Rated",
+    "released": "27 Jan 1982",
+    "runtime": "79 min",
+    "genre": "Biography, Drama, History",
+    "director": "Sergei Parajanov",
+    "writer": "Sayat Nova, Sergei Parajanov",
+    "actors": "Sofiko Chiaureli, Melkon Alekyan, Vilen Galstyan",
+    "plot": "One of cinema's greatest masterpieces, Sergei Parajanov's \"The Color of Pomegranates,\" a biography of the Armenian troubadour Sayat Nova (King of Song) reveals the poet's life more through his poetry than a conventional narration of important events in Sayat Nova's life. We see the poet grow up, fall in love, enter a monastery and die, but these incidents are depicted in the context of what are images from Sergei Parajanov's imagination and Sayat Nova's poems, poems that are seen and rarely heard. Sofiko Chiaureli plays 5 roles, both male and female, and Sergei Parajanov writes, directs, edits, choreographs, works on costumes, design and decor and virtually every aspect of this one-of-a-kind work hailed as revolutionary by Mikhail Vartanov.",
+    "language": "Armenian, Azerbaijani, Georgian",
+    "country": "Soviet Union",
+    "awards": "1 win & 1 nomination",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTIwZWRlYzItYzFkYS00NmUzLTg2NDctZWExZjIwNDkzZTA0XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.6",
+    "imdbVotes": "14,428",
+    "imdbID": "tt0063555",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": "3/25/25",
+      "clubRatings": {
+        "andy": 5,
+        "gabe": 5,
+        "jacob": 8,
+        "joey": 4
+      },
+      "trophyInfo": "Joey",
+      "trophyNotes": "Andy gets a Special Connection Award for his Parajanov-Vartanov award,Joey gets a Bad Boy trophy for having a lot of work to do."
+    }
+  },
+  {
+    "title": "Only the River Flows",
+    "year": "2023",
+    "rated": "N/A",
+    "released": "21 Oct 2023",
+    "runtime": "101 min",
+    "genre": "Crime, Drama, Mystery",
+    "director": "Wei Shujun",
+    "writer": "Yu Hua, Chunlei Kang, Wei Shujun",
+    "actors": "Yilong Zhu, Chloe Maayan, Tianlai Hou",
+    "plot": "Chief police investigates a series of murders in a riverside town in rural China in the 1990s. An arrest is made quickly, clues push the policeman to dive deeper into the hidden behaviour of the locals.",
+    "language": "Chinese",
+    "country": "China",
+    "awards": "10 wins & 22 nominations",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYzcxMTYxNjAtMWNlMy00YzI2LWJlNDItNjg5MjU0MDNiOTFhXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "85%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "6.6",
+    "imdbVotes": "2,828",
+    "imdbID": "tt27590147",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": "4/24/25",
+      "clubRatings": {
+        "andy": 4,
+        "gabe": 4,
+        "jacob": 4.5,
+        "joey": 5,
+        "greg": 4
+      },
+      "trophyNotes": "Joey gets togetherness trophy."
+    }
+  },
+  {
+    "title": "Sawdust and Tinsel",
+    "year": "1953",
+    "rated": "Not Rated",
+    "released": "09 Apr 1956",
+    "runtime": "93 min",
+    "genre": "Drama",
+    "director": "Ingmar Bergman",
+    "writer": "Ingmar Bergman",
+    "actors": "Åke Grönberg, Harriet Andersson, Hasse Ekman",
+    "plot": "While traveling in caravan through the country of Sweden, one member of the decadent Alberti Circus tells the owner and ringmaster Albert Johansson a sad story about the clown Frost: seven years ago, his wife Alma was surprised by him bathing naked in a lake with a regiment. When the circus arrives in the town where Albert's wife Agda and sons live, he decides to pay a visit with his young mistress Anne to a famous local troupe to borrow some capes, hats and vests for their tonight show. They are humiliated by the director Mr. Sjuberg, but he lends the pieces, and the lead actor Frans gives an unsuccessful pass on Anne. When Albert decides to visit Agda, the jealous Anne meets Frans, who seduces her with an apparently valuable necklace, and they have a love affair. Anne finds that the necklace is actually worthless and returns to the circus. Meanwhile, Agda refuses to accept Albert back and he sees Anne leaving the theater and going to the jewelry. During the exhibition, Albert and Anne are submitted to humiliations by Frans.",
+    "language": "Swedish",
+    "country": "Sweden",
+    "awards": "1 nomination",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNTM3MmRiNTUtODkyMi00NDRhLTk0NzQtOGMxZmE3ZDZiNTVlXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "91%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.4",
+    "imdbVotes": "7,548",
+    "imdbID": "tt0045848",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": null,
+      "trophyNotes": ""
+    }
+  }
+]

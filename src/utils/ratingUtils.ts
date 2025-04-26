@@ -5,7 +5,7 @@ import { ClubMemberRatings } from '../types/film';
  * Only considers non-null numeric scores.
  * Returns the average formatted to one decimal place, or null if no valid scores exist.
  */
-export const calculateClubAverage = (ratings: ClubMemberRatings | undefined): string | null => {
+export const calculateClubAverage = (ratings: ClubMemberRatings | undefined): number | null => {
   if (!ratings) {
     return null; // No movie club info or ratings available
   }
@@ -28,5 +28,7 @@ export const calculateClubAverage = (ratings: ClubMemberRatings | undefined): st
   }
 
   const average = sum / count;
-  return average.toFixed(1); // Format to one decimal place
+  
+  // Round to 1 decimal place
+  return Math.round(average * 10) / 10;
 };

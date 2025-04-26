@@ -4,14 +4,16 @@
       "title": "Filmmaker & Director",
       "bio": "Bio coming soon (?)",
       "queue": 3,
-      "image": "/film-club/images/andy.jpg"
+      "image": "/film-club/images/andy.jpg",
+      "color": "emerald-300"
     },
     {
       "name": "Gabe",
       "title": "Scientist & Professor",
       "bio": "We're learning more every day",
       "queue": 4,
-      "image": "/film-club/images/gabe.jpg"
+      "image": "/film-club/images/gabe.jpg",
+      "color": "indigo-300"
     },
     {
       "name": "Jacob",
@@ -19,6 +21,7 @@
       "bio": "This www is under construction",
       "queue": 2,
       "image": "/film-club/images/jacob.jpg",
+      "color": "sky-300",
       "interview": [
       {
         "question": "What is your favorite film?",
@@ -35,7 +38,8 @@
       "title": "Education Leader & Artist",
       "bio": "Our researchers are on it",
       "queue": 1,
-      "image": "/film-club/images/joey.jpg"
+      "image": "/film-club/images/joey.jpg",
+      "color": "rose-300"
     },
     {
       "name": "Mark",

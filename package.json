@@ -13,9 +13,12 @@
     "preview": "bun vite preview"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.5",
+    "@fontsource/merriweather": "^5.2.6",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.1.4",
     "@tailwindcss/vite": "^4.1.4",
+    "classnames": "^2.5.1",
     "framer-motion": "^12.7.4",
     "hamburger-react": "^2.5.2",
     "react": "^19.0.0",

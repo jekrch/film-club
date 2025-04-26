@@ -6,7 +6,7 @@ import { TeamMember, teamMembers as teamMembersData } from '../types/team';
 import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import CircularImage from '../components/common/CircularImage';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon } from '@heroicons/react/24/outline'; // Import needed for the arrow
 
 // --- Helper function for robust date parsing ---
 const parseWatchDate = (dateString: string | null | undefined): Date | null => {
@@ -59,24 +59,82 @@ const HomePage = () => {
     const allFilms = filmsData as unknown as Film[];
     const teamMembers = teamMembersData as TeamMember[];
 
-    // Calculate Cycle Info
-    const upNextFilm = allFilms.find(film => !film?.movieClubInfo?.watchDate);
-    const selectorName = upNextFilm?.movieClubInfo?.selector;
+    // --- START OF CORRECTED SELECTOR LOGIC ---
+
+    // Calculate Cycle Info (Active Members)
     const sortedActiveMembers = teamMembers
         .filter(member => typeof member.queue === 'number' && member.queue > 0)
         .sort((a, b) => (a.queue ?? Infinity) - (b.queue ?? Infinity));
-    setActiveCycleMembersList(sortedActiveMembers);
-    if (selectorName && sortedActiveMembers.some(m => m.name === selectorName)) {
-        setCurrentSelectorName(selectorName);
-    } else {
-        setCurrentSelectorName(null);
-        // Optional warning if selector in data doesn't match active members
-        if (selectorName && !sortedActiveMembers.some(m => m.name === selectorName)) {
-             console.warn(`Selector "${selectorName}" found in film data but not in active team member cycle.`);
+    setActiveCycleMembersList(sortedActiveMembers); // Set this early, needed for fallback
+
+    let determinedSelectorName: string | null = null; // Use a temporary variable
+
+    // Try to find the film without a watch date (the 'up next' film)
+    const upNextFilm = allFilms.find(film => !film?.movieClubInfo?.watchDate);
+
+    console.log("Up Next Film:", upNextFilm); // Debugging line
+    // Primary Logic: Use the selector from the 'up next' film if valid
+    if (upNextFilm?.movieClubInfo?.selector) {
+        const potentialSelector = upNextFilm.movieClubInfo.selector;
+        // Validate if this selector is actually in the active cycle
+        if (sortedActiveMembers.some(m => m.name === potentialSelector)) {
+            determinedSelectorName = potentialSelector;
+        } else {
+             console.warn(`Selector "${potentialSelector}" for upcoming film found in data but not in active team member cycle. Checking fallback.`);
+             // determinedSelectorName remains null, fallback will be checked
         }
     }
 
-    // Calculate Total Runtime
+    // Fallback Logic: If no 'up next' film found OR its selector isn't valid/active
+    if (!determinedSelectorName && sortedActiveMembers.length > 0) {
+        console.log("Executing fallback logic: No upcoming film found or selector invalid/inactive.");
+        // Find all films that *have* been watched
+        const watchedFilms = allFilms
+            .filter(film => film.movieClubInfo?.watchDate)
+            .sort((a, b) => (parseWatchDate(b.movieClubInfo?.watchDate)?.getTime() ?? 0) - (parseWatchDate(a.movieClubInfo?.watchDate)?.getTime() ?? 0)); // Sort descending by date
+
+        if (watchedFilms.length > 0) {
+            // Get the most recently watched film
+            const mostRecentFilm = watchedFilms[0];
+            const lastSelectorName = mostRecentFilm.movieClubInfo?.selector;
+
+            if (lastSelectorName) {
+                // Find the index of the last selector in the *active* cycle
+                const lastSelectorIndex = sortedActiveMembers.findIndex(m => m.name === lastSelectorName);
+
+                if (lastSelectorIndex !== -1) {
+                    // Found the last selector in the active cycle, determine the next one
+                    const nextSelectorIndex = (lastSelectorIndex + 1) % sortedActiveMembers.length; // Wrap around using modulo
+                    determinedSelectorName = sortedActiveMembers[nextSelectorIndex].name;
+                    console.log(`Fallback: Setting next selector based on cycle after ${lastSelectorName}: ${determinedSelectorName}`);
+                } else {
+                    // Edge Case: Last selector from film data isn't in the current active cycle. Default to the first person.
+                    console.warn(`Fallback Warning: Selector "${lastSelectorName}" from most recent film not found in active cycle. Defaulting to the start of the cycle (${sortedActiveMembers[0]?.name}).`);
+                    determinedSelectorName = sortedActiveMembers[0].name; // Default to first active member
+                }
+            } else {
+                 // Edge Case: Most recent film exists but has no selector defined. Data issue. Default to first active member.
+                 console.warn(`Fallback Warning: Most recent watched film has no selector defined. Defaulting to the start of the cycle (${sortedActiveMembers[0]?.name}).`);
+                 determinedSelectorName = sortedActiveMembers[0].name; // Default to first active member
+            }
+        } else {
+            // Edge Case: No films have been watched yet *at all*. Default to the first person in the cycle.
+            console.warn(`Fallback Warning: No films with watch dates found. Defaulting selector to the start of the cycle (${sortedActiveMembers[0]?.name}).`);
+            determinedSelectorName = sortedActiveMembers[0]?.name; // Default to first active member (add optional chaining just in case)
+        }
+    } else if (!determinedSelectorName && sortedActiveMembers.length === 0) {
+         // Edge case: No active members defined in the cycle
+         console.warn("No active members found in the cycle. Cannot determine selector.");
+         determinedSelectorName = null;
+    }
+
+    // Set the final determined selector name to state
+    setCurrentSelectorName(determinedSelectorName);
+
+    // --- END OF CORRECTED SELECTOR LOGIC ---
+
+
+    // Calculate Total Runtime (only for watched films)
     const totalMinutes = allFilms.reduce((sum, film) => {
         if (film?.movieClubInfo?.watchDate && film?.runtime && typeof film.runtime === 'string') {
             const minutes = parseInt(film.runtime, 10);
@@ -86,42 +144,53 @@ const HomePage = () => {
     }, 0);
     setTotalRuntimeString(formatTotalMinutes(totalMinutes));
 
-    // Process Film Lists
+    // Process Film Lists (Top Rated)
     const topRated = [...allFilms]
-      .filter(film => film.movieClubInfo?.clubRatings)
+      .filter(film => film.movieClubInfo?.clubRatings) // Based on ratings existing
       .sort((a, b) => {
-        const avgA = parseFloat(calculateClubAverage(a.movieClubInfo?.clubRatings) ?? '0');
-        const avgB = parseFloat(calculateClubAverage(b.movieClubInfo?.clubRatings) ?? '0');
+        const avgA = parseFloat(calculateClubAverage(a.movieClubInfo?.clubRatings)?.toString() ?? '0');
+        const avgB = parseFloat(calculateClubAverage(b.movieClubInfo?.clubRatings)?.toString() ?? '0');
         return avgB - avgA;
       }).slice(0, 6);
+    setTopClubRatedFilms(topRated);
 
-    let picks = [...allFilms]
+    // Process Film Lists (Recent Picks - based *only* on watched films)
+    // Sort watched films descending by date
+    let watchedFilmsSorted = [...allFilms]
        .filter(film => film.movieClubInfo?.watchDate)
        .sort((a, b) => (parseWatchDate(b.movieClubInfo?.watchDate)?.getTime() ?? 0) - (parseWatchDate(a.movieClubInfo?.watchDate)?.getTime() ?? 0));
 
-    let recentPicks = [...picks];
-    if (upNextFilm && !recentPicks.some(p => p.imdbID === upNextFilm.imdbID)) {
-      recentPicks.unshift(upNextFilm);
+    let recentClubPicks = watchedFilmsSorted.slice(0, 5); // Get the most recent 5 films
+    if (upNextFilm) {
+        // If there's an 'up next' film, add it to the top of the list
+        recentClubPicks = [upNextFilm, ...recentClubPicks];
     }
-    recentPicks = recentPicks.slice(0, 5);
-    setTopClubRatedFilms(topRated);
-    setRecentClubPicks(recentPicks);
+    // The recent picks list now only shows the most recently watched films
+    setRecentClubPicks(recentClubPicks);
 
-    // Determine Last Meeting Time
-    if (picks.length > 0 && picks[0].movieClubInfo?.watchDate) {
-        const mostRecentParsedDate = parseWatchDate(picks[0].movieClubInfo.watchDate);
+
+    // Determine Last Meeting Time (using the sorted watched films)
+    if (watchedFilmsSorted.length > 0 && watchedFilmsSorted[0].movieClubInfo?.watchDate) {
+        const mostRecentParsedDate = parseWatchDate(watchedFilmsSorted[0].movieClubInfo.watchDate);
         if (mostRecentParsedDate) {
+             // Set meeting time to 10 PM on the day of the watch date
              const meetingDate = new Date(mostRecentParsedDate);
-             meetingDate.setHours(22, 0, 0, 0); // 10 PM local
-             if (!isNaN(meetingDate.getTime())) setLastMeetingDateTime(meetingDate);
-             else setLastMeetingDateTime(null);
+             // Set time in UTC if watch dates are UTC, otherwise use setHours for local time
+             meetingDate.setUTCHours(22, 0, 0, 0); // Example using UTC
+             // meetingDate.setHours(22, 0, 0, 0); // Alternative for local time
+             if (!isNaN(meetingDate.getTime())) {
+                 setLastMeetingDateTime(meetingDate);
+             } else {
+                 console.warn("Failed to create valid date for last meeting time.");
+                 setLastMeetingDateTime(null);
+             }
         } else {
              setLastMeetingDateTime(null);
         }
     } else {
-        setLastMeetingDateTime(null);
+        setLastMeetingDateTime(null); // No watched films, no last meeting
     }
-  }, []);
+  }, []); // Keep dependency array empty to run only on mount
 
   // --- Timer Update Effect ---
   useEffect(() => {
@@ -129,7 +198,10 @@ const HomePage = () => {
     const updateTimer = () => {
       const now = new Date();
       const diffMs = now.getTime() - lastMeetingDateTime.getTime();
-      if (diffMs < 0) { setTimeSinceLastMeeting("Awaiting commencement..."); return; }
+      if (diffMs < 0) {
+        setTimeSinceLastMeeting("Awaiting meeting time...");
+        return;
+       }
       const totalSeconds = Math.floor(diffMs / 1000);
       const days = Math.floor(totalSeconds / 86400);
       const hours = Math.floor((totalSeconds % 86400) / 3600);
@@ -139,14 +211,16 @@ const HomePage = () => {
       const dayLabel = days === 1 ? 'day' : 'days';
       setTimeSinceLastMeeting(`${pad(days)} ${dayLabel} : ${pad(hours)} hrs : ${pad(minutes)} m : ${pad(seconds)} s`);
     };
-    updateTimer();
-    const intervalId = setInterval(updateTimer, 1000);
-    return () => clearInterval(intervalId);
-  }, [lastMeetingDateTime]);
+    updateTimer(); // Run immediately
+    const intervalId = setInterval(updateTimer, 1000); // Update every second
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, [lastMeetingDateTime]); // Rerun effect if lastMeetingDateTime changes
+
 
   // --- Render Logic ---
+  // ***** JSX restored to include the small-screen arrow *****
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 -mt-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 -mt-6 bg-[#202125]x">
       {/* Hero section */}
       <div className="py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg my-8 text-center px-4 sm:px-6 lg:px-10">
 
@@ -174,11 +248,12 @@ const HomePage = () => {
                                 `}
                                 title={isActive ? `${member.name} (Up Next!)` : member.name}
                             >
-                                {/* Curved Arrow (Small Screens Only, Not for Last Member) */}
+                                {/* --- SMALL SCREEN ARROW RESTORED --- */}
+                                {/* Show this arrow only on small screens (hidden on sm breakpoint and up) AND if it's NOT the last item */}
+                                
+                                    <ArrowRightIcon className="sm:hidden inline-block w-3 h-3 mx-1 text-slate-500 flex-shrink-0 self-center mb-1" /> 
+                                {/* Note: The original code paste had this commented out. This version assumes it should be VISIBLE as per your correction. */}
 
-                                    
-                                    <ArrowRightIcon className="sm:hidden inline-block w-3 " />
- 
 
                                 {/* Image container (handles active border/glow) */}
                                 <div className={`relative rounded-full p-0.5 ${isActive ? 'bg-gradient-to-tr from-emerald-500 via-emerald-400 to-teal-400 shadow-lg' : ''}`}>

@@ -158,7 +158,7 @@ const FilmDetailPage = () => {
 
   // --- Popcorn Rating Calculation ---
   const MAX_RATING = 9;
-  const numericClubRating = clubAverageDisplay ? parseFloat(clubAverageDisplay) : NaN;
+  const numericClubRating = clubAverageDisplay ? clubAverageDisplay : NaN;
 
   return (
     <div className="bg-slate-900 text-slate-300 min-h-screen py-8">

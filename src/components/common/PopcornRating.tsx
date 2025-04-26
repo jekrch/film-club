@@ -1,12 +1,14 @@
 import React from 'react';
 import PopcornIcon from './PopcornIcon';
+import classNames from 'classnames';
 
 interface PopcornRatingProps {
   rating: number;
   maxRating?: number;
   size?: 'regular' | 'small';
   showPartialFill?: boolean;
-  title?: string;
+  title?: string; 
+  className?: string;
 }
 
 const PopcornRating: React.FC<PopcornRatingProps> = ({ 
@@ -14,7 +16,8 @@ const PopcornRating: React.FC<PopcornRatingProps> = ({
   maxRating = 9, 
   size = 'regular',
   showPartialFill = true,
-  title
+  title, 
+  className,
 }) => {
   const getPopcornIcons = () => {
     return [...Array(maxRating)].map((_, index) => {
@@ -33,7 +36,7 @@ const PopcornRating: React.FC<PopcornRatingProps> = ({
 
   return (
     <div 
-      className="flex items-center space-x-0.5" 
+      className={classNames("flex items-center space-x-0.5", className)} 
       title={title || `Rating: ${rating} out of ${maxRating}`}
     >
       {getPopcornIcons()}
