@@ -44,7 +44,7 @@
       "clubRatings": {
         "andy": null,
         "gabe": null,
-        "jacob": null,
+        "jacob": 1,
         "joey": null
       },
       "trophyInfo": null,
