@@ -228,7 +228,7 @@ const HomePage = () => {
         {activeCycleMembersList.length > 0 && (
            <div className="mb-6">
              <p className="text-xs uppercase tracking-widest text-slate-300 font-semibold mb-4">
-               Our Esteemed Selection Committee
+               Selection Committee
              </p>
              {/* Flex container for members and inline arrows */}
              <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-6"> {/* Increased gap-y for curved arrows */}
@@ -256,7 +256,7 @@ const HomePage = () => {
 
 
                                 {/* Image container (handles active border/glow) */}
-                                <div className={`relative rounded-full p-0.5 ${isActive ? 'bg-gradient-to-tr from-emerald-500 via-emerald-400 to-teal-400 shadow-lg' : ''}`}>
+                                <div className={`relative rounded-full p-0.5 ${isActive ? 'bg-gradient-to-tr from-emerald-700 via-emerald-600 to-emerald-600 shadow-lg' : ''}`}>
                                     <CircularImage
                                         alt={member.name}
                                         size="w-14 h-14 sm:w-16 sm:h-16"
@@ -268,7 +268,7 @@ const HomePage = () => {
                                     )}
                                 </div>
                                 {/* Member Name */}
-                                <span className={`block text-xs mt-1.5 font-medium transition-colors duration-200 ${isActive ? 'text-emerald-300' : 'text-slate-400 group-hover:text-slate-200'}`}>
+                                <span className={`block text-xs mt-1.5 font-medium transition-colors duration-200 ${isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`}>
                                     {member.name}
                                 </span>
                             </Link>
@@ -288,7 +288,7 @@ const HomePage = () => {
         {/* --- End Display Cycle Order --- */}
 
         {/* --- Display Total Runtime --- */}
-        {totalRuntimeString && (
+        {false && totalRuntimeString && (
            <div className={`max-w-md mx-auto ${activeCycleMembersList.length > 0 ? 'border-t border-slate-600 pt-4 mt-6' : 'pt-0 mt-0'}`}>
              <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">Total Film Runtime Watched</p>
              <p className="font-mono text-slate-300 tracking-tight text-sm">{totalRuntimeString}</p>

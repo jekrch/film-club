@@ -9,6 +9,7 @@ import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
 import "./index.css";
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
+import AlmanacPage from './pages/AlmanacPage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               <Route path="/films" element={<FilmsPage />} />
               <Route path="/films/:imdbId" element={<FilmDetailPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/almanac" element={<AlmanacPage />} />
               {/* Add the profile page route */}
               <Route path="/profile/:memberName" element={<ProfilePage />} /> {/* <-- Add Route */}
             </Routes>

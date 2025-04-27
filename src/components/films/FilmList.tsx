@@ -1,101 +1,109 @@
-import React from 'react';
+import React from 'react'; 
 import { Film } from '../../types/film';
 import FilmCard from './FilmCard';
-import AllFilmsCard from './AllFilmsCard'; // 1. Import the new card component
+import AllFilmsCard from './AllFilmsCard';
 import { useViewSettings } from '../../contexts/ViewSettingsContext';
 import { Squares2X2Icon, RectangleGroupIcon } from '@heroicons/react/24/outline';
+
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Scrollbar, Mousewheel } from 'swiper/modules'; // Import necessary modules
+// @ts-ignore
+import 'swiper/css';
+// @ts-ignore
+import 'swiper/css/free-mode';
+// @ts-ignore
+import 'swiper/css/scrollbar';
+
+
 
 interface FilmListProps {
   films: Film[];
   title?: string;
-  appendAllFilmsCard?: boolean; // 2. Add the new prop
+  appendAllFilmsCard?: boolean;
+  layoutMode?: 'grid' | 'horizontal';
+  hideSizeButtons?: boolean;
 }
 
-// Set default value for the new prop in the function signature
-const FilmList: React.FC<FilmListProps> = ({ films, title, appendAllFilmsCard = false }) => {
-  const { cardSize, setCardSize } = useViewSettings();
-  // Determine cardSize string literal type ('compact' or 'standard')
-  const currentCardSize = cardSize === 'compact' ? 'compact' : 'standard';
-  const isCompact = currentCardSize === 'compact';
+const FilmList: React.FC<FilmListProps> = ({
+  films,
+  title,
+  appendAllFilmsCard = false,
+  layoutMode = 'grid',
+  hideSizeButtons = false,
+}) => {
+  const { cardSize: contextCardSize, setCardSize } = useViewSettings();
+  const actualCardSize = hideSizeButtons ? 'compact' : contextCardSize;
+  const isCompact = actualCardSize === 'compact';
 
-
-  // Define base styles for the toggle buttons - more minimal
   const buttonBaseClasses = "p-1.5 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800";
-  const iconClasses = "w-5 h-5"; // Icon size
+  const iconClasses = "w-5 h-5";
 
-  // Adjust grid columns based on card size preference
   const gridClasses = isCompact
     ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7'
     : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
-
   const gapClass = isCompact ? 'gap-3 md:gap-4' : 'gap-6';
-
-  // Determine if there's anything to display in the grid
   const hasContent = films.length > 0 || appendAllFilmsCard;
 
   return (
-    <div className="py-8">
-      {/* Header Section with Title and View Toggle */}
-      <div className="flex justify-between items-center mb-6">
-        {title && (
-          <h2 className="text-2xl font-bold text-gray-200">{title}</h2>
-        )}
-
-        {/* View Mode Toggle Buttons - Minimal Style */}
-        <div className="flex items-center space-x-2">
-
-          {/* Compact View Button */}
-          <button
-            onClick={() => setCardSize('compact')}
-            title="Compact View"
-            aria-pressed={isCompact}
-            className={`
-              ${buttonBaseClasses}
-              ${isCompact
-                ? 'text-white'
-                : 'text-slate-400 hover:text-slate-100'
-              }
-            `}
-          >
-            <RectangleGroupIcon className={iconClasses} />
-            <span className="sr-only">Compact View</span>
-          </button>
-
-          {/* Standard View Button */}
-          <button
-            onClick={() => setCardSize('standard')}
-            title="Standard View"
-            aria-pressed={!isCompact}
-            className={`
-              ${buttonBaseClasses}
-              ${!isCompact
-                ? 'text-white'
-                : 'text-slate-400 hover:text-slate-100'
-              }
-            `}
-          >
-            <Squares2X2Icon className={iconClasses} />
-            <span className="sr-only">Standard View</span>
-          </button>
-        </div>
+    <div className="py-4">
+      {/* Header Section (remains the same) */}
+      <div className="flex justify-between items-center mb-4">
+        {/* ... Title and Buttons ... */}
+         {title && (
+           <h2 className="text-xl font-bold text-gray-200">{title}</h2>
+         )}
+         {!hideSizeButtons && (
+           <div className="flex items-center space-x-2">
+             <button onClick={() => setCardSize('compact')} title="Compact View" aria-pressed={isCompact} className={`${buttonBaseClasses} ${isCompact ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}>
+               <RectangleGroupIcon className={iconClasses} /><span className="sr-only">Compact View</span>
+             </button>
+             <button onClick={() => setCardSize('standard')} title="Standard View" aria-pressed={!isCompact} className={`${buttonBaseClasses} ${!isCompact ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}>
+               <Squares2X2Icon className={iconClasses} /><span className="sr-only">Standard View</span>
+             </button>
+           </div>
+         )}
       </div>
 
-      {/* Film Grid Section */}
-      {!hasContent ? ( // Check if there is neither films nor the AllFilmsCard to show
+      {/* Film Content Section */}
+      {!hasContent ? (
         <div className="text-center py-10">
-          {/* Modify empty state message slightly if needed, or keep as is */}
           <p className="text-gray-500">No films found.</p>
         </div>
-      ) : (
-        <div className={`grid ${gridClasses} ${gapClass}`}>
-          {/* Map existing films */}
+      ) : layoutMode === 'horizontal' ? (
+        // --- Horizontal Layout with Swiper ---
+        <Swiper
+            modules={[FreeMode, Scrollbar, Mousewheel]} // Add modules
+            slidesPerView="auto" // Show as many slides as fit
+            spaceBetween={16} // Adjust space (tailwind space-x-4 is 1rem/16px)
+            freeMode={true} // Enable free scrolling with momentum
+            
+            scrollbar={{ draggable: true, hide: false }} // Optional: Add scrollbar
+            mousewheel={true} // Enable mousewheel control
+            className="pb-4 text-gray-200" // Add padding for scrollbar visibility
+        >
+          {/* Map films to SwiperSlides */}
           {films.map((film) => (
-            <FilmCard key={film.imdbID} film={film} cardSize={currentCardSize} />
+            <SwiperSlide key={film.imdbID} style={{ width: 'auto' }} className="!w-36"> {/* Set slide width */}
+              <FilmCard film={film} cardSize={actualCardSize} />
+            </SwiperSlide>
           ))}
-
-          {/* 3. Conditionally render AllFilmsCard at the end */}
+          {/* Conditionally render AllFilmsCard */}
           {appendAllFilmsCard && (
-            <AllFilmsCard cardSize={currentCardSize} />
+            <SwiperSlide style={{ width: 'auto' }} className="!w-36"> {/* Set slide width */}
+              <AllFilmsCard cardSize={actualCardSize} />
+            </SwiperSlide>
+          )}
+        </Swiper>
+      ) : (
+        // --- Grid Layout (Default - remains the same) ---
+        <div className={`grid ${gridClasses} ${gapClass}`}>
+          {/* ... grid items ... */}
+          {films.map((film) => (
+            <FilmCard key={film.imdbID} film={film} cardSize={actualCardSize} />
+          ))}
+          {appendAllFilmsCard && (
+            <AllFilmsCard cardSize={actualCardSize} />
           )}
         </div>
       )}

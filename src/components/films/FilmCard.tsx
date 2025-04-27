@@ -5,8 +5,6 @@ import { calculateClubAverage } from '../../utils/ratingUtils'; // Assuming util
 import { CardSize } from '../../contexts/ViewSettingsContext'; // Assuming context exists
 import PopcornRating from '../common/PopcornRating';
 import { getTeamMemberColorByName } from '../../types/team';
-// Import icons (optional, but recommended for better UI)
-// Make sure to install: npm install @heroicons/react
 import { ClockIcon, UserIcon } from '@heroicons/react/20/solid';
 // import { GlobeAltIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
@@ -105,7 +103,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                 <div
                     className={`
                         absolute top-[30px] -left-[40px] w-[10em] /* Position near top-left corner */
-                        bg-gradient-to-r from-emerald-600 to-emerald-700 /* Emerald gradient */
+                        bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-90 /* Emerald gradient */
                         text-white text-center /* Center text inside banner */
                         !text-lg font-bold uppercase tracking-wider /* Text styling */
                         px-10 py-1.5 /* Padding defines banner size */
@@ -126,7 +124,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                 {/* Inner container: Defines card background, border, shadow, layout, and clips content */}
                 <div className={`
                     bg-[#0a0a0a] overflow-hidden h-full flex flex-col
-                    border border-slate-600 rounded-md
+                    border border-slate-700 rounded-md
                     shadow-xl hover:shadow-2xl shadow-black/50
                     transition-all duration-300 ease-in-out
                 `}>
@@ -146,7 +144,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; }} // Fallback image
                         />
                         {/* Gradient overlay at the bottom of the poster */}
-                        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-800/80 to-transparent z-10"></div>
+                        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-800/10 to-transparent z-10"></div>
                         {/* Year badge positioned on the poster */}
                         {film.year && (
                                 <div className="absolute top-2 right-2 bg-slate-800/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded z-20 shadow-md">
@@ -156,7 +154,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     </div>
 
                     {/* Card Content Section: Below poster, contains text info */}
-                    <div className={`flex flex-col flex-grow p-3 ${isCompact ? 'p-2' : 'p-3'} bg-gradient-to-b from-slate-800 to-slate-700 rounded-b-md`}>
+                    <div className={`flex flex-col flex-grow p-3 ${isCompact ? 'p-2' : 'p-3'} bg-gradient-to-b from-slate-800 to-[#27364f] to-slate-700x rounded-b-md`}>
                         {/* Film Title */}
                         <h3 className={`
                             font-normal text-slate-200 mb-2 truncate leading-tight tracking-wide
@@ -171,7 +169,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             {/* Selector info badge */}
                             {selectorName && (
                                 <div className={`
-                                    text-white px-2 py-1 rounded-sm text-xs font-bold uppercase flex items-center shadow-sm flex-shrink-0 /* Prevent shrinking */
+                                    text-slate-300 px-2 py-1 rounded-sm text-xs font-bold uppercase flex items-center shadow-sm flex-shrink-0 /* Prevent shrinking */
                                     ${isCompact ? 'px-1.5 py-0.5 text-[10px]' : ''}
                                     bg-slate-700
                                 `}>
@@ -265,15 +263,15 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     )}
 
                                     {/* Club Average Rating Display */}
-                                     {clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && ( // Only show if ratings exist
+                                     {false && clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && ( // Only show if ratings exist
                                         <div className={`w-full flex items-center justify-end text-xs text-slate-400 mt-2 ${isCompact ? 'mt-1.5 text-[10px]' : 'mt-2 text-xs'}`}>
                                              {/* Popcorn component on the left */}
                                              <PopcornRating
-                                                 rating={clubAverageDisplay}
+                                                 rating={clubAverageDisplay as number}
                                                  maxRating={9} // Assuming max rating is 9
                                                  size={isCompact ? 'small' : 'regular'}
                                                  showPartialFill={true}
-                                                 title={`Average Club Rating: ${clubAverageDisplay.toFixed(1)}/9`}
+                                                 title={`Average Club Rating: ${clubAverageDisplay?.toFixed(1)}/9`}
                                                  className="mr-auto opacity-70" // Pushes popcorns left
                                              />
                                              {/* Explicit average number on the right */}

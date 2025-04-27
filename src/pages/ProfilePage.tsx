@@ -176,7 +176,7 @@ const ProfilePage: React.FC = () => {
          </button>
 
         {/* Profile Header Section */}
-        <div className="bg-slate-800 rounded-lg overflow-hidden mb-2 border border-slate-700 shadow-xl shadow-slate-950/30">
+        <div className="bg-slate-800x bg-gradient-to-br from-slate-700 to-slate-800  rounded-lg overflow-hidden mb-2 border border-slate-700 shadow-xl shadow-slate-950/30">
           <div className="p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-16">
             <CircularImage
               src={member.image}

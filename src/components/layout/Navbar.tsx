@@ -6,9 +6,10 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const links = [
-    { href: '/film-club/#/', label: 'Home' },
-    { href: '/film-club/#/films', label: 'Films' },
-    { href: '/film-club/#/about', label: 'About' },
+    { href: '/#/', label: 'Home' },
+    { href: '/#/films', label: 'Films' },
+    { href: '/#/about', label: 'About' },
+    { href: '/#/almanac', label: 'Almanac' },
   ];
 
   return (
@@ -17,7 +18,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <a href="/film-club/#/" className="flex items-center">
+            <a href="/#/" className="flex items-center">
               <span className="text-xl font-bold text-slate-200">Criterion Club</span>
             </a>
           </div>

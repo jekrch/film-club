@@ -80,3 +80,43 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+
+ @layer utilities {
+   .animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+  }
+  @keyframes fade-in {
+   0% { opacity: 0; }
+    100% { opacity: 1; }
+   }
+}
+
+.swiper-scrollbar {
+  /* Make the scrollbar track slightly thicker */
+  height: 10px !important; /* Default is often 4px or 6px. Adjust as needed. */
+
+  /* Optional: Slightly adjust position if needed due to height change */
+  /* bottom: 4px !important; */ /* Default is often 6px */
+
+  /* Optional: Set a subtle background for the track itself in dark mode */
+  /* background: rgba(255, 255, 255, 0.1); */
+}
+
+/* Target the draggable scrollbar handle (the thumb) */
+.swiper-scrollbar-drag {
+  /* Make the handle lighter for dark mode */
+  /* Use a Tailwind color hex code or any color you prefer */
+  background: #6b7280 !important; /* Example: Slate-500 */
+  /* Try other options: */
+  /* background: #9ca3af !important; /* Slate-400 */
+  /* background: #d1d5db !important; /* Slate-300 */
+
+  /* Ensure the handle visually fills the track height */
+  border-radius: 5px !important; /* Make border-radius half of the track height */
+}
+
+/* Optional: Hover effect for the drag handle */
+.swiper-scrollbar-drag:hover {
+  background: #9ca3af !important; /* Example: Lighten on hover (Slate-400) */
+}
+

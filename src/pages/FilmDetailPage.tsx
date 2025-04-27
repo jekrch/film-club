@@ -280,7 +280,7 @@ const FilmDetailPage = () => {
 
           {/* Movie Club Info Section */}
           {film.movieClubInfo && (
-             <div className="bg-slate-850 border-t-2 border-blue-700 p-6 md:p-8">
+             <div className="bg-slate-850 border-t-2 border-slate-700 p-6 md:p-8">
               <h2 className="text-2xl font-semibold text-slate-100 mb-6">Film Club Facts</h2>
 
               <div className="md:flex md:justify-between md:items-start">

@@ -235,10 +235,10 @@ const FilmsPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-slate-100 mb-8">Film Collection</h1>
+      <div className="text-3xl text-slate-100 mb-8">Film Collection</div>
 
       {/* --- Improved Filters and Sort Container --- */}
-      <div className="bg-slate-700 rounded-lg shadow-lg p-6 mb-8 text-sm">
+      <div className="bg-slate-700 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg shadow-lg p-6 mb-8 text-sm">
 
         {/* Row 1: Search, Genre, and Selector */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">

@@ -16,7 +16,7 @@ const CircularImage: React.FC<CircularImageProps> = ({
   const [hasError, setHasError] = useState(false);
 
   if (!src) {
-    src = `/film-club/images/${alt?.toLowerCase()}.jpg`; // Default image path
+    src = `/images/${alt?.toLowerCase()}.jpg`; // Default image path
   }
 
   return (

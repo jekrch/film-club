@@ -13,12 +13,12 @@ const AboutPage: React.FC = () => {
         {/* Center the main content */}
         <div className="max-w-3xl mx-auto">
           {/* Main Page Title - Brighter text */}
-          <h1 className="!text-2xl sm:text-4xl font-bold text-slate-300 mb-10 text-center border-b border-slate-700 pb-4">
+          <div className="!text-2xl sm:text-4xl font-bold text-slate-300 mb-10 text-center border-b border-slate-700 pb-4">
             About Our Film Club
-          </h1>
+          </div>
 
           {/* Mission Section - Dark Card */}
-          <div className="bg-slate-800 rounded-lg overflow-hidden mb-12 border border-slate-700 shadow-lg shadow-slate-950/30">
+          <div className="bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-12 border border-slate-700 shadow-lg shadow-slate-950/30">
             <div className="p-6 md:p-8">
               <h2 className="text-xl sm:text-2xl font-semibold text-slate-300 mb-4">
                 Our Mission
@@ -30,7 +30,7 @@ const AboutPage: React.FC = () => {
           </div>
 
           {/* Team Section - Dark Card */}
-          <div className="bg-slate-800 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-lg shadow-slate-950/30">
+          <div className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-lg shadow-slate-950/30">
             <div className="p-6 md:p-8">
               <h2 className="text-xl sm:text-2xl font-semibold text-slate-300 mb-6 text-center">
                 Meet the Club

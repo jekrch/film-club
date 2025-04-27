@@ -4,7 +4,7 @@
       "title": "Filmmaker & Director",
       "bio": "Bio coming soon (?)",
       "queue": 3,
-      "image": "/film-club/images/andy.jpg",
+      "image": "/images/andy.jpg",
       "color": "emerald-300"
     },
     {
@@ -12,7 +12,7 @@
       "title": "Scientist & Professor",
       "bio": "We're learning more every day",
       "queue": 4,
-      "image": "/film-club/images/gabe.jpg",
+      "image": "/images/gabe.jpg",
       "color": "indigo-300"
     },
     {
@@ -20,7 +20,7 @@
       "title": "Technologist & Ex-Philosopher",
       "bio": "This www is under construction",
       "queue": 2,
-      "image": "/film-club/images/jacob.jpg",
+      "image": "/images/jacob.jpg",
       "color": "sky-300",
       "interview": [
       {
@@ -38,19 +38,19 @@
       "title": "Education Leader & Artist",
       "bio": "Our researchers are on it",
       "queue": 1,
-      "image": "/film-club/images/joey.jpg",
+      "image": "/images/joey.jpg",
       "color": "rose-300"
     },
     {
       "name": "Mark",
       "title": "Unionizer & Filmologist",
       "bio": "Emeritus member",
-      "image": "/film-club/images/mark.jpg"
+      "image": "/images/mark.jpg"
     },
     {
       "name": "Greg",
       "title": "Intern",
       "bio": "You gotta start somewhere",
-      "image": "/film-club/images/greg.jpg"
+      "image": "/images/greg.jpg"
     }
   ]

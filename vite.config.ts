@@ -9,5 +9,5 @@ export default defineConfig({
     tailwindcss(),
   ],
   publicDir: 'public',
-  base: '/film-club/',
+  base: '/',
 })
