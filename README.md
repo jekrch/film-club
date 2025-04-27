@@ -110,7 +110,7 @@ The site is available at: https://jekrch.github.io/film-club
 2. Trigger deployment via GitHub Actions workflow
 
 
-## 🎬 Hey club friends! Updating the site is CAKE 🎬
+## 🎬 Hey, updating the site is EASY
 
 YOU can update the website without writing any code. This guide will walk you through making changes to our film data and user profiles.
 
