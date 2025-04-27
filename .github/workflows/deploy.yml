@@ -13,8 +13,9 @@ on:
       - 'src/assets/films.json'
       - 'public/images/**'
 
+# Fix for permission issue - changed to write
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -64,11 +65,23 @@ jobs:
       - name: Build the project
         run: bun run build
       
-      # Step 6: Deploy to GitHub Pages
+      # Step 6: Verify build output
+      - name: Verify build output
+        run: |
+          echo "Checking build output directory..."
+          ls -la
+          if [ -d "dist" ]; then
+            echo "dist directory exists"
+            ls -la dist
+          else
+            echo "ERROR: dist directory does not exist"
+            exit 1
+          fi
+      
+      # Step 7: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
-          cname: # custom domain
