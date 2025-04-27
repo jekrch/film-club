@@ -146,13 +146,16 @@ const HomePage = () => {
 
     // Process Film Lists (Top Rated)
     const topRated = [...allFilms]
-      .filter(film => film.movieClubInfo?.clubRatings) // Based on ratings existing
-      .sort((a, b) => {
-        const avgA = parseFloat(calculateClubAverage(a.movieClubInfo?.clubRatings)?.toString() ?? '0');
-        const avgB = parseFloat(calculateClubAverage(b.movieClubInfo?.clubRatings)?.toString() ?? '0');
-        return avgB - avgA;
-      }).slice(0, 6);
-    setTopClubRatedFilms(topRated);
+    .filter(film => {
+      const ratings = film.movieClubInfo?.clubRatings;
+      return ratings && Object.values(ratings).filter(rating => rating && rating !== null).length >= 2;
+    })
+    .sort((a, b) => {
+      const avgA = parseFloat(calculateClubAverage(a.movieClubInfo?.clubRatings)?.toString() ?? '0');
+      const avgB = parseFloat(calculateClubAverage(b.movieClubInfo?.clubRatings)?.toString() ?? '0');
+      return avgB - avgA;
+    }).slice(0, 6);
+  setTopClubRatedFilms(topRated);
 
     // Process Film Lists (Recent Picks - based *only* on watched films)
     // Sort watched films descending by date
