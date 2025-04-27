@@ -20,7 +20,7 @@ const PopcornIcon: React.FC<PopcornIconProps> = ({ filled, size = 'regular', par
     return (
       <div className="relative inline-block">
         <img
-          src="/film-club/popcorn.svg"
+          src="/popcorn.svg"
           alt={filled ? "Filled popcorn" : "Empty popcorn"}
           className={`inline-block ${sizeClass} ${filterClass}`}
         />
@@ -33,13 +33,13 @@ const PopcornIcon: React.FC<PopcornIconProps> = ({ filled, size = 'regular', par
     <div className={`relative inline-block ${sizeClass}`}>
       {/* Background empty popcorn */}
       <img
-        src="/film-club/popcorn.svg"
+        src="/popcorn.svg"
         alt="Empty portion"
         className={`absolute inset-0 brightness-50 opacity-60 ${sizeClass}`}
       />
       {/* Filled portion - using clip-path for precise horizontal cut */}
       <img
-        src="/film-club/popcorn.svg"
+        src="/popcorn.svg"
         alt="Filled portion"
         className={`absolute inset-0 ${sizeClass}`}
         style={{

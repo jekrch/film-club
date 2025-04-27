@@ -184,7 +184,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                              )}
                             {/* Watch Date OR Runtime (if Up Next) */}
                             {watchedDateDisplay ? (
-                                 <span className="text-slate-500 tracking-wide ml-2">
+                                 <span className="text-slate-500 tracking-wide ml-2 text-[10px]">
                                         {watchedDateDisplay}
                                  </span>
                              ) : film.runtime && film.runtime !== "N/A" ? (

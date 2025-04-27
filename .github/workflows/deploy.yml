@@ -4,10 +4,14 @@ on:
   # Runs on manual trigger
   workflow_dispatch:
   
-  # uncomment to deploy on push to main
-  # push:
-  #   branches:
-  #     - main
+  # Deploy when specific files are changed
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/assets/club.json'
+      - 'src/assets/films.json'
+      - 'public/images/**'
 
 permissions:
   contents: read
@@ -15,7 +19,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  validate-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -23,21 +27,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      # Step 2: Setup Bun
+      # Step 2: Validate JSON files
+      - name: Validate JSON files
+        run: |
+          # Check if club.json is valid
+          if [ -f "src/assets/club.json" ]; then
+            echo "Validating club.json..."
+            if ! jq empty src/assets/club.json; then
+              echo "ERROR: club.json is not valid JSON"
+              exit 1
+            fi
+            echo "club.json is valid"
+          fi
+          
+          # Check if films.json is valid
+          if [ -f "src/assets/films.json" ]; then
+            echo "Validating films.json..."
+            if ! jq empty src/assets/films.json; then
+              echo "ERROR: films.json is not valid JSON"
+              exit 1
+            fi
+            echo "films.json is valid"
+          fi
+      
+      # Step 3: Setup Bun
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
       
-      # Step 3: Install dependencies
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: bun install
       
-      # Step 4: Build the project
+      # Step 5: Build the project
       - name: Build the project
         run: bun run build
       
-      # Step 5: Deploy to GitHub Pages
+      # Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
