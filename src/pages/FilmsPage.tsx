@@ -167,8 +167,8 @@ const FilmsPage = () => {
             // We filtered, but calculate safely. Assign score based on sort direction for unrated films.
             const avgStrA = calculateClubAverage(a.movieClubInfo?.clubRatings);
             const avgStrB = calculateClubAverage(b.movieClubInfo?.clubRatings);
-            const ratingA = parseFloat(avgStrA ?? 'NaN') || (sortDirection === 'asc' ? Infinity : -Infinity);
-            const ratingB = parseFloat(avgStrB ?? 'NaN') || (sortDirection === 'asc' ? Infinity : -Infinity);
+            const ratingA = parseFloat(avgStrA?.toString() ?? 'NaN') || (sortDirection === 'asc' ? Infinity : -Infinity);
+            const ratingB = parseFloat(avgStrB?.toString() ?? 'NaN') || (sortDirection === 'asc' ? Infinity : -Infinity);
             comparison = ratingA - ratingB;
             break;
           case 'watchDate':

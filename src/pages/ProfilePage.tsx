@@ -185,7 +185,7 @@ const ProfilePage: React.FC = () => {
               className="flex-shrink-0 border-2 border-slate-600 mb-6 sm:mb-0"
             />
             <div className="text-center sm:text-left sm:ml-10 flex-grow min-w-0">
-              <h1 className="text-3xl sm:text-4xl font-thin text-slate-100 mb-2">{member.name}</h1>
+              <h1 className="text-3xl sm:text-4xl font- text-slate-100 mb-2">{member.name}</h1>
               <p className="text-lg text-blue-400/90 mb-4">{member.title}</p>
               <p className="text-slate-300 leading-relaxed max-w-xl mx-auto sm:mx-0">
                 {member.bio}
