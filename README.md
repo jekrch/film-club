@@ -1,6 +1,6 @@
 # Criterion Club Website
 
-https://jekrch.github.io/film-club
+https://criterionclub.org
 
 A web application for tracking films watched and reviewed by the Criterion Club, a group of four friends who watch Criterion Channel films and discuss them via Zoom.
 
@@ -48,7 +48,7 @@ Run the development server:
 bun run dev
 ```
 See:
-http://localhost:5173/film-club/
+http://localhost:5173
 
 ### Building
 
@@ -108,3 +108,55 @@ The site is available at: https://jekrch.github.io/film-club
 
 1. Push to the `main` branch 
 2. Trigger deployment via GitHub Actions workflow
+
+
+## 🎬 Hey club friends! Updating the site is CAKE 🎬
+
+YOU can update the website without writing any code. This guide will walk you through making changes to our film data and user profiles.
+
+### Where to Find the Files
+
+You can update two main JSON files:
+* **Film Data**: [/src/assets/films.json](https://github.com/jekrch/film-club/blob/main/src/assets/films.json)
+* **User Profiles**: [/src/assets/club.json](https://github.com/jekrch/film-club/blob/main/src/assets/club.json)
+
+### How to Update a File (The Easy Way)
+
+1. **Navigate to the file** you want to update by clicking one of the links above
+2. **Click the pencil icon** (✏️) in the top-right corner of the file view
+3. **Make your changes** directly in the editor
+   * For films: update your scores, trophy notes, and more
+   * For users: Update your profile info, bio, interview questions
+4. **Scroll down** to the "Commit changes" section
+5. Select "Commit directly to the main branch"
+6. **Click the green "Commit changes" button**
+
+### How to Update Your Film Score
+
+Navigate to the Film Data file using the link above
+Find the film you want to score in the list
+Look for the "clubRatings" section that looks like this:
+```
+"clubRatings": {
+  "andy": null,
+  "gabe": null,
+  "jacob": 6.5,
+  "joey": null
+}
+```
+Find your name and replace the null with your score (a number)
+Commit your changes as described above
+
+### What Happens Next?
+
+Once you commit your changes, GitHub will automagically publish the updated website. Someone really made this easy! Within a few minutes, your changes will appear on [criterionclub.org](https://criterionclub.org)!
+
+### Important Tips
+
+* **JSON Formatting Matters**: Make sure you maintain the correct format with commas, brackets, and quotes
+* **Preview Your Changes**: Use the "Preview" tab to make sure everything looks right before committing
+* **Don't Worry About Breaking Things**: If something goes wrong, we can always restore a previous version
+
+### Need Help?
+
+If you run into any issues or have questions, you know where to find me

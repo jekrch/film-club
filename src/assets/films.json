@@ -40,7 +40,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "08/12/2020"
+      "watchDate": "08/12/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -80,7 +88,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "08/19/2020"
+      "watchDate": "08/19/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -120,7 +136,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "09/07/2020"
+      "watchDate": "09/07/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -132,7 +156,7 @@
     "genre": "Comedy, Drama",
     "director": "Federico Fellini",
     "writer": "Federico Fellini, Tonino Guerra",
-    "actors": "Magali Noël, Bruno Zanin, Pupella Maggio",
+    "actors": "Magali No\u00c3\u00abl, Bruno Zanin, Pupella Maggio",
     "plot": "One year in a small northern Italian coastal town in the late 1930s is presented. The slightly off-kilter cast of characters are affected by time and location, the social mores dictated largely by Catholicism, and the national fervor surrounding Il Duce aka Benito Mussolini and Fascism. The stories loosely center on mid-teen Titta and his household, including his adolescent brother, his ever-supportive mother who is always defending him against his father, his freeloading maternal Uncle Lallo, and his paternal grandfather who slyly has eyes and hands for the household maid. Other townsfolk include: town beauty Gradisca, who can probably have any man she wants but generally has none as most think she out of their league; Volpina, the prostitute; Giudizio, the historian; a blind accordionist; and an extremely buxom tobacconist. The several vignettes presented include: the town bonfire in celebration of spring; life at Titta's school with his classmates and teachers; Titta's father Aurelio at his beachfront construction worksite and his and his workmates' encounter with Volpina; Titta's confessions to the priest about his burgeoning sexuality; Aurelio being questioned by authorities about his anti-Fascist leanings; a fantasy sequence at the luxurious Grand Hotel; a family outing with Aurelio's institutionalized brother Teo; many townsfolk embarking on a sail to witness a marine event passing by their town; an annual car race; Titta's fantasy encounter with the tobacconist after closing hours coming true; events surrounding the big snowfall that year, including a family tragedy; and an event centering on Gradisca and her future.",
     "language": "Italian, Greek, Ancient (to 1453)",
     "country": "Italy, France",
@@ -160,7 +184,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "09/07/2020"
+      "watchDate": "09/07/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -170,9 +202,9 @@
     "released": "04 Feb 1965",
     "runtime": "103 min",
     "genre": "Drama, Horror, Thriller",
-    "director": "Kaneto Shindô",
-    "writer": "Kaneto Shindô",
-    "actors": "Nobuko Otowa, Jitsuko Yoshimura, Kei Satô",
+    "director": "Kaneto Shind\u00c3\u00b4",
+    "writer": "Kaneto Shind\u00c3\u00b4",
+    "actors": "Nobuko Otowa, Jitsuko Yoshimura, Kei Sat\u00c3\u00b4",
     "plot": "In the Fourteenth Century, during a civil war in Japan, a middle-aged woman and her daughter-in-law survive in a hut in a field of reed killing warriors and soldiers to trade their possessions for food. When their neighbor Hachi defects from the war and returns home, they learn that their son and husband Kichi died while stealing supplies from farmers. Soon Hachi seduces the young widow and she sneaks out of her hut every night to have sex with him. When the older woman finds the affair of her daughter-in-law, she pleads with Hachi to leave the young woman with her since she would not be able to kill the warriors without her help. However, Hachi ignores her request and continues to meet the young woman. When a samurai wearing a demon mask stumbles upon the older woman at her hut asking her to guide him out of the field, she lures him and he falls in the pit where she drops the bodies of her victims. She climbs down the hole to take his possessions and his mask, and she finds he is a disfigured man. The she uses the demon mask to haunt her daughter-in-law to keep her away from Hachi. However, when she decides to remove the mask, she has a surprise.",
     "language": "Japanese",
     "country": "Japan",
@@ -200,7 +232,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "09/15/2020"
+      "watchDate": "09/15/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -212,7 +252,7 @@
     "genre": "Crime, Horror, Mystery",
     "director": "Kiyoshi Kurosawa",
     "writer": "Kiyoshi Kurosawa",
-    "actors": "Masato Hagiwara, Kôji Yakusho, Tsuyoshi Ujiki",
+    "actors": "Masato Hagiwara, K\u00c3\u00b4ji Yakusho, Tsuyoshi Ujiki",
     "plot": "A wave of gruesome murders is sweeping Tokyo. The only connection is a bloody X carved into the neck of each of the victims. In each case, the murderer is found near the victim and remembers nothing of the crime. Detective Takabe and psychologist Sakuma are called in to figure out the connection, but their investigation goes nowhere. An odd young man is arrested near the scene of the latest murder, who has a strange effect on everyone who comes into contact with him. Detective Takabe starts a series of interrogations to determine the man's connection with the killings.",
     "language": "Japanese, Spanish",
     "country": "Japan",
@@ -243,7 +283,15 @@
     "website": "N/A",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "09/23/2020"
+      "watchDate": "09/23/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -287,7 +335,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "10/01/2020"
+      "watchDate": "10/01/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -331,7 +387,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "10/14/2020"
+      "watchDate": "10/14/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -371,7 +435,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "10/25/2020"
+      "watchDate": "10/25/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -415,7 +487,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "11/05/2020"
+      "watchDate": "11/05/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -426,7 +506,7 @@
     "runtime": "96 min",
     "genre": "Drama, Romance",
     "director": "Ingmar Bergman",
-    "writer": "Per Anders Fogelström, Ingmar Bergman",
+    "writer": "Per Anders Fogelstr\u00c3\u00b6m, Ingmar Bergman",
     "actors": "Harriet Andersson, Lars Ekborg, Dagmar Ebbesen",
     "plot": "Harry Lund is a nineteen-year-old man who meets Monika, a romantic, reckless and rebellious seventeen-year-old, and they fall in love. They leave their families and jobs in their small town, Harry gets his father's boat and they spend the summer together in an isolated island. Monika gets pregnant, and Harry decides to marry her. He grows up, gets a job and returns to his studies, trying to improve their lives and raise their daughter June, while Monika just wants to have fun.",
     "language": "Swedish",
@@ -455,7 +535,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "11/15/2020"
+      "watchDate": "11/15/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -468,7 +556,7 @@
     "director": "Ingmar Bergman",
     "writer": "Ulla Isaksson",
     "actors": "Max von Sydow, Birgitta Valberg, Gunnel Lindblom",
-    "plot": "In medieval Sweden, Christianity is starting to overtake paganism, but some people are still attached to the old ways. The wealthy farmer Töre sends his daughter Karin to take candles to the church, but on her way through the forest, she is brutally raped and murdered by three herdsmen. Töre finds out what happened and takes his revenge on the three men, but he must find a way to live with himself afterward.",
+    "plot": "In medieval Sweden, Christianity is starting to overtake paganism, but some people are still attached to the old ways. The wealthy farmer T\u00c3\u00b6re sends his daughter Karin to take candles to the church, but on her way through the forest, she is brutally raped and murdered by three herdsmen. T\u00c3\u00b6re finds out what happened and takes his revenge on the three men, but he must find a way to live with himself afterward.",
     "language": "Swedish, German",
     "country": "Sweden",
     "awards": "Won 1 Oscar. 4 wins & 4 nominations total",
@@ -495,7 +583,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "11/24/2020"
+      "watchDate": "11/24/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -507,7 +603,7 @@
     "genre": "Comedy, Crime, Drama",
     "director": "Juraj Herz",
     "writer": "Ladislav Fuks, Juraj Herz",
-    "actors": "Rudolf Hrusínský, Vlasta Chramostová, Jana Stehnová",
+    "actors": "Rudolf Hrus\u00c3\u00adnsk\u00c3\u00bd, Vlasta Chramostov\u00c3\u00a1, Jana Stehnov\u00c3\u00a1",
     "plot": "Czech Karel Kopfrkingl enjoys his job at a crematorium in the late 1930s. He likes reading the Tibetan book of the dead, and espouses the view that cremation relieves earthly suffering. At a reception, he meets Reineke, with whom he fought for Austria in the first World War. Reineke convinces Kopfrkingl to emphasize his supposedly German heritage, including sending his timid son to the German school. Reineke then suggests that Kopfrkingl's half-Jewish wife is holding back his advancement in his job.",
     "language": "Czech, Hebrew",
     "country": "Czechoslovakia",
@@ -535,7 +631,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "12/03/2020"
+      "watchDate": "12/03/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -547,7 +651,7 @@
     "genre": "Comedy, Romance, Drama",
     "director": "Milos Forman",
     "writer": "Jaroslav Papousek, Milos Forman, Ivan Passer",
-    "actors": "Hana Brejchová, Vladimír Pucholt, Vladimír Mensík",
+    "actors": "Hana Brejchov\u00c3\u00a1, Vladim\u00c3\u00adr Pucholt, Vladim\u00c3\u00adr Mens\u00c3\u00adk",
     "plot": "A factory manager in rural Czechoslovakia bargains with the army to send men to the area, to boost the morale of his young female workers, deprived of male company since the local boys have been conscripted. The army sends reservists, mostly married middle-aged men - and the local beauty Andula, spurns those bold enough to try to win her, for the jazz pianist, newly come from Prague to perform. He seduces her and impresses her, telling her \"most women are round, like guitars but you are a guitar by Picasso\". Staying the night with him causes a lecture on a young woman's honour at her hostel so she throws over her other suitors and makes her way to Prague to find the young man. His protective Mamma and weary Pappa are not pleased when she arrives on the doorstep with her suitcase.",
     "language": "Czech",
     "country": "Czechoslovakia",
@@ -575,7 +679,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "12/10/2020"
+      "watchDate": "12/10/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -619,7 +731,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "12/17/2020"
+      "watchDate": "12/17/2020",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -663,7 +783,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "01/10/2021"
+      "watchDate": "01/10/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -675,7 +803,7 @@
     "genre": "Biography, Drama, History",
     "director": "Carl Theodor Dreyer",
     "writer": "Joseph Delteil, Carl Theodor Dreyer",
-    "actors": "Maria Falconetti, Eugene Silvain, André Berley",
+    "actors": "Maria Falconetti, Eugene Silvain, Andr\u00c3\u00a9 Berley",
     "plot": "Giovanna is taken to the Inquisition court. . After the accusation of blasphemy continues to pray in ecstasy . A friar thinks that Giovanna is a saint, but is taken away by the soldiers. Giovanna sees a cross in the shadow and feels comforted. She is not considered a daughter of God but a daughter of the devil and is sentenced to torture. Giovanna D 'Arco says that even if she dies she will not deny anything. The eyes are twisted by terror in front of the torture wheel and faint. Giovanna is taken to a bed where they are bleeding. Giovanna feels that she is about to die and asks to be buried in a consecrated area. Giovanna burns at the stake while devoted ladies cry.",
     "language": "None, French",
     "country": "France",
@@ -707,7 +835,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "01/17/2021"
+      "watchDate": "01/17/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -751,7 +887,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "01/31/2021"
+      "watchDate": "01/31/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -795,7 +939,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "01/31/2021"
+      "watchDate": "01/31/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -839,7 +991,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "02/15/2021"
+      "watchDate": "02/15/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -883,7 +1043,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "02/28/2021"
+      "watchDate": "02/28/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -927,7 +1095,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "03/09/2021"
+      "watchDate": "03/09/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -971,7 +1147,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "03/21/2021"
+      "watchDate": "03/21/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -981,9 +1165,9 @@
     "released": "20 Jan 1988",
     "runtime": "95 min",
     "genre": "Drama, Mystery, Romance",
-    "director": "Víctor Erice",
-    "writer": "Víctor Erice, Adelaida García Morales",
-    "actors": "Omero Antonutti, Sonsoles Aranguren, Icíar Bollaín",
+    "director": "V\u00c3\u00adctor Erice",
+    "writer": "V\u00c3\u00adctor Erice, Adelaida Garc\u00c3\u00ada Morales",
+    "actors": "Omero Antonutti, Sonsoles Aranguren, Ic\u00c3\u00adar Bolla\u00c3\u00adn",
     "plot": "The movie tells a melancholic story of a little girl who is living in a city in the north of Spain. She is fascinated by the secrets of the south which seem to be hidden in the personality of her father.",
     "language": "Spanish",
     "country": "Spain, France",
@@ -1011,7 +1195,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "04/04/2021"
+      "watchDate": "04/04/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1023,7 +1215,7 @@
     "genre": "Drama",
     "director": "Olivier Assayas",
     "writer": "Olivier Assayas",
-    "actors": "Virginie Ledoyen, Cyprien Fouquet, László Szabó",
+    "actors": "Virginie Ledoyen, Cyprien Fouquet, L\u00c3\u00a1szl\u00c3\u00b3 Szab\u00c3\u00b3",
     "plot": "Gilles and Christine a boy and a girl live in the outskirts of Paris, their families are ineffective and distant and they lead a purposeless life. They steal some records in a supermarket but she is caught and sent to a nursing home by force by her parents. She escapes and follows Gilles to a house where some other youths live. They then decide to go south: Christine has been told there is a commune there, where artists live. So they head south sleeping rough...",
     "language": "French, Hungarian, English",
     "country": "France",
@@ -1055,7 +1247,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "04/21/2021"
+      "watchDate": "04/21/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1066,7 +1266,7 @@
     "runtime": "115 min",
     "genre": "Crime, Drama",
     "director": "Jacques Audiard",
-    "writer": "Jacques Audiard, Thomas Bidegain, Noé Debré",
+    "writer": "Jacques Audiard, Thomas Bidegain, No\u00c3\u00a9 Debr\u00c3\u00a9",
     "actors": "Jesuthasan Antonythasan, Kalieaswari Srinivasan, Claudine Vinasithamby",
     "plot": "Dheepan is a Tamil freedom fighter, a Tiger. In Sri Lanka, the Civil War is reaching its end, and defeat is near. Dheepan decides to flee, taking with him two strangers - a woman and a little girl - hoping that they will make it easier for him to claim asylum in Europe. Arriving in Paris, the 'family' moves from one temporary home to another until Dheepan finds work as the caretaker of a run-down housing block in the suburbs. He works to build a new life and a real home for his 'wife' and his 'daughter', but the daily violence he confronts quickly reopens his war wounds, and Dheepan is forced to reconnect with his warrior's instincts to protect the people he hopes will become his true family.",
     "language": "Tamil, French, English",
@@ -1099,7 +1299,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
-      "watchDate": "05/02/2021"
+      "watchDate": "05/02/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1139,7 +1347,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "05/18/2021"
+      "watchDate": "05/18/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1183,7 +1399,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "06/13/2021"
+      "watchDate": "06/13/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1195,7 +1419,7 @@
     "genre": "Drama",
     "director": "Jean-Pierre Dardenne, Luc Dardenne",
     "writer": "Luc Dardenne, Jean-Pierre Dardenne, Leon Michaux",
-    "actors": "Jérémie Renier, Olivier Gourmet, Assita Ouedraogo",
+    "actors": "J\u00c3\u00a9r\u00c3\u00a9mie Renier, Olivier Gourmet, Assita Ouedraogo",
     "plot": "Igor--a 15-year-old apprentice mechanic--spends his off hours at the beck and call of his father. Igor's father, Roger, is a low-life involved with smuggling undocumented immigrants into Belgium, and acts as their slumlord, housing them in barely livable conditions, and paying them menial wages to work construction on his building (among other scams). When the building inspector pays a surprise visit and Amidou falls off a scaffold in his hurry to hide, things start to unravel, particularly when Igor makes a promise to the injured Amidou that ultimately exposes the different values of Igor and Roger, and of Amidou's wife, Assita.",
     "language": "French, Romanian",
     "country": "Belgium, France, Luxembourg, Tunisia",
@@ -1227,7 +1451,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "06/29/2021"
+      "watchDate": "06/29/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1271,7 +1503,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "10/07/2021"
+      "watchDate": "10/07/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1315,7 +1555,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "11/27/2021"
+      "watchDate": "11/27/2021",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1325,9 +1573,9 @@
     "released": "30 Dec 1966",
     "runtime": "75 min",
     "genre": "Comedy",
-    "director": "Vera Chytilová",
-    "writer": "Vera Chytilová, Pavel Jurácek, Ester Krumbachová",
-    "actors": "Ivana Karbanová, Jitka Cerhová, Marie Cesková",
+    "director": "Vera Chytilov\u00c3\u00a1",
+    "writer": "Vera Chytilov\u00c3\u00a1, Pavel Jur\u00c3\u00a1cek, Ester Krumbachov\u00c3\u00a1",
+    "actors": "Ivana Karbanov\u00c3\u00a1, Jitka Cerhov\u00c3\u00a1, Marie Ceskov\u00c3\u00a1",
     "plot": "After realizing that all world is spoiled, blond Marie and brunette Marie are committed to be spoiled themselves. Their life motto is: Nothing is bad as long as you are having fun. They rip off older men, feast in lavish meals and do all kinds of mischief. But what is all this leading to?",
     "language": "Czech",
     "country": "Czechoslovakia",
@@ -1355,7 +1603,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "03/01/2022"
+      "watchDate": "03/01/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1399,7 +1655,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Group",
-      "watchDate": "03/10/2022"
+      "watchDate": "03/10/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1443,7 +1707,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "03/24/2022"
+      "watchDate": "03/24/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1454,8 +1726,8 @@
     "runtime": "77 min",
     "genre": "Adventure, Drama, Fantasy",
     "director": "Jaromil Jires",
-    "writer": "Vítezslav Nezval, Ester Krumbachová, Jaromil Jires",
-    "actors": "Jaroslava Schallerová, Helena Anýzová, Petr Kopriva",
+    "writer": "V\u00c3\u00adtezslav Nezval, Ester Krumbachov\u00c3\u00a1, Jaromil Jires",
+    "actors": "Jaroslava Schallerov\u00c3\u00a1, Helena An\u00c3\u00bdzov\u00c3\u00a1, Petr Kopriva",
     "plot": "Surreal dream-like tale that combines several themes into one fantastical world.",
     "language": "Czech",
     "country": "Czechoslovakia",
@@ -1483,7 +1755,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "05/17/2022"
+      "watchDate": "05/17/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1527,11 +1807,19 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "06/28/2022"
+      "watchDate": "06/28/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
-    "title": "La Cérémonie",
+    "title": "La C\u00c3\u00a9r\u00c3\u00a9monie",
     "year": "1995",
     "rated": "Not Rated",
     "released": "20 Dec 1996",
@@ -1567,7 +1855,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "07/28/2022"
+      "watchDate": "07/28/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1611,7 +1907,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "08/23/2022"
+      "watchDate": "08/23/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1651,7 +1955,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": "09/27/2022"
+      "watchDate": "09/27/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1695,7 +2007,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": "10/18/2022"
+      "watchDate": "10/18/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1739,7 +2059,15 @@
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": "11/29/2022"
+      "watchDate": "11/29/2022",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -1790,7 +2118,8 @@
         "jacob": null,
         "joey": null
       },
-      "trophyInfo": "Somebody Picks a Good Movie!"
+      "trophyInfo": "Somebody Picks a Good Movie!",
+      "trophyNotes": null
     }
   },
   {
@@ -2048,7 +2377,9 @@
         "gabe": 8,
         "jacob": 6,
         "joey": 6
-      }
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -2058,9 +2389,9 @@
     "released": "28 Nov 2008",
     "runtime": "98 min",
     "genre": "Drama",
-    "director": "Ruben Östlund",
-    "writer": "Erik Hemmendorff, Ruben Östlund",
-    "actors": "Villmar Björkman, Lola Ewerlund, Maria Lundqvist",
+    "director": "Ruben \u00c3\u2013stlund",
+    "writer": "Erik Hemmendorff, Ruben \u00c3\u2013stlund",
+    "actors": "Villmar Bj\u00c3\u00b6rkman, Lola Ewerlund, Maria Lundqvist",
     "plot": "It's almost summer in Sweden and minor indiscretions and misbehavior abound. Leffe likes to show off for his friends and play salacious pranks, especially when he's drinking. Meanwhile, a righteous grade-school teacher doesn't know where to draw the line: she insists her fellow educators need a bit of instruction. Then there are two young teenage girls who like to pose for sexy photos and to party, but one night in a park, one of them is found passed out drunk by a complete stranger.",
     "language": "Swedish, English",
     "country": "Sweden, France",
@@ -2098,7 +2429,9 @@
         "gabe": 6,
         "jacob": 7,
         "joey": 8
-      }
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -2110,7 +2443,7 @@
     "genre": "Crime, Drama, Horror",
     "director": "Henri-Georges Clouzot",
     "writer": "Pierre Boileau, Thomas Narcejac, Henri-Georges Clouzot",
-    "actors": "Simone Signoret, Véra Clouzot, Paul Meurisse",
+    "actors": "Simone Signoret, V\u00c3\u00a9ra Clouzot, Paul Meurisse",
     "plot": "Christina Delassalle suffers greatly at the hands of her brutish husband Michel. She inherited the boys' boarding school they run but it's clearly Michel who is in charge. She and Nicole Horner, one of the teachers and Michel's former lover, decide to kill him. Christina, who has a serious condition, is terrified when, by chance, she meets a retired police inspector who decides to look into the case.",
     "language": "French, English",
     "country": "France",
@@ -2144,7 +2477,9 @@
         "gabe": 7,
         "jacob": 7,
         "joey": 6
-      }
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -2155,7 +2490,7 @@
     "runtime": "106 min",
     "genre": "Adventure, Family, Fantasy",
     "director": "Ludwig Berger, Michael Powell, Tim Whelan",
-    "writer": "Miles Malleson, Lajos Biró, Miklós Rózsa",
+    "writer": "Miles Malleson, Lajos Bir\u00c3\u00b3, Mikl\u00c3\u00b3s R\u00c3\u00b3zsa",
     "actors": "Conrad Veidt, Sabu, June Duprez",
     "plot": "In Bagdad, the young and naive Sultan Ahmad is curious about the behavior of his people. The Grand Vizier Jaffar convinces Ahmad to walk through the city disguised as a subject to know his people. Then he seizes the power telling to the inhabitants that Ahmad has died while he sends his army to arrest the Sultan that is thrown into the dungeons and sentenced to death. Ahmad befriends the young thief Abu that helps him to escape from the prison. They flee to Basra and plan to travel abroad with Sinbad. However Ahmad stumbles upon the beautiful princess and they fall in love with each other. But the evil Jaffar has also traveled to Basra to propose to marry the princess. When they see each other, Jaffar uses magic to blind Ahmad and turn Abu into a dog. Is their love doomed?",
     "language": "English",
@@ -2190,7 +2525,9 @@
         "gabe": 5,
         "jacob": 4,
         "joey": 5
-      }
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -2240,7 +2577,9 @@
         "gabe": 5,
         "jacob": 9,
         "joey": 6
-      }
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -2290,7 +2629,9 @@
         "gabe": 8,
         "jacob": 8,
         "joey": 8
-      }
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -2336,7 +2677,9 @@
         "gabe": 6,
         "jacob": 6,
         "joey": 7
-      }
+      },
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   },
   {
@@ -2383,7 +2726,8 @@
         "jacob": 6,
         "joey": 6
       },
-      "trophyInfo": "Music Room!"
+      "trophyInfo": "Music Room!",
+      "trophyNotes": null
     }
   },
   {
@@ -2430,7 +2774,8 @@
         "jacob": 7,
         "joey": 9
       },
-      "trophyInfo": "Joey"
+      "trophyInfo": "Joey",
+      "trophyNotes": null
     }
   },
   {
@@ -2477,7 +2822,8 @@
         "jacob": 7,
         "joey": 2
       },
-      "trophyInfo": "Gabe"
+      "trophyInfo": "Gabe",
+      "trophyNotes": null
     }
   },
   {
@@ -2528,7 +2874,8 @@
         "jacob": 4,
         "joey": 6
       },
-      "trophyInfo": "Gabe"
+      "trophyInfo": "Gabe",
+      "trophyNotes": null
     }
   },
   {
@@ -2624,7 +2971,8 @@
         "joey": 5,
         "greg": 4
       },
-      "trophyNotes": "Joey gets togetherness trophy."
+      "trophyNotes": "Joey gets togetherness trophy.",
+      "trophyInfo": null
     }
   },
   {
@@ -2636,7 +2984,7 @@
     "genre": "Drama",
     "director": "Ingmar Bergman",
     "writer": "Ingmar Bergman",
-    "actors": "Åke Grönberg, Harriet Andersson, Hasse Ekman",
+    "actors": "\u00c3\u2026ke Gr\u00c3\u00b6nberg, Harriet Andersson, Hasse Ekman",
     "plot": "While traveling in caravan through the country of Sweden, one member of the decadent Alberti Circus tells the owner and ringmaster Albert Johansson a sad story about the clown Frost: seven years ago, his wife Alma was surprised by him bathing naked in a lake with a regiment. When the circus arrives in the town where Albert's wife Agda and sons live, he decides to pay a visit with his young mistress Anne to a famous local troupe to borrow some capes, hats and vests for their tonight show. They are humiliated by the director Mr. Sjuberg, but he lends the pieces, and the lead actor Frans gives an unsuccessful pass on Anne. When Albert decides to visit Agda, the jealous Anne meets Frans, who seduces her with an apparently valuable necklace, and they have a love affair. Anne finds that the necklace is actually worthless and returns to the circus. Meanwhile, Agda refuses to accept Albert back and he sees Anne leaving the theater and going to the jewelry. During the exhibition, Albert and Anne are submitted to humiliations by Frans.",
     "language": "Swedish",
     "country": "Sweden",
@@ -2664,7 +3012,14 @@
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": null,
-      "trophyNotes": ""
+      "trophyNotes": "",
+      "clubRatings": {
+        "andy": null,
+        "gabe": null,
+        "jacob": null,
+        "joey": null
+      },
+      "trophyInfo": null
     }
   }
 ]
