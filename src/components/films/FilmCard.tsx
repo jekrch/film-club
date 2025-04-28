@@ -242,7 +242,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                                         key={name}
                                                         title={`${name}: ${rating}/9`}
                                                         className={`
-                                                            flex flex-col items-center justify-center flex-1 basis-0 min-w-0 /* Flex properties for wrapping */
+                                                            flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-12 /* Flex properties for wrapping */
                                                             text-center bg-white/5 rounded-sm py-1 shadow-inner shadow-black/20
                                                             transition-all duration-150 ease-out hover:bg-slate-600 hover:shadow-md
                                                             ${isCompact ? 'py-0.5' : 'py-1'}
