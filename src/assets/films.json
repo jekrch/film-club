@@ -537,9 +537,9 @@
       "selector": "Andy",
       "watchDate": "11/15/2020",
       "clubRatings": {
-        "andy": 8,
+        "andy": null,
         "gabe": null,
-        "jacob": null,
+        "jacob": 8,
         "joey": null
       },
       "trophyInfo": null,
@@ -1811,7 +1811,7 @@
       "clubRatings": {
         "andy": null,
         "gabe": null,
-        "jacob": null,
+        "jacob": 7,
         "joey": null
       },
       "trophyInfo": null,
@@ -1819,7 +1819,7 @@
     }
   },
   {
-    "title": "La C\u00c3\u00a9r\u00c3\u00a9monie",
+    "title": "La Ceremonie",
     "year": "1995",
     "rated": "Not Rated",
     "released": "20 Dec 1996",
