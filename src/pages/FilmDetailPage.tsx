@@ -134,6 +134,13 @@ const FilmDetailPage = () => {
     setLoading(false);
   }, [imdbId]);
 
+  // Helper function to generate Criterion Channel URL
+  const getCriterionChannelUrl = (title: string): string => {
+    const baseUrl = 'https://www.criterionchannel.com/videos/';
+    const slug = title.toLowerCase().replace(/\s+/g, '-');
+    return `${baseUrl}${slug}`;
+  };
+
   // --- Loading State ---
   if (loading) {
     return (
@@ -191,14 +198,32 @@ const FilmDetailPage = () => {
         <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden mb-12 border border-slate-700">
           <div className="md:flex">
             {/* Poster */}
-            <div className="md:flex-shrink-0 md:w-1/3 lg:w-[300px]">
-              <img
-                src={film.poster}
-                alt={`${film.title} poster`}
-                className="h-full w-full object-cover"
-                // Add a placeholder image in case the poster fails to load
-                onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; e.currentTarget.onerror = null; }}
-              />
+            <div className="md:flex-shrink-0 md:w-1/3 lg:w-[300px] relative group">
+              <a 
+                href={getCriterionChannelUrl(film.title)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block relative"
+              >
+                <img
+                  src={film.poster}
+                  alt={`${film.title} poster`}
+                  className="h-full w-full object-cover transition-opacity duration-200 group-hover:opacity-90"
+                  onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; e.currentTarget.onerror = null; }}
+                />
+                {/* Criterion Channel overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-70 flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100">
+                  <div className="text-white text-center px-4">
+                    <span className="bg-blue-500 text-white px-4 py-2 rounded-full font-medium inline-flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                      </svg>
+                      Watch on Criterion
+                    </span>
+                  </div>
+                </div>
+              </a>
             </div>
 
             {/* Film Details */}
