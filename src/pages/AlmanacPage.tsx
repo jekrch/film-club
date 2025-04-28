@@ -773,7 +773,7 @@ const AlmanacPage: React.FC = () => {
                             </h4>
                             <button
                                 onClick={() => setSelectedIntervalDetail(null)}
-                                className="text-lg leading-none font-bold text-slate-400 hover:text-white transition-colors !px-2 !py-0"
+                                className="text-lg leading-none font-bold text-slate-400 hover:text-white transition-colors !px-2 !py-1"
                                 aria-label="Close interval details"
                             >
                                 &times;
@@ -820,7 +820,7 @@ const AlmanacPage: React.FC = () => {
                                     <div className="flex justify-between items-center"><span className="text-slate-400">Avg Runtime (Sel.):</span><span className={getHighlightClass(highlights.avgSelectionRuntime)}>{stats.avgSelectionRuntime ? `${Math.round(stats.avgSelectionRuntime)} min` : 'N/A'}</span></div>
                                     {/* Updated Title/Tooltip */}
                                     <div className="flex justify-between items-center" title="Average club score for films selected by this member, only including films with 2+ ratings">
-                                        <span className="text-slate-400">Avg Club Score (Sel.<span className="text-xs align-super">*</span>):</span>
+                                        <span className="text-slate-400">Avg Club Score (Sel.):</span>
                                         <span className={getHighlightClass(highlights.avgSelectionScore)}>{formatAverage(stats.avgSelectionScore)} / 9</span>
                                     </div>
                                     <div className="flex justify-between items-center"><span className="text-slate-400">Avg Score Given:</span><span className={getHighlightClass(highlights.avgGivenScore)}>{formatAverage(stats.avgGivenScore)} / 9</span></div>
