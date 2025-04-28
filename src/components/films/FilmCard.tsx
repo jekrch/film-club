@@ -91,7 +91,11 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     // Helper function to generate Criterion Channel URL
     const getCriterionChannelUrl = (title: string): string => {
         const baseUrl = 'https://www.criterionchannel.com/videos/';
-        const slug = title.toLowerCase().replace(/\s+/g, '-');
+        const slug = title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
         return `${baseUrl}${slug}`;
     };
 
