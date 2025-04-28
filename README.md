@@ -133,9 +133,9 @@ You can update two main JSON files:
 
 ### How to Update Your Film Score
 
-Navigate to the Film Data file using the link above
-Find the film you want to score in the list
-Look for the "clubRatings" section that looks like this:
+1. Navigate to the Film Data file using the link above
+2. Find the film you want to score in the list
+3. Look for the "clubRatings" section that looks like this:
 ```
 "clubRatings": {
   "andy": null,
@@ -144,17 +144,16 @@ Look for the "clubRatings" section that looks like this:
   "joey": null
 }
 ```
-Find your name and replace the null with your score (a number)
-Commit your changes as described above
+4. Find your name and replace the null with your score (a number)
+5. Commit your changes as described above
 
 ### What Happens Next?
 
 Once you commit your changes, GitHub will automagically publish the updated website. Someone really made this easy! Within a few minutes, your changes will appear on [criterionclub.org](https://criterionclub.org)!
 
-### Important Tips
+### Tips
 
 * **JSON Formatting Matters**: Make sure you maintain the correct format with commas, brackets, and quotes
-* **Preview Your Changes**: Use the "Preview" tab to make sure everything looks right before committing
 * **Don't Worry About Breaking Things**: If something goes wrong, we can always restore a previous version
 
 ### Need Help?
