@@ -250,9 +250,9 @@ const FilmDetailPage = () => {
                   >
 
                     {/* This span IS ALWAYS clickable, overriding the parent 'a' tag's pointer-events-none on mobile */}
-                    <span className={`bg-gray-900 bg-opacity-70
+                    <span className={`bg-gray-900 bg-opacity-70 opacity-70
                                            text-gray-100 text-lg font-semibold
-                                           pr-6 pl-4 py-3 rounded-md
+                                           pr-5 pl-3 py-2 rounded-lg
                                            inline-flex items-center shadow-xl border border-white/20
                                            pointer-events-auto /* Make the button itself clickable */
                                           `}
@@ -269,7 +269,7 @@ const FilmDetailPage = () => {
             </div>
 
 
-            {/* Film Details (remains mostly the same) */}
+            {/* Film Details  */}
             <div className="p-6 md:p-8 flex-grow">
               {/* Title and Year */}
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
@@ -436,7 +436,7 @@ const FilmDetailPage = () => {
                         size="w-32 h-32 md:w-36 md:h-36"
                       />
                       <div
-                        className="absolute bottom-0 transform -translate-x-1/2 translate-y-1/4 bg-emerald-600 text-slate-100 px-4 py-1 rounded text-base font-semibold whitespace-nowrap shadow-lg group-hover:scale-105 group-hover:rotate-[-5deg] transition-transform duration-200 ease-in-out"
+                        className="absolute bottom-0 transform -translate-x-1/2 translate-y-1/4 bg-emerald-600 text-slate-100 px-4 py-1 rounded text-base font-semibold whitespace-nowrap shadow-lg group-hover:scale-105 group-hover:rotate-[5deg] transition-transform duration-200 ease-in-out"
                         style={{
                           transform: 'translateX(55%) translateY(5%) rotate(-7deg)',
                           transformOrigin: 'center bottom'
