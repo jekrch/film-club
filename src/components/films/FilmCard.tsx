@@ -25,11 +25,11 @@ const getRatingColorClass = (rating: number | string): string => {
     }
 
     if (numericRating >= 7) {
-        return 'text-emerald-400'; // Green for 7 and above
+        return 'text-emerald-400'; 
     } else if (numericRating >= 4) {
-        return 'text-yellow-500'; // Yellow for 4 up to (but not including) 7
+        return 'text-amber-500'; 
     } else {
-        return 'text-red-400'; // Red for ratings below 4 (0 to 3.99)
+        return 'text-rose-400'; 
     }
 };
 

@@ -495,7 +495,7 @@ const AlmanacPage: React.FC = () => {
             },
             series: [{ name: 'Films', colorByPoint: true, type: 'pie', data: currentDonutChartData as any[] } as any],
             credits: { enabled: false },
-            colors: [ /* ... colors unchanged ... */
+            colors: [ 
                 '#b76e41', '#d9a534', '#1a7b6d', '#be5a38', '#6b7da3', '#a34a6a', '#2c815c', '#c88b3a', '#734f8c', '#b35450',
                 '#a87c5f', '#d3a064', '#5f7464', '#946b54', '#7c6a53', '#85594c', '#4e6e81', '#8f4e5b', '#5c6e58', '#8d7471'
             ]
