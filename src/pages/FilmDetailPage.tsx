@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Film } from '../types/film'; // Assuming types/film defines Film including optional streamUrl
+import { Film } from '../types/film'; 
 import filmsData from '../assets/films.json';
-import { calculateClubAverage } from '../utils/ratingUtils'; // Assuming this exists
-import FilmList from '../components/films/FilmList'; // Assuming this exists
-import CircularImage from '../components/common/CircularImage'; // Assuming this exists
-import PopcornRating from '../components/common/PopcornRating'; // Assuming this exists
+import { calculateClubAverage } from '../utils/ratingUtils'; 
+import FilmList from '../components/films/FilmList'; 
+import CircularImage from '../components/common/CircularImage'; 
+import PopcornRating from '../components/common/PopcornRating'; 
 
 // --- Helper Functions (parseGenres, formatRuntime, getImdbRatingDisplay, countValidRatings) ---
-// Keep the existing helper functions as they are. Provided again for completeness.
 
 /**
  * Parses a comma-separated string of genres into an array of strings.
