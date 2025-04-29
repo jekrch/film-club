@@ -82,23 +82,6 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     // True if there's no watch date BUT there is a selector assigned
     const showUpNext = !watchedDateDisplay && selectorName;
 
-    // Helper function to format Genre (display first genre)
-    // const formatGenre = (genre: string) => {
-    //     if (!genre) return 'N/A';
-    //     return genre.split(',')[0].trim();
-    // };
-
-    // Helper function to generate Criterion Channel URL
-    const getCriterionChannelUrl = (title: string): string => {
-        const baseUrl = 'https://www.criterionchannel.com/videos/';
-        const slug = title
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-            .replace(/\s+/g, '-') // Replace spaces with hyphens
-            .replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
-        return `${baseUrl}${slug}`;
-    };
-
     return (
         // Outermost container: Handles visibility transition and relative positioning for the banner
         <div
