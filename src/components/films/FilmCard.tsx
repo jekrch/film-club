@@ -82,12 +82,6 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     // True if there's no watch date BUT there is a selector assigned
     const showUpNext = !watchedDateDisplay && selectorName;
 
-    // Helper function to format Genre (display first genre)
-    // const formatGenre = (genre: string) => {
-    //     if (!genre) return 'N/A';
-    //     return genre.split(',')[0].trim();
-    // };
-
     return (
         // Outermost container: Handles visibility transition and relative positioning for the banner
         <div
@@ -147,9 +141,9 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-800/10 to-transparent z-10"></div>
                         {/* Year badge positioned on the poster */}
                         {film.year && (
-                                <div className="absolute top-2 right-2 bg-slate-800/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded z-20 shadow-md">
-                                    {film.year}
-                                </div>
+                            <div className="absolute top-2 right-2 bg-slate-800/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded z-20 shadow-md">
+                                {film.year}
+                            </div>
                         )}
                     </div>
 
