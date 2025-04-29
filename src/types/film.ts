@@ -75,7 +75,8 @@ export interface Film {
     boxOffice: string; // Often "N/A"
     production: string; // Often "N/A"
     website: string; // Often "N/A"
-
+    streamUrl?: string; // Optional: URL for streaming the film
+    noStreaming?: boolean; // Optional: Flag to indicate if the film is not available for streaming
     // Optional: Movie club specific information added from your CSV
     // Make it optional in case some films in your list haven't been processed by the club yet.
     movieClubInfo?: MovieClubDetails;

@@ -2288,7 +2288,7 @@
     "director": "Robert Longo",
     "writer": "William Gibson",
     "actors": "Keanu Reeves, Dolph Lundgren, Dina Meyer",
-    "plot": "In 2021, the whole world is connected by the gigantic Internet, and almost a half of the population is suffering from the Nerve Attenuation Syndrome (NAS).Johnny with an implanted memory chip in his brain was ordered to transport the over loaded information from Beijing to Newark. While Pharmakom Industries supported by Yakuza tries to capture him to get the information back, the Low-tech group led by J-Bone tries to break the missing code to download the cure of NAS which Johnny carries.",
+    "plot": "In 2021, the whole world is connected by the gigantic Internet, and almost a half of the population is suffering from the Nerve Attenuation Syndrome (NAS). Johnny with an implanted memory chip in his brain was ordered to transport the over loaded information from Beijing to Newark. While Pharmakom Industries supported by Yakuza tries to capture him to get the information back, the Low-tech group led by J-Bone tries to break the missing code to download the cure of NAS which Johnny carries.",
     "language": "English, Japanese",
     "country": "Canada, United States",
     "awards": "2 wins & 3 nominations total",
@@ -2328,7 +2328,8 @@
       },
       "trophyInfo": "Johnny Mnemonic!",
       "trophyNotes": "Joey, 5.3"
-    }
+    },
+    "streamUrl": "https://www.amazon.com/Johnny-Mnemonic-Keanu-Reeves/dp/B000I8ES4S"
   },
   {
     "title": "Modern Times",
@@ -2580,7 +2581,8 @@
       },
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "noStreaming": true
   },
   {
     "title": "Ear for Eye",
