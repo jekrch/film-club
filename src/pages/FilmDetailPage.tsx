@@ -82,6 +82,8 @@ const FilmDetailPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [filmsBySameSelector, setFilmsBySameSelector] = useState<Film[]>([]);
   const [isPlotExpanded, setIsPlotExpanded] = useState(false);
+  // New state to track expanded blurbs (key: username, value: boolean)
+  const [expandedBlurbs, setExpandedBlurbs] = useState<Record<string, boolean>>({});
 
   // State for the watch link
   const [watchUrl, setWatchUrl] = useState<string | null>(null);
@@ -95,6 +97,14 @@ const FilmDetailPage = () => {
     return `${baseUrl}${slug}`;
   };
 
+  // Toggle blurb expansion
+  const toggleBlurbExpansion = (username: string) => {
+    setExpandedBlurbs(prev => ({
+      ...prev,
+      [username]: !prev[username]
+    }));
+  };
+
   useEffect(() => {
     // Reset state and scroll to top on imdbId change
     window.scrollTo(0, 0);
@@ -105,6 +115,7 @@ const FilmDetailPage = () => {
     setLinkCheckStatus('idle'); // Reset link status
     setLoading(true);
     setError(null);
+    setExpandedBlurbs({}); // Reset expanded blurbs state
 
     if (!imdbId) {
       setError("Film ID is missing in the URL.");
@@ -415,11 +426,35 @@ const FilmDetailPage = () => {
                                 />
                               </div>
                               {rating.blurb && (
-                                <div className="bg-gradient-to-r from-slate-800 via-[#2b384e] to-slate-800 px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-blue-500/30 shadow-inner">
+                                <div className="bg-gradient-to-r from-slate-800 via-[#2b384e] to-slate-800 px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-emerald-400/40 shadow-inner mt-4">
                                   <svg className="absolute text-emerald-400/40 h-5 w-5 -top-1 left-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                                   </svg>
-                                  <p className="text-slate-300 text-sm italic">{rating.blurb}</p>
+                                  
+                                  {/* Updated blurb display with truncation and line breaks support */}
+                                  <div>
+                                    {/* Use white-space: pre-line to preserve line breaks and display truncated or full text based on state */}
+                                    <p 
+                                      className="text-slate-300 text-sm italic" 
+                                      style={{ 
+                                        whiteSpace: 'pre-line',
+                                        overflow: 'hidden',
+                                        maxHeight: expandedBlurbs[rating.user] ? 'none' : '100px' 
+                                      }}
+                                    >
+                                      {rating.blurb}
+                                    </p>
+                                    
+                                    {/* Show "Read More/Less" button only if the blurb is long enough */}
+                                    {rating.blurb && rating.blurb.length > 150 && (
+                                      <button
+                                        onClick={() => toggleBlurbExpansion(rating.user)}
+                                        className="h-10 !px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-4"
+                                      >
+                                        {expandedBlurbs[rating.user] ? 'Read Less' : 'Read More'}
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -461,16 +496,16 @@ const FilmDetailPage = () => {
               {/* Trophy Info */}
               {(film.movieClubInfo.trophyInfo || film.movieClubInfo.trophyNotes) && (
                 <div className="mt-8 pt-6 border-t border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                  {film.movieClubInfo.trophyInfo && (
+                  {/* {film.movieClubInfo.trophyInfo && (
                     <div>
                       <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Info</h3>
                       <p className="text-slate-300">{film.movieClubInfo.trophyInfo}</p>
                     </div>
-                  )}
+                  )} */}
                   {film.movieClubInfo.trophyNotes && (
                     <div>
-                      <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Notes</h3>
-                      <p className="text-slate-300">{film.movieClubInfo.trophyNotes}</p>
+                      <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy gallery</h3>
+                      <p className="text-slate-300 whitespace-pre-line">{film.movieClubInfo.trophyNotes}</p>
                     </div>
                   )}
                 </div>

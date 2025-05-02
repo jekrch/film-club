@@ -10,4 +10,19 @@ export default defineConfig({
   ],
   publicDir: 'public',
   base: '/',
+  server: {
+    fs: {
+      // Allow serving files from one level up to the project root
+      allow: ['..']
+    },
+    headers: {
+      // Set MIME types for font files
+      'Cache-Control': 'public, max-age=31536000',
+      '.woff': 'font/woff',
+      '.woff2': 'font/woff2',
+      '.ttf': 'font/ttf',
+      '.eot': 'application/vnd.ms-fontobject',
+      '.otf': 'font/otf'
+    }
+  }
 })
