@@ -60,10 +60,9 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     const clubRatings = film.movieClubInfo?.clubRatings;
     const selectorName = film.movieClubInfo?.selector;
 
-    // Prepare rating entries, filtering out null or empty strings
+    // Prepare rating entries, filtering out null or empty scores
     const ratingEntries = clubRatings
-        ? Object.entries(clubRatings)
-            .filter(([, rating]) => rating != null && rating !== '')
+        ? clubRatings.filter(rating => rating.score !== null)
         : [];
 
     // Calculate club average rating
@@ -228,13 +227,13 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     {/* Member Ratings Display */}
                                     {ratingEntries.length > 0 && (
                                         <div className={`flex flex-wrap items-stretch gap-1.5 ${isCompact ? 'gap-1 text-xs' : 'text-sm'}`}>
-                                            {ratingEntries.map(([name, rating]) => {
-                                                const numericRating = parseFloat(rating as string);
+                                            {ratingEntries.map((rating) => {
+                                                const numericRating = rating.score as number;
                                                 const ratingColorClass = getRatingColorClass(numericRating); // Apply color based on rating
                                                 return (
                                                     <div
-                                                        key={name}
-                                                        title={`${name}: ${rating}/9`}
+                                                        key={rating.user}
+                                                        title={`${rating.user}: ${rating.score}/9`}
                                                         className={`
                                                             flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-12 /* Flex properties for wrapping */
                                                             text-center bg-white/5 rounded-sm py-1 shadow-inner shadow-black/20
@@ -244,11 +243,11 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                                     >
                                                          {/* Member Initials */}
                                                          <div className={`uppercase font-mono text-[10px] text-slate-400 leading-none tracking-wide whitespace-nowrap ${isCompact ? 'text-[9px]' : 'text-[10px]'}`}>
-                                                             {name.substring(0, 2)} {/* Show 3 initials */}
+                                                             {rating.user.substring(0, 2)} {/* Show 2 initials */}
                                                          </div>
                                                          {/* Member Rating */}
                                                          <div className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[12px]' : 'text-base'}`}>
-                                                             {rating}
+                                                             {rating.score}
                                                          </div>
                                                     </div>
                                                 );

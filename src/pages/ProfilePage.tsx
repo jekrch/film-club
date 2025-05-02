@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import CircularImage from '../components/common/CircularImage';
-import FilmList from '../components/films/FilmList'; // Using FilmList component
-import teamMembersData from '../assets/club.json';
+import FilmList from '../components/films/FilmList';
+import { teamMembers } from '../types/team';
 import filmsData from '../assets/films.json';
-import { Film, ClubMemberRatings } from '../types/film'; // Import ClubMemberRatings
+import { Film, getClubRating } from '../types/film';
 
 // Define TeamMember interface including the optional interview
 interface TeamMember {
@@ -13,10 +13,11 @@ interface TeamMember {
   title: string;
   bio: string;
   image: string;
+  queue?: number;
+  color?: string;
   interview?: { question: string; answer: string }[];
 }
 
-const teamMembers: TeamMember[] = teamMembersData;
 const allFilms = filmsData as unknown as Film[];
 
 // --- Helper Component for Interview Item with Expander ---
@@ -30,7 +31,7 @@ const InterviewItem: React.FC<InterviewItemProps> = ({ question, answer }) => {
   const needsExpander = answer.length > 300; // Adjust threshold as needed
 
   return (
-    <div className="py-5"> {/* Add padding between Q&A pairs */}
+    <div className="py-5">
       <h4 className="text-lg font-semibold text-blue-400 mb-2">{question}</h4>
       <div className={`prose prose-sm prose-invert max-w-none text-slate-300 ${!isExpanded && needsExpander ? 'line-clamp-5' : ''}`}>
         <ReactMarkdown>{answer}</ReactMarkdown>
@@ -54,9 +55,7 @@ const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const [member, setMember] = useState<TeamMember | null>(null);
   const [selectedFilms, setSelectedFilms] = useState<Film[]>([]);
-  // --- NEW STATE ---
   const [topRatedFilms, setTopRatedFilms] = useState<Film[]>([]);
-  // --- END NEW STATE ---
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,9 +65,7 @@ const ProfilePage: React.FC = () => {
     setError(null);
     setMember(null);
     setSelectedFilms([]);
-    // --- Reset new state ---
     setTopRatedFilms([]);
-    // --- End reset ---
 
     if (!memberName) {
       setError("Member name is missing in the URL.");
@@ -100,39 +97,31 @@ const ProfilePage: React.FC = () => {
     setSelectedFilms(filmsSelected);
 
     // --- Calculate Top 3 Rated Films by this member ---
-    // Map member name to the rating key (assuming lowercase keys in ClubMemberRatings)
-    const ratingKey = decodedMemberName.toLowerCase() as keyof ClubMemberRatings;
+    // With the new schema, we need to find films rated by this member
+    const filmsRatedByMember = allFilms
+      .filter(film => {
+        // Find if there's a rating from this member
+        const memberRating = film.movieClubInfo?.clubRatings.find(
+          rating => rating.user.toLowerCase() === decodedMemberName.toLowerCase()
+        );
+        // Only include films where this member gave a numeric score
+        return memberRating && typeof memberRating.score === 'number';
+      })
+      .sort((a, b) => {
+        // Get the ratings for this member from both films
+        const ratingA = getClubRating(a, decodedMemberName.toLowerCase())?.score || 0;
+        const ratingB = getClubRating(b, decodedMemberName.toLowerCase())?.score || 0;
+        
+        // Sort descending by rating
+        if (ratingB !== ratingA) {
+            return ratingB - ratingA;
+        }
+        return a.title.localeCompare(b.title); // Sort alphabetically for ties
+      })
+      .slice(0, 3); // Get the top 3
 
-    // Check if the ratingKey is actually a valid key in ClubMemberRatings type.
-    // This is more for robustness if names/keys might not align perfectly.
-    // A simple check based on known keys:
-    const validRatingKeys: (keyof ClubMemberRatings)[] = ['andy', 'gabe', 'jacob', 'joey', 'mark'];
-    if (validRatingKeys.includes(ratingKey)) {
-        const filmsRatedByMember = allFilms
-            .filter(film => {
-                // Ensure movieClubInfo and clubRatings exist, and the specific member's rating is a number
-                return typeof film.movieClubInfo?.clubRatings?.[ratingKey] === 'number';
-            })
-            .sort((a, b) => {
-                // Sort descending by the member's rating. Non-null assertions are safe due to the filter.
-                const ratingA = a.movieClubInfo!.clubRatings[ratingKey]!;
-                const ratingB = b.movieClubInfo!.clubRatings[ratingKey]!;
-                // Add secondary sort (e.g., by title) for ties
-                if (ratingB !== ratingA) {
-                    return ratingB - ratingA;
-                }
-                return a.title.localeCompare(b.title); // Sort alphabetically for ties
-            })
-            .slice(0, 3); // Get the top 3
-
-        setTopRatedFilms(filmsRatedByMember);
-    } else {
-        console.warn(`Could not find matching rating key for member: ${decodedMemberName}`);
-        // Optionally set topRatedFilms to empty or handle this case as needed
-        setTopRatedFilms([]);
-    }
+    setTopRatedFilms(filmsRatedByMember);
     // --- End Calculation ---
-
 
     setLoading(false);
 
@@ -210,13 +199,12 @@ const ProfilePage: React.FC = () => {
         {/* End Interview Section */}
 
 
-        {/* --- NEW: Top Rated Films Section --- */}
+        {/* --- Top Rated Films Section --- */}
         {topRatedFilms.length > 0 && (
-            <div className="mb-12 mt-8"> {/* Add margin top */}
+            <div className="mb-12 mt-8">
                 <FilmList
                     films={topRatedFilms}
-                    title={`Top ${topRatedFilms.length} Rated Film${topRatedFilms.length !== 1 ? 's' : ''} by ${member.name}`} // Dynamic title based on count
-                    // No onFilmSelect needed here, unless you want clicking these to do something specific
+                    title={`Top ${topRatedFilms.length} Rated Film${topRatedFilms.length !== 1 ? 's' : ''} by ${member.name}`}
                 />
             </div>
         )}
@@ -224,14 +212,11 @@ const ProfilePage: React.FC = () => {
 
 
         {/* Selected Films Section - Using FilmList Component */}
-        <div className="mb-12 mt-8"> {/* Adjusted margin-top */}
-            {/* Render FilmList only if member data is loaded */}
-            {/* No need to check member again here, as it's checked above */}
+        <div className="mb-12 mt-8">
             <FilmList
                 films={selectedFilms}
                 title={`Films Selected by ${member.name}`}
             />
-            {/* The "No films found" message is handled inside FilmList */}
         </div>
 
       </div>

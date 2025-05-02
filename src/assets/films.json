@@ -33,20 +33,33 @@
     "imdbVotes": "45,233",
     "imdbID": "tt0107653",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$1,769,305",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "08/12/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 1,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 1,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -76,25 +89,37 @@
         "value": "89%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "8.4",
     "imdbVotes": "103,344",
     "imdbID": "tt0091251",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$71,909",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "08/19/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -124,25 +149,37 @@
         "value": "100%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "8.0",
     "imdbVotes": "24,535",
     "imdbID": "tt0071141",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$8,144",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "09/07/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 9,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 9,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -172,25 +209,37 @@
         "value": "88%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.8",
     "imdbVotes": "48,787",
     "imdbID": "tt0071129",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$125,493",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "09/07/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 4,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 4,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -220,25 +269,36 @@
         "value": "89%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.9",
     "imdbVotes": "23,085",
     "imdbID": "tt0058430",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "09/15/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -277,19 +337,31 @@
     "imdbVotes": "27,490",
     "imdbID": "tt0123948",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "09/23/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -328,20 +400,33 @@
     "imdbVotes": "10,612",
     "imdbID": "tt0089504",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$10,179,000",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "10/01/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -381,20 +466,33 @@
     "imdbVotes": "21,301",
     "imdbID": "tt3908142",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$228,894",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "10/14/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 8.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -413,7 +511,6 @@
     "plot": "Mary Henry is enjoying the day by riding around in a car with two friends. When challenged to a drag, the women accept, but are forced off of a bridge. It appears that all are drowned, until Mary, quite some time later, amazingly emerges from the river. After recovering, Mary accepts a job in a new town as a church organist, only to be dogged by a mysterious phantom figure that seems to reside in an old run-down pavilion. It is here that Mary must confront the personal demons of her spiritual insouciance.",
     "language": "English",
     "country": "United States",
-    "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BZGZiMTVjNDYtYjhmNy00ODhlLWI0YjEtN2FmZmI2ZDAyMjM0XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
       {
@@ -425,25 +522,36 @@
         "value": "87%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.0",
     "imdbVotes": "28,968",
     "imdbID": "tt0055830",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "10/25/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 4.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 4.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -482,20 +590,32 @@
     "imdbVotes": "43,271",
     "imdbID": "tt0079641",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "11/05/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -514,7 +634,6 @@
     "plot": "Harry Lund is a nineteen-year-old man who meets Monika, a romantic, reckless and rebellious seventeen-year-old, and they fall in love. They leave their families and jobs in their small town, Harry gets his father's boat and they spend the summer together in an isolated island. Monika gets pregnant, and Harry decides to marry her. He grows up, gets a job and returns to his studies, trying to improve their lives and raise their daughter June, while Monika just wants to have fun.",
     "language": "Swedish",
     "country": "Sweden",
-    "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BOGJjODNhNzQtMWQzYi00NDFlLTllMDktYzA4MzM0OGFkNzJhXkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
       {
@@ -526,25 +645,36 @@
         "value": "100%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.5",
     "imdbVotes": "16,582",
     "imdbID": "tt0046345",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "11/15/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 8,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -574,25 +704,36 @@
         "value": "88%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "8.0",
     "imdbVotes": "35,048",
     "imdbID": "tt0053976",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "11/24/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 8.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -622,25 +763,36 @@
         "value": "88%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "8.0",
     "imdbVotes": "11,439",
     "imdbID": "tt0063633",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "12/03/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -670,25 +822,36 @@
         "value": "94%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.5",
     "imdbVotes": "9,735",
     "imdbID": "tt0059415",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "12/10/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -727,20 +890,32 @@
     "imdbVotes": "102,307",
     "imdbID": "tt0048424",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "12/17/2020",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 8,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -780,20 +955,33 @@
     "imdbVotes": "14,665",
     "imdbID": "tt0089603",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$437,547",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "01/10/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -832,20 +1020,33 @@
     "imdbVotes": "63,451",
     "imdbID": "tt0019254",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$21,877",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "01/17/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -884,20 +1085,32 @@
     "imdbVotes": "223,297",
     "imdbID": "tt0050825",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "01/31/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -937,20 +1150,33 @@
     "imdbVotes": "145,128",
     "imdbID": "tt0093177",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$14,564,027",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "01/31/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -969,7 +1195,6 @@
     "plot": "Reno is an artist struggling to survive in NYC. He draws inspiration from scenes of daily street life and occasional random violence. Under pressure to finish his oft-delayed grand masterpiece, his psychotic alter-ego takes over and he begins killing random vagrants to boost his creativity, not quite realizing that it is happening in reality. When an art dealer grimly rejects Reno's finished masterpiece, Reno's mental condition quickly deteriorates.",
     "language": "English",
     "country": "United States",
-    "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BYTE3OThhNzEtZGMwOS00YWYxLThlMWEtODk1ZTI2YzcyM2NiXkEyXkFqcGc@._V1_.jpg",
     "ratings": [
       {
@@ -990,20 +1215,32 @@
     "imdbVotes": "8,774",
     "imdbID": "tt0079082",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "02/15/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 4,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 4,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -1022,7 +1259,6 @@
     "plot": "Fletcher Munson is a lethargic, passive worker for a Scientology-like self-help corporation called Eventualism. After the death of a colleague, he is promoted to the job of writing speeches for T. Azimuth Schwitters, the founder and head of the group. He uses this as an excuse to be emotionally and romantically distant from his wife, who, he discovers, is having an affair with his doppelganger, a dentist named Dr. Jeffrey Korchek. As Munson fumbles with the speech and Korchek becomes obsessed with a new patient, a psychotic exterminator named Elmo Oxygen goes around the town seducing lonely wives and taking photographs of his genitals.",
     "language": "English, Japanese, Italian, French",
     "country": "United States",
-    "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BMjMyMDg1NjMyNl5BMl5BanBnXkFtZTgwNzQzMTE2ODE@._V1_SX300.jpg",
     "ratings": [
       {
@@ -1043,20 +1279,33 @@
     "imdbVotes": "6,156",
     "imdbID": "tt0117561",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$10,580",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "02/28/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -1096,20 +1345,33 @@
     "imdbVotes": "8,474",
     "imdbID": "tt0102048",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$2,971,661",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "03/09/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 5.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1148,20 +1410,33 @@
     "imdbVotes": "13,310",
     "imdbID": "tt2258281",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$124,919",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "03/21/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 9,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 9,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1191,25 +1466,36 @@
         "value": "100%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.8",
     "imdbVotes": "6,509",
     "imdbID": "tt0084740",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "04/04/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1248,20 +1534,33 @@
     "imdbVotes": "2,328",
     "imdbID": "tt0109702",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$30,209",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "04/21/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1300,20 +1599,33 @@
     "imdbVotes": "17,124",
     "imdbID": "tt4082068",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$261,819",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Mark",
       "watchDate": "05/02/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 8.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1343,25 +1655,37 @@
         "value": "98%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "8.2",
     "imdbVotes": "39,591",
     "imdbID": "tt0048473",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$134,241",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "05/18/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1400,20 +1724,32 @@
     "imdbVotes": "26,768",
     "imdbID": "tt0062136",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "06/13/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1452,20 +1788,33 @@
     "imdbVotes": "8,646",
     "imdbID": "tt0117398",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$592,543",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "06/29/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 8.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -1505,20 +1854,33 @@
     "imdbVotes": "42,015",
     "imdbID": "tt0083190",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$11,492,915",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "10/07/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1536,7 +1898,6 @@
     "plot": "Eddie's friends are numerous, but the term \"friends\" is suspect. As a small time hood, Eddie is about to go back to jail. In order to escape this fate, he deals information on stolen guns to the feds. Simultaneously he is supplying arms to his bank robbing/kidnapping hoodlum chums. But who else is dealing with the feds? Who gets the blame for snitching on the bank robbers?",
     "language": "English",
     "country": "United States",
-    "awards": "N/A",
     "poster": "https://m.media-amazon.com/images/M/MV5BNzhkNWQyMjEtM2RkNC00NmE4LThmYjMtMzU5Yzk5MGVkYWU0XkEyXkFqcGc@._V1_SX300.jpg",
     "ratings": [
       {
@@ -1557,20 +1918,32 @@
     "imdbVotes": "12,666",
     "imdbID": "tt0070077",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "11/27/2021",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -1601,25 +1974,37 @@
         "value": "88%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.3",
     "imdbVotes": "16,026",
     "imdbID": "tt0060959",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$13,692",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "03/01/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1658,22 +2043,34 @@
     "imdbVotes": "72,106",
     "imdbID": "tt0036342",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Group",
       "watchDate": "03/10/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
-      "trophyNotes": null      
+      "trophyNotes": null
     },
     "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.48a9f7bd-1282-5099-7845-0ae2f67a6842?autoplay=0"
   },
@@ -1711,20 +2108,33 @@
     "imdbVotes": "69,393",
     "imdbID": "tt0106226",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$32,255,440",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "03/24/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -1755,25 +2165,36 @@
         "value": "81%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.1",
     "imdbVotes": "11,772",
     "imdbID": "tt0066516",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "05/17/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1812,20 +2233,33 @@
     "imdbVotes": "12,144",
     "imdbID": "tt0171685",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$217,244",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "06/28/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1855,25 +2289,37 @@
         "value": "94%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.5",
     "imdbVotes": "14,227",
     "imdbID": "tt0112769",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$873,196",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "07/28/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 8.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1912,20 +2358,33 @@
     "imdbVotes": "12,934",
     "imdbID": "tt0100142",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$2,960,492",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "08/23/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 5.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -1955,25 +2414,36 @@
         "value": "94%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.4",
     "imdbVotes": "18,138",
     "imdbID": "tt0058003",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "09/27/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -2012,20 +2482,33 @@
     "imdbVotes": "46,928",
     "imdbID": "tt0093605",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$3,369,307",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "10/18/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 3.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 3.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null,
       "noStreaming": true
@@ -2065,20 +2548,33 @@
     "imdbVotes": "40,024",
     "imdbID": "tt2326554",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$491,910",
-    "production": "N/A",
-    "website": "N/A",
     "Response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "11/29/2022",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 5.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -2118,20 +2614,33 @@
     "imdbVotes": "44,228",
     "imdbID": "tt0089374",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$113,164",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "3/14/23",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 5.5,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Somebody Picks a Good Movie!",
       "trophyNotes": null
     }
@@ -2170,20 +2679,32 @@
     "imdbVotes": "27,071",
     "imdbID": "tt0081070",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Gabe",
       "watchDate": "5/10/23",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 6,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Andy",
       "trophyNotes": "5.8"
     }
@@ -2222,20 +2743,33 @@
     "imdbVotes": "115,606",
     "imdbID": "tt1379182",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$110,248",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "6/13/23",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": 7,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Gabe",
       "trophyNotes": "5.7"
     },
@@ -2275,20 +2809,32 @@
     "imdbVotes": "6,605",
     "imdbID": "tt0080140",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "7/13/23",
-      "clubRatings": {
-        "andy": 6,
-        "gabe": 5,
-        "jacob": 6,
-        "joey": 3
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 3,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Jacob",
       "trophyNotes": "6.3"
     }
@@ -2327,20 +2873,33 @@
     "imdbVotes": "78,293",
     "imdbID": "tt0113481",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$19,075,720",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "8/23/23",
-      "clubRatings": {
-        "andy": 2,
-        "gabe": 2,
-        "jacob": 2,
-        "joey": 2
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 2,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 2,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 2,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 2,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Johnny Mnemonic!",
       "trophyNotes": "Joey, 5.3"
     },
@@ -2380,20 +2939,33 @@
     "imdbVotes": "269,492",
     "imdbID": "tt0027977",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$163,577",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Gabe",
       "watchDate": "9/13/23",
-      "clubRatings": {
-        "andy": 6,
-        "gabe": 8,
-        "jacob": 6,
-        "joey": 6
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -2401,7 +2973,6 @@
   {
     "title": "Involuntary",
     "year": "2008",
-    "rated": "N/A",
     "released": "28 Nov 2008",
     "runtime": "98 min",
     "genre": "Drama",
@@ -2432,20 +3003,32 @@
     "imdbVotes": "6,686",
     "imdbID": "tt1232826",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "10/9/23",
-      "clubRatings": {
-        "andy": 7,
-        "gabe": 6,
-        "jacob": 7,
-        "joey": 8
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 8,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -2475,25 +3058,36 @@
         "value": "95%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "8.1",
     "imdbVotes": "71,134",
     "imdbID": "tt0046911",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "12/20/23",
-      "clubRatings": {
-        "andy": 5,
-        "gabe": 7,
-        "jacob": 7,
-        "joey": 6
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -2523,25 +3117,37 @@
         "value": "100%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.4",
     "imdbVotes": "15,019",
     "imdbID": "tt0033152",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$2,180,000",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Gabe",
       "watchDate": "1/2/24",
-      "clubRatings": {
-        "andy": 4.5,
-        "gabe": 5,
-        "jacob": 4,
-        "joey": 5
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 4.5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 4,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 5,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -2580,20 +3186,33 @@
     "imdbVotes": "19,282",
     "imdbID": "tt0066993",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$1,133,022",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "1/24/24",
-      "clubRatings": {
-        "andy": 5,
-        "gabe": 5,
-        "jacob": 9,
-        "joey": 6
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 9,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -2602,7 +3221,6 @@
   {
     "title": "Ear for Eye",
     "year": "2021",
-    "rated": "N/A",
     "released": "16 Oct 2021",
     "runtime": "88 min",
     "genre": "Drama",
@@ -2633,20 +3251,32 @@
     "imdbVotes": "178",
     "imdbID": "tt13599944",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "2/22/24",
-      "clubRatings": {
-        "andy": 7,
-        "gabe": 8,
-        "jacob": 8,
-        "joey": 8
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 8,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
@@ -2677,25 +3307,36 @@
         "value": "96%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.7",
     "imdbVotes": "13,887",
     "imdbID": "tt0052080",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "3/18/24",
-      "clubRatings": {
-        "andy": 7,
-        "gabe": 6,
-        "jacob": 6,
-        "joey": 7
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 7,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
@@ -2725,25 +3366,37 @@
         "value": "100%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.9",
     "imdbVotes": "6,968",
     "imdbID": "tt0051792",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$94,886",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Gabe",
       "watchDate": "8/15/24",
-      "clubRatings": {
-        "andy": 6,
-        "gabe": 6,
-        "jacob": 6,
-        "joey": 6
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Music Room!",
       "trophyNotes": null
     }
@@ -2773,25 +3426,37 @@
         "value": "96%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "8.0",
     "imdbVotes": "58,379",
     "imdbID": "tt0060107",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$124,189",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "10/9/24",
-      "clubRatings": {
-        "andy": 8,
-        "gabe": 7,
-        "jacob": 7,
-        "joey": 9
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 9,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Joey",
       "trophyNotes": null
     }
@@ -2821,25 +3486,36 @@
         "value": "76%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.4",
     "imdbVotes": "4,888",
     "imdbID": "tt0077729",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": "11/26/24",
-      "clubRatings": {
-        "andy": 5,
-        "gabe": 2,
-        "jacob": 7,
-        "joey": 2
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 2,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 2,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Gabe",
       "trophyNotes": null
     }
@@ -2878,20 +3554,33 @@
     "imdbVotes": "69,287",
     "imdbID": "tt0058946",
     "type": "movie",
-    "dVD": "N/A",
     "boxOffice": "$879,794",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": "2/18/25",
-      "clubRatings": {
-        "andy": 6,
-        "gabe": 6,
-        "jacob": 4,
-        "joey": 6
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 4,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Gabe",
       "trophyNotes": null
     }
@@ -2921,25 +3610,36 @@
         "value": "94%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.6",
     "imdbVotes": "14,428",
     "imdbID": "tt0063555",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Gabe",
       "watchDate": "3/25/25",
-      "clubRatings": {
-        "andy": 5,
-        "gabe": 5,
-        "jacob": 8,
-        "joey": 4
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 5,
+          "blurb": ""
+        },
+        {
+          "user": "jacob",
+          "score": 8,
+          "blurb": "For me, this was definitely a challenging film. It felt a bit like reading an unfamiliar style of poetry. But while the meaning of certain scenes could sometimes be elusive, the visual experience was absolutely stunning. Combined with its poetic narrative, that made Pomegranates one of the most unique, mesmerizing experiences I've had with a film."
+        },
+        {
+          "user": "joey",
+          "score": 4,
+          "blurb": null
+        }
+      ],
       "trophyInfo": "Joey",
       "trophyNotes": "Andy gets a Special Connection Award for his Parajanov-Vartanov award,Joey gets a Bad Boy trophy for having a lot of work to do."
     }
@@ -2947,7 +3647,6 @@
   {
     "title": "Only the River Flows",
     "year": "2023",
-    "rated": "N/A",
     "released": "21 Oct 2023",
     "runtime": "101 min",
     "genre": "Crime, Drama, Mystery",
@@ -2969,26 +3668,41 @@
         "value": "85%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "6.6",
     "imdbVotes": "2,828",
     "imdbID": "tt27590147",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "response": "True",
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": "4/24/25",
-      "clubRatings": {
-        "andy": 4,
-        "gabe": 4,
-        "jacob": 4.5,
-        "joey": 5,
-        "greg": 4
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 4,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 4,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 4.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "greg",
+          "score": 4,
+          "blurb": null
+        }
+      ],
       "trophyNotes": "Joey gets togetherness trophy.",
       "trophyInfo": null
     }
@@ -3018,25 +3732,36 @@
         "value": "91%"
       }
     ],
-    "metascore": "N/A",
     "imdbRating": "7.4",
     "imdbVotes": "7,548",
     "imdbID": "tt0045848",
     "type": "movie",
-    "dVD": "N/A",
-    "boxOffice": "N/A",
-    "production": "N/A",
-    "website": "N/A",
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": null,
       "trophyNotes": "",
-      "clubRatings": {
-        "andy": null,
-        "gabe": null,
-        "jacob": null,
-        "joey": null
-      },
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": null,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": null,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null
     }
   }

@@ -110,7 +110,7 @@ The site is available at: https://jekrch.github.io/film-club
 2. Trigger deployment via GitHub Actions workflow
 
 
-## 🎬 Hey, updating the site is EASY
+# 🎬 Hey, updating the site is EASY
 
 YOU can update the website without writing any code. This guide will walk you through making changes to our film data and user profiles.
 
@@ -137,15 +137,16 @@ You can update two main JSON files:
 2. Find the film you want to score in the list
 3. Look for the "clubRatings" section that looks like this:
 ```
-"clubRatings": {
-  "andy": null,
-  "gabe": null,
-  "jacob": 6.5,
-  "joey": null
-}
+"clubRatings": [
+  { "user": "andy", "score": null, "blurb": null },
+  { "user": "gabe", "score": null, "blurb": null },
+  { "user": "jacob", "score": 6.5, "blurb": "my thoughts!" },
+  { "user": "joey", "score": null, "blurb": null }
+]
 ```
-4. Find your name and replace the null with your score (a number)
-5. Commit your changes as described above
+4. Find the object with your name in the "user" field and update the "score" value with your rating (a number)
+5. If you want to add a short comment about the film, you can also update the "blurb" field
+6. Commit your changes as described above
 
 ### What Happens Next?
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Film } from '../types/film'; 
+import { Film, ClubRating } from '../types/film'; 
 import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils'; 
 import FilmList from '../components/films/FilmList'; 
@@ -57,13 +57,13 @@ const getImdbRatingDisplay = (rating: string | undefined | null): string | null 
 };
 
 /**
- * Counts the number of valid (non-null, numeric) ratings in a club ratings object.
- * @param clubRatings - The object containing member ratings.
+ * Counts the number of valid (non-null, numeric) ratings in a club ratings array.
+ * @param clubRatings - The array containing member ratings.
  * @returns The count of valid ratings.
  */
-const countValidRatings = (clubRatings: Record<string, number | null> | undefined): number => {
-  if (!clubRatings) return 0;
-  return Object.values(clubRatings).filter(rating => typeof rating === 'number' && !isNaN(rating)).length;
+const countValidRatings = (clubRatings: ClubRating[] | undefined): number => {
+  if (!clubRatings || !Array.isArray(clubRatings)) return 0;
+  return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score)).length;
 };
 // --- End Helper Functions ---
 
@@ -191,7 +191,7 @@ const FilmDetailPage = () => {
   // --- Calculations for Display (remain the same) ---
   const filmGenres = parseGenres(film.genre);
   const runtimeDisplay = formatRuntime(film.runtime);
-  const numberOfValidRatings = countValidRatings(film.movieClubInfo?.clubRatings as any);
+  const numberOfValidRatings = countValidRatings(film.movieClubInfo?.clubRatings);
   const clubAverageDisplay = numberOfValidRatings >= 2 ? calculateClubAverage(film.movieClubInfo?.clubRatings) : null;
   const imdbRatingDisplay = getImdbRatingDisplay(film.imdbRating);
   const selectorName = film.movieClubInfo?.selector;
@@ -357,7 +357,7 @@ const FilmDetailPage = () => {
             {/* End Film Details */}
           </div>
 
-          {/* Movie Club Info Section (remains the same) */}
+          {/* Movie Club Info Section (updated to use new schema) */}
           {film.movieClubInfo && (
             <div className="bg-slate-850 border-t-2 border-slate-700 p-6 md:p-8">
               <h2 className="text-2xl font-semibold text-slate-100 mb-6">Film Club Facts</h2>
@@ -392,26 +392,36 @@ const FilmDetailPage = () => {
                         <p className="mb-4 text-slate-400 text-sm italic">Needs at least 2 ratings to show an average.</p>
                       )}
                       <h4 className="text-sm font-semibold text-slate-300 mb-3 mt-4">Individual Ratings:</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-                        {Object.entries(film.movieClubInfo.clubRatings ?? {})
-                          .filter(([, rating]) => rating !== null && typeof rating === 'number')
-                          .sort(([memberA], [memberB]) => memberA.localeCompare(memberB))
-                          .map(([member, rating]) => (
-                            <div key={member} className="flex items-center space-x-2">
-                              <Link
-                                to={`/profile/${encodeURIComponent(capitalizeFirstLetter(member))}`}
-                                className="text-slate-300 hover:text-white transition font-medium capitalize w-16 truncate"
-                                title={`View ${capitalizeFirstLetter(member)}'s profile`}
-                              >
-                                {capitalizeFirstLetter(member)}:
-                              </Link>
-                              <span className="font-semibold text-slate-200 w-8 text-right">{rating}</span>
-                              <PopcornRating
-                                rating={rating as number}
-                                maxRating={MAX_RATING}
-                                size="small"
-                                title={`${capitalizeFirstLetter(member)}'s rating: ${rating} out of ${MAX_RATING}`}
-                              />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
+                        {film.movieClubInfo.clubRatings
+                          .filter(rating => rating.score !== null && typeof rating.score === 'number')
+                          .sort((a, b) => a.user.localeCompare(b.user))
+                          .map(rating => (
+                            <div key={rating.user} className="space-y-2">
+                              <div className="flex items-center space-x-2">
+                                <Link
+                                  to={`/profile/${encodeURIComponent(capitalizeFirstLetter(rating.user))}`}
+                                  className="text-slate-300 hover:text-white transition font-medium capitalize w-16 truncate"
+                                  title={`View ${capitalizeFirstLetter(rating.user)}'s profile`}
+                                >
+                                  {capitalizeFirstLetter(rating.user)}:
+                                </Link>
+                                <span className="font-semibold text-slate-200 w-8 text-right">{rating.score}</span>
+                                <PopcornRating
+                                  rating={rating.score as number}
+                                  maxRating={MAX_RATING}
+                                  size="small"
+                                  title={`${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`}
+                                />
+                              </div>
+                              {rating.blurb && (
+                                <div className="bg-gradient-to-r from-slate-800 via-[#2b384e] to-slate-800 px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-blue-500/30 shadow-inner">
+                                  <svg className="absolute text-emerald-400/40 h-5 w-5 -top-1 left-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                  </svg>
+                                  <p className="text-slate-300 text-sm italic">{rating.blurb}</p>
+                                </div>
+                              )}
                             </div>
                           ))}
                       </div>

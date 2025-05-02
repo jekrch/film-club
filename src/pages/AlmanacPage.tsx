@@ -4,7 +4,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 // --- Data & Types ---
 // NOTE: Adjust these import paths based on your project structure
-import { Film } from '../types/film'; // Adjust path as needed
+import { Film, ClubRating } from '../types/film'; // Updated import
 import { TeamMember, teamMembers as teamMembersData } from '../types/team'; // Adjust path as needed
 import filmsData from '../assets/films.json'; // Adjust path as needed
 
@@ -58,15 +58,15 @@ const formatYear = (year: number | null | undefined): string => {
     return Math.round(year).toString();
 };
 
-// --- NEW Helper Function ---
+// --- UPDATED Helper Function ---
 /**
- * Counts the number of valid (non-null, numeric) ratings in a club ratings object.
- * @param clubRatings - The object containing member ratings.
+ * Counts the number of valid (non-null, numeric) ratings in a club ratings array.
+ * @param clubRatings - The array containing member ratings.
  * @returns The count of valid ratings.
  */
-const countValidRatings = (clubRatings: Record<string, number | null> | undefined): number => {
-    if (!clubRatings) return 0;
-    return Object.values(clubRatings).filter(rating => typeof rating === 'number' && !isNaN(rating)).length;
+const countValidRatings = (clubRatings: ClubRating[] | undefined): number => {
+    if (!clubRatings || !Array.isArray(clubRatings)) return 0;
+    return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score as number)).length;
 };
 
 // --- Types (unchanged) ---
@@ -145,7 +145,7 @@ const AlmanacPage: React.FC = () => {
         let totalSelectionScore = 0; let selectionScoreCount = 0;
         userSelections.forEach(film => {
             // Check if the film has at least 2 valid ratings FIRST
-            const validRatingCount = countValidRatings(film.movieClubInfo?.clubRatings as any);
+            const validRatingCount = countValidRatings(film.movieClubInfo?.clubRatings);
 
             if (validRatingCount >= 2) {
                 // Only calculate and use the average if the rating count threshold is met
@@ -159,19 +159,18 @@ const AlmanacPage: React.FC = () => {
         // Calculate average based only on films that met the criteria
         const avgSelectionScore = selectionScoreCount > 0 ? totalSelectionScore / selectionScoreCount : null;
 
-        // Normalize userName for consistent access to clubRatings keys (Unchanged)
+        // Normalize userName for consistent access to clubRatings keys
         const normalizedUserName = userName.toLowerCase();
 
-        // Avg Given Score (Unchanged)
+        // Avg Given Score (UPDATED)
         let totalGivenScore = 0; let givenScoreCount = 0;
         films.forEach(film => {
             const ratings = film.movieClubInfo?.clubRatings;
-            // Use normalizedUserName to access the rating property
-            if (ratings && Object.prototype.hasOwnProperty.call(ratings, normalizedUserName)) {
-                // Access the rating using the normalized key
-                const rating = ratings[normalizedUserName as keyof typeof ratings];
-                if (rating !== null && rating !== undefined) {
-                    const numericRating = Number(rating);
+            if (ratings && Array.isArray(ratings)) {
+                // Find rating by this user
+                const userRating = ratings.find(r => r.user.toLowerCase() === normalizedUserName);
+                if (userRating && userRating.score !== null) {
+                    const numericRating = Number(userRating.score);
                     if (!isNaN(numericRating)) {
                         totalGivenScore += numericRating;
                         givenScoreCount++;

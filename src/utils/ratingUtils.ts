@@ -1,24 +1,23 @@
-import { ClubMemberRatings } from '../types/film'; 
+import { ClubRating } from '../types/film'; 
 
 /**
  * Calculates the average club rating from the provided scores.
  * Only considers non-null numeric scores.
  * Returns the average formatted to one decimal place, or null if no valid scores exist.
  */
-export const calculateClubAverage = (ratings: ClubMemberRatings | undefined): number | null => {
-  if (!ratings) {
-    return null; // No movie club info or ratings available
+export const calculateClubAverage = (ratings: ClubRating[] | undefined): number | null => {
+  if (!ratings || !Array.isArray(ratings) || ratings.length === 0) {
+    return null; // No ratings available or empty array
   }
 
-  // Get scores, ensure keys are lowercase if your type uses lowercase
-  const scores = [ratings.andy, ratings.gabe, ratings.jacob, ratings.joey];
   let sum = 0;
   let count = 0;
 
-  scores.forEach(score => {
+  // Iterate through the array of ratings
+  ratings.forEach(rating => {
     // Check if score is a valid number (not null and actually a number type)
-    if (score !== null && typeof score === 'number' && !isNaN(score)) {
-      sum += score;
+    if (rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score)) {
+      sum += rating.score;
       count++;
     }
   });

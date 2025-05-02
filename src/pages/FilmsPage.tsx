@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import FilmList from '../components/films/FilmList';
-import { Film, ClubMemberRatings } from '../types/film'; // Added MovieClubDetails for clarity
+import { Film } from '../types/film'; 
 import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
 
@@ -35,13 +35,12 @@ const getAllSelectors = (films: Film[]): string[] => {
   return Array.from(selectorSet).sort(); // Sort alphabetically
 };
 
-
 // Define Member Names (used for rating sorts)
-const clubMemberNames: (keyof ClubMemberRatings)[] = ['andy', 'gabe', 'jacob', 'joey']; // Assuming Mark isn't a regular selector shown here
+const clubMemberNames = ['andy', 'gabe', 'jacob', 'joey']; // Updated to regular string array
 
-// UPDATED SortOption type (remains the same)
+// Updated SortOption type
 type BaseSortOption = 'title' | 'year' | 'clubRating' | 'watchDate';
-type MemberSortOption = keyof ClubMemberRatings;
+type MemberSortOption = string; // Changed from keyof ClubMemberRatings to string
 type SortOption = BaseSortOption | MemberSortOption;
 
 // Helper function to get a display name for sort options (remains the same)
@@ -60,14 +59,22 @@ const getSortOptionDisplayName = (option: SortOption): string => {
   }
 };
 
-// Helper function to check if a film has any club ratings (remains the same)
+// Helper function to check if a film has any club ratings (updated)
 const hasAnyClubRating = (film: Film): boolean => {
   const ratings = film.movieClubInfo?.clubRatings;
-  if (!ratings) return false;
-  // Check if at least one member rating is not null
-  return Object.values(ratings).some(rating => rating !== null);
+  if (!ratings || !Array.isArray(ratings) || ratings.length === 0) return false;
+  // Check if at least one member rating has a non-null score
+  return ratings.some(rating => rating.score !== null);
 };
 
+// Helper to get a specific member's rating (similar to getClubRating but scoped to this component)
+const getMemberRating = (film: Film, memberName: string): number | null => {
+  if (!film.movieClubInfo?.clubRatings) return null;
+  const memberRating = film.movieClubInfo.clubRatings.find(
+    rating => rating.user.toLowerCase() === memberName.toLowerCase()
+  );
+  return memberRating?.score || null;
+};
 
 const FilmsPage = () => {
   const [films, setFilms] = useState<Film[]>([]);
@@ -123,10 +130,13 @@ const FilmsPage = () => {
 
     // 4. Member Rating Filter (ONLY if sorting by a specific member)
     if (clubMemberNames.includes(sortBy as MemberSortOption)) {
-      const memberKey = sortBy as MemberSortOption;
-      workingFiltered = workingFiltered.filter(film =>
-        film.movieClubInfo?.clubRatings?.[memberKey] != null // Film MUST have a rating from this member
-      );
+      const memberName = sortBy as MemberSortOption;
+      workingFiltered = workingFiltered.filter(film => {
+        // Check if this member has rated the film
+        return film.movieClubInfo?.clubRatings?.some(
+          rating => rating.user.toLowerCase() === memberName.toLowerCase() && rating.score !== null
+        );
+      });
     }
     // 5. Club Rating Filter (ONLY if sorting by Club Rating)
     else if (sortBy === 'clubRating') {
@@ -145,10 +155,10 @@ const FilmsPage = () => {
       let comparison = 0;
 
       if (clubMemberNames.includes(sortBy as MemberSortOption)) {
-        const memberKey = sortBy as MemberSortOption;
-        // We already filtered, so ratings should exist for these films, but default for safety
-        const ratingA = a.movieClubInfo?.clubRatings?.[memberKey] ?? (sortDirection === 'asc' ? Infinity : -Infinity); // Push nulls to end/start
-        const ratingB = b.movieClubInfo?.clubRatings?.[memberKey] ?? (sortDirection === 'asc' ? Infinity : -Infinity);
+        const memberName = sortBy as MemberSortOption;
+        // Get the ratings for this member
+        const ratingA = getMemberRating(a, memberName) ?? (sortDirection === 'asc' ? Infinity : -Infinity); // Push nulls to end/start
+        const ratingB = getMemberRating(b, memberName) ?? (sortDirection === 'asc' ? Infinity : -Infinity);
         comparison = ratingA - ratingB;
       } else {
         switch (sortBy) {
