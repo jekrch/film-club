@@ -10,6 +10,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline'; // Import needed f
 
 // --- Helper function for robust date parsing ---
 const parseWatchDate = (dateString: string | null | undefined): Date | null => {
+    // ... (date parsing logic) ...
     if (!dateString) return null;
     const parts = dateString.trim().split('/');
     if (parts.length !== 3) { console.warn(`Invalid date format: ${dateString}`); return null; }
@@ -33,6 +34,7 @@ const parseWatchDate = (dateString: string | null | undefined): Date | null => {
 
 // --- Helper function to format total minutes ---
 const formatTotalMinutes = (totalMinutes: number): string => {
+    // ... (time formatting logic) ...
     if (isNaN(totalMinutes) || totalMinutes < 0) { return "0 days : 00 hrs : 00 m"; }
     const minutesPerDay = 1440; const minutesPerHour = 60;
     const days = Math.floor(totalMinutes / minutesPerDay);
@@ -43,6 +45,14 @@ const formatTotalMinutes = (totalMinutes: number): string => {
     const dayLabel = days === 1 ? 'day' : 'days';
     return `${days} ${dayLabel} : ${pad(hours)} hrs : ${pad(minutes)} m`;
 };
+
+// --- Array of Brown Gradients for Inactive Stripes ---
+const inactiveStripeGradients = [
+    'bg-gradient-to-t from-amber-900 via-orange-700 to-yellow-600', // Original variation (Top to Bottom)
+    'bg-gradient-to-t from-yellow-900 via-amber-700 to-orange-800', // Variation 2
+    'bg-gradient-to-t from-orange-900 via-yellow-700 to-amber-600', // Variation 3
+];
+
 
 // --- HomePage Component ---
 const HomePage = () => {
@@ -56,6 +66,7 @@ const HomePage = () => {
 
   // --- Data Fetching and Processing Effect ---
   useEffect(() => {
+    // ... (data fetching and processing logic) ...
     const allFilms = filmsData as unknown as Film[];
     const teamMembers = teamMembersData as TeamMember[];
 
@@ -182,10 +193,10 @@ const HomePage = () => {
              meetingDate.setUTCHours(22, 0, 0, 0); // Example using UTC
              // meetingDate.setHours(22, 0, 0, 0); // Alternative for local time
              if (!isNaN(meetingDate.getTime())) {
-                 setLastMeetingDateTime(meetingDate);
+                  setLastMeetingDateTime(meetingDate);
              } else {
-                 console.warn("Failed to create valid date for last meeting time.");
-                 setLastMeetingDateTime(null);
+                  console.warn("Failed to create valid date for last meeting time.");
+                  setLastMeetingDateTime(null);
              }
         } else {
              setLastMeetingDateTime(null);
@@ -197,6 +208,7 @@ const HomePage = () => {
 
   // --- Timer Update Effect ---
   useEffect(() => {
+    // ... (timer update logic) ...
     if (!lastMeetingDateTime) { setTimeSinceLastMeeting(''); return; }
     const updateTimer = () => {
       const now = new Date();
@@ -221,23 +233,24 @@ const HomePage = () => {
 
 
   // --- Render Logic ---
-  // ***** JSX restored to include the small-screen arrow *****
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 -mt-6 bg-[#202125]x">
       {/* Hero section */}
-      <div className="py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg my-8 text-center px-4 sm:px-6 lg:px-10">
+      <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg my-8 text-center px-4 sm:px-6 lg:px-10">
 
         {/* --- Display Cycle Order with Profile Pics and Responsive Arrows --- */}
         {activeCycleMembersList.length > 0 && (
-           <div className="mb-6">
-             <p className="text-xs uppercase tracking-widest text-slate-300 font-semibold mb-4">
-               Selection Committee
-             </p>
-             {/* Flex container for members and inline arrows */}
-             <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-6"> {/* Increased gap-y for curved arrows */}
+            <div className="mb-6">
+              <p className="text-xs uppercase tracking-widest text-slate-300 font-semibold mb-4">
+                Selection Committee
+              </p>
+              {/* Flex container for members and inline arrows */}
+              <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-6">
                 {activeCycleMembersList.map((member, index) => {
                     const isActive = member.name === currentSelectorName;
-                    const isNotLast = index < activeCycleMembersList.length - 1; // Check if not the last member overall
+                    const isNotLast = index < activeCycleMembersList.length - 1;
+                    // --- Determine which brown gradient to use for inactive members ---
+                    const inactiveGradientClass = inactiveStripeGradients[index % inactiveStripeGradients.length];
 
                     return (
                         <React.Fragment key={member.name}>
@@ -246,22 +259,33 @@ const HomePage = () => {
                                 to={`/profile/${encodeURIComponent(member.name)}`}
                                 className={`
                                 group text-center flex flex-col items-center transition-all duration-200 ease-in-out relative
-                                 /* Apply hover scale to ALL */
-                                ${isActive ? 'transform scale-105 z-10' : 'opacity-70 hover:opacity-100'} /* Keep base scale for active, opacity for inactive */
+                                {/* --- MODIFIED: Reverted hover effect for inactive members --- */}
+                                ${isActive ? 'transform scale-105 z-10' : 'opacity-70 hover:opacity-100'}
                                 `}
                                 title={isActive ? `${member.name} (Up Next!)` : member.name}
                             >
-                                {/* --- SMALL SCREEN ARROW RESTORED --- */}
-                                {/* Show this arrow only on small screens (hidden on sm breakpoint and up) AND if it's NOT the last item */}
-                                
-                                    <ArrowRightIcon className="sm:hidden inline-block w-3 h-3 mx-1 text-slate-500 flex-shrink-0 self-center mb-1" /> 
-                                {/* Note: The original code paste had this commented out. This version assumes it should be VISIBLE as per your correction. */}
+                                {/* Small screen arrow */}
+                                <ArrowRightIcon className="sm:hidden inline-block w-3 h-3 mx-1 text-slate-500 flex-shrink-0 self-center mb-1" />
 
-
-                                {/* Image container (handles active border/glow) */}
+                                {/* Image container (handles active border/glow + STRIPES) */}
                                 <div className={`relative rounded-full p-0.5 ${isActive ? 'bg-gradient-to-tr from-emerald-700 via-emerald-600 to-emerald-600 shadow-lg' : ''}`}>
+
+                                    {/* --- ACTIVE STRIPE --- */}
+                                    {isActive && (
+                                        <div className="w-full rounded-t-full sm:w-25 h-[200vh] h-[20em] -top-[100vh]x left-1/2 -translate-x-1/2 absolute opacity-10 bg-gradient-to-t from-emerald-900 via-emerald-600 to-emerald-700 pointer-events-none"></div> 
+                                    )}
+
+                                    {/* --- INACTIVE STRIPE --- */}
+                                    {!isActive && (
+                                        <div className={`w-full rounded-t-full sm:w-25 h-[200vh] h-[20em] -top-[100vh]x left-1/2 -translate-x-1/2 absolute opacity-10 ${inactiveGradientClass} pointer-events-none`}></div>
+                                    )}
+
+
+                                    {/* --- END OF INACTIVE STRIPE --- */}
+
                                     <CircularImage
                                         alt={member.name}
+                                        /* Image hover/border styles remain unchanged from before */
                                         size="w-14 h-14 sm:w-16 sm:h-16"
                                         className={`transition-all duration-200 ease-in-out border-2 ${isActive ? 'border-slate-700' : 'border-slate-600 group-hover:border-slate-400'}`}
                                     />
@@ -270,13 +294,13 @@ const HomePage = () => {
                                         <span className="absolute -top-0.5 -right-0.5 block h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-slate-800 ring-1 ring-slate-900"></span>
                                     )}
                                 </div>
-                                {/* Member Name */}
+                                {/* Member Name (hover style unchanged) */}
                                 <span className={`block text-xs mt-1.5 font-medium transition-colors duration-200 ${isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`}>
                                     {member.name}
                                 </span>
                             </Link>
 
-                            {/* Inline Arrow Separator (SM Screens and Up, Not for Last Member) */}
+                            {/* Inline Arrow Separator */}
                             {isNotLast && (
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mx-1 text-slate-500 flex-shrink-0 hidden sm:inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -285,8 +309,8 @@ const HomePage = () => {
                         </React.Fragment>
                     );
                 })}
-             </div>
-           </div>
+              </div>
+            </div>
         )}
         {/* --- End Display Cycle Order --- */}
 
@@ -312,7 +336,6 @@ const HomePage = () => {
 
       {/* Film Lists Section */}
       {recentClubPicks.length > 0 && <FilmList films={recentClubPicks} title="Recent Club Picks" appendAllFilmsCard={true}/>}
-
       {topClubRatedFilms.length > 0 && <FilmList films={topClubRatedFilms} title="Top Club Rated Films" />}
       {/* End Film Lists Section */}
 
