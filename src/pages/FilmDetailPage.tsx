@@ -219,7 +219,7 @@ const FilmDetailPage = () => {
   return (
     <div className="bg-slate-900 text-slate-300 min-h-screen py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back button (remains the same) */}
+        {/* Back button */}
         <button onClick={() => navigate(-1)} className="mb-6 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" /></svg>
           Back
@@ -288,7 +288,7 @@ const FilmDetailPage = () => {
                 <span className="text-xl font-semibold text-slate-400 flex-shrink-0">({film.year})</span>
               </div>
 
-              {/* Metadata Display (remains the same) */}
+              {/* Metadata Display */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-400 mb-5">
                 {clubAverageDisplay && (
                   <div className="flex items-center font-medium text-base" title={`Average Club Rating (${numberOfValidRatings} ratings)`}>
@@ -306,20 +306,20 @@ const FilmDetailPage = () => {
               </div>
 
 
-              {/* Plot (remains the same) */}
-              <div className="mb-5 text-slate-300">
-                <p className={isPlotExpanded ? '' : 'line-clamp-3'}>{film.plot || <span className="italic text-slate-500">Plot not available.</span>}</p>
+              {/* Plot */}
+              <div className="mb-5 text-slate-300 ">
+                <p className={isPlotExpanded ? '' : 'line-clamp-3 '}>{film.plot || <span className="italic text-slate-500">Plot not available.</span>}</p>
                 {film.plot && film.plot.length > 150 && (
                   <button
                     onClick={() => setIsPlotExpanded(!isPlotExpanded)}
-                    className="text-blue-400 hover:text-blue-300 text-sm font-medium mt-2"
+                    className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-3"
                   >
                     {isPlotExpanded ? 'Read Less' : 'Read More'}
                   </button>
                 )}
               </div>
 
-              {/* Director, Writer, Stars, etc. Grid (remains the same) */}
+              {/* Director, Writer, Stars, etc. Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm mb-5">
                 {film.director && film.director !== 'N/A' && (
                   <div>
@@ -353,7 +353,7 @@ const FilmDetailPage = () => {
                 )}
               </div>
 
-              {/* Genres (remains the same) */}
+              {/* Genres */}
               {filmGenres.length > 0 && (
                 <div className="mt-5">
                   <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Genres</h2>
@@ -449,7 +449,7 @@ const FilmDetailPage = () => {
                                     {rating.blurb && rating.blurb.length > 150 && (
                                       <button
                                         onClick={() => toggleBlurbExpansion(rating.user)}
-                                        className="h-10 !px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-4"
+                                        className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-4"
                                       >
                                         {expandedBlurbs[rating.user] ? 'Read Less' : 'Read More'}
                                       </button>
@@ -515,7 +515,7 @@ const FilmDetailPage = () => {
           {/* End Movie Club Info Section */}
         </div>
 
-        {/* Other Films by Selector Section (remains the same) */}
+        {/* Other Films by Selector Section */}
         {selectorName && filmsBySameSelector.length > 0 && (
           <div className="mb-12">
             <FilmList
