@@ -159,7 +159,7 @@ const HomePage = () => {
     const topRated = [...allFilms]
     .filter(film => {
       const ratings = film.movieClubInfo?.clubRatings;
-      return ratings && Object.values(ratings).filter(rating => rating && rating !== null).length >= 2;
+      return ratings && Object.values(ratings).filter(rating => rating && rating?.score !== null).length >= 2;
     })
     .sort((a, b) => {
       const avgA = parseFloat(calculateClubAverage(a.movieClubInfo?.clubRatings)?.toString() ?? '0');
