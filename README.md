@@ -48,7 +48,7 @@ Run the development server:
 bun run dev
 ```
 See:
-http://localhost:5173
+http://localhost:3000
 
 ### Building
 

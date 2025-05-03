@@ -11,9 +11,15 @@ export default defineConfig({
   publicDir: 'public',
   base: '/',
   server: {
+    port: 3000, 
     fs: {
       // Allow serving files from one level up to the project root
       allow: ['..']
+    },
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost', 
+      port: 3000
     },
     headers: {
       // Set MIME types for font files

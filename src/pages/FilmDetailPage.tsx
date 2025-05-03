@@ -211,7 +211,6 @@ const FilmDetailPage = () => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
   const MAX_RATING = 9;
-  const numericClubRating = typeof clubAverageDisplay === 'string' ? parseFloat(clubAverageDisplay) : NaN;
 
   // Determine if the watch link should be rendered
   const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
@@ -384,15 +383,15 @@ const FilmDetailPage = () => {
                   {numberOfValidRatings > 0 ? (
                     <div>
                       <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Club Rating</h3>
-                      {clubAverageDisplay && !isNaN(numericClubRating) && (
+                      {clubAverageDisplay && !isNaN(clubAverageDisplay) && (
                         <div className="mb-5 flex items-center gap-x-4 gap-y-2 flex-wrap">
                           <div className="flex items-baseline whitespace-nowrap">
                             <span className="text-4xl font-bold text-blue-300">{clubAverageDisplay}</span>
                             <span className="text-slate-400 text-lg"> / {MAX_RATING}</span>
-                            <span className="ml-2 text-sm text-slate-400">({numberOfValidRatings} ratings)</span>
+                            {/* <span className="ml-2 text-sm text-slate-400">({numberOfValidRatings} ratings)</span> */}
                           </div>
                           <PopcornRating
-                            rating={numericClubRating}
+                            rating={clubAverageDisplay}
                             maxRating={MAX_RATING}
                             size="regular"
                             title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}
