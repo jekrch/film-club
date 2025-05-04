@@ -4,8 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import CircularImage from '../components/common/CircularImage';
 import FilmList from '../components/films/FilmList';
 import { teamMembers } from '../types/team';
-import filmsData from '../assets/films.json';
-import { Film, getClubRating } from '../types/film';
+import { Film, getClubRating, filmData } from '../types/film';
 
 // Define TeamMember interface including the optional interview
 interface TeamMember {
@@ -17,8 +16,6 @@ interface TeamMember {
   color?: string;
   interview?: { question: string; answer: string }[];
 }
-
-const allFilms = filmsData as unknown as Film[];
 
 // --- Helper Component for Interview Item with Expander ---
 interface InterviewItemProps {
@@ -85,7 +82,7 @@ const ProfilePage: React.FC = () => {
     setMember(foundMember);
 
     // --- Find films selected by this member ---
-    const filmsSelected = allFilms
+    const filmsSelected = filmData
       .filter(film => film.movieClubInfo?.selector === foundMember.name)
       .sort((a, b) => {
         const dateA = a.movieClubInfo?.watchDate ? new Date(a.movieClubInfo.watchDate).getTime() : 0;
@@ -98,7 +95,7 @@ const ProfilePage: React.FC = () => {
 
     // --- Calculate Top 3 Rated Films by this member ---
     // With the new schema, we need to find films rated by this member
-    const filmsRatedByMember = allFilms
+    const filmsRatedByMember = filmData
       .filter(film => {
         // Find if there's a rating from this member
         const memberRating = film.movieClubInfo?.clubRatings.find(
@@ -118,7 +115,7 @@ const ProfilePage: React.FC = () => {
         }
         return a.title.localeCompare(b.title); // Sort alphabetically for ties
       })
-      .slice(0, 3); // Get the top 3
+      .slice(0, 4); // Get the top 3
 
     setTopRatedFilms(filmsRatedByMember);
     // --- End Calculation ---

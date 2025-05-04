@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'; // Import React
 import { Link } from 'react-router-dom';
 import FilmList from '../components/films/FilmList';
-import { Film } from '../types/film';
+import { Film, filmData } from '../types/film';
 import { TeamMember, teamMembers as teamMembersData } from '../types/team';
-import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import CircularImage from '../components/common/CircularImage';
 import { ArrowRightIcon } from '@heroicons/react/24/outline'; // Import needed for the arrow
@@ -67,7 +66,7 @@ const HomePage = () => {
   // --- Data Fetching and Processing Effect ---
   useEffect(() => {
     // ... (data fetching and processing logic) ...
-    const allFilms = filmsData as unknown as Film[];
+    const allFilms = filmData;
     const teamMembers = teamMembersData as TeamMember[];
 
     // --- START OF CORRECTED SELECTOR LOGIC ---
@@ -285,7 +284,6 @@ const HomePage = () => {
 
                                     <CircularImage
                                         alt={member.name}
-                                        /* Image hover/border styles remain unchanged from before */
                                         size="w-14 h-14 sm:w-16 sm:h-16"
                                         className={`transition-all duration-200 ease-in-out border-2 ${isActive ? 'border-slate-700' : 'border-slate-600 group-hover:border-slate-400'}`}
                                     />

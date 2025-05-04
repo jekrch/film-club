@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import FilmList from '../components/films/FilmList';
-import { Film } from '../types/film'; 
-import filmsData from '../assets/films.json';
+import { Film, filmData } from '../types/film'; 
 import { calculateClubAverage } from '../utils/ratingUtils';
 import { capitalizeUserName, teamMembers } from '../types/team';
 
@@ -86,7 +85,7 @@ const FilmsPage = () => {
 
   useEffect(() => {
     // Ensure filmsData is an array before processing
-    const loadedFilmsData = Array.isArray(filmsData) ? filmsData : [];
+    const loadedFilmsData = Array.isArray(filmData) ? filmData : [];
     // Basic validation for each film object (can be enhanced)
     const validFilms = loadedFilmsData.filter(f => f && typeof f === 'object' && f.imdbID) as unknown as Film[];
 

@@ -1,4 +1,8 @@
-// Interfaces related to component props (assuming these remain the same)
+import filmsData from '../assets/films.json';
+
+export const filmData = filmsData as Film[];
+
+// Interfaces related to component props 
 export interface FilmListProps {
     films: Film[];
     onFilmSelect?: (film: Film) => void;

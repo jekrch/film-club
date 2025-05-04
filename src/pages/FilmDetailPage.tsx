@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Film, ClubRating } from '../types/film';
-import filmsData from '../assets/films.json';
+import { Film, ClubRating, filmData } from '../types/film';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import FilmList from '../components/films/FilmList';
 import CircularImage from '../components/common/CircularImage';
@@ -123,9 +122,7 @@ const FilmDetailPage = () => {
       return;
     }
 
-    // Load all films from the static JSON data
-    const allFilms = filmsData as unknown as Film[];
-    const foundFilm = allFilms.find(f => f.imdbID === imdbId);
+    const foundFilm = filmData.find(f => f.imdbID === imdbId);
 
     if (!foundFilm) {
       setError(`Film with ID ${imdbId} not found.`);
@@ -153,7 +150,7 @@ const FilmDetailPage = () => {
     // Find other films by the same selector (existing logic)
     const currentSelector = foundFilm.movieClubInfo?.selector;
     if (currentSelector) {
-      const otherFilms = allFilms
+      const otherFilms = filmData
         .filter(otherFilm =>
           otherFilm.imdbID !== imdbId &&
           otherFilm.movieClubInfo?.selector === currentSelector

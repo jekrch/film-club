@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CardSize } from '../../contexts/ViewSettingsContext'; // Assuming context exists
+import { CardSize } from '../../contexts/ViewSettingsContext';
 
 interface AllFilmsCardProps {
     cardSize: CardSize;

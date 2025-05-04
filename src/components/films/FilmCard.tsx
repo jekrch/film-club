@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Film } from '../../types/film'; // Assuming types are correctly defined
-import { calculateClubAverage } from '../../utils/ratingUtils'; // Assuming utils exist
-import { CardSize } from '../../contexts/ViewSettingsContext'; // Assuming context exists
+import { Film } from '../../types/film'; 
+import { calculateClubAverage } from '../../utils/ratingUtils'; 
+import { CardSize } from '../../contexts/ViewSettingsContext'; 
 import PopcornRating from '../common/PopcornRating';
 import { getTeamMemberColorByName } from '../../types/team';
 import { ClockIcon, UserIcon } from '@heroicons/react/20/solid';
-// import { GlobeAltIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
 
 
