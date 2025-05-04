@@ -84,8 +84,8 @@ const FilmList: React.FC<FilmListProps> = ({
         >
           {/* Map films to SwiperSlides */}
           {films.map((film) => (
-            <SwiperSlide key={film.imdbID} style={{ width: 'auto' }} className="!w-36"> {/* Set slide width */}
-              <FilmCard film={film} cardSize={actualCardSize} />
+            <SwiperSlide key={film.imdbID} style={{ width: 'auto' }} className="!w-40 pb-6"> {/* Set slide width */}
+              <FilmCard film={film} cardSize={'compact'} />
             </SwiperSlide>
           ))}
           {/* Conditionally render AllFilmsCard */}

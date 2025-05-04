@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Film, ClubRating } from '../types/film'; 
+import { Film, ClubRating } from '../types/film';
 import filmsData from '../assets/films.json';
-import { calculateClubAverage } from '../utils/ratingUtils'; 
-import FilmList from '../components/films/FilmList'; 
-import CircularImage from '../components/common/CircularImage'; 
-import PopcornRating from '../components/common/PopcornRating'; 
+import { calculateClubAverage } from '../utils/ratingUtils';
+import FilmList from '../components/films/FilmList';
+import CircularImage from '../components/common/CircularImage';
+import PopcornRating from '../components/common/PopcornRating';
 
 // --- Helper Functions (parseGenres, formatRuntime, getImdbRatingDisplay, countValidRatings) ---
 
@@ -425,36 +425,27 @@ const FilmDetailPage = () => {
                                 />
                               </div>
                               {rating.blurb && (
-                                <div className="bg-gradient-to-r from-slate-800 via-[#2b384e] to-slate-800 px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-emerald-400/40 shadow-inner mt-4">
-                                  <svg className="absolute text-emerald-400/40 h-5 w-5 -top-1 left-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                                  </svg>
-                                  
-                                  {/* Updated blurb display with truncation and line breaks support */}
-                                  <div>
-                                    {/* Use white-space: pre-line to preserve line breaks and display truncated or full text based on state */}
-                                    <p 
-                                      className="text-slate-300 text-sm italic" 
-                                      style={{ 
-                                        whiteSpace: 'pre-line',
-                                        overflow: 'hidden',
-                                        maxHeight: expandedBlurbs[rating.user] ? 'none' : '100px' 
-                                      }}
+                                <div className="bg-[radial-gradient(circle_at_center,_#2b384e_0%,_#1e293b_40%)] px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-emerald-400/40 shadow-inner mt-4">
+                                <svg className="absolute text-emerald-400/40 h-5 w-5 -top-1 left-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                </svg>
+                              
+                                <div>
+                                  <p className={`text-slate-300 text-sm italic ${expandedBlurbs[rating.user] ? '' : 'line-clamp-3'}`}>
+                                    {rating.blurb}
+                                  </p>
+                              
+                                  {/* Show "Read More/Less" button only if the blurb is long enough */}
+                                  {rating.blurb.length > 150 && (
+                                    <button
+                                      onClick={() => toggleBlurbExpansion(rating.user)}
+                                      className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-3"
                                     >
-                                      {rating.blurb}
-                                    </p>
-                                    
-                                    {/* Show "Read More/Less" button only if the blurb is long enough */}
-                                    {rating.blurb && rating.blurb.length > 150 && (
-                                      <button
-                                        onClick={() => toggleBlurbExpansion(rating.user)}
-                                        className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-4"
-                                      >
-                                        {expandedBlurbs[rating.user] ? 'Read Less' : 'Read More'}
-                                      </button>
-                                    )}
-                                  </div>
+                                      {expandedBlurbs[rating.user] ? 'Read Less' : 'Read More'}
+                                    </button>
+                                  )}
                                 </div>
+                              </div>
                               )}
                             </div>
                           ))}

@@ -660,7 +660,7 @@ const AlmanacPage: React.FC = () => {
     }, [selectedCategory, selectedPieSliceName]);
 
 
-    // --- Render Logic (unchanged) ---
+    // --- Render Logic ---
     return (
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 !pt-6 text-slate-200">
 
@@ -733,7 +733,7 @@ const AlmanacPage: React.FC = () => {
                                 setSelectedPieSliceName(null);
                                 setFilteredFilmsForPieSlice([]);
                             }}
-                            className="text-xs text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 rounded px-2 py-0.5 !px-2 !py-1 transition-colors ml-auto" // Use ml-auto to push right
+                            className="text-xs text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 rounded !px-2 !py-1 transition-colors ml-auto"
                             aria-label="Close film list"
                         >
                             &times;

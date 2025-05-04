@@ -19,3 +19,7 @@ export const getTeamMemberColorByName = (name: string): string | undefined => {
   const member = getTeamMemberByName(name);
   return member?.color;
 };
+
+export const capitalizeUserName = (val: string) => {
+  return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}

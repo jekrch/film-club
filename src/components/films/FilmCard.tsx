@@ -105,7 +105,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                         transition-all duration-300 ease-out /* Smooth transitions */
                         group-hover:scale-105 group-hover:shadow-xl /* Hover effects */
                         group-hover:from-emerald-500 group-hover:to-emerald-00 /* Hover colors */
-                        ${isCompact ? 'text-xs -left-8 px-10 py-1 top-4' : ''} /* Smaller adjustments for compact view */
+                        ${isCompact ? 'text-xs -left-8 px-10 py-1 top-4 ' : ''} /* Smaller adjustments for compact view */
                     `}
                 >
                     UP NEXT
@@ -164,7 +164,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                 <div className={`
                                     text-slate-300 px-2 py-1 rounded-sm text-xs font-bold uppercase flex items-center shadow-sm flex-shrink-0 /* Prevent shrinking */
                                     ${isCompact ? 'px-1.5 py-0.5 text-[10px]' : ''}
-                                    bg-slate-700
+                                    bg-slate-700 pr-3
                                 `}>
                                     {/* Colored dot based on team member */}
                                     <span className={`

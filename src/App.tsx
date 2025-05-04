@@ -12,6 +12,10 @@ import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 import AlmanacPage from './pages/AlmanacPage';
 
 function App() {
+  if (import.meta.hot) {
+    import.meta.hot.accept()
+  }
+  
   return (
     <ViewSettingsProvider>
       <Router>

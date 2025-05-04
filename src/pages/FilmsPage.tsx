@@ -3,6 +3,7 @@ import FilmList from '../components/films/FilmList';
 import { Film } from '../types/film'; 
 import filmsData from '../assets/films.json';
 import { calculateClubAverage } from '../utils/ratingUtils';
+import { capitalizeUserName, teamMembers } from '../types/team';
 
 // Helper to parse the genre string into an array (remains the same)
 const parseGenres = (genreString: string): string[] => {
@@ -36,7 +37,7 @@ const getAllSelectors = (films: Film[]): string[] => {
 };
 
 // Define Member Names (used for rating sorts)
-const clubMemberNames = ['andy', 'gabe', 'jacob', 'joey']; // Updated to regular string array
+const clubMemberNames = teamMembers.filter(t => t.queue).map(u => u.name); // Updated to regular string array
 
 // Updated SortOption type
 type BaseSortOption = 'title' | 'year' | 'clubRating' | 'watchDate';
@@ -50,12 +51,8 @@ const getSortOptionDisplayName = (option: SortOption): string => {
     case 'year': return 'Year';
     case 'clubRating': return 'Club Rating';
     case 'watchDate': return 'Watch Date';
-    case 'andy': return 'Andy';
-    case 'gabe': return 'Gabe';
-    case 'jacob': return 'Jacob';
-    case 'joey': return 'Joey';
     default:
-        return '';
+        return capitalizeUserName(option);
   }
 };
 
