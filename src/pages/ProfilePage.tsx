@@ -46,7 +46,7 @@ interface UserProfileStats {
     topGenres: { genre: string; count: number }[];
     avgSelectedScore: number | null;
     avgGivenScore: number | null;
-    avgDivergence: number | null;
+    avgDivergence: number | null; // Can be positive or negative
     languageCount: number;
     countryCount: number;
 }
@@ -56,7 +56,7 @@ interface UserRankings {
     avgRuntimeRank: string | null;
     avgSelectedScoreRank: string | null;
     avgGivenScoreRank: string | null;
-    avgDivergenceRank: string | null;
+    avgDivergenceRank: string | null; // Rank based on absolute divergence magnitude
 }
 
 interface MemberStatsCalculationData {
@@ -67,7 +67,8 @@ interface MemberStatsCalculationData {
         avgRuntime: number | null;
         avgSelectedScore: number | null;
         avgGivenScore: number | null;
-        avgDivergence: number | null;
+        avgDivergence: number | null; // Signed average divergence
+        avgAbsoluteDivergence: number | null; // Absolute average divergence for ranking
     };
 }
 
@@ -76,7 +77,7 @@ interface ControversialFilm {
     title: string;
     userScore: number;
     othersAvgScore: number | null;
-    divergence: number;
+    divergence: number; // Signed difference (userScore - othersAvgScore)
     posterUrl?: string;
     watchDate?: string;
 }
@@ -128,9 +129,18 @@ const getRankString = (
 
     if (validValues.length < 2) return null;
 
+    // Find the rank. Use findIndex for exact match.
+    // For divergence (lower magnitude is better), the sorting is already ascending.
     const rank = validValues.findIndex(v => v === value) + 1;
 
-    if (rank === 0) return null;
+    if (rank === 0) {
+         // Handle potential floating point inaccuracies if needed, maybe check within a small epsilon
+         const epsilon = 1e-9;
+         const approxRank = validValues.findIndex(v => Math.abs(v - value) < epsilon) + 1;
+         if (approxRank === 0) return null;
+         return `${approxRank}/${validValues.length}`;
+    }
+
 
     return `${rank}/${validValues.length}`;
 };
@@ -180,9 +190,16 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
     valueClassName = "text-slate-100",
     icon: IconComponent
 }) => {
-    if (value === null || value === undefined || value === '' || value === 'N/A' || (id === 'topGenres' && (!Array.isArray(value) || value.length === 0))) {
-        return null;
+    // Allow 0 to be displayed for stats like total selections
+    const isValueConsideredEmpty = value === null || value === undefined || value === '' || value === 'N/A'
+                                   || (id === 'topGenres' && (!Array.isArray(value) || value.length === 0))
+                                   || (typeof value === 'number' && isNaN(value));
+
+    if (isValueConsideredEmpty && id !== 'totalSelections') { // Special case: Show 0 for totalSelections if it's 0
+         if (id === 'totalSelections' && value !== 0) return null;
+         if (id !== 'totalSelections') return null;
     }
+
 
     let rankDisplay = null;
     if (rank && typeof rank === 'string' && rank.includes('/') && id !== 'topGenres') {
@@ -248,13 +265,23 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
     const MAX_VISIBLE_CARDS_COLLAPSED = 8;
 
     const statCardDefinitions: StatCardConfig[] = useMemo(() => [
-        { id: 'totalSelections', label: "Films Selected", getValue: (s) => s.totalSelections, formatValue: (v) => (v !== null && v > 0 ? v : null), icon: FilmIcon },
+        { id: 'totalSelections', label: "Films Selected", getValue: (s) => s.totalSelections, formatValue: (v) => (v !== null ? v : null), icon: FilmIcon },
         { id: 'totalRuntime', label: "Total Runtime (Selected)", getValue: (s) => s.totalRuntime, formatValue: formatTotalRuntime, getRank: (r) => r.totalRuntimeRank, description: "Total duration of selected films.", icon: ClockIcon },
         { id: 'avgRuntime', label: "Avg. Runtime (Selected)", getValue: (s) => s.avgRuntime, formatValue: (v) => { const f = formatAverage(v, 0); return f ? `${f} min` : null; }, getRank: (r) => r.avgRuntimeRank, description: "Average duration per selected film.", icon: ClockIcon },
         { id: 'topGenres', label: "Top Genres (Selected)", getValue: (s) => s.topGenres, description: "Most frequently selected genres (Top 3).", icon: TagIcon },
         { id: 'avgSelectedScore', label: "Avg. Club Score (Selected)", getValue: (s) => s.avgSelectedScore, formatValue: (v) => formatAverage(v, 2), getRank: (r) => r.avgSelectedScoreRank, description: "Avg. score on selected films (min. 2 ratings).", icon: TrophyIcon },
         { id: 'avgGivenScore', label: "Avg. Score Given", getValue: (s) => s.avgGivenScore, formatValue: (v) => formatAverage(v, 2), getRank: (r) => r.avgGivenScoreRank, description: "Avg. score given to any club film.", icon: PencilSquareIcon },
-        { id: 'avgDivergence', label: "Avg. Score Divergence", getValue: (s) => s.avgDivergence, formatValue: (v) => formatAverage(v, 2), getRank: (r) => r.avgDivergenceRank, description: "Avg. difference from others' scores.", icon: ArrowsRightLeftIcon },
+        { id: 'avgDivergence', label: "Avg. Score Divergence", getValue: (s) => s.avgDivergence,
+          formatValue: (v) => {
+              const formatted = formatAverage(v, 2);
+              if (formatted === null) return null;
+              const value = parseFloat(formatted);
+              // Explicitly add '+' for positive values, '-' is handled by toFixed
+              if (value > 1e-9) return `+${formatted}`; // Use small epsilon for floating point comparison
+              return formatted;
+          },
+          getRank: (r) => r.avgDivergenceRank, // Rank based on absolute magnitude (lower is better)
+          description: "Avg. difference from others' scores (Your Score - Others' Avg).", icon: ArrowsRightLeftIcon },
         { id: 'languageCount', label: "Unique Languages (Selected)", getValue: (s) => s.languageCount, formatValue: (v) => (v !== null && v > 0 ? v : null), description: "Primary languages of selected films.", icon: LanguageIcon },
         { id: 'countryCount', label: "Unique Countries (Selected)", getValue: (s) => s.countryCount, formatValue: (v) => (v !== null && v > 0 ? v : null), description: "Primary countries of selected films.", icon: MapPinIcon },
     ], []);
@@ -271,8 +298,13 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
                 } else if (config.formatValue) {
                     displayValue = config.formatValue(rawValue);
                 } else {
-                    displayValue = (rawValue !== null && rawValue !== 0) ? rawValue as (string | number) : null;
+                    // Allow 0 for totalSelections
+                    const allowZero = config.id === 'totalSelections';
+                    displayValue = (rawValue !== null && (rawValue !== 0 || allowZero)) ? rawValue as (string | number) : null;
                 }
+
+                 // Check if value is genuinely empty after formatting/processing
+                 const isEffectivelyEmpty = displayValue === null || displayValue === '' || displayValue === 'N/A' || (config.id === 'topGenres' && (!Array.isArray(displayValue) || displayValue.length === 0));
 
                 const rank = (config.getRank && rankings) ? config.getRank(rankings) : null;
                 let className = "text-slate-100";
@@ -281,9 +313,10 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
                     else if (typeof config.valueClassName === 'string') className = config.valueClassName;
                 }
 
-                return { ...config, displayValue, displayRank: rank, displayClassName: className };
+                return { ...config, displayValue, displayRank: rank, displayClassName: className, isEffectivelyEmpty };
             })
-            .filter(card => card.displayValue !== null);
+            // Filter out cards where the value is effectively empty, *except* for totalSelections which can be 0
+             .filter(card => !card.isEffectivelyEmpty || (card.id === 'totalSelections' && card.displayValue === 0));
     }, [stats, rankings, statCardDefinitions]);
 
     if (!stats || visibleStatCards.length === 0) {
@@ -291,19 +324,20 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
     }
 
     const needsExpansion = visibleStatCards.length > MAX_VISIBLE_CARDS_COLLAPSED;
-    const collapsedMaxHeight = 'max-h-72';
+    const collapsedMaxHeight = 'max-h-72'; // Approx 18rem
+    const expandedMaxHeight = 'max-h-[3000px]'; // Large value to accommodate many cards
 
     return (
-        // This component now renders *only* the stats grid content
-        // The outer container/grid logic is handled in ProfilePage
         <div className="bg-slate-800 rounded-lg p-6 md:p-8 border border-slate-700 shadow-xl shadow-slate-950/30 h-full"> {/* Added h-full for grid alignment */}
             <h3 className="text-2xl font-bold text-slate-100 mb-5 border-b border-slate-700 pb-3">
                 Member Stats
             </h3>
-            <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isExpanded && needsExpansion ? collapsedMaxHeight : 'max-h-[1000px]'}`}>
-                 <div className={`pr-2 -mr-2 ${!isExpanded && needsExpansion ? 'overflow-y-auto ' + collapsedMaxHeight : ''}`}>
-                    {/* Grid for stat cards (adjust columns as needed, maybe fewer if sharing space) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"> {/* Example: 3 cols on XL */}
+            {/* Apply max-height transition to this outer container */}
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isExpanded && needsExpansion ? collapsedMaxHeight : expandedMaxHeight}`}>
+                 {/* This inner div no longer needs max-height or overflow control */}
+                 <div className={`pr-2 -mr-2`}>
+                    {/* Grid for stat cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                          {visibleStatCards.map((card) => (
                             <ProfileStatCard
                                 key={card.id}
@@ -315,7 +349,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
                                 icon={card.icon}
                                 valueClassName={card.displayClassName}
                             />
-                         ))}
+                        ))}
                     </div>
                 </div>
             </div>
@@ -370,7 +404,10 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
             </div>
             <div className="text-right flex-shrink-0 ml-auto pl-2">
                 <p className="text-xs text-slate-400">Divergence</p>
-                <p className="text-lg font-semibold text-red-400">{film.divergence.toFixed(1)}</p>
+                 {/* Display divergence with sign */}
+                <p className="text-lg font-semibold text-slate-100">
+                    {(film.divergence >= 0 ? '+' : '') + film.divergence.toFixed(1)}
+                </p>
             </div>
         </div>
     );
@@ -396,7 +433,6 @@ const ProfilePage: React.FC = () => {
     const calculateAllMemberStats = useMemo(() => {
         return (films: Film[], activeMembers: TeamMember[]): MemberStatsCalculationData[] => {
             return activeMembers.map(m => {
-                // ... (calculations remain the same as previous correct version)
                 const memberName = m.name;
                 const normalizedUserName = memberName.toLowerCase();
 
@@ -446,7 +482,8 @@ const ProfilePage: React.FC = () => {
 
                 let totalGivenScore = 0;
                 let givenScoreCount = 0;
-                let totalDivergence = 0;
+                let totalSignedDivergence = 0; // Sum of (userScore - othersAvg)
+                let totalAbsoluteDivergence = 0; // Sum of |userScore - othersAvg|
                 let divergenceCount = 0;
 
                 films.forEach(film => {
@@ -471,15 +508,21 @@ const ProfilePage: React.FC = () => {
                             let othersTotal = 0;
                             otherRatings.forEach(r => othersTotal += (r.score as number));
                             const othersAvg = othersTotal / otherRatings.length;
-                            const divergence = Math.abs(userScore - othersAvg);
-                            totalDivergence += divergence;
+                            const signedDivergence = userScore - othersAvg; // Calculate signed difference
+                            const absoluteDivergence = Math.abs(signedDivergence); // Calculate absolute difference
+
+                            totalSignedDivergence += signedDivergence;
+                            totalAbsoluteDivergence += absoluteDivergence;
                             divergenceCount++;
                         }
                     }
                 });
 
                 const avgGivenScore = givenScoreCount > 0 ? totalGivenScore / givenScoreCount : null;
-                const avgDivergence = divergenceCount > 0 ? totalDivergence / divergenceCount : null;
+                // Calculate the average signed divergence
+                const avgDivergence = divergenceCount > 0 ? totalSignedDivergence / divergenceCount : null;
+                 // Calculate the average absolute divergence (for ranking purposes)
+                const avgAbsoluteDivergence = divergenceCount > 0 ? totalAbsoluteDivergence / divergenceCount : null;
 
                 const languages = new Set<string>();
                 userSelections.forEach(film => {
@@ -500,7 +543,7 @@ const ProfilePage: React.FC = () => {
                     topGenres: sortedGenres,
                     avgSelectedScore,
                     avgGivenScore,
-                    avgDivergence,
+                    avgDivergence, // Store the signed average
                     languageCount,
                     countryCount,
                 };
@@ -510,7 +553,8 @@ const ProfilePage: React.FC = () => {
                     avgRuntime: stats.avgRuntime,
                     avgSelectedScore: stats.avgSelectedScore,
                     avgGivenScore: stats.avgGivenScore,
-                    avgDivergence: stats.avgDivergence,
+                    avgDivergence: stats.avgDivergence, // Keep signed value here if needed elsewhere
+                    avgAbsoluteDivergence: avgAbsoluteDivergence // Use absolute average for ranking
                 };
 
                 return { memberName, stats, rankValues };
@@ -519,7 +563,6 @@ const ProfilePage: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        // ... (fetch/calculation logic remains the same as previous correct version)
         window.scrollTo(0, 0);
         setLoading(true);
         setError(null);
@@ -578,14 +621,17 @@ const ProfilePage: React.FC = () => {
             .slice(0, 6);
         setTopRatedFilms(filmsRatedByMember);
 
+        // Calculate Most Controversial Films for the current member
         const controversialFilmsData: ControversialFilm[] = [];
         filmData.forEach(film => {
             const validRatings = film.movieClubInfo?.clubRatings?.filter(r => r.score !== null && typeof r.score === 'number' && !isNaN(r.score));
-            if (!validRatings || validRatings.length < 2) return;
+            if (!validRatings || validRatings.length < 2) return; // Need at least two ratings for divergence
 
-            let maxDivergence = -1;
-            let mostDivergentUserLower = '';
-            let filmControversyDetails: { [userNameLower: string]: { userScore: number; othersAvg: number | null; divergence: number } } = {};
+             let maxAbsoluteDivergenceForFilm = -1;
+             let mostDivergentUserForFilmLower = '';
+             // Store details per user for this specific film
+             let filmControversyDetails: { [userNameLower: string]: { userScore: number; othersAvg: number | null; signedDivergence: number; absoluteDivergence: number } } = {};
+
 
             validRatings.forEach(rating => {
                 const currentUserScore = Number(rating.score);
@@ -596,57 +642,87 @@ const ProfilePage: React.FC = () => {
                     let othersTotal = 0;
                     otherRatingsForThisUser.forEach(r => othersTotal += Number(r.score));
                     const othersAvg = othersTotal / otherRatingsForThisUser.length;
-                    const divergence = Math.abs(currentUserScore - othersAvg);
-                    filmControversyDetails[currentUserNameLower] = { userScore: currentUserScore, othersAvg: othersAvg, divergence: divergence };
-                    if (divergence > maxDivergence) {
-                        maxDivergence = divergence;
-                        mostDivergentUserLower = currentUserNameLower;
+                    const signedDivergence = currentUserScore - othersAvg;
+                    const absoluteDivergence = Math.abs(signedDivergence);
+
+                    filmControversyDetails[currentUserNameLower] = { userScore: currentUserScore, othersAvg: othersAvg, signedDivergence: signedDivergence, absoluteDivergence: absoluteDivergence };
+
+                    // Track who had the biggest *absolute* divergence for this film
+                    if (absoluteDivergence > maxAbsoluteDivergenceForFilm) {
+                        maxAbsoluteDivergenceForFilm = absoluteDivergence;
+                        mostDivergentUserForFilmLower = currentUserNameLower;
                     }
                 } else {
-                    filmControversyDetails[currentUserNameLower] = { userScore: currentUserScore, othersAvg: null, divergence: 0 };
-                }
+                     // Only one rating for the film, no divergence possible
+                     filmControversyDetails[currentUserNameLower] = { userScore: currentUserScore, othersAvg: null, signedDivergence: 0, absoluteDivergence: 0 };
+                 }
             });
 
-            if (mostDivergentUserLower === normalizedUserName && maxDivergence > 0) {
+             // Check if the *current profile's user* was the most divergent for *this* film
+             if (mostDivergentUserForFilmLower === normalizedUserName && maxAbsoluteDivergenceForFilm > 1e-9) { // Use epsilon for float check
                  const details = filmControversyDetails[normalizedUserName];
-                 if (details) controversialFilmsData.push({ filmId: film.imdbID, title: film.title, userScore: details.userScore, othersAvgScore: details.othersAvg, divergence: details.divergence, posterUrl: film.poster, watchDate: film.movieClubInfo?.watchDate as any });
+                 if (details) {
+                     controversialFilmsData.push({
+                         filmId: film.imdbID,
+                         title: film.title,
+                         userScore: details.userScore,
+                         othersAvgScore: details.othersAvg,
+                         divergence: details.signedDivergence, // Store the signed divergence
+                         posterUrl: film.poster,
+                         watchDate: film.movieClubInfo?.watchDate as any
+                    });
+                }
             }
         });
-        controversialFilmsData.sort((a, b) => b.divergence - a.divergence);
-        setMostControversialFilms(controversialFilmsData.slice(0, 4));
 
+        // Sort the collected films by the magnitude (absolute value) of the signed divergence, descending
+        controversialFilmsData.sort((a, b) => Math.abs(b.divergence) - Math.abs(a.divergence));
+        setMostControversialFilms(controversialFilmsData.slice(0, 4)); // Take top 4
+
+        // Calculate Stats and Rankings
         const activeMembers = allTeamMembers.filter(m => typeof m.queue === 'number' && m.queue > 0);
         if (activeMembers.length > 0) {
             const allStatsData = calculateAllMemberStats(filmData, activeMembers);
             const currentUserData = allStatsData.find(data => data.memberName === decodedMemberName);
+
             if (currentUserData) {
                 setCurrentUserStats(currentUserData.stats);
+
+                // Prepare arrays for ranking (use absolute divergence for divergence ranking)
                 const allTotals = allStatsData.map(d => d.rankValues.totalRuntime);
                 const allAvgs = allStatsData.map(d => d.rankValues.avgRuntime);
                 const allSelScores = allStatsData.map(d => d.rankValues.avgSelectedScore);
                 const allGivenScores = allStatsData.map(d => d.rankValues.avgGivenScore);
-                const allDivs = allStatsData.map(d => d.rankValues.avgDivergence);
+                 // Rank based on average *absolute* divergence (lower is better)
+                const allAbsDivs = allStatsData.map(d => d.rankValues.avgAbsoluteDivergence);
+
+
                 setRankings({
                     totalRuntimeRank: getRankString(currentUserData.rankValues.totalRuntime, allTotals, true),
                     avgRuntimeRank: getRankString(currentUserData.rankValues.avgRuntime, allAvgs, true),
                     avgSelectedScoreRank: getRankString(currentUserData.rankValues.avgSelectedScore, allSelScores, true),
                     avgGivenScoreRank: getRankString(currentUserData.rankValues.avgGivenScore, allGivenScores, true),
-                    avgDivergenceRank: getRankString(currentUserData.rankValues.avgDivergence, allDivs, true),
+                     // Lower absolute divergence is better (higher rank)
+                    avgDivergenceRank: getRankString(currentUserData.rankValues.avgAbsoluteDivergence, allAbsDivs, true),
                 });
             } else {
+                // Member exists but might be inactive (no queue > 0), calculate their stats individually
                 const inactiveMemberData = calculateAllMemberStats(filmData, [foundMember]);
                 if (inactiveMemberData.length > 0) setCurrentUserStats(inactiveMemberData[0].stats);
+                // No rankings if they weren't in the active comparison group
                 setRankings({ totalRuntimeRank: null, avgRuntimeRank: null, avgSelectedScoreRank: null, avgGivenScoreRank: null, avgDivergenceRank: null });
             }
         } else {
+            // No active members found at all, calculate stats for the single viewed member
             const singleMemberData = calculateAllMemberStats(filmData, [foundMember]);
             if (singleMemberData.length > 0) setCurrentUserStats(singleMemberData[0].stats);
-            setRankings({ totalRuntimeRank: null, avgRuntimeRank: null, avgSelectedScoreRank: null, avgGivenScoreRank: null, avgDivergenceRank: null });
+            // No rankings possible
+             setRankings({ totalRuntimeRank: null, avgRuntimeRank: null, avgSelectedScoreRank: null, avgGivenScoreRank: null, avgDivergenceRank: null });
         }
 
         setLoading(false);
 
-    }, [memberName, calculateAllMemberStats]);
+    }, [memberName, calculateAllMemberStats]); // Dependency array includes the memoized function
 
     // --- Loading State ---
     if (loading) {
@@ -678,9 +754,12 @@ const ProfilePage: React.FC = () => {
 
     const MAX_INTERVIEW_ITEMS_BEFORE_SCROLL = 2;
     const needsInterviewExpansion = member.interview && member.interview.length > MAX_INTERVIEW_ITEMS_BEFORE_SCROLL;
-    const collapsedInterviewMaxHeight = 'max-h-80';
+    const collapsedInterviewMaxHeight = 'max-h-80'; // Approx 20rem
     const hasEnoughControversialFilms = mostControversialFilms.length >= 1;
-    const hasStats = currentUserStats && Object.values(currentUserStats).some(val => val !== null && val !== 0 && (!Array.isArray(val) || val.length > 0));
+    const hasStats = currentUserStats && Object.entries(currentUserStats).some(([key, val]) =>
+         val !== null && val !== 0 && (!Array.isArray(val) || val.length > 0) || (key === 'totalSelections' && val === 0) // Allow totalSelections to be 0
+    );
+
 
     return (
         <div className="bg-slate-900 text-slate-300 min-h-screen py-12 pt-6">
@@ -728,16 +807,15 @@ const ProfilePage: React.FC = () => {
                 )}
 
                 {/* --- Combined Stats and Divergence Section (Grid on Large Screens) --- */}
-                {/* Only render this container if there are stats OR controversial films to show */}
                 {(hasStats || hasEnoughControversialFilms) && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                         {/* Member Stats Column */}
-                        {/* Check hasStats here to ensure the column exists even if divergence doesn't */}
                         <div className="lg:col-span-2">
                            {hasStats ? (
                                <ProfileStatsSection stats={currentUserStats} rankings={rankings} />
                            ) : (
-                               <div className="hidden lg:block"></div> // Placeholder on large screens if no stats but divergence exists
+                               // Render a placeholder if only divergence exists on large screens to maintain layout
+                               <div className="hidden lg:block lg:col-span-2"></div>
                            )}
                         </div>
 
@@ -754,7 +832,7 @@ const ProfilePage: React.FC = () => {
                                         ))}
                                     </div>
                                     <p className="text-xs text-slate-500 mt-3 text-center italic">
-                                        Films where {member.name} had the largest score difference from the club average.
+                                        Films where {member.name} had the largest score difference (magnitude) from the club average.
                                     </p>
                                 </div>
                             </div>
@@ -769,7 +847,7 @@ const ProfilePage: React.FC = () => {
 
                  {/* --- Top Rated Films Section (Full Width) --- */}
                  {topRatedFilms.length > 0 && (
-                    <div className="mb-12 mt-8"> {/* Use mt-8 only if the Stats/Div section above it rendered */}
+                    <div className="mb-12 mt-8"> {/* Add margin top */}
                         <FilmList
                             films={topRatedFilms}
                             title={`Top ${topRatedFilms.length} Rated Film${topRatedFilms.length !== 1 ? 's' : ''} by ${member.name}`}
@@ -779,18 +857,18 @@ const ProfilePage: React.FC = () => {
 
                 {/* --- Selected Films Section (Full Width) --- */}
                 {selectedFilms.length > 0 ? (
-                    <div className="mb-12 mt-8"> {/* Use mt-8 */}
+                    <div className="mb-12 mt-8"> {/* Add margin top */}
                         <FilmList
                             films={selectedFilms}
                             title={`Films Selected by ${member.name}`}
                         />
                     </div>
                 ) : (
-                    // Show only if no selections AND no stats card showing selections
-                    (!currentUserStats || currentUserStats.totalSelections === 0) && (
-                        <div className="text-center py-8 text-slate-400 italic mt-8">
-                            {member.name} hasn't selected any films yet.
-                        </div>
+                    // Show only if no selections AND the stats card for selections isn't showing 0
+                    (!currentUserStats || currentUserStats.totalSelections === null || currentUserStats.totalSelections < 0) && (
+                         <div className="text-center py-8 text-slate-400 italic mt-8">
+                             {member.name} hasn't selected any films yet.
+                         </div>
                     )
                 )}
 
