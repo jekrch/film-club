@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { Film, ClubRating, filmData } from '../types/film';
+import { Film, filmData } from '../types/film';
 import { TeamMember, teamMembers as teamMembersData } from '../types/team';
 import StatCard from '../components/almanac/StatCard';
 import ChartContainer from '../components/almanac/ChartContainer';
@@ -9,9 +9,15 @@ import CategorySelector from '../components/almanac/CategorySelector';
 import FilteredFilmListSection from '../components/almanac/FilteredFilmSection';
 import IntervalDetailDisplay from '../components/almanac/IntervalDetailDisplay';
 import MemberStatCard from '../components/almanac/MemberStatCard';
-import { calculateClubAverage } from '../utils/ratingUtils';
+import {
+    parseRuntime, 
+    formatAverage as formatAverageUtil, 
+    calculateMemberStats, 
+    ComprehensiveMemberStats, 
+    MemberStatHighlight 
+} from '../utils/statUtils'; 
 
-// Helper Functions (Remain in this file as per original structure)
+// Helper Functions (Local to AlmanacPage - not shared or specific formatting)
 const formatTotalMinutes = (totalMinutes: number): string => {
     if (isNaN(totalMinutes) || totalMinutes < 0) { return "0 days : 00 hrs : 00 m"; }
     const minutesPerDay = 1440; const minutesPerHour = 60;
@@ -44,42 +50,31 @@ const daysBetween = (date1: Date, date2: Date): number => {
     const utc2 = Date.UTC(date2.getUTCFullYear(), date2.getUTCMonth(), date2.getUTCDate());
     return Math.floor(Math.abs(utc2 - utc1) / oneDay);
 };
+
 const formatAverage = (avg: number | null | undefined, digits = 1): string => {
-    if (avg === null || avg === undefined || isNaN(avg)) return 'N/A';
-    return avg.toFixed(digits);
+    const formatted = formatAverageUtil(avg, digits); // Use the util function
+    return formatted === null ? 'N/A' : formatted; // Add 'N/A' handling locally
 };
 const formatYear = (year: number | null | undefined): string => {
     if (year === null || year === undefined || isNaN(year)) return 'N/A';
     return Math.round(year).toString();
 };
-const countValidRatings = (clubRatings: ClubRating[] | undefined): number => {
-    if (!clubRatings || !Array.isArray(clubRatings)) return 0;
-    return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score as number)).length;
-};
+
 
 // Types (Exporting necessary types for MemberStatCard)
 export type ChartCategory = 'country' | 'language' | 'decade';
 type FilmWithDate = Film & { parsedWatchDate: Date };
-export interface UserStats {
-    selectionCount: number;
-    avgSelectionRuntime: number | null;
-    avgSelectionScore: number | null;
-    avgGivenScore: number | null;
-    selectionCountryCount: number;
-    avgSelectionYear: number | null;
-}
 interface IntervalDetail {
     startDate: Date; endDate: Date; days: number; films: FilmWithDate[]; // Use FilmWithDate consistently
 }
-export type MemberStatHighlight = 'high' | 'low' | null;
-interface MemberStatsData {
+export interface MemberStatsData {
     member: TeamMember;
-    stats: UserStats;
-    highlights: {
-        avgSelectionRuntime: MemberStatHighlight;
-        avgSelectionScore: MemberStatHighlight;
+    stats: ComprehensiveMemberStats; // Use the comprehensive type
+    highlights: { // Keep the highlight structure, keys match ComprehensiveMemberStats
+        avgRuntime: MemberStatHighlight; // Renamed from avgSelectionRuntime
+        avgSelectedScore: MemberStatHighlight;
         avgGivenScore: MemberStatHighlight;
-        selectionCountryCount: MemberStatHighlight;
+        selectionCountryCount: MemberStatHighlight; // Kept specific name for clarity if needed
         avgSelectionYear: MemberStatHighlight;
     };
 }
@@ -114,81 +109,6 @@ const AlmanacPage: React.FC = () => {
     // Ref for the filtered film list container
     const filmListRef = useRef<HTMLDivElement>(null);
 
-    // Stat Calculation Function (for one user)
-    const calculateUserStats = useCallback((userName: string, films: Film[]): UserStats => {
-        const userSelections = films.filter(film => film.movieClubInfo?.selector === userName);
-        const selectionCount = userSelections.length;
-
-        // Avg Runtime
-        let totalRuntime = 0; let runtimeCount = 0;
-        userSelections.forEach(film => {
-            if (film?.runtime && typeof film.runtime === 'string') {
-                const minutes = parseInt(film.runtime.replace(/[^0-9]/g, ''), 10);
-                if (!isNaN(minutes)) { totalRuntime += minutes; runtimeCount++; }
-            }
-        });
-        const avgSelectionRuntime = runtimeCount > 0 ? totalRuntime / runtimeCount : null;
-
-        // Avg Selection Score (films with >= 2 ratings)
-        let totalSelectionScore = 0; let selectionScoreCount = 0;
-        userSelections.forEach(film => {
-            const validRatingCount = countValidRatings(film.movieClubInfo?.clubRatings);
-            if (validRatingCount >= 2) {
-                const avg = calculateClubAverage(film.movieClubInfo?.clubRatings);
-                if (avg !== null && !isNaN(avg)) {
-                    totalSelectionScore += avg;
-                    selectionScoreCount++;
-                }
-            }
-        });
-        const avgSelectionScore = selectionScoreCount > 0 ? totalSelectionScore / selectionScoreCount : null;
-
-        // Avg Given Score
-        const normalizedUserName = userName.toLowerCase();
-        let totalGivenScore = 0; let givenScoreCount = 0;
-        films.forEach(film => {
-            const ratings = film.movieClubInfo?.clubRatings;
-            if (ratings && Array.isArray(ratings)) {
-                const userRating = ratings.find(r => r.user.toLowerCase() === normalizedUserName);
-                if (userRating && userRating.score !== null) {
-                    const numericRating = Number(userRating.score);
-                    if (!isNaN(numericRating)) {
-                        totalGivenScore += numericRating;
-                        givenScoreCount++;
-                    }
-                }
-            }
-        });
-        const avgGivenScore = givenScoreCount > 0 ? totalGivenScore / givenScoreCount : null;
-
-        // Selection Country Count
-        const countries = new Set<string>();
-        userSelections.forEach(film => {
-            if (film?.country?.trim() && film.country !== "N/A") {
-                countries.add(film.country.split(',')[0].trim());
-            }
-        });
-        const selectionCountryCount = countries.size;
-
-        // Avg Selection Year
-        let totalYear = 0; let yearCount = 0;
-        userSelections.forEach(film => {
-            if (film?.year?.substring(0, 4)) {
-                const yearNum = parseInt(film.year.substring(0, 4), 10);
-                if (!isNaN(yearNum) && yearNum > 1000) {
-                    totalYear += yearNum;
-                    yearCount++;
-                }
-            }
-        });
-        const avgSelectionYear = yearCount > 0 ? totalYear / yearCount : null;
-
-        return {
-            selectionCount, avgSelectionRuntime, avgSelectionScore, avgGivenScore,
-            selectionCountryCount, avgSelectionYear
-        };
-    }, []); // Depends only on helper functions defined outside render cycle
-
     // Main Data Processing & Stats Calculation Effect
     useEffect(() => {
         const films = filmData;
@@ -213,12 +133,11 @@ const AlmanacPage: React.FC = () => {
             setDaysActive(null);
         }
 
-        // Calculate Total Runtime
+        // Calculate Total Runtime (Uses imported parseRuntime)
         const totalMinutes = finalSortedWatched.reduce((sum, film) => {
-            if (film?.runtime && typeof film.runtime === 'string') {
-                const minutes = parseInt(film.runtime.replace(/[^0-9]/g, ''), 10);
-                if (!isNaN(minutes)) return sum + minutes;
-            } return sum;
+            const rt = parseRuntime(film.runtime); // Use imported helper
+            if (rt !== null) return sum + rt;
+            return sum;
         }, 0);
         setTotalRuntimeString(formatTotalMinutes(totalMinutes));
 
@@ -272,10 +191,15 @@ const AlmanacPage: React.FC = () => {
 
         // Process Team Members & Calculate All Stats + Highlights
         const active = (teamMembersData as TeamMember[]).filter(m => typeof m.queue === 'number' && m.queue > 0).sort((a, b) => (a.queue ?? Infinity) - (b.queue ?? Infinity));
-        const memberStatsList = active.map(member => ({ member, stats: calculateUserStats(member.name, films) }));
+        // Use the imported calculateMemberStats here
+        const memberStatsList = active.map(member => ({
+            member,
+            stats: calculateMemberStats(member.name, films) // Use the imported function
+        }));
 
-        // Determine High/Low values
-        const findHighLow = (statKey: keyof UserStats): { high: number | null, low: number | null } => {
+        // Determine High/Low values using ComprehensiveMemberStats keys
+        // Need to adjust keys for highlights: avgSelectionRuntime -> avgRuntime, selectionCountryCount remains
+        const findHighLow = (statKey: keyof ComprehensiveMemberStats): { high: number | null, low: number | null } => {
             let high: number | null = null; let low: number | null = null; let validStatsCount = 0;
             memberStatsList.forEach(({ stats }) => {
                 const value = stats[statKey];
@@ -288,27 +212,43 @@ const AlmanacPage: React.FC = () => {
             return validStatsCount >= 2 ? { high, low } : { high: null, low: null };
         };
         const highlightsMap = {
-            avgSelectionRuntime: findHighLow('avgSelectionRuntime'), avgSelectionScore: findHighLow('avgSelectionScore'),
-            avgGivenScore: findHighLow('avgGivenScore'), selectionCountryCount: findHighLow('selectionCountryCount'),
+            avgRuntime: findHighLow('avgRuntime'), // Adjusted key
+            avgSelectedScore: findHighLow('avgSelectedScore'),
+            avgGivenScore: findHighLow('avgGivenScore'),
+            selectionCountryCount: findHighLow('selectionCountryCount'), // Key from ComprehensiveMemberStats
             avgSelectionYear: findHighLow('avgSelectionYear'),
         };
 
         // Combine stats with highlight info
-        const finalStatsData = memberStatsList.map(({ member, stats }) => {
-            const getHighlight = (statKey: keyof UserStats, value: number | null): MemberStatHighlight => {
+        const finalStatsData: MemberStatsData[] = memberStatsList.map(({ member, stats }) => {
+             const getHighlight = (statKey: keyof MemberStatsData['highlights'], value: number | null): MemberStatHighlight => {
                 if (value === null || typeof value !== 'number' || isNaN(value)) return null;
-                const { high, low } = (highlightsMap as any)[statKey];
+                // @ts-ignore
+                // Map the highlight key back to the ComprehensiveMemberStats key for lookup
+                let lookupKey: keyof ComprehensiveMemberStats | undefined = undefined;
+                switch (statKey) {
+                    case 'avgRuntime': lookupKey = 'avgRuntime'; break;
+                    case 'avgSelectedScore': lookupKey = 'avgSelectedScore'; break;
+                    case 'avgGivenScore': lookupKey = 'avgGivenScore'; break;
+                    case 'selectionCountryCount': lookupKey = 'selectionCountryCount'; break; // or countryCount
+                    case 'avgSelectionYear': lookupKey = 'avgSelectionYear'; break;
+                    default: return null; // Should not happen
+                }
+                const { high, low } = (highlightsMap as any)[statKey]; // Use the original key for lookup in highlightsMap
                 const isHigh = high !== null && value === high && high !== low;
                 const isLow = low !== null && value === low && high !== low;
-                if (statKey === 'selectionCountryCount' && isLow) return null; // No low highlight for country count
+
+                // No low highlight for country count (specific Almanac logic)
+                if (statKey === 'selectionCountryCount' && isLow) return null;
+
                 if (isHigh) return 'high';
                 if (isLow) return 'low';
                 return null;
             };
             return {
-                member, stats, highlights: {
-                    avgSelectionRuntime: getHighlight('avgSelectionRuntime', stats.avgSelectionRuntime),
-                    avgSelectionScore: getHighlight('avgSelectionScore', stats.avgSelectionScore),
+                member, stats, highlights: { // Use the highlight keys expected by MemberStatCard
+                    avgRuntime: getHighlight('avgRuntime', stats.avgRuntime),
+                    avgSelectedScore: getHighlight('avgSelectedScore', stats.avgSelectedScore),
                     avgGivenScore: getHighlight('avgGivenScore', stats.avgGivenScore),
                     selectionCountryCount: getHighlight('selectionCountryCount', stats.selectionCountryCount),
                     avgSelectionYear: getHighlight('avgSelectionYear', stats.avgSelectionYear),
@@ -317,7 +257,7 @@ const AlmanacPage: React.FC = () => {
         });
         setAllMemberStats(finalStatsData);
 
-    }, [calculateUserStats]); // Re-run if calculateUserStats changes (shouldn't)
+    }, []); // Run once on mount (calculateMemberStats is stable)
 
     // Chart Options
     const currentDonutChartData = useMemo(() => {
@@ -628,17 +568,24 @@ const AlmanacPage: React.FC = () => {
                 <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">Member Stats Breakdown</h3>
                 {allMemberStats.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                        {allMemberStats.map(({ member, stats, highlights }) => (
-                            <MemberStatCard
-                                key={member.name}
-                                member={member}
-                                stats={stats}
-                                highlights={highlights}
-                                formatAverage={formatAverage}
-                                formatYear={formatYear}
-                                getHighlightClass={getHighlightClass}
-                            />
-                        ))}
+                         {allMemberStats.map(({ member, stats, highlights }) => (
+                             <MemberStatCard
+                                 key={member.name}
+                                 member={member}
+                                 stats={{ 
+                                    totalSelections: stats.totalSelections,
+                                    avgRuntime: stats.avgRuntime,
+                                    avgSelectedScore: stats.avgSelectedScore,
+                                    avgGivenScore: stats.avgGivenScore,
+                                    selectionCountryCount: stats.selectionCountryCount, // or stats.countryCount
+                                    avgSelectionYear: stats.avgSelectionYear,
+                                 } as any}
+                                 highlights={highlights as any}
+                                 formatAverage={formatAverage} // Pass the local formatter
+                                 formatYear={formatYear} // Pass the local formatter
+                                 getHighlightClass={getHighlightClass as any}
+                             />
+                         ))}
                     </div>
                 ) : (<p className="text-center text-sm text-slate-400 italic py-4">Calculating member stats...</p>)}
             </div>

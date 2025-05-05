@@ -1,24 +1,25 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import CircularImage from '../common/CircularImage'; // Adjust path as needed
-import StatItem from './StatItem'; // Adjust path as needed
-import { TeamMember } from '../../types/team'; // Adjust path as needed
-import { UserStats, MemberStatHighlight } from '../../pages/AlmanacPage'; // Import types from page or dedicated types file
+import CircularImage from '../common/CircularImage';
+import StatItem from './StatItem'; 
+import { TeamMember } from '../../types/team'; 
+import { MemberStatsData } from '../../pages/AlmanacPage'; 
+import { ComprehensiveMemberStats } from '../../utils/statUtils';
 
 interface MemberStatCardProps {
     member: TeamMember;
-    stats: UserStats;
+    stats: ComprehensiveMemberStats;
     highlights: {
-        avgSelectionRuntime: MemberStatHighlight;
-        avgSelectionScore: MemberStatHighlight;
-        avgGivenScore: MemberStatHighlight;
-        selectionCountryCount: MemberStatHighlight;
-        avgSelectionYear: MemberStatHighlight;
+        avgSelectionRuntime: MemberStatsData;
+        avgSelectionScore: MemberStatsData;
+        avgGivenScore: MemberStatsData;
+        selectionCountryCount: MemberStatsData;
+        avgSelectionYear: MemberStatsData;
     };
     formatAverage: (avg: number | null | undefined, digits?: number) => string;
     formatYear: (year: number | null | undefined) => string;
-    getHighlightClass: (highlight: MemberStatHighlight) => string;
+    getHighlightClass: (highlight: MemberStatsData) => string;
 }
 
 const MemberStatCard: React.FC<MemberStatCardProps> = ({
@@ -46,16 +47,16 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
             <div className="space-y-2 text-sm flex-grow">
                 <StatItem
                     label="Selections Made"
-                    value={stats.selectionCount}
+                    value={stats.totalSelections}
                 />
                 <StatItem
                     label="Avg Runtime (Sel.)"
-                    value={stats.avgSelectionRuntime ? `${Math.round(stats.avgSelectionRuntime)} min` : 'N/A'}
+                    value={stats.avgRuntime ? `${Math.round(stats.avgRuntime)} min` : 'N/A'}
                     valueClassName={getHighlightClass(highlights.avgSelectionRuntime)}
                 />
                 <StatItem
                     label="Avg Club Score (Sel.)"
-                    value={`${formatAverage(stats.avgSelectionScore)} / 9`}
+                    value={`${formatAverage(stats.avgSelectedScore)} / 9`}
                     valueClassName={getHighlightClass(highlights.avgSelectionScore)}
                     tooltip="Average club score for films selected by this member, only including films with 2+ ratings"
                 />
