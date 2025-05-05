@@ -52,6 +52,7 @@ export interface ControversialFilm {
     divergence: number; // Signed difference (userScore - othersAvgScore)
     posterUrl?: string;
     watchDate?: string;
+    memberName?: string;
 }
 
 // Interfaces needed by AlmanacPage specifically

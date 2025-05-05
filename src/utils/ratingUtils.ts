@@ -31,3 +31,21 @@ export const calculateClubAverage = (ratings: ClubRating[] | undefined): number 
   // Round to 1 decimal place
   return Math.round(average * 10) / 10;
 };
+
+// Helper function to determine rating color class for individual scores
+export const getRatingColorClass = (rating: number | string): string => {
+  // Ensure rating is treated as a number
+  const numericRating = typeof rating === 'string' ? parseFloat(rating) : rating;
+
+  if (isNaN(numericRating)) {
+      return 'text-slate-400'; // Default color for invalid ratings
+  }
+
+  if (numericRating >= 7) {
+      return 'text-emerald-400'; 
+  } else if (numericRating >= 4) {
+      return 'text-amber-500'; 
+  } else {
+      return 'text-rose-400'; 
+  }
+};

@@ -209,7 +209,8 @@ const ProfilePage: React.FC = () => {
                         othersAvgScore: details.othersAvg,
                         divergence: details.signedDivergence, // Store the signed divergence for display
                         posterUrl: film.poster,
-                        watchDate: film.movieClubInfo?.watchDate as any // Keep watch date if needed later
+                        watchDate: film.movieClubInfo?.watchDate as any, // Keep watch date if needed later
+                        memberName: memberName
                     });
                 }
             }
@@ -341,12 +342,12 @@ const ProfilePage: React.FC = () => {
 
                 {/* Profile Header Section */}
                 <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-                    <div className="p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
+                    <div className="py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
                         <CircularImage
                            src={member.image}
                            alt={member.name}
                            size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48" // Responsive sizing
-                           className="flex-shrink-0 border-2 border-slate-600 mb-2 sm:mb-6 sm:mb-0 shadow-lg"
+                           className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
                         />
                         <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 sm:mt-2"> {/* Ensure text truncates if needed */}
                             <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>

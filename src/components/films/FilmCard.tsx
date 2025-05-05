@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Film } from '../../types/film'; 
-import { calculateClubAverage } from '../../utils/ratingUtils'; 
+import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils'; 
 import { CardSize } from '../../contexts/ViewSettingsContext'; 
 import PopcornRating from '../common/PopcornRating';
 import { getTeamMemberColorByName } from '../../types/team';
@@ -13,24 +13,6 @@ interface FilmCardProps {
     film: Film;
     cardSize: CardSize;
 }
-
-// Helper function to determine rating color class for individual scores
-const getRatingColorClass = (rating: number | string): string => {
-    // Ensure rating is treated as a number
-    const numericRating = typeof rating === 'string' ? parseFloat(rating) : rating;
-
-    if (isNaN(numericRating)) {
-        return 'text-slate-400'; // Default color for invalid ratings
-    }
-
-    if (numericRating >= 7) {
-        return 'text-emerald-400'; 
-    } else if (numericRating >= 4) {
-        return 'text-amber-500'; 
-    } else {
-        return 'text-rose-400'; 
-    }
-};
 
 
 const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
