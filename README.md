@@ -69,7 +69,7 @@ bun run preview
 
 ### Film Data
 
-The film data is now automatically synchronized from a Google Sheet to `src/assets/films.json`. This happens twice daily at 2pm CT and 10pm CT, or can be triggered manually.
+The film data is now automatically synced from a Google Sheet to `src/assets/films.json`. This happens twice daily at 2pm CT and 10pm CT, or can be triggered manually.
 
 **To update film data:**
 1. Edit the [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing)
