@@ -305,7 +305,7 @@ const FilmDetailPage = () => {
               {/* Plot */}
               <div className="mb-5 text-slate-300 ">
                 <p className={isPlotExpanded ? '' : 'line-clamp-3 '}>{film.plot || <span className="italic text-slate-500">Plot not available.</span>}</p>
-                {film.plot && film.plot.length > 150 && (
+                {film.plot && film.plot.length > 110 && (
                   <button
                     onClick={() => setIsPlotExpanded(!isPlotExpanded)}
                     className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-3"
@@ -433,7 +433,7 @@ const FilmDetailPage = () => {
                                   </p>
                               
                                   {/* Show "Read More/Less" button only if the blurb is long enough */}
-                                  {rating.blurb.length > 150 && (
+                                  {rating.blurb.length > 110 && (
                                     <button
                                       onClick={() => toggleBlurbExpansion(rating.user)}
                                       className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-3"
