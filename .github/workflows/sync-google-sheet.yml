@@ -41,3 +41,16 @@ jobs:
             git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update films.json from Google Sheet" && git push origin main)
         env:
             GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Trigger deploy workflow
+        if: success() && steps.commit.outputs.pushed == 'true'
+        uses: actions/github-script@v6
+        with:
+            github-token: ${{ secrets.PAT_TOKEN }}
+            script: |
+                await github.rest.actions.createWorkflowDispatch({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    workflow_id: 'deploy.yml', // filename of your deploy workflow
+                    ref: 'main'
+                })
