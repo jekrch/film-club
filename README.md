@@ -128,7 +128,7 @@ The site is available at: https://jekrch.github.io/film-club
 2. Trigger deployment via GitHub Actions workflow
 
 
-# 🎬 Hey, updating the site is EVEN EASIER NOW!
+## 🎬 Hey, updating the site is EVEN EASIER NOW!
 
 YOU can update the website without writing any code or manually editing JSON files. We've made it super simple with a Google Sheet!
 
