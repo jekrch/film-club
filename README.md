@@ -2,7 +2,7 @@
 
 https://criterionclub.org
 
-A web application for tracking films watched and reviewed by the Criterion Club, a group of four friends who watch Criterion Channel films and discuss them via Zoom.
+A web application for tracking films watched and reviewed by the Criterion Club, a group of friends who watch Criterion Channel films and discuss them via Zoom.
 
 Users can browse films we've watched, see reviews from each member, and explore our individual profiles.
 
@@ -16,9 +16,10 @@ Users can browse films we've watched, see reviews from each member, and explore 
 
 ## Project Structure
 
-Data for the website is managed through JSON files:
+Data for the website is managed through JSON files and a Google Sheet:
 - `src/assets/club.json` - Club member information
-- `src/assets/films.json` - Film data and reviews
+- `src/assets/films.json` - Film data and reviews (automatically synced from Google Sheet)
+- Google Sheet - [Film Club Ratings](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing)
 
 Profile pictures are stored in `public/images/` and follow the naming convention: `[firstname].jpg` (e.g., `jacob.jpg`)
 
@@ -66,13 +67,23 @@ bun run preview
 
 ## Adding/Updating Content
 
+### Film Data
+
+The film data is now automatically synchronized from a Google Sheet to `src/assets/films.json`. This happens twice daily at 2pm CT and 10pm CT, or can be triggered manually.
+
+**To update film data:**
+1. Edit the [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing)
+2. Add your ratings, blurbs, and other information
+3. The changes will be automatically synced to the website at the next scheduled time
+
+**To manually trigger the sync:**
+1. Go to the Actions tab in GitHub
+2. Select "Sync Google Sheet to JSON"
+3. Click "Run workflow"
+
 ### Member Data
 
 Edit `src/assets/club.json` to update member information.
-
-### Film Data
-
-Edit `src/assets/films.json` to add new films or reviews.
 
 ### Profile Pictures
 
@@ -80,11 +91,18 @@ Edit `src/assets/films.json` to add new films or reviews.
 2. Place it in the `public/images/` directory
 3. The change will be reflected automatically
 
-## Deployment
+## Automated Workflows
 
-The site is automatically deployed to GitHub Pages using GitHub Actions.
+### Google Sheet to JSON Sync
+
+A GitHub Action automatically syncs data from our Google Sheet to the `films.json` file twice daily (2pm CT and 10pm CT).
+
+- Data is matched between systems using the IMDB ID
+- The action only updates score and blurb fields that have changed
 
 ### Deployment Process
+
+The site is automatically deployed to GitHub Pages using GitHub Actions.
 
 1. Commit and push changes to the `main` branch
 2. Trigger the deployment workflow manually:
@@ -110,52 +128,41 @@ The site is available at: https://jekrch.github.io/film-club
 2. Trigger deployment via GitHub Actions workflow
 
 
-# 🎬 Hey, updating the site is EASY
+# 🎬 Hey, updating the site is EVEN EASIER NOW!
 
-YOU can update the website without writing any code. This guide will walk you through making changes to our film data and user profiles.
+YOU can update the website without writing any code or manually editing JSON files. We've made it super simple with a Google Sheet!
 
-### Where to Find the Files
+### How to Update Film Ratings (The NEW Easiest Way)
 
-You can update two main JSON files:
-* **Film Data**: [/src/assets/films.json](https://github.com/jekrch/film-club/blob/main/src/assets/films.json)
-* **User Profiles**: [/src/assets/club.json](https://github.com/jekrch/film-club/blob/main/src/assets/club.json)
+1. Go to our [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing)
+2. Find the film you want to rate
+3. Enter your score in the appropriate column (e.g., `andy_rating`, `gabe_rating`, etc.)
+4. Add optional comments in the blurb column next to your rating
+5. That's it! Your changes will automatically appear on the website after the next sync (2pm CT or 10pm CT daily)
 
-### How to Update a File (The Easy Way)
+Want your changes to appear immediately? You can manually trigger a sync:
+1. Go to the [GitHub Actions tab](https://github.com/jekrch/film-club/actions)
+2. Select "Sync Google Sheet to JSON"
+3. Click "Run workflow"
 
-1. **Navigate to the file** you want to update by clicking one of the links above
-2. **Click the pencil icon** (✏️) in the top-right corner of the file view
+### For User Profiles
+
+You can still update user profiles by editing the JSON file:
+
+1. **Navigate to** [/src/assets/club.json](https://github.com/jekrch/film-club/blob/main/src/assets/club.json)
+2. **Click the pencil icon** (✏️) in the top-right corner
 3. **Make your changes** directly in the editor
-   * For films: update your scores, trophy notes, and more
-   * For users: Update your profile info, bio, interview questions
-4. **Scroll down** to the "Commit changes" section
-5. Select "Commit directly to the main branch"
-6. **Click the green "Commit changes" button**
-
-### How to Update Your Film Score
-
-1. Navigate to the Film Data file using the link above
-2. Find the film you want to score in the list
-3. Look for the "clubRatings" section that looks like this:
-```
-"clubRatings": [
-  { "user": "andy", "score": null, "blurb": null },
-  { "user": "gabe", "score": null, "blurb": null },
-  { "user": "jacob", "score": 6.5, "blurb": "my thoughts!" },
-  { "user": "joey", "score": null, "blurb": null }
-]
-```
-4. Find the object with your name in the "user" field and update the "score" value with your rating (a number)
-5. If you want to add a short comment about the film, you can also update the "blurb" field
-6. Commit your changes as described above
+4. **Commit changes** directly to the main branch
 
 ### What Happens Next?
 
-Once you commit your changes, GitHub will automagically publish the updated website. Someone really made this easy! Within a few minutes, your changes will appear on [criterionclub.org](https://criterionclub.org)!
+Once you edit the Google Sheet, an automated process will update the website data. The site will automatically update twice daily, or you can trigger an immediate update through GitHub Actions.
 
 ### Tips
 
-* **JSON Formatting Matters**: Make sure you maintain the correct format with commas, brackets, and quotes
-* **Don't Worry About Breaking Things**: If something goes wrong, we can always restore a previous version
+* The sync process preserves special characters and formatting
+* Empty cells remain as `null` values in the JSON
+* If you're familiar with the old JSON editing method, that still works too!
 
 ### Need Help?
 
