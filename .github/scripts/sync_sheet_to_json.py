@@ -68,19 +68,20 @@ def update_json_from_sheet(sheet_df, json_path):
                 if 'movieClubInfo' not in movie:
                     movie['movieClubInfo'] = {}
                 
-                # Update watch_date if provided
-                if 'watch_date' in row and row['watch_date']:
+                # Update watch_date if provided and not NaN
+                if 'watch_date' in row and not pd.isna(row['watch_date']) and row['watch_date']:
                     if movie['movieClubInfo'].get('watchDate') != row['watch_date']:
                         movie['movieClubInfo']['watchDate'] = row['watch_date']
                         changes_made = True
+                # Don't update watchDate if it's empty/NaN in the spreadsheet
                 
-                # Update selected_by if provided
-                if 'selected_by' in row and row['selected_by']:
+                # Update selected_by if provided and not NaN
+                if 'selected_by' in row and not pd.isna(row['selected_by']) and row['selected_by']:
                     if movie['movieClubInfo'].get('selector') != row['selected_by']:
                         movie['movieClubInfo']['selector'] = row['selected_by']
                         changes_made = True
                 
-                # Update trophy_notes if provided
+                # Update trophy_notes if provided and not NaN
                 if 'trophy_notes' in row and not pd.isna(row['trophy_notes']):
                     if movie['movieClubInfo'].get('trophyNotes') != row['trophy_notes']:
                         movie['movieClubInfo']['trophyNotes'] = row['trophy_notes']
