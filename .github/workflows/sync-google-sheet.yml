@@ -1,56 +1,114 @@
-name: Sync Google Sheet to JSON
+name: Sync and Deploy
 
 on:
   schedule:
-    # Run at 2pm CT (7pm UTC during CDT)
-    - cron: '0 19 * * *'
-    # Run at 10pm CT (3am UTC next day during CDT)
-    - cron: '0 3 * * *'
-  workflow_dispatch:  # Allow manual triggering
+    - cron: '0 19 * * *'  # Run at 2pm CT
+    - cron: '0 3 * * *'   # Run at 10pm CT
+  workflow_dispatch:      # Allow manual triggering
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+        
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
+          
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas requests
-
+          
       - name: Run sync script
         run: python .github/scripts/sync_sheet_to_json.py
         env:
           SHEET_ID: "1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw"
           JSON_PATH: "src/assets/films.json"
-
-      - name: Commit and push if changes
+          
+      - name: Check for changes
+        id: check_changes
         run: |
-            git config --local user.email "github-actions[bot]@users.noreply.github.com"
-            git config --local user.name "github-actions[bot]"
-            git add src/assets/films.json
-            git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update films.json from Google Sheet" && git push origin main)
-        env:
-            GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-
-      - name: Trigger deploy workflow
-        if: success() && steps.commit.outputs.pushed == 'true'
-        uses: actions/github-script@v6
+          git add src/assets/films.json
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Commit changes
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Auto-update films.json from Google Sheet"
+          git push
+  
+  deploy:
+    needs: sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository with updated content
+        uses: actions/checkout@v4
         with:
-            github-token: ${{ secrets.PAT_TOKEN }}
-            script: |
-                await github.rest.actions.createWorkflowDispatch({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    workflow_id: 'deploy.yml', // filename of your deploy workflow
-                    ref: 'main'
-                })
+          ref: main
+          
+      - name: Validate JSON files
+        run: |
+          # Check if club.json is valid
+          if [ -f "src/assets/club.json" ]; then
+            echo "Validating club.json..."
+            if ! jq empty src/assets/club.json; then
+              echo "ERROR: club.json is not valid JSON"
+              exit 1
+            fi
+            echo "club.json is valid"
+          fi
+                
+          # Check if films.json is valid
+          if [ -f "src/assets/films.json" ]; then
+            echo "Validating films.json..."
+            if ! jq empty src/assets/films.json; then
+              echo "ERROR: films.json is not valid JSON"
+              exit 1
+            fi
+            echo "films.json is valid"
+          fi
+            
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+            
+      - name: Install dependencies
+        run: bun install
+            
+      - name: Build the project
+        run: bun run build
+            
+      - name: Verify build output
+        run: |
+          echo "Checking build output directory..."
+          ls -la
+          if [ -d "dist" ]; then
+            echo "dist directory exists"
+            ls -la dist
+          else
+            echo "ERROR: dist directory does not exist"
+            exit 1
+          fi
+            
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
