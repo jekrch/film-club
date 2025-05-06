@@ -81,7 +81,7 @@ def update_json_from_sheet(sheet_df, json_path):
                         changes_made = True
                 
                 # Update trophy_notes if provided
-                if 'trophy_notes' in row and row['trophy_notes']:
+                if 'trophy_notes' in row and not pd.isna(row['trophy_notes']):
                     if movie['movieClubInfo'].get('trophyNotes') != row['trophy_notes']:
                         movie['movieClubInfo']['trophyNotes'] = row['trophy_notes']
                         changes_made = True
@@ -104,16 +104,18 @@ def update_json_from_sheet(sheet_df, json_path):
                         if pd.isna(rating) or rating == '':
                             continue
                             
-                        # Convert rating to number if possible
+                        # Convert rating to number if possible, preserving integers
                         try:
-                            rating = float(rating)
+                            float_rating = float(rating)
+                            # Keep as integer if it's a whole number
+                            rating = int(float_rating) if float_rating.is_integer() else float_rating
                         except (ValueError, TypeError):
                             # Keep as string if not convertible
                             pass
                         
-                        # Handle empty blurb
+                        # Handle empty blurb - keep as null if it's empty
                         if pd.isna(blurb):
-                            blurb = ""
+                            blurb = None
                         
                         # Check if this user already has a rating
                         user_found = False
@@ -128,7 +130,7 @@ def update_json_from_sheet(sheet_df, json_path):
                                 break
                         
                         # Add new rating if user not found
-                        if not user_found and (rating or blurb):
+                        if not user_found and (rating or blurb is not None):
                             movie['movieClubInfo']['clubRatings'].append({
                                 'user': user,
                                 'score': rating,
@@ -137,14 +139,12 @@ def update_json_from_sheet(sheet_df, json_path):
                             changes_made = True
                 
                 break
-        
-        # If movie not found in JSON but has ratings, we might want to add it
-        # This would require additional logic to create a new movie entry
     
     # Only write to file if changes were made
     if changes_made:
         with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(json_data, f, indent=2)
+            # Use custom JSON encoder to preserve special characters and null values
+            json.dump(json_data, f, indent=2, ensure_ascii=False)
         print(f"Updated {json_path} with data from Google Sheet")
         return True
     else:
