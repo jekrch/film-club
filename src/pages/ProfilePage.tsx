@@ -15,7 +15,7 @@ import InterviewItem from '../components/profile/InterviewItem';
 import ProfileStatsSection from '../components/profile/ProfileStatsSection';
 import ControversialFilmItem from '../components/profile/ControversialFilmItem';
 // Data and Types
-import { teamMembers as allTeamMembers } from '../types/team';
+import { teamMembers as allTeamMembers, TeamMember } from '../types/team';
 import { Film, getClubRating, filmData } from '../types/film';
 // Utility Functions and Types
 import {
@@ -28,15 +28,6 @@ import {
 } from '../utils/statUtils';
 
 // --- Interfaces ---
-interface TeamMember {
-    name: string;
-    title: string;
-    bio: string;
-    image: string;
-    queue?: number;
-    color?: string;
-    interview?: { question: string; answer: string }[];
-}
 
 interface ProfileReviewBlurb {
     filmId: string;
@@ -47,11 +38,11 @@ interface ProfileReviewBlurb {
     watchDate?: string;
 }
 
-// --- ProfileBlurbItem Component ---
 interface ProfileBlurbItemProps {
     blurbItem: ProfileReviewBlurb;
     maxRating: number;
 }
+
 
 const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRating }) => {
     const [isUserExpanded, setIsUserExpanded] = useState(false);
@@ -62,15 +53,13 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
         if (blurbTextRef.current) {
             if (isUserExpanded) {
                 // If user has expanded, we don't need to re-check for overflow in clamped state.
-                // The button will show "Show Less".
-                // isContentActuallyOverflowingWhenClamped should retain its value (likely true).
             } else {
-                // Not user expanded, so line-clamp-3 is active (due to className). Check for actual overflow.
+                // Not user expanded, so line-clamp-3 is active. Check for actual overflow.
                 const el = blurbTextRef.current;
                 setIsContentActuallyOverflowingWhenClamped(el.scrollHeight > el.clientHeight);
             }
         }
-    }, [blurbItem.blurb, isUserExpanded]); // Re-check on blurb text change or expansion toggle.
+    }, [blurbItem.blurb, isUserExpanded]);
 
     const handleToggleExpand = () => {
         setIsUserExpanded(prev => !prev);
@@ -82,6 +71,8 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
         <div className="flex items-stretch space-x-4"> {/* items-stretch for poster height */}
             <Link to={`/films/${blurbItem.filmId}`} className="flex-shrink-0 w-20 block"> {/* Ensure Link can take full height */}
                 <img
+                    // MODIFICATION 1: Add key to help prevent image distortion on resize
+                    key={isUserExpanded ? `poster-expanded-${blurbItem.filmId}` : `poster-collapsed-${blurbItem.filmId}`}
                     src={blurbItem.filmPoster}
                     alt={blurbItem.filmTitle}
                     className="w-full h-full object-cover rounded-md shadow-lg hover:opacity-80 transition-opacity"
@@ -90,15 +81,18 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
             </Link>
 
             <div className="flex-1 min-w-0 py-0.5">
+                {/* MODIFICATION 2: Adjust layout for film title and watch date */}
                 <div className="flex justify-between items-baseline mb-1 flex-wrap gap-x-2">
-                    <div className="flex items-baseline min-w-0 mr-2 flex-grow">
+                    {/* This div will now be a column for title and watch date */}
+                    <div className="flex flex-col min-w-0 mr-2 flex-grow">
                         <Link to={`/film/${blurbItem.filmId}`} className="truncate">
                             <h5 className="text-md font-semibold text-slate-200 hover:text-blue-400 transition-colors">
                                 {blurbItem.filmTitle}
                             </h5>
                         </Link>
                         {blurbItem.watchDate && (
-                            <p className="text-xs text-slate-400 whitespace-nowrap ml-2 flex-shrink-0">
+                            // Watch date now on its own line, removed ml-2, whitespace-nowrap, flex-shrink-0
+                            <p className="text-xs text-slate-400 mt-0.5">
                                 (Watched: {blurbItem.watchDate})
                             </p>
                         )}
@@ -109,7 +103,7 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                             maxRating={maxRating}
                             size="small"
                             title={`${blurbItem.score}/${maxRating}`}
-                            className="flex-shrink-0"
+                            className="flex-shrink-0" // This should align with the title's baseline
                         />
                     )}
                 </div>
@@ -423,7 +417,7 @@ const ProfilePage: React.FC = () => {
                         <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3"> Interview </h3>
                         <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}>
                             <div className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}>
-                                <div className="divide-y divide-slate-700">
+                                <div className="divide-y divide-slate-700 -mt-4">
                                     {member.interview.map((item, index) => <InterviewItem key={index} question={item.question} answer={item.answer} />)}
                                 </div>
                             </div>

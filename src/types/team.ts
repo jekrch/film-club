@@ -7,7 +7,16 @@ export interface TeamMember {
   image: string;
   queue?: number;
   color?: string;
+  interview?: InterviewItem[];
 }
+
+export interface InterviewItem {
+  /** The interview question. */
+  question: string;
+  /** The interview answer (can contain Markdown). */
+  answer: string;
+}
+
 
 export const teamMembers: TeamMember[] = teamMembersData;
 

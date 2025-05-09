@@ -22,7 +22,7 @@ const InterviewItem: React.FC<InterviewItemProps> = ({ question, answer }) => {
 
   return (
     <div className="py-5">
-      <h4 className="text-lg font-semibold text-blue-400 mb-2">{question}</h4>
+      <h4 className="text-lg font-semiboldx text-blue-400 mb-2">{question}</h4>
       {/* Apply line clamp only if not expanded and expander is needed */}
       <div className={`prose prose-sm prose-invert max-w-none text-slate-300 ${!isExpanded && needsExpander ? 'line-clamp-4' : ''}`}>
         <ReactMarkdown>{answer}</ReactMarkdown>
