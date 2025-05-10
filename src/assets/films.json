@@ -2045,7 +2045,7 @@
     "type": "movie",
     "Response": "True",
     "movieClubInfo": {
-      "selector": "Group",
+      "selector": "Andy",
       "watchDate": "03/10/2022",
       "clubRatings": [
         {
