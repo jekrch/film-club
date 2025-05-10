@@ -2,9 +2,9 @@ name: Sync and Deploy
 
 on:
   schedule:
-    - cron: '0 19 * * *'  # Run at 2pm CT
-    - cron: '0 3 * * *'   # Run at 10pm CT
-  workflow_dispatch:      # Allow manual triggering
+    - cron: '0 19 * * *'
+    - cron: '0 3 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,28 +14,31 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    outputs: # Outputs from the 'sync' job
+      changed: ${{ steps.check_changes.outputs.changed }} # Exposes the 'changed' output from the 'check_changes' step
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-          
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas requests
-          
+
       - name: Run sync script
         run: python .github/scripts/sync_sheet_to_json.py
         env:
           SHEET_ID: "1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw"
           JSON_PATH: "src/assets/films.json"
-          
+          OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+
       - name: Check for changes
-        id: check_changes
+        id: check_changes # This step produces an output
         run: |
           git add src/assets/films.json
           if git diff --staged --quiet; then
@@ -43,24 +46,27 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-          
+
       - name: Commit changes
+        # This 'if' condition is within the 'sync' job and correctly uses 'steps' context
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -m "Auto-update films.json from Google Sheet"
+          git commit -m "Auto-update films.json from Google Sheet and OMDB"
           git push
-  
+
   deploy:
-    needs: sync
+    needs: sync # Specifies that 'deploy' job depends on 'sync' job
+    # This 'if' condition is for the 'deploy' job and correctly uses 'needs' context
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && needs.sync.outputs.changed == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository with updated content
         uses: actions/checkout@v4
         with:
-          ref: main
-          
+          ref: main # Assuming 'main' is your default branch
+
       - name: Validate JSON files
         run: |
           # Check if club.json is valid
@@ -72,7 +78,7 @@ jobs:
             fi
             echo "club.json is valid"
           fi
-                
+          
           # Check if films.json is valid
           if [ -f "src/assets/films.json" ]; then
             echo "Validating films.json..."
@@ -82,18 +88,18 @@ jobs:
             fi
             echo "films.json is valid"
           fi
-            
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-            
+
       - name: Install dependencies
         run: bun install
-            
+
       - name: Build the project
         run: bun run build
-            
+
       - name: Verify build output
         run: |
           echo "Checking build output directory..."
@@ -105,7 +111,7 @@ jobs:
             echo "ERROR: dist directory does not exist"
             exit 1
           fi
-            
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
