@@ -3739,7 +3739,7 @@
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": null,
-      "trophyNotes": "",
+      "trophyNotes": null,
       "clubRatings": [
         {
           "user": "andy",
@@ -3763,6 +3763,59 @@
         }
       ],
       "trophyInfo": null
+    }
+  },
+  {
+    "title": "Night of the Living Dead",
+    "year": "1968",
+    "rated": "R",
+    "released": "04 Oct 1968",
+    "runtime": "96 min",
+    "genre": "Horror, Thriller",
+    "director": "George A. Romero",
+    "writer": "John A. Russo, George A. Romero",
+    "actors": "Duane Jones, Judith O'Dea, Karl Hardman",
+    "plot": "Barbra and Johnny visit their father's grave in a remote cemetery when they are suddenly set upon by zombies. Barbra manages to get away and takes refuge in what seems to be an abandoned farm house. She is soon joined by Ben who stopped at the house in need of gas. Beset by the walking dead all around them Ben does his best to secure the doors and windows. The news reports are grim however with creatures returning to life everywhere. Barbra and Ben are surprised when they realize there are 5 people hiding out in the basement: Harry, Helen and Karen Cooper; and a young couple, Tom and Judy. Dissensions sets in almost immediately with Harry Cooper wanting to be in charge. As their situation deteriorates, their chances of surviving the night lessen minute by minute.",
+    "language": "English",
+    "country": "United States",
+    "awards": "7 wins total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZGMyZTA0MWEtZjczMS00ZDE5LTk1OTQtNmIxNGYzNDA2NDVhXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "95%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "89/100"
+      }
+    ],
+    "metascore": "89",
+    "imdbRating": "7.8",
+    "imdbVotes": "144,961",
+    "imdbID": "tt0063350",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$236,452",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "movieClubInfo": {
+      "selector": "Mark",
+      "watchDate": "10/25/2020",
+      "clubRatings": [
+        {
+          "user": "jacob",
+          "score": 4.5,
+          "blurb": null
+        }
+      ],
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   }
 ]
