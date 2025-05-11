@@ -47,7 +47,7 @@ const FilmList: React.FC<FilmListProps> = ({
 
   return (
     <div className="py-4">
-      {/* Header Section (remains the same) */}
+      {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
         {/* ... Title and Buttons ... */}
          {title && (
@@ -96,7 +96,7 @@ const FilmList: React.FC<FilmListProps> = ({
           )}
         </Swiper>
       ) : (
-        // --- Grid Layout (Default - remains the same) ---
+        // --- Grid Layout (Default ---
         <div className={`grid ${gridClasses} ${gapClass}`}>
           {/* ... grid items ... */}
           {films.map((film) => (

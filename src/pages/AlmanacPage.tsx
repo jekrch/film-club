@@ -198,7 +198,7 @@ const AlmanacPage: React.FC = () => {
         }));
 
         // Determine High/Low values using ComprehensiveMemberStats keys
-        // Need to adjust keys for highlights: avgSelectionRuntime -> avgRuntime, selectionCountryCount remains
+        // Need to adjust keys for highlights: avgSelectionRuntime -> avgRuntime, selectionCountryCount 
         const findHighLow = (statKey: keyof ComprehensiveMemberStats): { high: number | null, low: number | null } => {
             let high: number | null = null; let low: number | null = null; let validStatsCount = 0;
             memberStatsList.forEach(({ stats }) => {
