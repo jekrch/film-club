@@ -224,7 +224,7 @@ const FilmDetailPage = () => {
         {/* Film Detail Section */}
         <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden mb-12 border border-slate-700">
           <div className="md:flex">
-            <div className="md:flex-shrink-0 md:w-1/3 lg:w-[300px] relative group overflow-hidden">
+            <div className="md:flex-shrink-0 md:w-1/3 lg:w-[400px] relative group overflow-hidden">
               {/* Image is always displayed */}
               <img
                 src={film.poster}
@@ -329,6 +329,38 @@ const FilmDetailPage = () => {
                     <p className="text-slate-300">{film.writer}</p>
                   </div>
                 )}
+                {/* START: New crew fields */}
+                {film.cinematographer && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Cinematography</h2>
+                    <p className="text-slate-300">{film.cinematographer}</p>
+                  </div>
+                )}
+                {film.editor && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Editor</h2>
+                    <p className="text-slate-300">{film.editor}</p>
+                  </div>
+                )}
+                {film.productionDesigner && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Production Design</h2>
+                    <p className="text-slate-300">{film.productionDesigner}</p>
+                  </div>
+                )}
+                {film.musicComposer && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Music By</h2>
+                    <p className="text-slate-300">{film.musicComposer}</p>
+                  </div>
+                )}
+                {film.costumeDesigner && (
+                  <div>
+                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Costume Design</h2>
+                    <p className="text-slate-300">{film.costumeDesigner}</p>
+                  </div>
+                )}
+                {/* END: New crew fields */}
                 {film.actors && film.actors !== 'N/A' && (
                   <div className="col-span-1 md:col-span-2">
                     <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Stars</h2>
