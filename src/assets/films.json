@@ -62,7 +62,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Jon Gregory",
+    "musicComposer": "Andrew Dickson",
+    "cinematographer": "Dick Pope",
+    "costumeDesigner": "Lindy Hemming",
+    "productionDesigner": "Alison Chitty",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Come and See",
@@ -122,7 +128,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "productionDesigner": "Viktor Petrov",
+    "musicComposer": "Oleg Yanchenko",
+    "editor": "Valeriya Belova",
+    "costumeDesigner": "Eleonora Semyonova",
+    "cinematographer": "Alexey Rodionov",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Ali: Fear Eats the Soul",
@@ -182,7 +194,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "Jürgen Jürges",
+    "editor": "Thea Eymèsz",
+    "productionDesigner": "Rainer Werner Fassbinder",
+    "musicComposer": "Rainer Werner Fassbinder",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Amarcord",
@@ -242,7 +259,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Nino Rota",
+    "editor": "Ruggero Mastroianni",
+    "cinematographer": "Giuseppe Rotunno",
+    "productionDesigner": "Danilo Donati",
+    "costumeDesigner": "Danilo Donati",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Onibaba",
@@ -301,7 +324,11 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Hikaru Hayashi",
+    "editor": "Toshio Enoki",
+    "cinematographer": "Kiyomi Kuroda",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Cure",
@@ -364,7 +391,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "costumeDesigner": "Hiroshi Kotô, Ryûsui Morita",
+    "musicComposer": "Gary Ashiya",
+    "productionDesigner": "Tomoyuki Maruo",
+    "cinematographer": "Tokushô Kikumura",
+    "editor": "Kan Suzuki",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Lost in America",
@@ -430,7 +463,12 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.a8a9f788-38b5-8a66-326b-6bfad68bad0e?autoplay=0"
+    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.a8a9f788-38b5-8a66-326b-6bfad68bad0e?autoplay=0",
+    "editor": "David Finfer",
+    "musicComposer": "Arthur B. Rubinstein",
+    "productionDesigner": "Richard Sawyer",
+    "cinematographer": "Eric Saarinen",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Love Witch",
@@ -496,7 +534,12 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://tubitv.com/movies/683309/the-love-witch?start=true"
+    "streamUrl": "https://tubitv.com/movies/683309/the-love-witch?start=true",
+    "editor": "Anna Biller",
+    "cinematographer": "M. David Mullen",
+    "productionDesigner": "Anna Biller",
+    "costumeDesigner": "Anna Biller",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Carnival of Souls",
@@ -554,7 +597,11 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Bill de Jarnette, Dan Palmquist, Herbert L. Strock",
+    "musicComposer": "Gene Moore",
+    "cinematographer": "Maurice Prather",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Nosferatu the Vampyre",
@@ -619,7 +666,12 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://tubitv.com/movies/269897/nosferatu-the-vampyre?start=true"
+    "streamUrl": "https://tubitv.com/movies/269897/nosferatu-the-vampyre?start=true",
+    "cinematographer": "Jörg Schmidt-Reitwein",
+    "editor": "Beate Mainka-Jellinghaus",
+    "costumeDesigner": "Ann Poppel, Gisela Storch",
+    "musicComposer": "Popol Vuh",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Summer with Monika",
@@ -677,7 +729,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "costumeDesigner": "Barbro Sörman",
+    "cinematographer": "Gunnar Fischer",
+    "musicComposer": "Erik Nordgren, Eskil Eckert-Lundin, Walle Söderlund",
+    "editor": "Gösta Lewin, Tage Holmberg",
+    "productionDesigner": "P.A. Lundgren",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Virgin Spring",
@@ -736,7 +794,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "costumeDesigner": "Marik Vos-Lundh",
+    "musicComposer": "Erik Nordgren",
+    "productionDesigner": "P.A. Lundgren",
+    "editor": "Oscar Rosander",
+    "cinematographer": "Sven Nykvist",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Cremator",
@@ -795,7 +859,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Zdeněk Liška",
+    "editor": "Jaromír Janáček",
+    "cinematographer": "Stanislav Milota",
+    "productionDesigner": "Zbyněk Hloch",
+    "costumeDesigner": "Olga Dimitrovová",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Loves of a Blonde",
@@ -854,7 +924,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Evžen Illín",
+    "costumeDesigner": "Zdena Šnajdarová",
+    "cinematographer": "Miroslav Ondříček",
+    "editor": "Miroslav Hájek",
+    "productionDesigner": "Karel Černý",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Night of the Hunter",
@@ -919,7 +995,11 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://tubitv.com/movies/302723/the-night-of-the-hunter?start=true"
+    "streamUrl": "https://tubitv.com/movies/302723/the-night-of-the-hunter?start=true",
+    "cinematographer": "Stanley Cortez",
+    "musicComposer": "Walter Schumann",
+    "editor": "Robert Golden",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Mishima: A Life in Four Chapters",
@@ -984,7 +1064,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Philip Glass",
+    "cinematographer": "John Bailey",
+    "editor": "Michael Chandler, Tomoyo Ōshima",
+    "costumeDesigner": "Eiko Ishioka, Etsuko Yagyu",
+    "productionDesigner": "Eiko Ishioka",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Passion of Joan of Arc",
@@ -1049,7 +1135,11 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Carl Theodor Dreyer, Marguerite Beaugé",
+    "costumeDesigner": "Valentine Hugo",
+    "cinematographer": "Rudolph Maté",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Paths of Glory",
@@ -1114,7 +1204,12 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://tubitv.com/movies/301935/paths-of-glory?start=true"
+    "streamUrl": "https://tubitv.com/movies/301935/paths-of-glory?start=true",
+    "cinematographer": "Georg Krause",
+    "musicComposer": "Gerald Fried",
+    "editor": "Eva Kroll",
+    "costumeDesigner": "Ilse Dubois",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Hellraiser",
@@ -1180,7 +1275,13 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://tubitv.com/movies/478798/hellraiser?start=true"
+    "streamUrl": "https://tubitv.com/movies/478798/hellraiser?start=true",
+    "musicComposer": "Christopher Young",
+    "cinematographer": "Robin Vidgeon",
+    "editor": "Richard Marden, Tony Randel",
+    "productionDesigner": "Michael Buchanan",
+    "costumeDesigner": "Jane Wildgoose, Joanna Johnston",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Driller Killer",
@@ -1244,7 +1345,11 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://tubitv.com/movies/505048/the-driller-killer?start=true"
+    "streamUrl": "https://tubitv.com/movies/505048/the-driller-killer?start=true",
+    "musicComposer": "Joe Delia",
+    "editor": "Abel Ferrara, Bonnie Constant, Michael Constant, Orlando Gallini",
+    "cinematographer": "Ken Kelsch",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Schizopolis",
@@ -1309,7 +1414,11 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.3628f2c3-c4cb-4eb0-9aba-735e1221d9c8?autoplay=0"
+    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.3628f2c3-c4cb-4eb0-9aba-735e1221d9c8?autoplay=0",
+    "cinematographer": "Steven Soderbergh",
+    "editor": "Sarah Flack",
+    "musicComposer": "Cliff Martinez, Jeff Rona, Steven Soderbergh",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Homicide",
@@ -1374,7 +1483,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "Roger Deakins",
+    "productionDesigner": "Michael Merritt",
+    "editor": "Barbara Tulliver",
+    "costumeDesigner": "Nan Cibula",
+    "musicComposer": "Alaric Jans",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Beyond the Hills",
@@ -1439,7 +1554,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Mircea Olteanu",
+    "costumeDesigner": "Dana Păpăruz",
+    "productionDesigner": "Călin Papură, Mihaela Poenaru",
+    "cinematographer": "Oleg Mutu",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "El Sur",
@@ -1498,7 +1618,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "José Luis Alcaine",
+    "editor": "Pablo G. del Amo",
+    "productionDesigner": "Antonio Belizón",
+    "costumeDesigner": "Maiki Marín",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Cold Water",
@@ -1563,7 +1688,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "costumeDesigner": "Françoise Clavel",
+    "productionDesigner": "Gilbert Gagneux",
+    "cinematographer": "Denis Lenoir",
+    "editor": "Luc Barnier",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Dheepan",
@@ -1628,7 +1758,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Nicolas Jaar",
+    "editor": "Juliette Welfling",
+    "cinematographer": "Éponine Momenceau",
+    "productionDesigner": "Michel Barthélémy",
+    "costumeDesigner": "Chattoune",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Pather Panchali",
@@ -1688,7 +1824,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Dulal Dutta",
+    "cinematographer": "Subrata Mitra",
+    "productionDesigner": "Bansi Chandragupta",
+    "musicComposer": "Ravi Shankar",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Playtime",
@@ -1752,7 +1893,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Francis Lemarque",
+    "cinematographer": "Andréas Winding, Jean Badal",
+    "editor": "Gérard Pollicand",
+    "productionDesigner": "Eugène Roman",
+    "costumeDesigner": "Jacques Cottin",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Promise",
@@ -1818,7 +1965,11 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.f8a9f78e-3745-b943-6fba-fe708e861fdf?autoplay=0"
+    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.f8a9f78e-3745-b943-6fba-fe708e861fdf?autoplay=0",
+    "productionDesigner": "Igor Gabriel",
+    "costumeDesigner": "Monic Parelle",
+    "editor": "Marie-Hélène Dozo",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Thief",
@@ -1883,7 +2034,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Dov Hoenig",
+    "cinematographer": "Donald E. Thorin",
+    "productionDesigner": "Mel Bourne",
+    "musicComposer": "Christopher Franke, Edgar Froese, Johannes Schmölling, Klaus Krüger",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Friends of Eddie Coyle",
@@ -1947,7 +2103,13 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.62a9f757-bc4a-aa81-d2db-bb0c7b9e36fe?autoplay=0"
+    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.62a9f757-bc4a-aa81-d2db-bb0c7b9e36fe?autoplay=0",
+    "cinematographer": "Victor J. Kemper",
+    "costumeDesigner": "Eric Seelig",
+    "musicComposer": "Dave Grusin",
+    "editor": "Pat Jaffe",
+    "productionDesigner": "Gene Callahan",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Daisies",
@@ -2007,7 +2169,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Miroslav Hájek",
+    "musicComposer": "Jiří Šlitr, Jiří Šust",
+    "cinematographer": "Jaroslav Kučera",
+    "productionDesigner": "Karel Lier",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Shadow of a Doubt",
@@ -2072,7 +2239,12 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.48a9f7bd-1282-5099-7845-0ae2f67a6842?autoplay=0"
+    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.48a9f7bd-1282-5099-7845-0ae2f67a6842?autoplay=0",
+    "cinematographer": "Joseph A. Valentine",
+    "editor": "Milton Carruth",
+    "costumeDesigner": "Adrian, Vera West",
+    "musicComposer": "Dimitri Tiomkin, Franz Lehár",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Age of Innocence",
@@ -2138,7 +2310,13 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://www.netflix.com/watch/60011002"
+    "streamUrl": "https://www.netflix.com/watch/60011002",
+    "cinematographer": "Michael Ballhaus",
+    "musicComposer": "Elmer Bernstein",
+    "editor": "Thelma Schoonmaker",
+    "costumeDesigner": "Gabriella Pescucci",
+    "productionDesigner": "Dante Ferretti",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Valerie and Her Week of Wonders",
@@ -2197,7 +2375,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "productionDesigner": "Jan Oliva",
+    "cinematographer": "Jan Čuřík",
+    "editor": "Josef Valušiak",
+    "musicComposer": "Luboš Fišer",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Ratcatcher",
@@ -2262,7 +2445,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "Alwin H. Küchler",
+    "musicComposer": "Rachel Portman",
+    "editor": "Lucia Zucchetti",
+    "productionDesigner": "Jane Morton",
+    "costumeDesigner": "Gill Horn",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "La Ceremonie",
@@ -2322,7 +2511,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Monique Fardoulis",
+    "costumeDesigner": "Corinne Jorry",
+    "cinematographer": "Bernard Zitzermann",
+    "musicComposer": "Matthieu Chabrol",
+    "productionDesigner": "Daniel Mercier",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Metropolitan",
@@ -2387,7 +2582,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Christopher Tellefsen",
+    "musicComposer": "Mark Suozzo, Tom Judson",
+    "costumeDesigner": "Mary Jane Fort",
+    "cinematographer": "John Thomas",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Red Desert",
@@ -2446,7 +2646,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "productionDesigner": "Piero Poletto",
+    "musicComposer": "Giovanni Fusco",
+    "editor": "Eraldo Da Roma",
+    "cinematographer": "Carlo Di Palma",
+    "costumeDesigner": "Gitt Magrini",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Near Dark",
@@ -2512,7 +2718,13 @@
       "trophyInfo": null,
       "trophyNotes": null,
       "noStreaming": true
-    }
+    },
+    "musicComposer": "Christopher Franke, Edgar Froese, Paul Haslinger",
+    "cinematographer": "Adam Greenberg",
+    "editor": "Howard E. Smith",
+    "costumeDesigner": "Joseph A. Porro",
+    "productionDesigner": "Stephen Altman",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "A Girl Walks Home Alone at Night",
@@ -2578,7 +2790,13 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.7477bb78-bdbf-473a-bc95-4a7752d02af6?autoplay=0"
+    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.7477bb78-bdbf-473a-bc95-4a7752d02af6?autoplay=0",
+    "editor": "Alex O'Flinn",
+    "productionDesigner": "Sergio De La Vega",
+    "cinematographer": "Lyle Vincent",
+    "costumeDesigner": "Natalie O'Brien",
+    "musicComposer": "Bei Ru, Johnny Jewel",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Police Story",
@@ -2643,7 +2861,12 @@
       ],
       "trophyInfo": "Somebody Picks a Good Movie!",
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "Cheung Yiu-Cho",
+    "costumeDesigner": "Ginger Fung Oi-Man",
+    "editor": "Peter Cheung Yiu-Chung",
+    "musicComposer": "Michael Lai Siu-Tin",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Long Good Friday",
@@ -2707,7 +2930,12 @@
       ],
       "trophyInfo": "Andy",
       "trophyNotes": "5.8"
-    }
+    },
+    "editor": "Mike Taylor",
+    "costumeDesigner": "Tudor George",
+    "cinematographer": "Phil Meheux",
+    "musicComposer": "Francis Monkman",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Dogtooth",
@@ -2773,7 +3001,11 @@
       "trophyInfo": "Gabe",
       "trophyNotes": "5.7"
     },
-    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.f4b6ed87-37cf-8284-01c5-12d39f20ea3e?autoplay=0"
+    "streamUrl": "https://www.amazon.com/gp/video/detail/amzn1.dv.gti.f4b6ed87-37cf-8284-01c5-12d39f20ea3e?autoplay=0",
+    "editor": "Yorgos Mavropsaridis",
+    "costumeDesigner": "Elli Papageorgakopoulou",
+    "cinematographer": "Thimios Bakatakis",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Wise Blood",
@@ -2837,7 +3069,10 @@
       ],
       "trophyInfo": "Jacob",
       "trophyNotes": "6.3"
-    }
+    },
+    "editor": "Roberto Silvi",
+    "cinematographer": "Gerry Fisher",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Johnny Mnemonic",
@@ -2903,7 +3138,13 @@
       "trophyInfo": "Johnny Mnemonic!",
       "trophyNotes": "Joey, 5.3"
     },
-    "streamUrl": "https://www.amazon.com/Johnny-Mnemonic-Keanu-Reeves/dp/B000I8ES4S"
+    "streamUrl": "https://www.amazon.com/Johnny-Mnemonic-Keanu-Reeves/dp/B000I8ES4S",
+    "cinematographer": "François Protat",
+    "editor": "Ronald Sanders",
+    "musicComposer": "Brad Fiedel, Mychael Danna",
+    "productionDesigner": "Nilo Rodis-Jamero",
+    "costumeDesigner": "Olga Dimitrovová",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Modern Times",
@@ -2968,7 +3209,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "Bud Thackery, Ira H. Morgan, Roland Totheroh",
+    "editor": "Charlie Chaplin, Willard Nico",
+    "productionDesigner": "Charles D. Hall",
+    "musicComposer": "Charlie Chaplin",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Involuntary",
@@ -3031,7 +3277,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "Ruben Östlund",
+    "productionDesigner": "Pia Aleborg",
+    "costumeDesigner": "Pia Aleborg",
+    "cinematographer": "Marius Dybwad Brandrud",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Diabolique",
@@ -3090,7 +3341,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Georges Van Parys",
+    "editor": "Madeleine Gug",
+    "cinematographer": "Armand Thirard",
+    "costumeDesigner": "Carven",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Thief of Bagdad",
@@ -3150,7 +3406,13 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "Georges Périnal",
+    "musicComposer": "Miklós Rózsa",
+    "editor": "Charles Crichton",
+    "productionDesigner": "Vincent Korda",
+    "costumeDesigner": "John Armstrong, Marcel Vertès, Oliver Messel",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Devils",
@@ -3216,7 +3478,13 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "noStreaming": true
+    "noStreaming": true,
+    "editor": "Michael Bradsell",
+    "cinematographer": "David Watkin",
+    "productionDesigner": "Derek Jarman",
+    "musicComposer": "Peter Maxwell Davies",
+    "costumeDesigner": "Shirley Russell",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Ear for Eye",
@@ -3280,7 +3548,11 @@
       "trophyInfo": null,
       "trophyNotes": null
     },
-    "noStreaming": true
+    "noStreaming": true,
+    "editor": "Mdhamiri á Nkemi",
+    "cinematographer": "Joel Honeywell, Luciana Riso Soto",
+    "musicComposer": "Luke Sutherland",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Ashes and Diamonds",
@@ -3339,7 +3611,12 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cinematographer": "Jerzy Wójcik",
+    "productionDesigner": "Roman Mann",
+    "editor": "Halina Nawrocka",
+    "costumeDesigner": "Katarzyna Chodorowicz",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Music Room",
@@ -3399,7 +3676,12 @@
       ],
       "trophyInfo": "Music Room!",
       "trophyNotes": null
-    }
+    },
+    "productionDesigner": "Bansi Chandragupta",
+    "cinematographer": "Subrata Mitra",
+    "musicComposer": "Robin Majumdar, Ustad Vilayat Khan",
+    "editor": "Dulal Dutta",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Andrei Rublev",
@@ -3459,7 +3741,13 @@
       ],
       "trophyInfo": "Joey",
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Vyacheslav Ovchinnikov",
+    "editor": "Lyudmila Feiginova, Olga Shevkunenko, Tatyana Egorycheva",
+    "costumeDesigner": "Lidiya Novi, Maya Abar-Baranovskaya",
+    "productionDesigner": "Yevgeni Chernyayev",
+    "cinematographer": "Vadim Yusov",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "In a Year of 13 Moons",
@@ -3518,7 +3806,12 @@
       ],
       "trophyInfo": "Gabe",
       "trophyNotes": null
-    }
+    },
+    "editor": "Juliane Lorenz, Rainer Werner Fassbinder",
+    "musicComposer": "Peer Raben",
+    "cinematographer": "Rainer Werner Fassbinder",
+    "productionDesigner": "Franz Vacek",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Battle of Algiers",
@@ -3583,7 +3876,12 @@
       ],
       "trophyInfo": "Gabe",
       "trophyNotes": null
-    }
+    },
+    "musicComposer": "Ennio Morricone, Gillo Pontecorvo",
+    "editor": "Mario Morra, Mario Serandrei",
+    "productionDesigner": "Sergio Canevari",
+    "cinematographer": "Marcello Gatti",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "The Color of Pomegranates",
@@ -3642,7 +3940,13 @@
       ],
       "trophyInfo": "Joey",
       "trophyNotes": "Andy gets a Special Connection Award for his Parajanov-Vartanov award\nJoey gets a Bad Boy trophy for having a lot of work to do."
-    }
+    },
+    "productionDesigner": "Stepan Andranikyan",
+    "editor": "Marfa Ponomarenko, Sergei Parajanov",
+    "costumeDesigner": "Elene Akhvlediani, I. Karalyan, Zh. Sarabyan",
+    "cinematographer": "Suren Shakhbazyan",
+    "musicComposer": "Tigran Mansuryan",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Only the River Flows",
@@ -3705,7 +4009,10 @@
       ],
       "trophyNotes": "Joey gets togetherness trophy.",
       "trophyInfo": null
-    }
+    },
+    "editor": "Matthieu Laclau",
+    "cinematographer": "Zhiyuan Chengma",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Sawdust and Tinsel",
@@ -3763,7 +4070,13 @@
         }
       ],
       "trophyInfo": null
-    }
+    },
+    "editor": "Carl-Olov Skeppstedt",
+    "cinematographer": "Hilding Bladh, Sven Nykvist",
+    "productionDesigner": "Bibi Lindström",
+    "costumeDesigner": "Mago",
+    "musicComposer": "Karl-Birger Blomdahl",
+    "tmdbCrewDataFetched": true
   },
   {
     "title": "Night of the Living Dead",
@@ -3816,6 +4129,9 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "editor": "George A. Romero, Hugh C. Daly",
+    "cinematographer": "George A. Romero",
+    "tmdbCrewDataFetched": true
   }
 ]
