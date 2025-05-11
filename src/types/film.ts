@@ -66,7 +66,7 @@ export interface Film {
     plot: string;
     language: string;
     country: string;
-    awards?: string; // Marked optional
+    awards?: string; 
     poster: string; // URL
     ratings: Rating[]; // Array of ratings from different sources
     metascore?: string; // Optional: Removed if "N/A"
@@ -80,7 +80,11 @@ export interface Film {
     website?: string; // Optional: Removed if "N/A"
     streamUrl?: string; // Optional: URL for streaming the film
     noStreaming?: boolean; // Optional: Flag to indicate if the film is not available for streaming
-
+    editor?: string; 
+    productionDesigner?: string;
+    cinematographer?: string; 
+    costumeDesigner?: string;
+    musicComposer?: string; 
     // Optional: Movie club specific information.
     movieClubInfo?: MovieClubDetails;
 }

@@ -2,8 +2,8 @@
 """
 Script to sync data from a Google Sheet to a JSON file for a film club website.
 This script reads from a public Google Sheet:
-- Updates existing film entries with ratings, blurbs, and other club-specific info.
-- Fetches data from OMDB for new IMDb IDs found in the sheet.
+- Updates existing film entries with ratings, blurbs, and other club-specific info, maintaining original order.
+- Fetches data from OMDB for new IMDb IDs found in the sheet and appends them.
 - Fetches additional crew data (like cinematographer) from TMDb using Bearer Token authentication.
   It uses a flag 'tmdbCrewDataFetched' to ensure TMDb data is fetched only once per film.
 - Adds these new films to the JSON file.
@@ -63,7 +63,7 @@ EXPECTED_TMDB_CREW_FIELDS = [
 TMDB_FETCH_FLAG = "tmdbCrewDataFetched"
 
 
-def get_tmdb_film_details(imdb_id, tmdb_bearer_token): # Changed parameter name for clarity
+def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
     """Fetch film credits (including cinematographer) from TMDb API by IMDb ID using Bearer Token."""
     if not tmdb_bearer_token:
         print("Warning: TMDB_KEY (Bearer Token) is not set. Cannot fetch additional crew data.")
@@ -74,9 +74,6 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token): # Changed parameter name 
         "accept": "application/json"
     }
 
-    # Step 1: Find the TMDb movie ID using the IMDb ID
-    # The /find endpoint also works with Bearer token or api_key query param.
-    # We'll stick to Bearer token for consistency.
     find_url = f"https://api.themoviedb.org/3/find/{imdb_id}?external_source=imdb_id"
     tmdb_movie_id = None
     media_type = None
@@ -104,12 +101,10 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token): # Changed parameter name 
     if not tmdb_movie_id or not media_type:
         return None
 
-    # Step 2: Fetch credits using the TMDb movie ID
-    credits_url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_movie_id}/credits" # Language param can be added if needed
-    
+    credits_url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_movie_id}/credits"
     extracted_crew = {}
     try:
-        response = requests.get(credits_url, headers=headers) # Use headers here as well
+        response = requests.get(credits_url, headers=headers)
         response.raise_for_status()
         credits_data = response.json()
         
@@ -165,7 +160,7 @@ def get_sheet_data(sheet_id):
         print(f"Error processing Google Sheet data: {e}")
         return None
 
-def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token): # Changed parameter name
+def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token):
     """Update JSON file with data from Sheet dataframe and fetch new films from OMDB and TMDb."""
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
@@ -177,70 +172,36 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
         print(f"Error: Invalid JSON format in {json_path}: {e}. Starting with an empty list.")
         films_data = []
 
-    existing_imdb_ids = {film.get('imdbID') for film in films_data if film.get('imdbID')}
+    # Create a dictionary for quick lookup of existing films by IMDb ID
+    # This helps in updating existing films in-place without changing their order in films_data list.
+    films_dict = {film['imdbID']: film for film in films_data if 'imdbID' in film}
+    
+    # Keep track of IMDb IDs already processed from the sheet to avoid duplicate appends if sheet has duplicates
+    processed_sheet_ids = set() 
+    new_films_to_append = [] # Store new films temporarily before appending
+
     users = ["andy", "gabe", "jacob", "joey", "greg"]
     changes_made = False
-    films_dict = {film['imdbID']: film for film in films_data if 'imdbID' in film}
 
     for _, row in sheet_df.iterrows():
         imdb_id_sheet = row.get('imdb_id')
-        if not imdb_id_sheet or pd.isna(imdb_id_sheet):
+        if not imdb_id_sheet or pd.isna(imdb_id_sheet) or imdb_id_sheet in processed_sheet_ids:
+            if imdb_id_sheet in processed_sheet_ids:
+                print(f"Skipping duplicate IMDb ID from sheet: {imdb_id_sheet}")
             continue
+        
+        processed_sheet_ids.add(imdb_id_sheet)
 
         watch_date_sheet = row.get('watch_date')
         selector_sheet = row.get('selected_by') 
         trophy_notes_sheet = row.get('trophy_notes')
         
-        if imdb_id_sheet not in existing_imdb_ids:
-            print(f"New film found in sheet: {imdb_id_sheet}. Fetching from OMDB...")
-            new_film_data = get_omdb_film_details(imdb_id_sheet, omdb_api_key)
-            
-            if new_film_data:
-                new_film_data[TMDB_FETCH_FLAG] = False 
-                if tmdb_bearer_token: # Check if token is provided
-                    print(f"Fetching additional crew data from TMDb for new film {imdb_id_sheet}...")
-                    tmdb_crew_data = get_tmdb_film_details(imdb_id_sheet, tmdb_bearer_token)
-                    if tmdb_crew_data:
-                        for key, value in tmdb_crew_data.items():
-                            new_film_data[key] = value 
-                        print(f"Successfully added crew data from TMDb for new film: {list(tmdb_crew_data.keys())}")
-                    else:
-                        print(f"Could not fetch or process crew data from TMDb for new film {imdb_id_sheet}.")
-                    new_film_data[TMDB_FETCH_FLAG] = True 
-                else:
-                    print("TMDb Bearer Token (TMDB_KEY) not provided. Skipping TMDb crew data fetch for new film.")
-
-                new_film_data['movieClubInfo'] = {
-                    "selector": selector_sheet, "watchDate": watch_date_sheet,
-                    "clubRatings": [], "trophyInfo": None, "trophyNotes": trophy_notes_sheet
-                }
-                
-                for user in users:
-                    rating_col, blurb_col = f'{user}_rating', f'{user}_blurb'
-                    rating, blurb = row.get(rating_col), row.get(blurb_col)
-                    if not pd.isna(rating) or not pd.isna(blurb):
-                        try:
-                            rating_val_typed = float(rating) if not pd.isna(rating) else None
-                            if rating_val_typed is not None and rating_val_typed.is_integer(): rating_val_typed = int(rating_val_typed)
-                        except (ValueError, TypeError): 
-                            rating_val_typed = rating # Keep as string if not convertible
-                        new_film_data['movieClubInfo']['clubRatings'].append({
-                            'user': user, 'score': rating_val_typed, 'blurb': None if pd.isna(blurb) else blurb
-                        })
-                
-                films_data.append(new_film_data)
-                films_dict[imdb_id_sheet] = new_film_data 
-                existing_imdb_ids.add(imdb_id_sheet) 
-                changes_made = True
-            else:
-                print(f"Could not fetch OMDB data for new film {imdb_id_sheet}. Skipping.")
-                continue
-        
-        elif imdb_id_sheet in films_dict: 
-            movie_to_update = films_dict[imdb_id_sheet]
+        # Check if the film already exists in our JSON data (loaded into films_dict)
+        if imdb_id_sheet in films_dict: 
+            movie_to_update = films_dict[imdb_id_sheet] # Get reference to the film object in films_data
             initial_movie_state_str = json.dumps(movie_to_update, sort_keys=True) 
 
-            # Update club-specific info first
+            # Update club-specific info
             if 'movieClubInfo' not in movie_to_update:
                 movie_to_update['movieClubInfo'] = {"clubRatings": [], "trophyInfo": None}
             
@@ -259,32 +220,41 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
             if 'clubRatings' not in movie_to_update['movieClubInfo']:
                 movie_to_update['movieClubInfo']['clubRatings'] = []
             
+            # Update user ratings and blurbs
+            current_ratings_dict = {r['user'].lower(): r for r in movie_to_update['movieClubInfo']['clubRatings']}
+            
             for user in users:
                 rating_col, blurb_col = f'{user}_rating', f'{user}_blurb'
+                # Only process if the columns exist in the sheet for this row
                 if rating_col not in row.keys() and blurb_col not in row.keys(): continue
+
                 rating_val_sheet = row.get(rating_col)
                 blurb_val_sheet = row.get(blurb_col)
+                
+                # Skip if both rating and blurb are NaN (no data in sheet for this user for this film)
                 if pd.isna(rating_val_sheet) and pd.isna(blurb_val_sheet): continue
 
-                user_rating_obj = next((r for r in movie_to_update['movieClubInfo']['clubRatings'] if r.get('user', '').lower() == user.lower()), None)
                 new_score = None
                 if not pd.isna(rating_val_sheet):
                     try:
                         float_val = float(rating_val_sheet)
                         new_score = int(float_val) if float_val.is_integer() else float_val
-                    except (ValueError, TypeError): new_score = rating_val_sheet
+                    except (ValueError, TypeError): new_score = rating_val_sheet # Keep as string if not convertible
                 new_blurb = None if pd.isna(blurb_val_sheet) else blurb_val_sheet
+
+                user_rating_obj = current_ratings_dict.get(user.lower())
 
                 if user_rating_obj: 
                     if user_rating_obj.get('score') != new_score or user_rating_obj.get('blurb') != new_blurb:
                         user_rating_obj['score'] = new_score
                         user_rating_obj['blurb'] = new_blurb
-                else: 
+                else: # New rating for this user for this film
                     movie_to_update['movieClubInfo']['clubRatings'].append({
                         'user': user, 'score': new_score, 'blurb': new_blurb
                     })
-
-            if tmdb_bearer_token: # Check if token is provided
+            
+            # Conditional TMDb data fetch
+            if tmdb_bearer_token:
                 if not movie_to_update.get(TMDB_FETCH_FLAG, False):
                     print(f"Existing film {imdb_id_sheet} needs TMDb crew data (flag is false or missing). Fetching from TMDb...")
                     tmdb_crew_data = get_tmdb_film_details(imdb_id_sheet, tmdb_bearer_token)
@@ -302,33 +272,72 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
             if initial_movie_state_str != final_movie_state_str:
                 changes_made = True
         
-        else: 
-             if imdb_id_sheet in existing_imdb_ids:
-                 print(f"Warning: IMDb ID {imdb_id_sheet} was in existing_imdb_ids but not found in films_dict for update processing.")
+        else: # Film is new (not in existing films_dict)
+            print(f"New film found in sheet: {imdb_id_sheet}. Fetching from OMDB...")
+            new_film_data_omdb = get_omdb_film_details(imdb_id_sheet, omdb_api_key)
+            
+            if new_film_data_omdb:
+                new_film_entry = new_film_data_omdb # Start with OMDB data
+                new_film_entry[TMDB_FETCH_FLAG] = False 
+                if tmdb_bearer_token:
+                    print(f"Fetching additional crew data from TMDb for new film {imdb_id_sheet}...")
+                    tmdb_crew_data = get_tmdb_film_details(imdb_id_sheet, tmdb_bearer_token)
+                    if tmdb_crew_data:
+                        for key, value in tmdb_crew_data.items():
+                            new_film_entry[key] = value 
+                        print(f"Successfully added crew data from TMDb for new film: {list(tmdb_crew_data.keys())}")
+                    else:
+                        print(f"Could not fetch or process crew data from TMDb for new film {imdb_id_sheet}.")
+                    new_film_entry[TMDB_FETCH_FLAG] = True 
+                else:
+                    print("TMDb Bearer Token (TMDB_KEY) not provided. Skipping TMDb crew data fetch for new film.")
 
+                new_film_entry['movieClubInfo'] = {
+                    "selector": selector_sheet, "watchDate": watch_date_sheet,
+                    "clubRatings": [], "trophyInfo": None, "trophyNotes": trophy_notes_sheet
+                }
+                
+                for user in users:
+                    rating_col, blurb_col = f'{user}_rating', f'{user}_blurb'
+                    rating, blurb = row.get(rating_col), row.get(blurb_col)
+                    if not pd.isna(rating) or not pd.isna(blurb):
+                        try:
+                            rating_val_typed = float(rating) if not pd.isna(rating) else None
+                            if rating_val_typed is not None and rating_val_typed.is_integer(): rating_val_typed = int(rating_val_typed)
+                        except (ValueError, TypeError): 
+                            rating_val_typed = rating 
+                        new_film_entry['movieClubInfo']['clubRatings'].append({
+                            'user': user, 'score': rating_val_typed, 'blurb': None if pd.isna(blurb) else blurb
+                        })
+                
+                new_films_to_append.append(new_film_entry) # Add to temporary list
+                changes_made = True
+            else:
+                print(f"Could not fetch OMDB data for new film {imdb_id_sheet}. Skipping.")
+                continue
+
+    # Append all new films at the end of the original films_data list
+    if new_films_to_append:
+        films_data.extend(new_films_to_append)
+        # No need to update films_dict here as it's only used for initial lookup
 
     if changes_made:
         try:
-            def sort_key(film):
-                date_str = film.get('movieClubInfo', {}).get('watchDate')
-                if date_str:
-                    try: return pd.to_datetime(date_str, errors='coerce')
-                    except Exception: return pd.Timestamp.min 
-                return pd.Timestamp.min 
-            films_data.sort(key=lambda x: (sort_key(x) is pd.NaT, sort_key(x)), reverse=True)
-
+            # REMOVED SORTING LOGIC TO PRESERVE ORIGINAL ORDER
             with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(films_data, f, indent=2, ensure_ascii=False)
-            print(f"Successfully updated {json_path} with data from Google Sheet, OMDB, and TMDb.")
+            print(f"Successfully updated {json_path} with data from Google Sheet, OMDB, and TMDb. Order preserved.")
         except IOError as e:
             print(f"Error writing to JSON file {json_path}: {e}")
             return False
-        except Exception as e:
-            print(f"Error during final processing (e.g. sorting) or writing JSON: {e}")
-            try: 
+        except Exception as e: # Catch other potential errors during JSON processing
+            print(f"Error during final processing or writing JSON: {e}")
+            # As a fallback, if something unexpected happens, you might still want to try writing
+            # but this is less likely now that sorting is removed.
+            try:
                 with open(json_path, 'w', encoding='utf-8') as f_err:
                     json.dump(films_data, f_err, indent=2, ensure_ascii=False)
-                print(f"Successfully wrote {json_path} (unsorted) after a processing error.")
+                print(f"Successfully wrote {json_path} (potentially with issues) after a processing error.")
             except Exception as e_write:
                  print(f"Failed to write {json_path} even after processing error: {e_write}")
             return False
@@ -341,7 +350,7 @@ def main():
     sheet_id = os.environ.get('SHEET_ID')
     json_path = os.environ.get('JSON_PATH')
     omdb_api_key = os.environ.get('OMDB_API_KEY')
-    tmdb_bearer_token_env = os.environ.get('TMDB_KEY') # Get the Bearer token from env
+    tmdb_bearer_token_env = os.environ.get('TMDB_KEY') 
 
     if not sheet_id or not json_path:
         print("Error: Missing required environment variables (SHEET_ID, JSON_PATH).")
@@ -350,7 +359,7 @@ def main():
     if not omdb_api_key:
         print("Warning: OMDB_API_KEY environment variable is not set. New film details from OMDB may be limited or fail.")
     
-    if not tmdb_bearer_token_env: # Check for the Bearer token
+    if not tmdb_bearer_token_env: 
         print("Warning: TMDB_KEY (Bearer Token) environment variable is not set. Cannot fetch additional crew details from TMDb.")
 
     sheet_df = get_sheet_data(sheet_id)
@@ -363,7 +372,7 @@ def main():
         print("No valid IMDb IDs found in the Google Sheet after filtering. Nothing to process.")
         return True
 
-    success = update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token_env) # Pass the token
+    success = update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token_env)
     return success
 
 if __name__ == "__main__":
