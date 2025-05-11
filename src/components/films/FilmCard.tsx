@@ -260,7 +260,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     </div> {/* End Card Content Section */}
                 </div> {/* End Inner Card Div */}
             </Link>
-        </div> // End Outermost Div
+        </div> 
     );
 };
 
