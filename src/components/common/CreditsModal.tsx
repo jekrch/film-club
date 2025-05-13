@@ -68,7 +68,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
                   <img
                     src={creditFilm.poster || '/placeholder-poster.png'}
                     alt={`${creditFilm.title} poster`}
-                    className="w-20 h-auto object-cover rounded shadow-sm border border-slate-600/50"
+                    className="w-25 h-auto object-cover rounded shadow-sm border border-slate-600/50"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = '/placeholder-poster.png';
@@ -84,8 +84,8 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
                   >
                     <h3 className="text-base md:text-lg font-semibold text-slate-100 leading-tight">{creditFilm.title}</h3>
                   </Link>
-                  {creditFilm.year && <p className="text-xs text-slate-400 mb-1">({creditFilm.year})</p>}
-                  <p className="text-xs text-slate-300">
+                  {creditFilm.year && <p className="text-xs text-slate-400 mt-1">({creditFilm.year})</p>}
+                  <p className="text-sm text-slate-300 mt-4">
                     <span className="font-medium text-slate-400">Role(s):</span> {roles.join(', ')}
                   </p>
                 </div>
