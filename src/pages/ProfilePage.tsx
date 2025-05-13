@@ -103,7 +103,7 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                             maxRating={maxRating}
                             size="small"
                             title={`${blurbItem.score}/${maxRating}`}
-                            className="flex-shrink-0" // This should align with the title's baseline
+                            className="flex-shrink-0" 
                         />
                     )}
                 </div>
