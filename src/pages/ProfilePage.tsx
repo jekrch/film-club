@@ -384,7 +384,7 @@ const ProfilePage: React.FC = () => {
     const MAX_RATING_DISPLAY = 9;
 
     return (
-        <div className="bg-slate-900 text-slate-300 min-h-screen py-12 pt-6">
+        <div className="bg-slate-900x text-slate-300 min-h-screen py-12 pt-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <button
                     onClick={() => navigate(-1)}

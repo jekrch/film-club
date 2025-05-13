@@ -19,7 +19,7 @@ function App() {
   return (
     <ViewSettingsProvider>
       <Router>
-        <div className="flex flex-col min-h-screen bg-slate-900x bg-gradient-to-t from-slate-800 to-slate-900 font-se"> {/* Set default bg */}
+        <div className="flex flex-col min-h-screen bg-slate-900x bg-gradient-to-t from-slate-900 via-slate-800 to-slate-900 font-se"> {/* Set default bg */}
 
           <Navbar />
 
