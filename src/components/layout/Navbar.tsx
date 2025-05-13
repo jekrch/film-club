@@ -13,16 +13,15 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-gray-900 text-white relative">
+    <nav className="bg-slate-900 text-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
             <a href="/#/" className="flex items-center">
-              <span className="text-xl font-bold text-slate-200">Criterion Club</span>
+              <span className="text-xl font-bold text-slate-300">Criterion Club</span>
             </a>
           </div>
-
           {/* Desktop menu */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">

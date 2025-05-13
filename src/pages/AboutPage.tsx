@@ -8,21 +8,21 @@ const AboutPage: React.FC = () => {
 
   return (
     // Overall container with dark background and default light text
-    <div className="bg-slate-900 text-slate-300 min-h-screen py-12 pt-6">
+    <div className=" text-slate-300 min-h-screen py-12 pt-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Center the main content */}
         <div className="max-w-3xl mx-auto">
           {/* Main Page Title - Brighter text */}
-          <div className="!text-2xl sm:text-4xl font-bold text-slate-300 mb-10 text-center border-b border-slate-700 pb-4">
+          <div className="!text-xl sm:text-4xl font-bold text-slate-300 mb-6 text-center border-b border-slate-700 pb-4">
             About Our Film Club
           </div>
 
           {/* Mission Section - Dark Card */}
-          <div className="bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-12 border border-slate-700 shadow-lg shadow-slate-950/30">
+          <div className="bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-6 border border-slate-700 shadow-lg shadow-slate-950/30">
             <div className="p-6 md:p-8">
-              <h2 className="text-xl sm:text-2xl font-semibold text-slate-300 mb-4">
+              {/* <div className="text-xl sm:text-2xl font-semibold text-slate-300 !mb-4">
                 Our Mission
-              </h2>
+              </div> */}
               <p className="text-slate-300 leading-relaxed">
                 We watch movies on the criterion channel, we discuss them, we give them a score out of 9. Our opinions are entirely our own and do not represent the larger film industry, but perhaps they should be listening (?!)
               </p>
@@ -32,7 +32,7 @@ const AboutPage: React.FC = () => {
           {/* Team Section - Dark Card */}
           <div className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-lg shadow-slate-950/30">
             <div className="p-6 md:p-8">
-              <h2 className="text-xl sm:text-2xl font-semibold text-slate-300 mb-6 text-center">
+              <h2 className="!text-xl sm:text-4xl font-semibold text-slate-300 mb-6 text-center">
                 Meet the Club
               </h2>
               {/* Team Member Grid */}

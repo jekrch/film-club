@@ -200,7 +200,7 @@ const HomePage = () => {
 
                                     {/* --- INACTIVE STRIPE --- */}
                                     {!isActive && (
-                                        <div className={`w-full rounded-t-full sm:w-25 h-[200vh] h-[20em] -top-[100vh]x left-1/2 -translate-x-1/2 absolute opacity-10 ${inactiveGradientClass} pointer-events-none`}></div>
+                                        <div className={`w-full rounded-t-full sm:w-25 h-[30em] h-min-full -top-[100vh]x left-1/2 -translate-x-1/2 absolute opacity-10 ${inactiveGradientClass} pointer-events-none`}></div>
                                     )}
 
 

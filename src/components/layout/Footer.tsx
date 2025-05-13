@@ -20,7 +20,7 @@ const Footer = () => {
           {/* Middle section - Quick Links */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+            <ul className="grid grid-cols-2 gap-2">
               <li>
                 <Link to="/" className="text-gray-400 hover:text-white transition">
                   Home
@@ -34,6 +34,11 @@ const Footer = () => {
               <li>
                 <Link to="/about" className="text-gray-400 hover:text-white transition">
                   About
+                </Link>
+              </li>
+              <li>
+                <Link to="/almanac" className="text-gray-400 hover:text-white transition">
+                  Almanac
                 </Link>
               </li>
             </ul>
