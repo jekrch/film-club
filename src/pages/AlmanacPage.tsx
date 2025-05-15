@@ -656,7 +656,7 @@ const AlmanacPage: React.FC = () => {
                 {frequentPersons.length > 0 ? (
                     <div className="space-y-8">
                         {frequentPersons.map((person) => (
-                            <div key={person.name} className="bg-slate-800 rounded-lg p-4 md:p-6 shadow-xl border border-slate-700 flex flex-colx md:flex-rowx gap-4 md:gap-6x">
+                            <div key={person.name} className="bg-slate-800 rounded-lg p-4 md:p-6 shadow-xl border border-slate-700 flex gap-4 ">
                                 {/* Left Column: Text Info */}
                                 <div className="md:w-2/5 lg:w-1/3 flex-shrink-0">
                                     <div className="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
