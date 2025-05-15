@@ -80,7 +80,7 @@ bun run deploy
 
 ## Adding/Updating Content
 
-### Film Data (The Easy Way\!)
+### Film Data
 
 Film data management is now largely automated through our Google Sheet and a backend sync process that uses the OMDB API for film details and TMDb for extended crew information.
 
