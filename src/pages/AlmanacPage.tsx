@@ -14,7 +14,7 @@ import CreditsModal from '../components/common/CreditsModal'; // Import CreditsM
 import { PersonCredit, getAllFilmCreditsForPerson } from '../utils/filmUtils';
 import {
     parseRuntime,
-    formatAverage as formatAverageUtil,
+    formatAverage,
     calculateMemberStats,
     ComprehensiveMemberStats,
     MemberStatHighlight
@@ -54,11 +54,6 @@ const daysBetween = (date1: Date, date2: Date): number => {
     const utc1 = Date.UTC(date1.getUTCFullYear(), date1.getUTCMonth(), date1.getUTCDate());
     const utc2 = Date.UTC(date2.getUTCFullYear(), date2.getUTCMonth(), date2.getUTCDate());
     return Math.floor(Math.abs(utc2 - utc1) / oneDay);
-};
-
-const formatAverage = (avg: number | null | undefined, digits = 1): string => {
-    const formatted = formatAverageUtil(avg, digits); // Use the util function
-    return formatted === null ? 'N/A' : formatted; // Add 'N/A' handling locally
 };
 
 const formatYear = (year: number | null | undefined): string => {
@@ -244,6 +239,7 @@ const AlmanacPage: React.FC = () => {
         const finalStatsData: MemberStatsData[] = memberStatsList.map(({ member, stats }) => {
             const getHighlight = (statKey: keyof MemberStatsData['highlights'], value: number | null): MemberStatHighlight => {
                 if (value === null || typeof value !== 'number' || isNaN(value)) return null;
+                // @ts-ignore
                 let lookupKey: keyof ComprehensiveMemberStats | undefined = undefined;
                 switch (statKey) {
                     case 'avgRuntime': lookupKey = 'avgRuntime'; break;

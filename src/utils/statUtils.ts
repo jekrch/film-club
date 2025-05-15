@@ -60,9 +60,6 @@ export interface ControversialFilm {
 // We keep the specific highlight type needed by AlmanacPage
 export type MemberStatHighlight = 'high' | 'low' | null;
 
-
-// --- Helper Functions ---
-
 export const parseRuntime = (runtime: string | undefined | null): number | null => {
     if (!runtime || typeof runtime !== 'string') return null;
     const minutes = parseInt(runtime.replace(/[^0-9]/g, ''), 10);

@@ -17,7 +17,7 @@ interface MemberStatCardProps {
         selectionCountryCount: MemberStatsData;
         avgSelectionYear: MemberStatsData;
     };
-    formatAverage: (avg: number | null | undefined, digits?: number) => string;
+    formatAverage: (avg: number | null | undefined, digits?: number) => string | null;
     formatYear: (year: number | null | undefined) => string;
     getHighlightClass: (highlight: MemberStatsData) => string;
 }
