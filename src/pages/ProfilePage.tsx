@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { ChevronLeftIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
@@ -7,7 +7,6 @@ import { ChevronLeftIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/reac
 import CircularImage from '../components/common/CircularImage';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';
-import PopcornRating from '../components/common/PopcornRating';
 // Film Components
 import FilmList from '../components/films/FilmList';
 // Profile Specific Components
@@ -17,6 +16,9 @@ import ControversialFilmItem from '../components/profile/ControversialFilmItem';
 // Data and Types
 import { teamMembers as allTeamMembers, TeamMember } from '../types/team';
 import { Film, getClubRating, filmData } from '../types/film';
+import PageLayout from '../components/layout/PageLayout';
+import { ProfileReviewBlurb } from '../components/profile/ProfileBlurbItem';
+import ProfileBlurbItem from '../components/profile/ProfileBlurbItem';
 // Utility Functions and Types
 import {
     calculateMemberStats,
@@ -26,118 +28,6 @@ import {
     MemberStatsCalculationData,
     ControversialFilm
 } from '../utils/statUtils';
-
-// --- Interfaces ---
-
-interface ProfileReviewBlurb {
-    filmId: string;
-    filmTitle: string;
-    filmPoster: string;
-    blurb: string;
-    score: number;
-    watchDate?: string;
-}
-
-interface ProfileBlurbItemProps {
-    blurbItem: ProfileReviewBlurb;
-    maxRating: number;
-}
-
-
-const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRating }) => {
-    const [isUserExpanded, setIsUserExpanded] = useState(false);
-    const [isContentActuallyOverflowingWhenClamped, setIsContentActuallyOverflowingWhenClamped] = useState(false);
-    const blurbTextRef = useRef<HTMLParagraphElement>(null);
-
-    useLayoutEffect(() => {
-        if (blurbTextRef.current) {
-            if (isUserExpanded) {
-                // If user has expanded, we don't need to re-check for overflow in clamped state.
-            } else {
-                // Not user expanded, so line-clamp-3 is active. Check for actual overflow.
-                const el = blurbTextRef.current;
-                setIsContentActuallyOverflowingWhenClamped(el.scrollHeight > el.clientHeight);
-            }
-        }
-    }, [blurbItem.blurb, isUserExpanded]);
-
-    const handleToggleExpand = () => {
-        setIsUserExpanded(prev => !prev);
-    };
-
-    const showButton = (isContentActuallyOverflowingWhenClamped && !isUserExpanded) || isUserExpanded;
-
-    return (
-        <div className="flex items-stretch space-x-4"> {/* items-stretch for poster height */}
-            <Link to={`/films/${blurbItem.filmId}`} className="flex-shrink-0 w-20 block"> {/* Ensure Link can take full height */}
-                <img
-                    // MODIFICATION 1: Add key to help prevent image distortion on resize
-                    key={isUserExpanded ? `poster-expanded-${blurbItem.filmId}` : `poster-collapsed-${blurbItem.filmId}`}
-                    src={blurbItem.filmPoster}
-                    alt={blurbItem.filmTitle}
-                    className="w-full h-full object-cover rounded-md shadow-lg hover:opacity-80 transition-opacity"
-                    onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; e.currentTarget.onerror = null; }}
-                />
-            </Link>
-
-            <div className="flex-1 min-w-0 py-0.5">
-                {/* MODIFICATION 2: Adjust layout for film title and watch date */}
-                <div className="flex justify-between items-baseline mb-1 flex-wrap gap-x-2">
-                    {/* This div will now be a column for title and watch date */}
-                    <div className="flex flex-col min-w-0 mr-2 flex-grow">
-                        <Link to={`/film/${blurbItem.filmId}`} className="truncate">
-                            <h5 className="text-md font-semibold text-slate-200 hover:text-blue-400 transition-colors">
-                                {blurbItem.filmTitle}
-                            </h5>
-                        </Link>
-                        {blurbItem.watchDate && (
-                            // Watch date now on its own line, removed ml-2, whitespace-nowrap, flex-shrink-0
-                            <p className="text-xs text-slate-400 mt-0.5">
-                                (Watched: {blurbItem.watchDate})
-                            </p>
-                        )}
-                    </div>
-                    {typeof blurbItem.score === 'number' && (
-                        <PopcornRating
-                            rating={blurbItem.score}
-                            maxRating={maxRating}
-                            size="small"
-                            title={`${blurbItem.score}/${maxRating}`}
-                            className="flex-shrink-0" 
-                        />
-                    )}
-                </div>
-
-                <div className="bg-slate-700/60 p-3.5 rounded-md relative border-l-2 border-emerald-500/70 shadow-inner mt-2 text-sm">
-                    <svg
-                        className="absolute text-emerald-500/70 h-5 w-5 top-1.5 left-1.5 opacity-90"
-                        style={{ transform: 'translateY(0px)' }}
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                    </svg>
-                    <p
-                        ref={blurbTextRef}
-                        className={`text-slate-300 italic ${!isUserExpanded ? 'line-clamp-3' : ''} pl-6`}
-                    >
-                        {blurbItem.blurb}
-                    </p>
-                    {showButton && blurbItem.blurb && blurbItem.blurb.trim() !== '' && (
-                        <button
-                            onClick={handleToggleExpand}
-                            className="text-blue-400 hover:text-blue-300 text-xs font-medium mt-2 block ml-6"
-                        >
-                            {isUserExpanded ? 'Show Less' : 'Show More'}
-                        </button>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};
-
 
 // --- Main Profile Page Component ---
 const ProfilePage: React.FC = () => {
@@ -155,7 +45,6 @@ const ProfilePage: React.FC = () => {
 
     const [reviewBlurbs, setReviewBlurbs] = useState<ProfileReviewBlurb[]>([]);
     const [isBlurbsSectionExpanded, setIsBlurbsSectionExpanded] = useState(false);
-    // expandedProfileBlurbs (state for individual blurbs) is now managed within ProfileBlurbItem
 
     const calculateAllMemberStats = useMemo(() => {
         return (films: Film[], activeMembers: TeamMember[]): { memberName: string, stats: UserProfileStats, rankValues: MemberStatsCalculationData['rankValues'] }[] => {
@@ -173,7 +62,7 @@ const ProfilePage: React.FC = () => {
                     avgAbsoluteDivergence: comprehensiveStats.avgAbsoluteDivergence,
                     languageCount: comprehensiveStats.languageCount,
                     countryCount: comprehensiveStats.countryCount,
-                } ;
+                };
                 const rankValues = {
                     totalRuntime: profileStats.totalRuntime,
                     avgRuntime: profileStats.avgRuntime,
@@ -345,15 +234,15 @@ const ProfilePage: React.FC = () => {
                 });
             } else {
                 const inactiveMemberFullStats = calculateMemberStats(foundMember.name, filmData);
-                const inactiveMemberStats: UserProfileStats = { /* ... copy from previous ... */ 
+                const inactiveMemberStats: UserProfileStats = { /* ... copy from previous ... */
                     totalSelections: inactiveMemberFullStats.totalSelections, totalRuntime: inactiveMemberFullStats.totalRuntime, avgRuntime: inactiveMemberFullStats.avgRuntime, topGenres: inactiveMemberFullStats.topGenres, avgSelectedScore: inactiveMemberFullStats.avgSelectedScore, avgGivenScore: inactiveMemberFullStats.avgGivenScore, avgDivergence: inactiveMemberFullStats.avgDivergence, avgAbsoluteDivergence: inactiveMemberFullStats.avgAbsoluteDivergence, languageCount: inactiveMemberFullStats.languageCount, countryCount: inactiveMemberFullStats.countryCount,
-                 };
+                };
                 setCurrentUserStats(inactiveMemberStats);
                 setRankings(nullRankings);
             }
         } else {
             const singleMemberFullStats = calculateMemberStats(foundMember.name, filmData);
-            const singleMemberStats: UserProfileStats = { /* ... copy from previous ... */ 
+            const singleMemberStats: UserProfileStats = { /* ... copy from previous ... */
                 totalSelections: singleMemberFullStats.totalSelections, totalRuntime: singleMemberFullStats.totalRuntime, avgRuntime: singleMemberFullStats.avgRuntime, topGenres: singleMemberFullStats.topGenres, avgSelectedScore: singleMemberFullStats.avgSelectedScore, avgGivenScore: singleMemberFullStats.avgGivenScore, avgDivergence: singleMemberFullStats.avgDivergence, avgAbsoluteDivergence: singleMemberFullStats.avgAbsoluteDivergence, languageCount: singleMemberFullStats.languageCount, countryCount: singleMemberFullStats.countryCount,
             };
             setCurrentUserStats(singleMemberStats);
@@ -384,139 +273,139 @@ const ProfilePage: React.FC = () => {
     const MAX_RATING_DISPLAY = 9;
 
     return (
-        <div className="bg-slate-900x text-slate-300 min-h-screen py-12 pt-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="mb-8 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded"
-                >
-                    <ChevronLeftIcon className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" aria-hidden="true" />
-                    Back
-                </button>
+        <PageLayout>
 
-                <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-                    <div className="py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
-                        <CircularImage
-                            src={member.image}
-                            alt={member.name}
-                            size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48"
-                            className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
-                        />
-                        <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 sm:mt-2">
-                            <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>
-                            <p className="text-lg text-blue-400/90 mb-4">{member.title}</p>
-                            <div className="text-slate-300 leading-relaxed max-w-xl mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
-                                <ReactMarkdown>{member.bio}</ReactMarkdown>
-                            </div>
+            <button
+                onClick={() => navigate(-1)}
+                className="mb-8 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded"
+            >
+                <ChevronLeftIcon className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" aria-hidden="true" />
+                Back
+            </button>
+
+            <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
+                <div className="py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
+                    <CircularImage
+                        src={member.image}
+                        alt={member.name}
+                        size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48"
+                        className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
+                    />
+                    <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 sm:mt-2">
+                        <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>
+                        <p className="text-lg text-blue-400/90 mb-4">{member.title}</p>
+                        <div className="text-slate-300 leading-relaxed max-w-xl mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
+                            <ReactMarkdown>{member.bio}</ReactMarkdown>
                         </div>
                     </div>
                 </div>
-
-                {member.interview && member.interview.length > 0 && (
-                    <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-                        <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3"> Interview </h3>
-                        <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}>
-                            <div className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}>
-                                <div className="divide-y divide-slate-700 -mt-4">
-                                    {member.interview.map((item, index) => <InterviewItem key={index} question={item.question} answer={item.answer} />)}
-                                </div>
-                            </div>
-                        </div>
-                        {needsInterviewExpansion && (
-                            <div className="mt-4 text-center border-t border-slate-700 pt-4">
-                                <button
-                                    onClick={() => setIsInterviewExpanded(!isInterviewExpanded)}
-                                    className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
-                                    aria-expanded={isInterviewExpanded}
-                                >
-                                    {isInterviewExpanded ? (<> Show Less <ChevronUpIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>) : (<> Show Full Interview <ChevronDownIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>)}
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {(hasStats || hasEnoughControversialFilms) && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                        <div className={`lg:col-span-2 ${!hasStats ? 'hidden lg:block' : ''}`}>
-                            {hasStats ? (
-                                <ProfileStatsSection stats={currentUserStats} rankings={rankings} />
-                            ) : (
-                                <div className="hidden lg:block lg:col-span-2"></div>
-                            )}
-                        </div>
-                        {hasEnoughControversialFilms && (
-                            <div className="lg:col-span-1">
-                                <div className="p-6 bg-slate-700/50 border border-slate-700 rounded-lg shadow-md h-full">
-                                    <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-600/50">
-                                        Most Divergent Scores
-                                    </h4>
-                                    <div className="space-y-3">
-                                        {mostControversialFilms.map((film) => (
-                                            <ControversialFilmItem key={film.filmId} film={film} />
-                                        ))}
-                                    </div>
-                                    <p className="text-xs text-slate-500 mt-4 text-center italic">
-                                        Films where {member.name} had the largest score difference (magnitude) from the club average.
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-                        {!hasEnoughControversialFilms && hasStats && (
-                             <div className="lg:col-span-1 hidden lg:block"></div>
-                         )}
-                    </div>
-                )}
-
-                {reviewBlurbs.length > 0 && (
-                    <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-                        <h4 className="text-2xl font-bold text-slate-100 mb-6 border-b border-slate-700 pb-3">In Their Own Words</h4>
-                        <div className="space-y-5">
-                            {displayedBlurbs.map((blurbItem) => (
-                                <div key={blurbItem.filmId} className="pt-5 border-t border-slate-700/50 first:pt-0 first:border-t-0">
-                                    <ProfileBlurbItem blurbItem={blurbItem} maxRating={MAX_RATING_DISPLAY} />
-                                </div>
-                            ))}
-                        </div>
-                        {needsBlurbsSectionExpansion && (
-                            <div className="mt-6 text-center border-t border-slate-700 pt-4">
-                                <button
-                                    onClick={() => setIsBlurbsSectionExpanded(!isBlurbsSectionExpanded)}
-                                    className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
-                                    aria-expanded={isBlurbsSectionExpanded}
-                                >
-                                    {isBlurbsSectionExpanded ? (<> Show Fewer Reviews <ChevronUpIcon className="h-4 w-4 ml-1" /> </>) : (<> Show More Reviews <ChevronDownIcon className="h-4 w-4 ml-1" /> </>)}
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-
-                {topRatedFilms.length > 0 && (
-                    <div className="mb-12 mt-8">
-                        <FilmList
-                            films={topRatedFilms}
-                            title={`Top ${topRatedFilms.length} Rated Film${topRatedFilms.length !== 1 ? 's' : ''} by ${member.name}`}
-                        />
-                    </div>
-                )}
-
-                {selectedFilms.length > 0 ? (
-                    <div className="mb-12 mt-8">
-                        <FilmList
-                            films={selectedFilms}
-                            title={`Films Selected by ${member.name}`}
-                        />
-                    </div>
-                ) : (
-                    (!currentUserStats || currentUserStats.totalSelections === null || currentUserStats.totalSelections < 0) && (
-                        <div className="text-center py-8 text-slate-400 italic mt-8">
-                            {member.name} hasn't selected any films yet.
-                        </div>
-                    )
-                )}
             </div>
-        </div>
+
+            {member.interview && member.interview.length > 0 && (
+                <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
+                    <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3"> Interview </h3>
+                    <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}>
+                        <div className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}>
+                            <div className="divide-y divide-slate-700 -mt-4">
+                                {member.interview.map((item, index) => <InterviewItem key={index} question={item.question} answer={item.answer} />)}
+                            </div>
+                        </div>
+                    </div>
+                    {needsInterviewExpansion && (
+                        <div className="mt-4 text-center border-t border-slate-700 pt-4">
+                            <button
+                                onClick={() => setIsInterviewExpanded(!isInterviewExpanded)}
+                                className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
+                                aria-expanded={isInterviewExpanded}
+                            >
+                                {isInterviewExpanded ? (<> Show Less <ChevronUpIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>) : (<> Show Full Interview <ChevronDownIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>)}
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {(hasStats || hasEnoughControversialFilms) && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <div className={`lg:col-span-2 ${!hasStats ? 'hidden lg:block' : ''}`}>
+                        {hasStats ? (
+                            <ProfileStatsSection stats={currentUserStats} rankings={rankings} />
+                        ) : (
+                            <div className="hidden lg:block lg:col-span-2"></div>
+                        )}
+                    </div>
+                    {hasEnoughControversialFilms && (
+                        <div className="lg:col-span-1">
+                            <div className="p-6 bg-slate-700/50 border border-slate-700 rounded-lg shadow-md h-full">
+                                <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-600/50">
+                                    Most Divergent Scores
+                                </h4>
+                                <div className="space-y-3">
+                                    {mostControversialFilms.map((film) => (
+                                        <ControversialFilmItem key={film.filmId} film={film} />
+                                    ))}
+                                </div>
+                                <p className="text-xs text-slate-500 mt-4 text-center italic">
+                                    Films where {member.name} had the largest score difference (magnitude) from the club average.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                    {!hasEnoughControversialFilms && hasStats && (
+                        <div className="lg:col-span-1 hidden lg:block"></div>
+                    )}
+                </div>
+            )}
+
+            {reviewBlurbs.length > 0 && (
+                <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
+                    <h4 className="text-2xl font-bold text-slate-100 mb-6 border-b border-slate-700 pb-3">In Their Own Words</h4>
+                    <div className="space-y-5">
+                        {displayedBlurbs.map((blurbItem) => (
+                            <div key={blurbItem.filmId} className="pt-5 border-t border-slate-700/50 first:pt-0 first:border-t-0">
+                                <ProfileBlurbItem blurbItem={blurbItem} maxRating={MAX_RATING_DISPLAY} />
+                            </div>
+                        ))}
+                    </div>
+                    {needsBlurbsSectionExpansion && (
+                        <div className="mt-6 text-center border-t border-slate-700 pt-4">
+                            <button
+                                onClick={() => setIsBlurbsSectionExpanded(!isBlurbsSectionExpanded)}
+                                className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
+                                aria-expanded={isBlurbsSectionExpanded}
+                            >
+                                {isBlurbsSectionExpanded ? (<> Show Fewer Reviews <ChevronUpIcon className="h-4 w-4 ml-1" /> </>) : (<> Show More Reviews <ChevronDownIcon className="h-4 w-4 ml-1" /> </>)}
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {topRatedFilms.length > 0 && (
+                <div className="mb-12 mt-8">
+                    <FilmList
+                        films={topRatedFilms}
+                        title={`Top ${topRatedFilms.length} Rated Film${topRatedFilms.length !== 1 ? 's' : ''} by ${member.name}`}
+                    />
+                </div>
+            )}
+
+            {selectedFilms.length > 0 ? (
+                <div className="mb-12 mt-8">
+                    <FilmList
+                        films={selectedFilms}
+                        title={`Films Selected by ${member.name}`}
+                    />
+                </div>
+            ) : (
+                (!currentUserStats || currentUserStats.totalSelections === null || currentUserStats.totalSelections < 0) && (
+                    <div className="text-center py-8 text-slate-400 italic mt-8">
+                        {member.name} hasn't selected any films yet.
+                    </div>
+                )
+            )}
+
+        </PageLayout>
     );
 };
 

@@ -2,14 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom'; 
 import CircularImage from '../components/common/CircularImage';
 import { teamMembers } from '../types/team';
+import PageLayout from '../components/layout/PageLayout';
 
 
 const AboutPage: React.FC = () => {
 
   return (
-    // Overall container with dark background and default light text
-    <div className=" text-slate-300 min-h-screen py-12 pt-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <PageLayout>
         {/* Center the main content */}
         <div className="max-w-3xl mx-auto">
           {/* Main Page Title - Brighter text */}
@@ -62,8 +61,7 @@ const AboutPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </PageLayout>
   );
 };
 

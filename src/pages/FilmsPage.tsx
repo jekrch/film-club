@@ -3,6 +3,7 @@ import FilmList from '../components/films/FilmList';
 import { Film, filmData } from '../types/film';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import { capitalizeUserName, teamMembers } from '../types/team';
+import PageLayout from '../components/layout/PageLayout';
 
 // Helper to parse the genre string into an array
 const parseGenres = (genreString: string): string[] => {
@@ -276,7 +277,7 @@ const FilmsPage = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <PageLayout className="pt-4">
             <div className="text-3xl text-slate-100 mb-8">Film Collection</div>
 
             {/* Filters and Sort Container */}
@@ -388,7 +389,7 @@ const FilmsPage = () => {
 
             {/* Film List Component */}
             <FilmList films={filteredFilms} />
-        </div>
+        </PageLayout>
     );
 };
 

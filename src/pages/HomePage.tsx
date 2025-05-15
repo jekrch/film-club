@@ -8,6 +8,7 @@ import CircularImage from '../components/common/CircularImage';
 import { ArrowRightIcon } from '@heroicons/react/24/outline'; // Import needed for the arrow
 import { parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
+import PageLayout from '../components/layout/PageLayout';
 
 // --- Helper function to format total minutes ---
 const formatTotalMinutes = (totalMinutes: number): string => {
@@ -157,9 +158,9 @@ const HomePage = () => {
 
   // --- Render Logic ---
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 -mt-6 bg-[#202125]x">
+    <PageLayout className="">
       {/* Hero section */}
-      <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg my-8 text-center px-4 sm:px-6 lg:px-10">
+     <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg mb-8 mt-2 text-center px-4 sm:px-6 lg:px-10">
 
         {/* --- Display Cycle Order with Profile Pics and Responsive Arrows --- */}
         {activeCycleMembersList.length > 0 && (
@@ -261,7 +262,7 @@ const HomePage = () => {
       {topClubRatedFilms.length > 0 && <FilmList films={topClubRatedFilms} title="Top Club Rated Films" />}
       {/* End Film Lists Section */}
 
-    </div> // End Main Container Div
+    </PageLayout> 
   );
 };
 

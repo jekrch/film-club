@@ -7,6 +7,7 @@ import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
 import { countValidRatings, formatRuntime, getImdbRatingDisplay, parseGenres, getAllFilmCreditsForPerson } from '../utils/filmUtils';
+import PageLayout from '../components/layout/PageLayout';
 
 
 const FilmDetailPage = () => {
@@ -194,7 +195,7 @@ const FilmDetailPage = () => {
   const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
 
   return (
-    <div className=" text-slate-300 min-h-screen py-8">
+    <PageLayout>
       {creditsModalState.isOpen && film && ( // Ensure film is available to pass film.imdbID
         <CreditsModal
           isOpen={creditsModalState.isOpen}
@@ -205,7 +206,7 @@ const FilmDetailPage = () => {
         />
       )}
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="">
         {/* Back button */}
         <button onClick={() => navigate(-1)} className="mb-6 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" /></svg>
@@ -437,7 +438,7 @@ const FilmDetailPage = () => {
           </div>
         )}
       </div> {/* End max-w-6xl */}
-    </div> // End bg-slate-900
+    </PageLayout>
   );
 };
 

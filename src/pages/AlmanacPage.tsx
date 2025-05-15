@@ -12,6 +12,7 @@ import IntervalDetailDisplay from '../components/almanac/IntervalDetailDisplay';
 import MemberStatCard from '../components/almanac/MemberStatCard';
 import CreditsModal from '../components/common/CreditsModal'; // Import CreditsModal
 import { PersonCredit, getAllFilmCreditsForPerson } from '../utils/filmUtils';
+import PageLayout from '../components/layout/PageLayout';
 import {
     parseRuntime,
     formatAverage,
@@ -520,7 +521,7 @@ const AlmanacPage: React.FC = () => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10 !pt-6 text-slate-200">
+        <PageLayout>
             {creditsModalState.isOpen && (
                 <CreditsModal
                     isOpen={creditsModalState.isOpen}
@@ -669,9 +670,7 @@ const AlmanacPage: React.FC = () => {
                     </p>
                 )}
             </div>
-
-
-        </div>
+        </PageLayout>
     );
 };
 
