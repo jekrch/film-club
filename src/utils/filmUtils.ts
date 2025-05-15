@@ -1,4 +1,9 @@
-import { ClubRating } from "../types/film";
+import { ClubRating, Film } from '../types/film';
+
+export interface PersonCredit {
+    film: Film;
+    roles: string[];
+}
 
 export const parseGenres = (genreString: string | undefined | null): string[] => {
     if (!genreString || typeof genreString !== 'string') return [];
@@ -34,7 +39,6 @@ export const countValidRatings = (clubRatings: ClubRating[] | undefined): number
     return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score)).length;
 };
 
-
 export const parseWatchDate = (dateString: string | null | undefined): Date | null => {
     // ... (date parsing logic) ...
     if (!dateString) return null;
@@ -56,4 +60,33 @@ export const parseWatchDate = (dateString: string | null | undefined): Date | nu
             console.warn(`Invalid date construction from parts: ${dateString}`); return null;
         }
     } catch (e) { console.error(`Error creating Date: ${dateString}`, e); return null; }
+};
+
+export const getAllFilmCreditsForPerson = (personName: string, allFilms: Film[]): PersonCredit[] => {
+    const credits: PersonCredit[] = [];
+    const trimmedPersonName = personName.trim().toLowerCase();
+    if (!trimmedPersonName) return credits;
+
+    allFilms.forEach(f => {
+        const rolesForFilm: string[] = [];
+        const checkCreditField = (creditField: string | undefined, roleName: string) => {
+            if (creditField && typeof creditField === 'string' && creditField.toLowerCase().split(',').map(n => n.trim()).includes(trimmedPersonName)) {
+                rolesForFilm.push(roleName);
+            }
+        };
+
+        checkCreditField(f.director, 'Director');
+        checkCreditField(f.writer, 'Writer');
+        checkCreditField(f.actors, 'Actor');
+        checkCreditField(f.cinematographer, 'Cinematographer');
+        checkCreditField(f.editor, 'Editor');
+        checkCreditField(f.productionDesigner, 'Production Designer');
+        checkCreditField(f.musicComposer, 'Music Composer');
+        checkCreditField(f.costumeDesigner, 'Costume Designer');
+
+        if (rolesForFilm.length > 0) {
+            credits.push({ film: f, roles: rolesForFilm });
+        }
+    });
+    return credits;
 };

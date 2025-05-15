@@ -6,38 +6,7 @@ import FilmList from '../components/films/FilmList';
 import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
-import { countValidRatings, formatRuntime, getImdbRatingDisplay, parseGenres } from '../utils/filmUtils';
-
-
-// --- Helper function to get all film credits for a person ---
-const getAllFilmCreditsForPerson = (personName: string, allFilms: Film[]): Array<{ film: Film; roles: string[] }> => {
-  const credits: Array<{ film: Film; roles: string[] }> = [];
-  const trimmedPersonName = personName.trim().toLowerCase();
-  if (!trimmedPersonName) return credits;
-
-  allFilms.forEach(f => {
-    const rolesForFilm: string[] = [];
-    const checkCreditField = (creditField: string | undefined, roleName: string) => {
-      if (creditField && typeof creditField === 'string' && creditField.toLowerCase().split(',').map(n => n.trim()).includes(trimmedPersonName)) {
-        rolesForFilm.push(roleName);
-      }
-    };
-
-    checkCreditField(f.director, 'Director');
-    checkCreditField(f.writer, 'Writer');
-    checkCreditField(f.actors, 'Actor');
-    checkCreditField(f.cinematographer, 'Cinematographer');
-    checkCreditField(f.editor, 'Editor');
-    checkCreditField(f.productionDesigner, 'Production Designer');
-    checkCreditField(f.musicComposer, 'Music Composer');
-    checkCreditField(f.costumeDesigner, 'Costume Designer');
-
-    if (rolesForFilm.length > 0) {
-      credits.push({ film: f, roles: rolesForFilm });
-    }
-  });
-  return credits;
-};
+import { countValidRatings, formatRuntime, getImdbRatingDisplay, parseGenres, getAllFilmCreditsForPerson } from '../utils/filmUtils';
 
 
 const FilmDetailPage = () => {

@@ -11,6 +11,7 @@ import FilteredFilmListSection from '../components/almanac/FilteredFilmSection';
 import IntervalDetailDisplay from '../components/almanac/IntervalDetailDisplay';
 import MemberStatCard from '../components/almanac/MemberStatCard';
 import CreditsModal from '../components/common/CreditsModal'; // Import CreditsModal
+import { PersonCredit, getAllFilmCreditsForPerson } from '../utils/filmUtils';
 import {
     parseRuntime,
     formatAverage as formatAverageUtil,
@@ -31,6 +32,7 @@ const formatTotalMinutes = (totalMinutes: number): string => {
     const dayLabel = days === 1 ? 'day' : 'days';
     return `${days} ${dayLabel} : ${pad(hours)} hrs : ${pad(minutes)} m`;
 };
+
 const parseWatchDate = (dateString: string | null | undefined): Date | null => {
     if (!dateString) return null;
     const parts = dateString.trim().split('/');
@@ -46,6 +48,7 @@ const parseWatchDate = (dateString: string | null | undefined): Date | null => {
         else { console.warn(`Invalid date construction: ${dateString}`); return null; }
     } catch (e) { console.error(`Error creating Date: ${dateString}`, e); return null; }
 };
+
 const daysBetween = (date1: Date, date2: Date): number => {
     const oneDay = 24 * 60 * 60 * 1000;
     const utc1 = Date.UTC(date1.getUTCFullYear(), date1.getUTCMonth(), date1.getUTCDate());
@@ -57,52 +60,20 @@ const formatAverage = (avg: number | null | undefined, digits = 1): string => {
     const formatted = formatAverageUtil(avg, digits); // Use the util function
     return formatted === null ? 'N/A' : formatted; // Add 'N/A' handling locally
 };
+
 const formatYear = (year: number | null | undefined): string => {
     if (year === null || year === undefined || isNaN(year)) return 'N/A';
     return Math.round(year).toString();
 };
 
-// --- Helper function to get all film credits for a person (adapted from FilmDetailPage) ---
-interface PersonCredit {
-    film: Film;
-    roles: string[];
-}
-const getAllFilmCreditsForPerson = (personName: string, allFilms: Film[]): PersonCredit[] => {
-    const credits: PersonCredit[] = [];
-    const trimmedPersonName = personName.trim().toLowerCase();
-    if (!trimmedPersonName) return credits;
-
-    allFilms.forEach(f => {
-        const rolesForFilm: string[] = [];
-        const checkCreditField = (creditField: string | undefined, roleName: string) => {
-            if (creditField && typeof creditField === 'string' && creditField.toLowerCase().split(',').map(n => n.trim()).includes(trimmedPersonName)) {
-                rolesForFilm.push(roleName);
-            }
-        };
-
-        checkCreditField(f.director, 'Director');
-        checkCreditField(f.writer, 'Writer');
-        checkCreditField(f.actors, 'Actor');
-        checkCreditField(f.cinematographer, 'Cinematographer');
-        checkCreditField(f.editor, 'Editor');
-        checkCreditField(f.productionDesigner, 'Production Designer');
-        checkCreditField(f.musicComposer, 'Music Composer');
-        checkCreditField(f.costumeDesigner, 'Costume Designer');
-
-        if (rolesForFilm.length > 0) {
-            credits.push({ film: f, roles: rolesForFilm });
-        }
-    });
-    return credits;
-};
-
-
 // Types (Exporting necessary types for MemberStatCard)
 export type ChartCategory = 'country' | 'language' | 'decade';
 type FilmWithDate = Film & { parsedWatchDate: Date };
+
 interface IntervalDetail {
     startDate: Date; endDate: Date; days: number; films: FilmWithDate[]; // Use FilmWithDate consistently
 }
+
 export interface MemberStatsData {
     member: TeamMember;
     stats: ComprehensiveMemberStats; // Use the comprehensive type
