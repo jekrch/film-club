@@ -189,14 +189,14 @@ const FilmDetailPage = () => {
 
   if (loading) { /* ... loading JSX ... */
     return (
-      <div className="flex justify-center items-center min-h-screen bg-slate-900">
+      <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
       </div>
     );
   }
   if (error || !film) { /* ... error JSX ... */
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center bg-slate-900 text-slate-300 min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-slate-300 min-h-screen">
         <div className="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded relative mb-6 inline-block" role="alert">
           <strong className="font-bold block sm:inline">Error: </strong>
           <span className="block sm:inline">{error || "Could not load film details."}</span>
@@ -225,7 +225,7 @@ const FilmDetailPage = () => {
   const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
 
   return (
-    <div className="bg-slate-900 text-slate-300 min-h-screen py-8">
+    <div className=" text-slate-300 min-h-screen py-8">
       {creditsModalState.isOpen && film && ( // Ensure film is available to pass film.imdbID
         <CreditsModal
           isOpen={creditsModalState.isOpen}
