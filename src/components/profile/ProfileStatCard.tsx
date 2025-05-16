@@ -1,5 +1,6 @@
 import React from 'react';
 import { HashtagIcon } from '@heroicons/react/24/outline';
+import BaseCard from '../common/BaseCard';
 
 /**
  * Props for the ProfileStatCard component.
@@ -58,7 +59,7 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
   }
 
   return (
-    <div className="bg-slate-700/30 border border-slate-700 rounded-lg p-4 flex flex-col justify-between shadow-md hover:shadow-lg hover:border-slate-600 transition-all duration-200 min-h-[120px]">
+    <BaseCard className="!bg-slate-700/30 border flex flex-col justify-between hover:shadow-lg hover:border-slate-600 transition-all duration-200 min-h-[120px]">
       <div>
         <div className="flex items-center text-sm font-medium text-blue-300/80 mb-2">
           {/* Render icon if provided */}
@@ -89,7 +90,7 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
           {description}
         </p>
       )}
-    </div>
+    </BaseCard>
   );
 };
 

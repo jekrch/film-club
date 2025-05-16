@@ -6,6 +6,7 @@ import StatItem from './StatItem';
 import { TeamMember } from '../../types/team'; 
 import { MemberStatsData } from '../../pages/AlmanacPage'; 
 import { ComprehensiveMemberStats } from '../../utils/statUtils';
+import BaseCard from '../common/BaseCard';
 
 interface MemberStatCardProps {
     member: TeamMember;
@@ -31,7 +32,7 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
     getHighlightClass
 }) => {
     return (
-        <div className="bg-gray-800 rounded-lg p-4 shadow-lg border border-slate-600 flex flex-col">
+        <BaseCard className="flex flex-col !bg-slate-800">
             {/* Member Header */}
             <div className="flex items-center mb-4 border-b border-slate-700 pb-3">
                 <Link
@@ -76,7 +77,7 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
                     valueClassName={getHighlightClass(highlights.avgSelectionYear)}
                 />
             </div>
-        </div>
+        </BaseCard>
     );
 };
 

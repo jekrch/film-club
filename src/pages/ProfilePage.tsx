@@ -19,6 +19,7 @@ import { Film, getClubRating, filmData } from '../types/film';
 import PageLayout from '../components/layout/PageLayout';
 import { ProfileReviewBlurb } from '../components/profile/ProfileBlurbItem';
 import ProfileBlurbItem from '../components/profile/ProfileBlurbItem';
+import BaseCard from '../components/common/BaseCard';
 // Utility Functions and Types
 import {
     calculateMemberStats,
@@ -283,7 +284,7 @@ const ProfilePage: React.FC = () => {
                 Back
             </button>
 
-            <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
+            <BaseCard className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-8 border">
                 <div className="py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
                     <CircularImage
                         src={member.image}
@@ -291,15 +292,15 @@ const ProfilePage: React.FC = () => {
                         size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48"
                         className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
                     />
-                    <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 sm:mt-2">
+                    <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 mt-3 sm:mt-2">
                         <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>
-                        <p className="text-lg text-blue-400/90 mb-4">{member.title}</p>
-                        <div className="text-slate-300 leading-relaxed max-w-xl mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
+                        <p className="text-lg text-blue-400/90 mb-1">{member.title}</p>
+                        <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
                             <ReactMarkdown>{member.bio}</ReactMarkdown>
                         </div>
                     </div>
                 </div>
-            </div>
+            </BaseCard>
 
             {member.interview && member.interview.length > 0 && (
                 <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
@@ -336,7 +337,7 @@ const ProfilePage: React.FC = () => {
                     </div>
                     {hasEnoughControversialFilms && (
                         <div className="lg:col-span-1">
-                            <div className="p-6 bg-slate-700/50 border border-slate-700 rounded-lg shadow-md h-full">
+                            <BaseCard className="p-6 bg-slate-700/50! h-full">
                                 <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-600/50">
                                     Most Divergent Scores
                                 </h4>
@@ -348,7 +349,7 @@ const ProfilePage: React.FC = () => {
                                 <p className="text-xs text-slate-500 mt-4 text-center italic">
                                     Films where {member.name} had the largest score difference (magnitude) from the club average.
                                 </p>
-                            </div>
+                            </BaseCard>
                         </div>
                     )}
                     {!hasEnoughControversialFilms && hasStats && (

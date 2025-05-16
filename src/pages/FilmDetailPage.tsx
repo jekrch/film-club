@@ -8,6 +8,7 @@ import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
 import { countValidRatings, formatRuntime, getImdbRatingDisplay, parseGenres, getAllFilmCreditsForPerson } from '../utils/filmUtils';
 import PageLayout from '../components/layout/PageLayout';
+import BaseCard from '../components/common/BaseCard';
 
 
 const FilmDetailPage = () => {
@@ -214,7 +215,7 @@ const FilmDetailPage = () => {
         </button>
 
         {/* Film Detail Section ... */}
-        <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden mb-12 border border-slate-700">
+        <BaseCard className="!p-0 overflow-hidden mb-12 ">
           <div className="md:flex">
             {/* Poster and Watch Link */}
             <div className="md:flex-shrink-0 md:w-1/3 lg:w-[400px] relative group overflow-hidden">
@@ -355,7 +356,7 @@ const FilmDetailPage = () => {
                 </div>
               )}
             </div> {/* End Film Details Text Content */}
-          </div> {/* End md:flex for poster + details */}
+          </div> 
 
           {/* Movie Club Info Section */}
           {film.movieClubInfo && (
@@ -429,7 +430,7 @@ const FilmDetailPage = () => {
               )}
             </div>
           )}
-        </div> {/* End Film Detail Section (bg-slate-800) */}
+        </BaseCard> {/* End Film Detail Section (bg-slate-800) */}
 
         {/* Other Films by Selector Section */}
         {selectorName && filmsBySameSelector.length > 0 && (

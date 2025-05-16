@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import CircularImage from '../components/common/CircularImage';
 import { teamMembers } from '../types/team';
 import PageLayout from '../components/layout/PageLayout';
+import SectionHeader from '../components/common/SectionHeader';
+import BaseCard from '../components/common/BaseCard';
 
 
 const AboutPage: React.FC = () => {
@@ -12,9 +14,11 @@ const AboutPage: React.FC = () => {
         {/* Center the main content */}
         <div className="max-w-3xl mx-auto">
           {/* Main Page Title - Brighter text */}
-          <div className="!text-xl sm:text-4xl font-bold text-slate-300 mb-6 text-center border-b border-slate-700 pb-4">
+          {/* <div className="!text-xl sm:text-4xl font-bold text-slate-300 mb-6 text-center border-b border-slate-700 pb-4">
             About Our Film Club
-          </div>
+          </div> */}
+
+          <SectionHeader title="About Our Film Club" className="text-center" /> 
 
           {/* Mission Section - Dark Card */}
           <div className="bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-6 border border-slate-700 shadow-lg shadow-slate-950/30">
@@ -29,7 +33,7 @@ const AboutPage: React.FC = () => {
           </div>
 
           {/* Team Section - Dark Card */}
-          <div className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden mb-8 border border-slate-700 shadow-lg shadow-slate-950/30">
+          <BaseCard className="bg-gradient-to-br from-slate-800 to-slate-900 overflow-hidden !p-0">
             <div className="p-6 md:p-8">
               <h2 className="!text-xl sm:text-4xl font-semibold text-slate-300 mb-6 text-center">
                 Meet the Club
@@ -59,7 +63,7 @@ const AboutPage: React.FC = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </BaseCard>
         </div>
     </PageLayout>
   );

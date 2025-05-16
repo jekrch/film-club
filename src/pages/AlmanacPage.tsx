@@ -13,6 +13,8 @@ import MemberStatCard from '../components/almanac/MemberStatCard';
 import CreditsModal from '../components/common/CreditsModal'; // Import CreditsModal
 import { PersonCredit, getAllFilmCreditsForPerson } from '../utils/filmUtils';
 import PageLayout from '../components/layout/PageLayout';
+import SectionHeader from '../components/common/SectionHeader';
+import BaseCard from '../components/common/BaseCard';
 import {
     parseRuntime,
     formatAverage,
@@ -532,9 +534,7 @@ const AlmanacPage: React.FC = () => {
                 />
             )}
 
-            <div className="!text-2xl sm:text-4xl font-bold text-slate-300 text-center border-b border-slate-700 pb-4">
-                Almanac
-            </div>
+            <SectionHeader title="Almanac" className="text-center" /> 
 
             {foundingDate && daysActive !== null && (
                 <div className="text-center mb-6 mt-3 text-slate-400 border-b border-slate-700 pb-3">
@@ -630,7 +630,7 @@ const AlmanacPage: React.FC = () => {
                 {frequentPersons.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
                         {frequentPersons.map((person) => (
-                            <div key={person.name} className="bg-slate-800 rounded-lg p-4 shadow-lg border border-slate-700">
+                            <BaseCard key={person.name}>
                                 <div className="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
                                     <h4
                                         className="text-lg font-semibold text-blue-400 hover:text-blue-300 cursor-pointer"
@@ -661,7 +661,7 @@ const AlmanacPage: React.FC = () => {
                                          </li>
                                     )}
                                 </ul>
-                            </div>
+                            </BaseCard>
                         ))}
                     </div>
                 ) : (

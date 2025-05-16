@@ -4,6 +4,7 @@ import { Film, filmData } from '../types/film';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import { capitalizeUserName, teamMembers } from '../types/team';
 import PageLayout from '../components/layout/PageLayout';
+import BaseCard from '../components/common/BaseCard';
 
 // Helper to parse the genre string into an array
 const parseGenres = (genreString: string): string[] => {
@@ -246,12 +247,11 @@ const FilmsPage = () => {
 
     const customSelectArrow = `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`;
 
-    // Define all sort options for the UI, including 'controversial'
     const allSortOptions: SortOption[] = [
         'title',
         'year',
         'clubRating',
-        'controversial', // ADDED controversial option
+        'controversial',
         'watchDate',
         ...clubMemberNames
     ];
@@ -281,7 +281,7 @@ const FilmsPage = () => {
             <div className="text-3xl text-slate-100 mb-8">Film Collection</div>
 
             {/* Filters and Sort Container */}
-            <div className="bg-slate-700 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg shadow-lg p-6 mb-8 text-sm">
+            <BaseCard className="bg-slate-700 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg shadow-lg p-6 mb-8 text-sm">
 
                 {/* Row 1: Search, Genre, and Selector */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -380,7 +380,7 @@ const FilmsPage = () => {
                         ))}
                     </div>
                 </div>
-            </div>
+            </BaseCard>
             {/* End of Filters and Sort Container */}
 
             <div className="mb-4 text-sm text-slate-300">
