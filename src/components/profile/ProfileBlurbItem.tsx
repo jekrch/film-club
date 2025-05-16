@@ -1,6 +1,7 @@
 import PopcornRating from '../common/PopcornRating';
 import { Link } from 'react-router-dom';
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React from 'react';
+import CollapsibleContent from '../common/CollapsableContent';
 
 
 export interface ProfileReviewBlurb {
@@ -18,34 +19,11 @@ interface ProfileBlurbItemProps {
 }
 
 const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRating }) => {
-    const [isUserExpanded, setIsUserExpanded] = useState(false);
-    const [isContentActuallyOverflowingWhenClamped, setIsContentActuallyOverflowingWhenClamped] = useState(false);
-    const blurbTextRef = useRef<HTMLParagraphElement>(null);
-
-    useLayoutEffect(() => {
-        if (blurbTextRef.current) {
-            if (isUserExpanded) {
-                // If user has expanded, we don't need to re-check for overflow in clamped state.
-            } else {
-                // Not user expanded, so line-clamp-3 is active. Check for actual overflow.
-                const el = blurbTextRef.current;
-                setIsContentActuallyOverflowingWhenClamped(el.scrollHeight > el.clientHeight);
-            }
-        }
-    }, [blurbItem.blurb, isUserExpanded]);
-
-    const handleToggleExpand = () => {
-        setIsUserExpanded(prev => !prev);
-    };
-
-    const showButton = (isContentActuallyOverflowingWhenClamped && !isUserExpanded) || isUserExpanded;
-
     return (
-        <div className="flex items-stretch space-x-4"> {/* items-stretch for poster height */}
+        <div className="flex items-stretch space-x-4"> 
             <Link to={`/films/${blurbItem.filmId}`} className="flex-shrink-0 w-20 block"> {/* Ensure Link can take full height */}
                 <img
-                    // MODIFICATION 1: Add key to help prevent image distortion on resize
-                    key={isUserExpanded ? `poster-expanded-${blurbItem.filmId}` : `poster-collapsed-${blurbItem.filmId}`}
+                    key={`poster-${blurbItem.filmId}`}
                     src={blurbItem.filmPoster}
                     alt={blurbItem.filmTitle}
                     className="w-full h-full object-cover rounded-md shadow-lg hover:opacity-80 transition-opacity"
@@ -89,20 +67,13 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                     >
                         <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                     </svg>
-                    <p
-                        ref={blurbTextRef}
-                        className={`text-slate-300 italic ${!isUserExpanded ? 'line-clamp-3' : ''} pl-6`}
+                    <CollapsibleContent 
+                        buttonSize="sm" 
+                        lineClamp={3} 
+                        className="mt-0 ml-6"
                     >
                         {blurbItem.blurb}
-                    </p>
-                    {showButton && blurbItem.blurb && blurbItem.blurb.trim() !== '' && (
-                        <button
-                            onClick={handleToggleExpand}
-                            className="text-blue-400 hover:text-blue-300 text-xs font-medium mt-2 block ml-6"
-                        >
-                            {isUserExpanded ? 'Show Less' : 'Show More'}
-                        </button>
-                    )}
+                    </CollapsibleContent>
                 </div>
             </div>
         </div>

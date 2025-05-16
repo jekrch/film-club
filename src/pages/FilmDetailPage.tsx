@@ -9,6 +9,7 @@ import CreditsModal from '../components/common/CreditsModal';
 import { countValidRatings, formatRuntime, getImdbRatingDisplay, parseGenres, getAllFilmCreditsForPerson } from '../utils/filmUtils';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
+import CollapsibleContent from '../components/common/CollapsableContent';
 
 
 const FilmDetailPage = () => {
@@ -18,8 +19,6 @@ const FilmDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filmsBySameSelector, setFilmsBySameSelector] = useState<Film[]>([]);
-  const [isPlotExpanded, setIsPlotExpanded] = useState(false);
-  const [expandedBlurbs, setExpandedBlurbs] = useState<Record<string, boolean>>({});
   const [watchUrl, setWatchUrl] = useState<string | null>(null);
   const [linkCheckStatus, setLinkCheckStatus] = useState<'idle' | 'checking' | 'valid' | 'not_found' | 'error'>('idle');
 
@@ -29,25 +28,20 @@ const FilmDetailPage = () => {
     filmography: Array<{ film: Film; roles: string[] }> | null;
   }>({ isOpen: false, personName: null, filmography: null });
 
-  const getCriterionChannelUrl = (title: string): string => { 
+  const getCriterionChannelUrl = (title: string): string => {
     const baseUrl = 'https://www.criterionchannel.com/videos/';
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     return `${baseUrl}${slug}`;
   };
-  const toggleBlurbExpansion = (username: string) => { 
-    setExpandedBlurbs(prev => ({ ...prev, [username]: !prev[username] }));
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setIsPlotExpanded(false);
     setFilm(null);
     setFilmsBySameSelector([]);
     setWatchUrl(null);
     setLinkCheckStatus('idle');
     setLoading(true);
     setError(null);
-    setExpandedBlurbs({});
     setCreditsModalState({ isOpen: false, personName: null, filmography: null });
 
     if (!imdbId) {
@@ -272,12 +266,9 @@ const FilmDetailPage = () => {
               </div>
               {/* Plot */}
               <div className="mb-5 text-slate-300 ">
-                <p className={isPlotExpanded ? '' : 'line-clamp-3 '}>{film.plot || <span className="italic text-slate-500">Plot not available.</span>}</p>
-                {film.plot && film.plot.length > 110 && (
-                  <button onClick={() => setIsPlotExpanded(!isPlotExpanded)} className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-3">
-                    {isPlotExpanded ? 'Read Less' : 'Read More'}
-                  </button>
-                )}
+                <CollapsibleContent buttonSize="sm" lineClamp={3}>
+                  {film.plot || <span className="italic text-slate-500">Plot not available.</span>}
+                </CollapsibleContent>
               </div>
 
               {/* Director, Writer, Stars, etc. Grid - UPDATED */}
@@ -356,7 +347,7 @@ const FilmDetailPage = () => {
                 </div>
               )}
             </div> {/* End Film Details Text Content */}
-          </div> 
+          </div>
 
           {/* Movie Club Info Section */}
           {film.movieClubInfo && (
@@ -396,14 +387,13 @@ const FilmDetailPage = () => {
                                 </Link>
                                 <span className="font-semibold text-slate-200 w-8 text-right">{rating.score}</span>
                                 <PopcornRating rating={rating.score as number} maxRating={MAX_RATING} size="small" title={`${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`} />
-                                </div>
+                              </div>
                               {rating.blurb && (
                                 <div className="bg-[radial-gradient(circle_at_center,_#2b384e_0%,_#1e293b_40%)] px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-emerald-400/40 shadow-inner mt-4">
                                   <svg className="absolute text-emerald-400/40 h-5 w-5 -top-1 left-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
-                                  <div>
-                                    <p className={`text-slate-300 text-sm italic ${expandedBlurbs[rating.user] ? '' : 'line-clamp-3'}`}>{rating.blurb}</p>
-                                    {rating.blurb.length > 110 && (<button onClick={() => toggleBlurbExpansion(rating.user)} className="!px-3 !py-2 text-blue-400 hover:text-blue-300 !text-xs font-medium mt-3"> {expandedBlurbs[rating.user] ? 'Read Less' : 'Read More'} </button>)}
-                                  </div>
+                                   <CollapsibleContent buttonSize="sm" lineClamp={3}>
+                                    {rating.blurb}
+                                  </CollapsibleContent>
                                 </div>
                               )}
                             </div>
