@@ -1,8 +1,7 @@
-// vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { VitePWA } from 'vite-plugin-pwa' // Import the plugin
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   plugins: [
@@ -88,24 +87,24 @@ export default defineConfig({
         description: 'A web application for tracking films watched and reviewed by the Criterion Club.',
         theme_color: '#1e293b', 
         background_color: '#0f172a', 
-        // icons: [
-        //   {
-        //     src: '/film-192x192.png', // Create these icons and place them in your `public` folder
-        //     sizes: '192x192',
-        //     type: 'image/png',
-        //   },
-        //   {
-        //     src: '/film-512x512.png',
-        //     sizes: '512x512',
-        //     type: 'image/png',
-        //   },
-        //   {
-        //     src: '/film-maskable-512x512.png', // A maskable icon
-        //     sizes: '512x512',
-        //     type: 'image/png',
-        //     purpose: 'maskable'
-        //   }
-        // ],
+        icons: [
+          {
+            src: '/film-192x192.png', 
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: '/film-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: '/film-maskable-512x512.png', // A maskable icon
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
+          }
+        ],
       },
       devOptions: {
         enabled: true, // Enable PWA in development for testing
