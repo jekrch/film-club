@@ -152,7 +152,6 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
     }, [selectedCategory]);
 
     const handleCategoryClick = useCallback((point: Highcharts.Point) => {
-
         const sliceName = point.name;
         if (sliceName === selectedPieSliceName) {
             setSelectedPieSliceName(null);
@@ -237,10 +236,11 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                                     events: { click: function () { handleCategoryClick(this.point); } } as any
                                 },
                                 showInLegend: false, pointWidth: pointWidthForCalc,
+                                point: { events: { click: function () { handleCategoryClick(this); } } }
                             } as Highcharts.PlotBarOptions
                         },
                         tooltip: { pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)' },
-                    series: [{ name: 'Films', type: 'bar', data: currentDonutChartData as any[] }]
+                        series: [{ name: 'Films', type: 'bar', data: currentDonutChartData as any[] }]
                     }
                 }]
             }

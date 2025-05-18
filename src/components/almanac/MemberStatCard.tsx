@@ -67,8 +67,7 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
                 />
                 <StatItem
                     label="Unique Countries (Sel.)"
-                    value={stats.selectionCountryCount}
-                    valueClassName={getHighlightClass(highlights.selectionCountryCount)}
+                    value={stats.selectionCountryCount}                  
                 />
                 <StatItem
                     label="Avg Year (Sel.)"
