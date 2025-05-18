@@ -1,4 +1,5 @@
 # Criterion Club Website
+[![Tests](https://github.com/jekrch/film-club/actions/workflows/run-tests-on-commit.yml/badge.svg)](https://github.com/jekrch/film-club/actions/workflows/run-tests-on-commit.yml)
 
 [https://criterionclub.org](https://criterionclub.org)
 
