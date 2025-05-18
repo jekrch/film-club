@@ -181,10 +181,12 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
             const { rankValues } = currentUserData;
             setRankings({
                 totalRuntimeRank: getRankString(rankValues.totalRuntime, allMemberStatsData.map(d => d.rankValues.totalRuntime), true),
-                avgRuntimeRank: getRankString(rankValues.avgRuntime, allMemberStatsData.map(d => d.rankValues.avgRuntime), false), // Lower is often better for avg runtime
+                // IMPORTANT: higher often better for avg runtime
+                avgRuntimeRank: getRankString(rankValues.avgRuntime, allMemberStatsData.map(d => d.rankValues.avgRuntime), true), 
                 avgSelectedScoreRank: getRankString(rankValues.avgSelectedScore, allMemberStatsData.map(d => d.rankValues.avgSelectedScore), true),
                 avgGivenScoreRank: getRankString(rankValues.avgGivenScore, allMemberStatsData.map(d => d.rankValues.avgGivenScore), true),
-                avgDivergenceRank: getRankString(rankValues.avgAbsoluteDivergence, allMemberStatsData.map(d => d.rankValues.avgAbsoluteDivergence), false), // Lower magnitude is less divergent
+                // VERY IMPORTANT: the top rank (1st) should be the MOST divergent. More divergent is BETTER here
+                avgDivergenceRank: getRankString(rankValues.avgAbsoluteDivergence, allMemberStatsData.map(d => d.rankValues.avgAbsoluteDivergence), true), 
             });
         } else { // Handle inactive members or members not in the "active" cycle for ranking
             const comprehensiveStats = calculateMemberStats(decodedMemberName, allFilmsData);
