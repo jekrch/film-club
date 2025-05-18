@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import {
   FilmIcon, ClockIcon, PencilSquareIcon, LanguageIcon, MapPinIcon, TagIcon, TrophyIcon, ArrowsRightLeftIcon, ChevronUpIcon, ChevronDownIcon
 } from '@heroicons/react/24/outline';
-import { UserProfileStats, UserRankings, formatTotalRuntime, formatAverage } from '../../utils/statUtils'; // Adjust path as needed
+import { UserProfileStats, UserRankings, formatTotalRuntime, formatAverage } from '../../utils/statUtils'; 
 import ProfileStatCard from './ProfileStatCard';
 
 /**
