@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FilmIcon } from '@heroicons/react/24/outline';
-import { ControversialFilm } from '../../utils/statUtils'; // Adjust path as needed
+import { ControversialFilm } from '../../utils/statUtils';
 import { getRatingColorClass } from '../../utils/ratingUtils';
 
 /**
@@ -56,11 +56,11 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
             {/* Film title and score comparison */}
             <div className="flex-grow min-w-0">
                 <p className="text-sm font-medium text-slate-200 truncate" title={film.title}>{film.title}</p>
-                <p className="text-xs text-slate-400">
+                <div className="text-xs text-slate-400 pt-2">
                     <div>{film.memberName}'s score: <span className={`font-semibold ${ratingColorClass}`}>{film.userScore.toFixed(1)}</span></div>
                     {'  '}
                     Others' avg: <span className={`font-semibold ${othersRatingColorClass}`}>{film.othersAvgScore !== null ? film.othersAvgScore.toFixed(1) : 'N/A'}</span>
-                </p>
+                </div>
             </div>
             {/* Divergence value */}
             <div className="text-right flex-shrink-0 ml-auto pl-2">

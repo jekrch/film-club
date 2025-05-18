@@ -3,8 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import CircularImage from '../common/CircularImage';
 import StatItem from './StatItem'; 
-import { TeamMember } from '../../types/team'; 
-import { MemberStatsData } from '../../pages/AlmanacPage'; 
+import { MemberStatsData, TeamMember } from '../../types/team';  
 import { ComprehensiveMemberStats } from '../../utils/statUtils';
 import BaseCard from '../common/BaseCard';
 
