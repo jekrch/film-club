@@ -152,6 +152,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
     }, [selectedCategory]);
 
     const handleCategoryClick = useCallback((point: Highcharts.Point) => {
+
         const sliceName = point.name;
         if (sliceName === selectedPieSliceName) {
             setSelectedPieSliceName(null);
@@ -196,13 +197,13 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
         return {
             chart: { type: 'pie', backgroundColor: '', style: { fontFamily: 'Inter, sans-serif' } },
             title: { text: currentDonutChartTitle, style: { color: '#d1d5db' } },
-            tooltip: { pointFormat: '{series.name}: <b>{point?.percentage:.1f}%</b> ({point?.y} film{point?.plural})', backgroundColor: 'rgba(31, 41, 55, 0.9)', borderColor: '#4b5563', style: { color: '#f3f4f6' } },
+            tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b> ({point.y} film{point.plural})', backgroundColor: 'rgba(31, 41, 55, 0.9)', borderColor: '#4b5563', style: { color: '#f3f4f6' } },
             accessibility: { point: { valueSuffix: '%' } },
             plotOptions: {
                 pie: {
                     allowPointSelect: true, cursor: 'pointer', borderColor: '#374151', innerSize: '60%', size: '90%',
                     dataLabels: {
-                        enabled: true, format: '{point?.name}: {point?.percentage:.1f}%', distance: 20,
+                        enabled: true, format: '{point.name}: {point.percentage:.1f}%', distance: 20,
                         style: { color: '#d1d5db', textOutline: 'none', fontWeight: 'normal', fontSize: '11px', cursor: 'pointer' },
                         connectorColor: '#6b7280', filter: { property: 'percentage', operator: '>', value: 3 },
                         events: { click: function () { handleCategoryClick(this.point); } } as any
@@ -233,13 +234,13 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                                     enabled: true, align: 'right', color: '#d1d5db',
                                     style: { textOutline: 'none', fontWeight: 'normal', fontSize: '10px', cursor: 'pointer' },
                                     format: '{point.y}', inside: false,
-                                     events: { click: function () { handleCategoryClick(this.point); } } as any
+                                    events: { click: function () { handleCategoryClick(this.point); } } as any
                                 },
                                 showInLegend: false, pointWidth: pointWidthForCalc,
                             } as Highcharts.PlotBarOptions
                         },
                         tooltip: { pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)' },
-                        series: [{ name: 'Films', type: 'bar', data: currentDonutChartData as any[] }]
+                    series: [{ name: 'Films', type: 'bar', data: currentDonutChartData as any[] }]
                     }
                 }]
             }
