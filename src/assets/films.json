@@ -442,7 +442,7 @@
         {
           "user": "andy",
           "score": null,
-          "blurb": "Albert Brooks at his peak"
+          "blurb": "Albert Brooks does it again"
         },
         {
           "user": "gabe",
@@ -1407,7 +1407,7 @@
         },
         {
           "user": "joey",
-          "score": 4,
+          "score": 3,
           "blurb": null
         }
       ],
@@ -2505,7 +2505,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 7,
           "blurb": null
         }
       ],
@@ -2576,7 +2576,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 9,
           "blurb": null
         }
       ],
@@ -2640,7 +2640,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 7,
           "blurb": null
         }
       ],
@@ -2711,7 +2711,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 6,
           "blurb": null
         }
       ],
@@ -2783,7 +2783,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 7,
           "blurb": null
         }
       ],
@@ -2855,7 +2855,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 6,
           "blurb": null
         }
       ],
@@ -2924,7 +2924,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 6,
           "blurb": null
         }
       ],
@@ -2994,7 +2994,7 @@
         },
         {
           "user": "joey",
-          "score": null,
+          "score": 8,
           "blurb": null
         }
       ],
