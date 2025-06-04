@@ -41,7 +41,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 8,
           "blurb": null
         },
         {
@@ -107,7 +107,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 8,
           "blurb": null
         },
         {
@@ -173,7 +173,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 6.5,
           "blurb": null
         },
         {
@@ -238,7 +238,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 6,
           "blurb": null
         },
         {
@@ -441,7 +441,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 6.5,
           "blurb": "Albert Brooks does it again"
         },
         {
@@ -512,7 +512,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 6,
           "blurb": null
         },
         {
@@ -644,7 +644,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 7,
           "blurb": null
         },
         {
@@ -708,7 +708,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 6.5,
           "blurb": null
         },
         {
@@ -838,7 +838,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 7,
           "blurb": null
         },
         {
@@ -903,7 +903,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 5,
           "blurb": null
         },
         {
@@ -1462,7 +1462,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 5,
           "blurb": null
         },
         {
@@ -1533,7 +1533,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 5.5,
           "blurb": null
         },
         {
@@ -1597,7 +1597,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 5,
           "blurb": null
         },
         {
@@ -1872,7 +1872,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 8,
           "blurb": null
         },
         {
@@ -1943,7 +1943,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 5.5,
           "blurb": null
         },
         {
@@ -2081,7 +2081,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 6,
           "blurb": null
         },
         {
@@ -2148,7 +2148,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 6,
           "blurb": null
         },
         {
@@ -2288,7 +2288,7 @@
       "clubRatings": [
         {
           "user": "andy",
-          "score": null,
+          "score": 5.5,
           "blurb": null
         },
         {
@@ -4129,6 +4129,11 @@
         {
           "user": "joey",
           "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "andy",
+          "score": 6,
           "blurb": null
         }
       ],
