@@ -4143,5 +4143,58 @@
     "editor": "George A. Romero, Hugh C. Daly",
     "cinematographer": "George A. Romero",
     "tmdbCrewDataFetched": true
+  },
+  {
+    "title": "Beau Travail",
+    "year": "1999",
+    "rated": "Unrated",
+    "released": "03 May 2000",
+    "runtime": "92 min",
+    "genre": "Drama, War",
+    "director": "Claire Denis",
+    "writer": "Claire Denis, Jean-Pol Fargeau, Herman Melville",
+    "actors": "Denis Lavant, Michel Subor, Grégoire Colin",
+    "plot": "This film focuses on ex-Foreign Legion officer, Galoup, as he recalls his once glorious life, leading troops in the Gulf of Djibouti. His existence there was happy, strict and regimented, but the arrival of a promising young recruit, Sentain, plants the seeds of jealousy in Galoup's mind. He feels compelled to stop him from coming to the attention of the commandant who he admires, but who ignores him. Ultimately, his jealousy leads to the destruction of both Sentain and himself.",
+    "language": "Greek, French, Italian, Russian",
+    "country": "France",
+    "awards": "6 wins & 12 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZTY3ODQ4ZjItMzAxMy00MjgxLThhY2MtNDY2NzFhZWJkMjcyXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "87%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "91/100"
+      }
+    ],
+    "metascore": "91",
+    "imdbRating": "7.3",
+    "imdbVotes": "16,078",
+    "imdbID": "tt0209933",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$247,606",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "cinematographer": "Agnès Godard",
+    "musicComposer": "Charles Henri de Pierrefeu, Eran Zur",
+    "costumeDesigner": "Judy Shrewsbury",
+    "productionDesigner": "Arnaud de Moléron",
+    "editor": "Nelly Quettier",
+    "movieClubInfo": {
+      "selector": "Andy",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
