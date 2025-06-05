@@ -245,7 +245,7 @@ const FilmDetailPage = () => {
                                                             {rating.blurb && (
                                                                 <div className="bg-[radial-gradient(circle_at_center,_#2b384e_0%,_#1e293b_40%)] px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-emerald-400/40 shadow-inner mt-4">
                                                                     <svg className="absolute text-emerald-400/40 h-5 w-5 -top-1 left-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
-                                                                    <CollapsibleContent buttonSize="sm" lineClamp={3}>
+                                                                    <CollapsibleContent buttonSize="sm" lineClamp={3} className="text-sm italic">
                                                                         {rating.blurb}
                                                                     </CollapsibleContent>
                                                                 </div>

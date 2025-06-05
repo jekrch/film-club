@@ -7,7 +7,7 @@ import {
     UserProfileStats,
     UserRankings,
     ControversialFilm,
-    MemberStatsCalculationData 
+    MemberStatsCalculationData
 } from '../utils/statUtils';
 import { ProfileReviewBlurb } from '../components/profile/ProfileBlurbItem'; // Assuming this type is defined correctly
 
@@ -48,7 +48,7 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
         return activeMembers.map(m => {
             const memberName = m.name;
             const comprehensiveStats = calculateMemberStats(memberName, allFilmsData);
-            // Extracting only the UserProfileStats subset and rankValues for clarity
+
             const profileStats: UserProfileStats = {
                 totalSelections: comprehensiveStats.totalSelections,
                 totalRuntime: comprehensiveStats.totalRuntime,
@@ -60,19 +60,22 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
                 avgAbsoluteDivergence: comprehensiveStats.avgAbsoluteDivergence,
                 languageCount: comprehensiveStats.languageCount,
                 countryCount: comprehensiveStats.countryCount,
+                countryDiversityPercentage: comprehensiveStats.countryDiversityPercentage, // ADD THIS
             };
-            const rankValues: MemberStatsCalculationData['rankValues'] = { // Ensure this matches statUtils
+
+            const rankValues: MemberStatsCalculationData['rankValues'] = {
                 totalRuntime: profileStats.totalRuntime,
                 avgRuntime: profileStats.avgRuntime,
                 avgSelectedScore: profileStats.avgSelectedScore,
                 avgGivenScore: profileStats.avgGivenScore,
-                // avgDivergence for ranking is based on magnitude, so use avgAbsoluteDivergence
-                avgDivergence: profileStats.avgDivergence, // Store signed for direct display
-                avgAbsoluteDivergence: profileStats.avgAbsoluteDivergence, // For ranking magnitude
+                avgDivergence: profileStats.avgDivergence,
+                avgAbsoluteDivergence: profileStats.avgAbsoluteDivergence,
+                countryDiversityPercentage: profileStats.countryDiversityPercentage, // ADD THIS
             };
+
             return { memberName, stats: profileStats, rankValues };
         });
-    }, [allFilmsData, allTeamMembersData]); // Dependencies on static data
+    }, [allFilmsData, allTeamMembersData]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -116,7 +119,7 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
         // Top Rated Films by Member
         const filmsRated = allFilmsData
             .filter(film => film.movieClubInfo?.clubRatings.some(r => r.user.toLowerCase() === normalizedUserName && typeof r.score === 'number'))
-            .sort((a, b) => (getClubRating(b, normalizedUserName)?.score ?? -Infinity) - (getClubRating(a, normalizedUserName)?.score ?? -Infinity) || (new Date(b.movieClubInfo?.watchDate || 0).getTime() - new Date(a.movieClubInfo?.watchDate || 0).getTime()) || a.title.localeCompare(b.title) )
+            .sort((a, b) => (getClubRating(b, normalizedUserName)?.score ?? -Infinity) - (getClubRating(a, normalizedUserName)?.score ?? -Infinity) || (new Date(b.movieClubInfo?.watchDate || 0).getTime() - new Date(a.movieClubInfo?.watchDate || 0).getTime()) || a.title.localeCompare(b.title))
             .slice(0, 6);
         setTopRatedFilms(filmsRated);
 
@@ -156,7 +159,7 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
             if (otherRatings.length > 0) {
                 const othersAvg = otherRatings.reduce((sum, r) => sum + Number(r.score), 0) / otherRatings.length;
                 const signedDivergence = currentUserScore - othersAvg;
-                 // Only add if this user's score is part of the divergence calculation.
+                // Only add if this user's score is part of the divergence calculation.
                 // We are interested in how this specific user diverges.
                 controversial.push({
                     filmId: film.imdbID,
@@ -170,8 +173,8 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
                 });
             }
         });
-         mostControversialFilms.sort((a, b) => Math.abs(b.divergence) - Math.abs(a.divergence) || (new Date(b.watchDate || 0).getTime() - new Date(a.watchDate || 0).getTime()));
-        setMostControversialFilms(controversial.sort((a,b) => Math.abs(b.divergence) - Math.abs(a.divergence)).slice(0,4))
+        mostControversialFilms.sort((a, b) => Math.abs(b.divergence) - Math.abs(a.divergence) || (new Date(b.watchDate || 0).getTime() - new Date(a.watchDate || 0).getTime()));
+        setMostControversialFilms(controversial.sort((a, b) => Math.abs(b.divergence) - Math.abs(a.divergence)).slice(0, 4))
 
 
         // Stats and Rankings
@@ -182,15 +185,20 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
             setRankings({
                 totalRuntimeRank: getRankString(rankValues.totalRuntime, allMemberStatsData.map(d => d.rankValues.totalRuntime), true),
                 // IMPORTANT: higher often better for avg runtime
-                avgRuntimeRank: getRankString(rankValues.avgRuntime, allMemberStatsData.map(d => d.rankValues.avgRuntime), true), 
+                avgRuntimeRank: getRankString(rankValues.avgRuntime, allMemberStatsData.map(d => d.rankValues.avgRuntime), true),
                 avgSelectedScoreRank: getRankString(rankValues.avgSelectedScore, allMemberStatsData.map(d => d.rankValues.avgSelectedScore), true),
                 avgGivenScoreRank: getRankString(rankValues.avgGivenScore, allMemberStatsData.map(d => d.rankValues.avgGivenScore), true),
                 // VERY IMPORTANT: the top rank (1st) should be the MOST divergent. More divergent is BETTER here
-                avgDivergenceRank: getRankString(rankValues.avgAbsoluteDivergence, allMemberStatsData.map(d => d.rankValues.avgAbsoluteDivergence), true), 
+                avgDivergenceRank: getRankString(rankValues.avgAbsoluteDivergence, allMemberStatsData.map(d => d.rankValues.avgAbsoluteDivergence), true),
+                countryDiversityRank: getRankString(
+                    rankValues.countryDiversityPercentage,
+                    allMemberStatsData.map(d => d.rankValues.countryDiversityPercentage),
+                    true
+                )
             });
         } else { // Handle inactive members or members not in the "active" cycle for ranking
             const comprehensiveStats = calculateMemberStats(decodedMemberName, allFilmsData);
-             const profileStats: UserProfileStats = {
+            const profileStats: UserProfileStats = {
                 totalSelections: comprehensiveStats.totalSelections,
                 totalRuntime: comprehensiveStats.totalRuntime,
                 avgRuntime: comprehensiveStats.avgRuntime,
@@ -201,9 +209,10 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
                 avgAbsoluteDivergence: comprehensiveStats.avgAbsoluteDivergence,
                 languageCount: comprehensiveStats.languageCount,
                 countryCount: comprehensiveStats.countryCount,
+                countryDiversityPercentage: comprehensiveStats.countryDiversityPercentage, 
             };
             setCurrentUserStats(profileStats);
-            setRankings({ totalRuntimeRank: null, avgRuntimeRank: null, avgSelectedScoreRank: null, avgGivenScoreRank: null, avgDivergenceRank: null });
+            setRankings({ totalRuntimeRank: null, avgRuntimeRank: null, avgSelectedScoreRank: null, avgGivenScoreRank: null, avgDivergenceRank: null, countryDiversityRank: null });
         }
 
         setLoading(false);

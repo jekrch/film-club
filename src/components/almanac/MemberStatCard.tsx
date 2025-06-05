@@ -2,8 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CircularImage from '../common/CircularImage';
-import StatItem from './StatItem'; 
-import { MemberStatsData, TeamMember } from '../../types/team';  
+import StatItem from './StatItem';
+import { MemberStatsData, TeamMember } from '../../types/team';
 import { ComprehensiveMemberStats } from '../../utils/statUtils';
 import BaseCard from '../common/BaseCard';
 
@@ -15,6 +15,7 @@ interface MemberStatCardProps {
         avgSelectionScore: MemberStatsData;
         avgGivenScore: MemberStatsData;
         selectionCountryCount: MemberStatsData;
+        countryDiversityPercentage: MemberStatsData;
         avgSelectionYear: MemberStatsData;
     };
     formatAverage: (avg: number | null | undefined, digits?: number) => string | null;
@@ -56,18 +57,23 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
                 />
                 <StatItem
                     label="Avg Club Score (Sel.)"
-                    value={`${formatAverage(stats.avgSelectedScore)} / 9`}
+                    value={`${formatAverage(stats.avgSelectedScore, 2)} / 9`}
                     valueClassName={getHighlightClass(highlights.avgSelectionScore)}
                     tooltip="Average club score for films selected by this member, only including films with 2+ ratings"
                 />
                 <StatItem
                     label="Avg Score Given"
-                    value={`${formatAverage(stats.avgGivenScore)} / 9`}
+                    value={`${formatAverage(stats.avgGivenScore, 2)} / 9`}
                     valueClassName={getHighlightClass(highlights.avgGivenScore)}
                 />
                 <StatItem
                     label="Unique Countries (Sel.)"
-                    value={stats.selectionCountryCount}                  
+                    value={stats.totalSelections > 0 ?
+                        `${stats.selectionCountryCount} (${Math.round((stats.selectionCountryCount / stats.totalSelections) * 100)}%)` :
+                        'N/A'
+                    }
+                    tooltip="Unique countries selected from, with diversity percentage"
+                    valueClassName={getHighlightClass(highlights.countryDiversityPercentage)}
                 />
                 <StatItem
                     label="Avg Year (Sel.)"

@@ -34,7 +34,7 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
             <div className="flex-1 min-w-0 py-0.5">
                 <div className="flex justify-between items-baseline mb-1 flex-wrap gap-x-2">
                     <div className="flex flex-col min-w-0 mr-2 flex-grow">
-                        <Link to={`/film/${blurbItem.filmId}`} className="truncate">
+                        <Link to={`/films/${blurbItem.filmId}`} className="truncate">
                             <h5 className="text-md font-semibold text-slate-200 hover:text-blue-400 transition-colors">
                                 {blurbItem.filmTitle}
                             </h5>

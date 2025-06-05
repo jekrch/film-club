@@ -16,6 +16,7 @@ export interface ComprehensiveMemberStats {
     countryCount: number; // From ProfilePage (Unique countries of selections)
     selectionCountryCount: number; // From AlmanacPage (Seems identical to countryCount, using one)
     avgSelectionYear: number | null; // From AlmanacPage
+    countryDiversityPercentage: number | null;
 }
 
 // Interfaces needed by ProfilePage specifically
@@ -29,6 +30,7 @@ export interface UserRankings {
     avgSelectedScoreRank: string | null;
     avgGivenScoreRank: string | null;
     avgDivergenceRank: string | null; // Rank based on absolute divergence magnitude
+    countryDiversityRank: string | null;
 }
 
 export interface MemberStatsCalculationData {
@@ -41,6 +43,7 @@ export interface MemberStatsCalculationData {
         avgGivenScore: number | null;
         avgDivergence: number | null; // Signed average divergence
         avgAbsoluteDivergence: number | null; // Absolute average divergence for ranking
+        countryDiversityPercentage: number | null;
     };
 }
 
@@ -228,6 +231,10 @@ export const calculateMemberStats = (memberName: string, films: Film[]): Compreh
     });
     const countryCount = countries.size;
 
+    const countryDiversityPercentage = totalSelections > 0 
+        ? (countryCount / totalSelections) * 100 
+        : null;
+
     // Avg Selection Year (AlmanacPage)
     let totalYear = 0; let yearCount = 0;
     userSelections.forEach(film => {
@@ -255,6 +262,7 @@ export const calculateMemberStats = (memberName: string, films: Film[]): Compreh
         countryCount,
         selectionCountryCount: countryCount, // Use the same value for Almanac's field
         avgSelectionYear,
+        countryDiversityPercentage: countryDiversityPercentage,
     };
 
     return stats;

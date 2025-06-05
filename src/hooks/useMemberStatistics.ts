@@ -17,6 +17,7 @@ export interface MemberStatsDataForAlmanac {
         avgGivenScore: MemberStatHighlight;
         selectionCountryCount: MemberStatHighlight;
         avgSelectionYear: MemberStatHighlight;
+        countryDiversityPercentage: MemberStatHighlight; 
     };
 }
 
@@ -74,6 +75,7 @@ export const useMemberStatistics = (
             avgGivenScore: findHighLow('avgGivenScore'),
             selectionCountryCount: findHighLow('selectionCountryCount'),
             avgSelectionYear: findHighLow('avgSelectionYear'),
+            countryDiversityPercentage: findHighLow('countryDiversityPercentage'),
         };
 
         const finalStatsData: MemberStatsDataForAlmanac[] = memberStatsList.map(({ member, stats }) => {
@@ -108,6 +110,7 @@ export const useMemberStatistics = (
                     avgGivenScore: getHighlight('avgGivenScore', stats.avgGivenScore),
                     selectionCountryCount: getHighlight('selectionCountryCount', stats.selectionCountryCount),
                     avgSelectionYear: getHighlight('avgSelectionYear', stats.avgSelectionYear),
+                    countryDiversityPercentage: getHighlight('countryDiversityPercentage', stats.countryDiversityPercentage),
                 }
             };
         });

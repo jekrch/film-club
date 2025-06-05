@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import {
   FilmIcon, ClockIcon, PencilSquareIcon, LanguageIcon, MapPinIcon, TagIcon, TrophyIcon, ArrowsRightLeftIcon, ChevronUpIcon, ChevronDownIcon
 } from '@heroicons/react/24/outline';
-import { UserProfileStats, UserRankings, formatTotalRuntime, formatAverage } from '../../utils/statUtils'; 
+import { UserProfileStats, UserRankings, formatTotalRuntime, formatAverage } from '../../utils/statUtils';
 import ProfileStatCard from './ProfileStatCard';
 
 /**
@@ -26,7 +26,7 @@ interface StatCardConfig {
   /** Function to extract the raw value from the stats object. */
   getValue: (stats: UserProfileStats) => number | string | null | { genre: string; count: number }[];
   /** Optional function to format the raw value for display. */
-  formatValue?: (value: any) => string | number | null;
+  formatValue?: (value: any, stats?: UserProfileStats) => string | number | null | React.ReactNode;
   /** Optional function to extract the rank string from the rankings object. */
   getRank?: (rankings: UserRankings) => string | null;
   /** Optional description text for the stat card. */
@@ -54,19 +54,40 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
     { id: 'topGenres', label: "Top Genres (Selected)", getValue: (s) => s.topGenres, description: "Most frequently selected genres (Top 3).", icon: TagIcon },
     { id: 'avgSelectedScore', label: "Avg. Club Score (Selected)", getValue: (s) => s.avgSelectedScore, formatValue: (v) => formatAverage(v, 2), getRank: (r) => r.avgSelectedScoreRank, description: "Avg. score on selected films (min. 2 ratings).", icon: TrophyIcon },
     { id: 'avgGivenScore', label: "Avg. Score Given", getValue: (s) => s.avgGivenScore, formatValue: (v) => formatAverage(v, 2), getRank: (r) => r.avgGivenScoreRank, description: "Avg. score given to any club film.", icon: PencilSquareIcon },
-    { id: 'avgDivergence', label: "Avg. Score Divergence", getValue: (s) => s.avgDivergence,
-      formatValue: (v) => {
-          const formatted = formatAverage(v, 2);
-          if (formatted === null) return null;
-          const value = parseFloat(formatted);
-          // Explicitly add '+' for positive values (and avoid adding for near-zero floats)
-          if (value > 1e-9) return `+${formatted}`;
-          return formatted; // Negative sign is handled automatically
-        },
+    {
+      id: 'avgDivergence',
+      label: "Avg. Score Divergence",
+      getValue: (s) => s.avgAbsoluteDivergence, // Change this to use absolute!
+      formatValue: (v) => formatAverage(v, 2), // Remove the +/- logic
       getRank: (r) => r.avgDivergenceRank,
-      description: "Avg. difference from others' scores (Their Score - Others' Avg).", icon: ArrowsRightLeftIcon },
+      description: "Avg. absolute difference from others' scores.",
+      icon: ArrowsRightLeftIcon
+    },
     { id: 'languageCount', label: "Unique Languages (Selected)", getValue: (s) => s.languageCount, formatValue: (v) => (v !== null && v > 0 ? v : null), description: "Primary languages of selected films.", icon: LanguageIcon },
-    { id: 'countryCount', label: "Unique Countries (Selected)", getValue: (s) => s.countryCount, formatValue: (v) => (v !== null && v > 0 ? v : null), description: "Primary countries of selected films.", icon: MapPinIcon },
+    {
+      id: 'countryCount',
+      label: "Unique Countries (Selected)",
+      getValue: (s) => s.countryCount,
+      formatValue: (v: any, stats?: UserProfileStats) => {
+        if (v === null || v === 0) return null;
+
+        // Calculate diversity percentage if we have the stats
+        if (stats && stats.totalSelections > 0) {
+            const diversityPercentage = Math.round((v / stats.totalSelections) * 100);
+            return (
+                <>
+                    {v} <span title="diversity percentage" className="text-sm text-slate-400">({diversityPercentage}%)</span>
+                </>
+            );
+        }
+
+        // Fallback to just the count if we can't calculate percentage
+        return v;
+      },
+      getRank: (r) => r.countryDiversityRank,
+      description: "Primary countries of selected films.",
+      icon: MapPinIcon
+    },
   ], []); // Empty dependency array ensures this runs only once
 
   // Memoize the processed list of stat cards to display, applying formatting and filtering
@@ -76,13 +97,13 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
     return statCardDefinitions
       .map(config => {
         const rawValue = config.getValue(stats);
-        let displayValue: string | number | null | { genre: string; count: number }[] = null;
+        let displayValue: string | number | null | React.ReactNode | { genre: string; count: number }[] = null;
 
         // Handle specific formatting or pass-through
         if (config.id === 'topGenres') {
           displayValue = (Array.isArray(rawValue) && rawValue.length > 0) ? rawValue : null;
         } else if (config.formatValue) {
-          displayValue = config.formatValue(rawValue);
+          displayValue = config.formatValue(rawValue, stats);
         } else {
           const allowZero = config.id === 'totalSelections';
           displayValue = (rawValue !== null && (rawValue !== 0 || allowZero)) ? rawValue as (string | number) : null;
@@ -95,8 +116,8 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
         const rank = (config.getRank && rankings) ? config.getRank(rankings) : null;
         let className = "text-slate-100"; // Default class
         if (config.id !== 'topGenres') { // Apply custom class logic only if not topGenres
-            if (typeof config.valueClassName === 'function') className = config.valueClassName(rank);
-            else if (typeof config.valueClassName === 'string') className = config.valueClassName;
+          if (typeof config.valueClassName === 'function') className = config.valueClassName(rank);
+          else if (typeof config.valueClassName === 'string') className = config.valueClassName;
         }
 
         return { ...config, displayValue, displayRank: rank, displayClassName: className, isEffectivelyEmpty };
@@ -123,25 +144,25 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
       </h3>
       {/* Container managing the expand/collapse animation */}
       <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isExpanded && needsExpansion ? collapsedMaxHeight : expandedMaxHeight}`}>
-           {/* Inner container for padding/margin adjustments, if needed */}
-           <div className={`pr-2 -mr-2`}> {/* Adjust padding for potential scrollbar */}
-               {/* Grid layout for the stat cards */}
-               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                   {visibleStatCards.map((card) => (
-                       <ProfileStatCard
-                           key={card.id}
-                           id={card.id}
-                           label={card.label}
-                           // Assert non-null as empty cards are filtered out
-                           value={card.displayValue!}
-                           rank={card.displayRank}
-                           description={card.description}
-                           icon={card.icon}
-                           valueClassName={card.displayClassName}
-                       />
-                   ))}
-               </div>
-           </div>
+        {/* Inner container for padding/margin adjustments, if needed */}
+        <div className={`pr-2 -mr-2`}> {/* Adjust padding for potential scrollbar */}
+          {/* Grid layout for the stat cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            {visibleStatCards.map((card) => (
+              <ProfileStatCard
+                key={card.id}
+                id={card.id}
+                label={card.label}
+                // Assert non-null as empty cards are filtered out
+                value={card.displayValue!}
+                rank={card.displayRank}
+                description={card.description}
+                icon={card.icon}
+                valueClassName={card.displayClassName}
+              />
+            ))}
+          </div>
+        </div>
       </div>
       {/* Render the expand/collapse button if needed */}
       {needsExpansion && (

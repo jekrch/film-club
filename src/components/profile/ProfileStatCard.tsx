@@ -11,7 +11,7 @@ export interface ProfileStatCardProps {
   /** The display label for the statistic. */
   label: string;
   /** The value of the statistic. Can be string, number, or array for top genres. */
-  value: string | number | { genre: string; count: number }[];
+  value: string | number | { genre: string; count: number }[] | React.ReactNode;
   /** Optional rank string (e.g., "1/10"). */
   rank?: string | null;
   /** Optional description text for the statistic. */
