@@ -21,7 +21,7 @@ const AboutPage: React.FC = () => {
           <SectionHeader title="About Our Film Club" className="text-center" /> 
 
           {/* Mission Section - Dark Card */}
-          <div className="bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-6 border border-slate-700 shadow-lg shadow-slate-950/30">
+          <div className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-800 rounded-lg overflow-hidden mb-6 border border-slate-700 shadow-lg shadow-slate-950/30">
             <div className="p-6 md:p-8">
               {/* <div className="text-xl sm:text-2xl font-semibold text-slate-300 !mb-4">
                 Our Mission

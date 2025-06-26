@@ -16,7 +16,7 @@ const StatCard: React.FC<StatCardProps> = ({
     valueClassName = "font-mono text-slate-100 tracking-tight text-lg sm:text-xl md:text-2xl",
 }) => {
     return (
-        <BaseCard key={`card-${label}`} className="bg-gradient-to-br from-slate-700 to-slate-800">
+        <BaseCard key={`card-${label}`} className="bg-gradient-to-br from-slate-800 to-slate-800">
             <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">{label}</p>
             <p className={valueClassName}>{value}</p>
             {description && (

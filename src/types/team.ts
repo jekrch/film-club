@@ -5,6 +5,7 @@ export interface TeamMember {
   name: string;
   title: string;
   bio: string;
+  url?: string
   image: string;
   queue?: number;
   color?: string;

@@ -1,5 +1,4 @@
-// src/pages/ProfilePage.tsx
-import React from 'react'; // Removed useState, useEffect, useMemo
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { ChevronLeftIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -66,7 +65,7 @@ const ProfilePage: React.FC = () => {
                 Back
             </button>
 
-            <BaseCard className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg overflow-hidden mb-8 border">
+            <BaseCard className="bg-gradient-to-br from-slate-800 to-slate-800 rounded-lg overflow-hidden mb-8 border">
                 <div className="py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
                     <CircularImage
                         src={member.image}
@@ -79,9 +78,14 @@ const ProfilePage: React.FC = () => {
                         <p className="text-lg text-blue-400/90 mb-1">{member.title}</p>
                         <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
                             <ReactMarkdown>{member.bio}</ReactMarkdown>
-                        </div>
+                         </div>
+                          {member.url && (
+                           <div className="mt-4">
+                           <a className="!text-blue-400" href={member.url}>{member.url.replace('https://', '')}</a>
+                           </div>
+                         )}
                     </div>
-                </div>
+                    </div>
             </BaseCard>
 
             {member.interview && member.interview.length > 0 && (
