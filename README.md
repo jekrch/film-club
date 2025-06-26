@@ -1,7 +1,7 @@
 # Criterion Club Website
 [![Tests](https://github.com/jekrch/film-club/actions/workflows/run-tests-on-commit.yml/badge.svg)](https://github.com/jekrch/film-club/actions/workflows/run-tests-on-commit.yml)
 
-[https://criterionclub.org](https://criterionclub.org)
+[criterionclub.org](https://criterionclub.org)
 
 A web application for tracking films watched and reviewed by the Criterion Club, a group of friends who watch Criterion Channel films and discuss them via Zoom.
 
