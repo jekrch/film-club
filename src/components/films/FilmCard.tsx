@@ -23,12 +23,31 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => setIsVisible(entry.isIntersecting),
-            { threshold: 0.1 } // Trigger when 10% of the card is visible
+            { 
+                threshold: 0.1, // Trigger when 10% of the card is visible
+                rootMargin: '50px' // Start loading slightly before the card enters viewport
+            }
         );
+        
         const currentRef = cardRef.current;
         if (currentRef) {
             observer.observe(currentRef);
+            
+            // Check initial visibility immediately after setting up observer
+            // This handles cards that are already in viewport on mount
+            const rect = currentRef.getBoundingClientRect();
+            const isInitiallyVisible = (
+                rect.top < window.innerHeight &&
+                rect.bottom > 0 &&
+                rect.left < window.innerWidth &&
+                rect.right > 0
+            );
+            
+            if (isInitiallyVisible) {
+                setIsVisible(true);
+            }
         }
+        
         // Cleanup observer on component unmount
         return () => {
             if (currentRef) {
