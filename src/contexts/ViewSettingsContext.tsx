@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
 
 // Define the possible card sizes
-export type CardSize = 'standard' | 'compact';
+export type CardSize = 'standard' | 'compact' | 'poster';
 
 // Define the shape of the context data
 interface ViewSettingsContextProps {
@@ -52,7 +52,7 @@ export const ViewSettingsProvider: React.FC<ViewSettingsProviderProps> = ({ chil
     // Memoized function to update state, preventing unnecessary re-renders
     const setCardSize = useCallback((size: CardSize) => {
         // Basic validation
-        if (size === 'standard' || size === 'compact') {
+        if (size === 'standard' || size === 'compact' || size === 'poster') {
             setCardSizeState(size);
         } else {
             console.warn(`Invalid card size attempted: ${size}`);

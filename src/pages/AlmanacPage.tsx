@@ -152,7 +152,7 @@ const AlmanacPage: React.FC = () => {
                 />
             </div>
 
-            <ChartContainer className="bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-3 sm:p-4 md:p-5 shadow-xl border border-slate-600 mb-4">
+            <ChartContainer className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-700/50 rounded-lg p-3 sm:p-4 md:p-5 shadow-xl border border-slate-600 mb-4">
                 <CategorySelector
                     categories={['country', 'language', 'decade']}
                     selectedCategory={selectedCategory}
@@ -177,7 +177,7 @@ const AlmanacPage: React.FC = () => {
                 />
             )}
 
-            <ChartContainer className="bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-3 sm:p-4 md:p-5 shadow-xl border border-slate-600 mb-8 sm:mb-10">
+            <ChartContainer className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-700/50 rounded-lg p-3 sm:p-4 md:p-5 shadow-xl border border-slate-600 mb-8 sm:mb-10">
                 <p className="mb-2 text-center text-xs text-slate-400 italic">
                     Click on a point to see which film was watched at the end of that interval.
                 </p>

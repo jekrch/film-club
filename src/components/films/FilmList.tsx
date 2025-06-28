@@ -3,7 +3,7 @@ import { Film } from '../../types/film';
 import FilmCard from './FilmCard';
 import AllFilmsCard from './AllFilmsCard';
 import { useViewSettings } from '../../contexts/ViewSettingsContext';
-import { Squares2X2Icon, RectangleGroupIcon } from '@heroicons/react/24/outline';
+import { Squares2X2Icon, RectangleGroupIcon, PhotoIcon } from '@heroicons/react/24/outline';
 
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -35,14 +35,18 @@ const FilmList: React.FC<FilmListProps> = ({
   const { cardSize: contextCardSize, setCardSize } = useViewSettings();
   const actualCardSize = hideSizeButtons ? 'compact' : contextCardSize;
   const isCompact = actualCardSize === 'compact';
+  const isPosterOnly = actualCardSize === 'poster';
 
   const buttonBaseClasses = "p-1.5 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800";
   const iconClasses = "w-5 h-5";
 
-  const gridClasses = isCompact
+  // Adjust grid classes based on view mode
+  const gridClasses = isPosterOnly
+    ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6' // Fewer columns for larger posters
+    : isCompact
     ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7'
     : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
-  const gapClass = isCompact ? 'gap-3 md:gap-4' : 'gap-6';
+  const gapClass = isPosterOnly ? 'gap-3 md:gap-4' : isCompact ? 'gap-3 md:gap-4' : 'gap-6';
   const hasContent = films.length > 0 || appendAllFilmsCard;
 
   return (
@@ -55,10 +59,28 @@ const FilmList: React.FC<FilmListProps> = ({
          )}
          {!hideSizeButtons && (
            <div className="flex items-center space-x-2">
-             <button onClick={() => setCardSize('compact')} title="Compact View" aria-pressed={isCompact} className={`${buttonBaseClasses} ${isCompact ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}>
+             <button 
+               onClick={() => setCardSize('poster')} 
+               title="Poster View" 
+               aria-pressed={isPosterOnly} 
+               className={`${buttonBaseClasses} ${isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
+             >
+               <PhotoIcon className={iconClasses} /><span className="sr-only">Poster View</span>
+             </button>
+             <button 
+               onClick={() => setCardSize('compact')} 
+               title="Compact View" 
+               aria-pressed={isCompact && !isPosterOnly} 
+               className={`${buttonBaseClasses} ${isCompact && !isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
+             >
                <RectangleGroupIcon className={iconClasses} /><span className="sr-only">Compact View</span>
              </button>
-             <button onClick={() => setCardSize('standard')} title="Standard View" aria-pressed={!isCompact} className={`${buttonBaseClasses} ${!isCompact ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}>
+             <button 
+               onClick={() => setCardSize('standard')} 
+               title="Standard View" 
+               aria-pressed={!isCompact && !isPosterOnly} 
+               className={`${buttonBaseClasses} ${!isCompact && !isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
+             >
                <Squares2X2Icon className={iconClasses} /><span className="sr-only">Standard View</span>
              </button>
            </div>
@@ -75,7 +97,7 @@ const FilmList: React.FC<FilmListProps> = ({
         <Swiper
             modules={[FreeMode, Scrollbar, Mousewheel]} // Add modules
             slidesPerView="auto" // Show as many slides as fit
-            spaceBetween={16} // Adjust space (tailwind space-x-4 is 1rem/16px)
+            spaceBetween={isPosterOnly ? 12 : 16} // Adjust space based on view mode
             freeMode={true} // Enable free scrolling with momentum
             
             scrollbar={{ draggable: true, hide: false }} // Optional: Add scrollbar
@@ -84,13 +106,17 @@ const FilmList: React.FC<FilmListProps> = ({
         >
           {/* Map films to SwiperSlides */}
           {films.map((film) => (
-            <SwiperSlide key={film.imdbID} style={{ width: 'auto' }} className="!w-40 pb-6"> {/* Set slide width */}
-              <FilmCard film={film} cardSize={'compact'} />
+            <SwiperSlide 
+              key={film.imdbID} 
+              style={{ width: 'auto' }} 
+              className={isPosterOnly ? "!w-48 pb-6" : "!w-40 pb-6"}
+            > {/* Adjust slide width based on view mode */}
+              <FilmCard film={film} cardSize={isPosterOnly ? 'poster' : 'compact'} />
             </SwiperSlide>
           ))}
           {/* Conditionally render AllFilmsCard */}
           {appendAllFilmsCard && (
-            <SwiperSlide style={{ width: 'auto' }} className="!w-36"> {/* Set slide width */}
+            <SwiperSlide style={{ width: 'auto' }} className={isPosterOnly ? "!w-48" : "!w-36"}> {/* Set slide width */}
               <AllFilmsCard cardSize={actualCardSize} />
             </SwiperSlide>
           )}
