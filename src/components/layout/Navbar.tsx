@@ -20,6 +20,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <a href="/#/" className="flex items-center">
               <span className="text-xl font-bold text-slate-300">Criterion Club</span>
+              <img src="/images/cc-icon.PNG" alt="Criterion Club" className="ml-3 h-[1.4em] w-auto text-slate-300 opacity-70 hover:opacity-100x" />
             </a>
           </div>
           {/* Desktop menu */}

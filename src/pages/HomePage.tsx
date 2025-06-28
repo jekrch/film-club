@@ -98,7 +98,7 @@ const HomePage = () => {
        .filter(film => film.movieClubInfo?.watchDate)
        .sort((a, b) => (parseWatchDate(b.movieClubInfo?.watchDate)?.getTime() ?? 0) - (parseWatchDate(a.movieClubInfo?.watchDate)?.getTime() ?? 0));
 
-    let recentClubPicks = watchedFilmsSorted.slice(0, 5); // Get the most recent 5 films
+    let recentClubPicks = watchedFilmsSorted.slice(0, 8); // Get the most recent 5 films
     if (upNextFilm) {
         // If there's an 'up next' film, add it to the top of the list
         recentClubPicks = [upNextFilm, ...recentClubPicks];

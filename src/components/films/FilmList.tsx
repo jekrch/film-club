@@ -59,14 +59,7 @@ const FilmList: React.FC<FilmListProps> = ({
          )}
          {!hideSizeButtons && (
            <div className="flex items-center space-x-2">
-             <button 
-               onClick={() => setCardSize('poster')} 
-               title="Poster View" 
-               aria-pressed={isPosterOnly} 
-               className={`${buttonBaseClasses} ${isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
-             >
-               <PhotoIcon className={iconClasses} /><span className="sr-only">Poster View</span>
-             </button>
+
              <button 
                onClick={() => setCardSize('compact')} 
                title="Compact View" 
@@ -82,6 +75,14 @@ const FilmList: React.FC<FilmListProps> = ({
                className={`${buttonBaseClasses} ${!isCompact && !isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
              >
                <Squares2X2Icon className={iconClasses} /><span className="sr-only">Standard View</span>
+             </button>
+                          <button 
+               onClick={() => setCardSize('poster')} 
+               title="Poster View" 
+               aria-pressed={isPosterOnly} 
+               className={`${buttonBaseClasses} ${isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
+             >
+               <PhotoIcon className={iconClasses} /><span className="sr-only">Poster View</span>
              </button>
            </div>
          )}
