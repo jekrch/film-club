@@ -55,7 +55,7 @@ const FilmList: React.FC<FilmListProps> = ({
       <div className="flex justify-between items-center mb-4">
         {/* ... Title and Buttons ... */}
          {title && (
-           <h2 className="text-xl font-bold text-gray-200">{title}</h2>
+           <h2 className="text-lg font-bold text-gray-200">{title}</h2>
          )}
          {!hideSizeButtons && (
            <div className="flex items-center space-x-2">

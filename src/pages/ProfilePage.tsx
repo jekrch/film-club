@@ -147,7 +147,7 @@ const ProfilePage: React.FC = () => {
 
             {reviewBlurbs.length > 0 && (
                 <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-                    <h4 className="text-2xl font-bold text-slate-100 mb-6 border-b border-slate-700 pb-3">In Their Own Words</h4>
+                    <h4 className="text-xl font-bold text-slate-100 mb-6 border-b border-slate-700 pb-3">In Their Own Words</h4>
                     <div className="space-y-5">
                         {displayedBlurbs.map((blurbItem) => (
                             <div key={blurbItem.filmId} className="pt-5 border-t border-slate-700/50 first:pt-0 first:border-t-0">
