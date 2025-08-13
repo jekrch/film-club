@@ -4191,8 +4191,29 @@
     "editor": "Nelly Quettier",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": null,
-      "clubRatings": [],
+      "watchDate": "8/12/25",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5.5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6.5,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
