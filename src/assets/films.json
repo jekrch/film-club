@@ -4217,5 +4217,56 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "A Woman Under the Influence",
+    "year": "1974",
+    "rated": "R",
+    "released": "18 Nov 1974",
+    "runtime": "155 min",
+    "genre": "Drama, Romance",
+    "director": "John Cassavetes",
+    "writer": "John Cassavetes",
+    "actors": "Gena Rowlands, Peter Falk, Fred Draper",
+    "plot": "Peter Falk is a blue collar man trying to deal with his wife's mental instability. He fights to keep a semblance of normality in the face of her bizarre behavior, but when her actions affect their children, he has her committed.",
+    "language": "English, Italian",
+    "country": "United States",
+    "awards": "Nominated for 2 Oscars. 10 wins & 7 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BODk2MWJmN2MtYmVhMi00MjZjLTlhZTMtMmM2ZWRjZDc2ZjQ2XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "86%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "88/100"
+      }
+    ],
+    "metascore": "88",
+    "imdbRating": "8.0",
+    "imdbVotes": "31,141",
+    "imdbID": "tt0072417",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$13,336,830",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "musicComposer": "Bo Harwood",
+    "editor": "Beth Bergeron, David Armstrong, Sheila Viseltear",
+    "cinematographer": "Al Ruban, Mitch Breit",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
