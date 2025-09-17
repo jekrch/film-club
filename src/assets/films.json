@@ -4264,7 +4264,28 @@
     "movieClubInfo": {
       "selector": "Gabe",
       "watchDate": null,
-      "clubRatings": [],
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6.5,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": "Andy gets togetherness trophy."
     }
