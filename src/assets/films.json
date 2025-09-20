@@ -4289,5 +4289,54 @@
       "trophyInfo": null,
       "trophyNotes": "Andy gets togetherness trophy."
     }
+  },
+  {
+    "title": "The Trial",
+    "year": "1962",
+    "rated": "Not Rated",
+    "released": "22 Dec 1962",
+    "runtime": "119 min",
+    "genre": "Drama, Mystery, Thriller",
+    "director": "Orson Welles",
+    "writer": "Pierre Cholot, Franz Kafka, Orson Welles",
+    "actors": "Anthony Perkins, Arnoldo Foà, Jess Hahn",
+    "plot": "Josef K wakes up in the morning and finds the police in his room. They tell him that he is on trial but nobody tells him what he is accused of. In order to find out about the reason of this accusation and to protest his innocence, he tries to look behind the facade of the judicial system. But since this remains fruitless, there seems to be no chance for him to escape from this Kafkaesque nightmare.",
+    "language": "English",
+    "country": "France, Italy, West Germany",
+    "awards": "2 wins & 2 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNmJmNDM5ZmYtODIwNS00YjM4LTlkYzktZTFjNTg3ODg0NDcwXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "84%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.6",
+    "imdbVotes": "25,416",
+    "imdbID": "tt0057427",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$93,533",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "musicComposer": "Jean Ledrut",
+    "cinematographer": "Edmond Richard",
+    "editor": "Frederick Muller, Orson Welles, Yvonne Martin",
+    "productionDesigner": "Jean Mandaroux",
+    "costumeDesigner": "Helen Thibault",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
