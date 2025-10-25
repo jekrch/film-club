@@ -181,40 +181,6 @@ The site is available at:
       * Push your branch and open a Pull Request to the `main` branch.
       * Once merged, changes will be deployed automatically by the "Sync and Deploy" workflow if they affect buildable content, or on its next scheduled run if `films.json` was updated.
 
-## 🎬 Hey, updating the site is EVEN EASIER NOW\!
-
-YOU can update film ratings, add new films, and more, mostly without writing any code or manually editing JSON files. We've streamlined it with our Google Sheet and automated magic\!
-
-### How to Add a Brand New Film (The Easiest Way)
-
-1.  Go to our [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing).
-2.  Scroll to the bottom and add a new row.
-3.  The **most important** piece of info: type the film's **IMDb ID** (e.g., `tt0036342`) into the `imdb_id` column.
-      * *Our system will use this ID to automatically look up all the core movie details (title, director, actors, full plot, poster image, etc.) from OMDB, and extended crew information (cinematographer, editor, production designer, etc.) from TMDb\!*
-4.  In the same row, you can also fill in:
-      * The `watch_date`
-      * Who `selected_by` the film
-      * Any `trophy_notes`
-      * A `stream_url` (like a link to JustWatch or where it's streaming)
-      * Your score in your `_rating` column (e.g., `andy_rating`)
-      * Optional comments in your `_blurb` column.
-5.  That's it\! The new film, enriched with OMDB data, TMDb crew information, and your initial input, will appear on the website after the next automated sync.
-
-### How to Update Existing Film Ratings/Info
-
-1.  Go to our [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing).
-2.  Find the film you want to update.
-3.  Enter or change your score in your `_rating` column.
-4.  Add or edit comments in your `_blurb` column.
-5.  You can also update the `watch_date`, `selected_by`, `trophy_notes` if needed.
-6.  Done\! Your changes will automatically appear on the website after the next sync.
-
-**Want your changes to appear immediately?** You can manually trigger the process:
-
-1.  Go to the [GitHub Actions tab](https://github.com/jekrch/film-club/actions).
-2.  Under "Workflows", select **"Sync and Deploy"**.
-3.  Click "Run workflow", choose the `main` branch, and run it. This will sync the data and redeploy the site.
-
 ### For User Profiles (Member Info)
 
 This part still involves a quick edit on GitHub:
