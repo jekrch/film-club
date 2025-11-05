@@ -4333,10 +4333,31 @@
     "costumeDesigner": "Helen Thibault",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": null,
-      "clubRatings": [],
+      "watchDate": "11/4/25",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 3,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 7.5,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
-      "trophyNotes": null
+      "trophyNotes": "Andy gets togetherness trophy"
     }
   }
 ]
