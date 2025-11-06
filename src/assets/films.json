@@ -4359,5 +4359,58 @@
       "trophyInfo": null,
       "trophyNotes": "Andy gets togetherness trophy"
     }
+  },
+  {
+    "title": "Irma Vep",
+    "year": "1996",
+    "rated": "Not Rated",
+    "released": "30 Apr 1997",
+    "runtime": "99 min",
+    "genre": "Comedy, Drama",
+    "director": "Olivier Assayas",
+    "writer": "Olivier Assayas",
+    "actors": "Maggie Cheung, Jean-Pierre Léaud, Nathalie Richard",
+    "plot": "French filmmaker René Vidal was once a renowned director, but most see his career on a quick downward slide based on his last several films. In Paris, he is just starting to film his latest movie, a remake of Les vampires (1915), and has hired Hong Kong based Chinese actress Maggie Cheung as the title lead, \"Irma Vep\" (an anagram for \"vampire\"), despite she knowing no French and she not being an obvious choice to most. Maggie has never worked with Vidal before and knows little about his movies, but many of his primarily French crew are part of his regular stable. As such, Maggie may become isolated among the cast and crew, unless there are those who bring her into their English conversations, they who may have somewhat ulterior motives in doing so. There are also factions within the cast and crew, who, based on their history, have a poisoned sense of what is going on. With Vidal, he is dealing with some personal issues while he tries to regain his film making form. He may transfer his thoughts of Irma Vep to Maggie, who he hired because he too sees her as strong and sexy like the skin-tight latex clad Irma. And Maggie may take her research for the comic bookish character to an extreme.",
+    "language": "French, English",
+    "country": "France",
+    "awards": "2 wins & 3 nominations",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZDBmYTNiMzktOTg0Mi00NTAyLThlMTItYTk5YWEyNzg3Mjc3XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "80/100"
+      }
+    ],
+    "metascore": "80",
+    "imdbRating": "7.0",
+    "imdbVotes": "10,014",
+    "imdbID": "tt0116650",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$282,310",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "editor": "Luc Barnier",
+    "costumeDesigner": "Françoise Clavel",
+    "cinematographer": "Éric Gautier",
+    "musicComposer": "Philippe Richard",
+    "productionDesigner": "François-Renaud Labarthe",
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
