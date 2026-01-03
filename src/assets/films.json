@@ -4407,8 +4407,29 @@
     "productionDesigner": "François-Renaud Labarthe",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": null,
-      "clubRatings": [],
+      "watchDate": "1/2/26",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 4.5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 7,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
