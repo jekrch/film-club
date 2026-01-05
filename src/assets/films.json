@@ -4433,5 +4433,58 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "Black Narcissus",
+    "year": "1947",
+    "rated": "Approved",
+    "released": "01 Dec 1947",
+    "runtime": "101 min",
+    "genre": "Drama",
+    "director": "Michael Powell, Emeric Pressburger",
+    "writer": "Rumer Godden, Michael Powell, Emeric Pressburger",
+    "actors": "Deborah Kerr, David Farrar, Flora Robson",
+    "plot": "Sister Clodagh, currently posted at the Convent of the Order of the Servants of Mary in Calcutta, has just been appointed the Sister Superior of the St. Faith convent, making her the youngest sister superior in the order. The appointment is despite the reservations of the Reverend Mother who believes Sister Clodagh not ready for such an assignment, especially because of its isolated location. The convent will be a new one located in the mountainside Palace of Mopu in the Himalayas, and is only possible through the donation by General Todo Rai of Mopu - \"The Old General\" - of the palace, where the Old General's father formerly kept his concubine. On the Old General's directive, the convent is to provide schooling to the children and young women, and general dispensary services to all native residents who live in the valley below the palace. Accompanying Sister Clodagh will be four of the other nuns, each chosen for a specific reason: Sister Briony for her strength, Sister Phillipa who is to tend to the garden for food, Sister Blanche - more commonly referred to as Sister Honey - for her general ability to spread happiness, and troubled Sister Ruth, who the Reverend Mother believes will truly find her faith from the change in locale. The palace comes with an elderly female caretaker, slightly off kilter Angu Ayah, and a holy man who meditates in solitude and silence outside the palace grounds night and day, he who is not to be disturbed. The General also provides a young boy, six year old Joseph Anthony, the General's cook's son, who will live at the convent to provide translation services. But the sisters' primary liaison to the General and the outside world is his agent, native Brit Mr. Dean, which may prove to be problematic in his gender and doing any work around the convent. Sister Clodagh faces early challenges in feeling the need to accept two people to the convent: seventeen year old Kanchi, who is pushing the boundaries of her sexuality; and the Old General's son, the \"Young General\", who wants the same educational opportunities, if not better, than that offered to his female counterparts. Beyond these issues, each of the sisters is challenged by this posting, from the cultural differences, to the isolation, to the general openness of their environment. Sister Clodagh, as the leader, feels that she has no one to turn to in her confusion, her thoughts turning back to her time in Ireland before joining the order and her love for a young man named Con that was partly the reason for her decision to devote her life to God. But it is Sister Ruth whose issues may be the most problematic as she is becoming unhinged in her growing romantic obsession with Mr. Dean, especially as jealousy emerges in she also believing that Sister Clodagh is falling in love with him as well, which may or may not be the case.",
+    "language": "English, French, Nepali",
+    "country": "United Kingdom",
+    "awards": "Won 2 Oscars. 6 wins & 1 nomination total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjRmMTQyNDEtNWM4Zi00ZTMwLTlkOGUtZTdmZDU0NTNiZTQ0XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "86/100"
+      }
+    ],
+    "metascore": "86",
+    "imdbRating": "7.7",
+    "imdbVotes": "29,942",
+    "imdbID": "tt0039192",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "musicComposer": "Brian Easdale",
+    "cinematographer": "Jack Cardiff",
+    "editor": "Reginald Mills",
+    "productionDesigner": "Alfred Junge",
+    "costumeDesigner": "Hein Heckroth",
+    "movieClubInfo": {
+      "selector": "Andy",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
