@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Film } from '../../types/film'; 
-import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils'; 
-import { CardSize } from '../../contexts/ViewSettingsContext'; 
+import { Film } from '../../types/film';
+import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils';
+import { CardSize } from '../../contexts/ViewSettingsContext';
 import PopcornRating from '../common/PopcornRating';
 import { getTeamMemberColorByName } from '../../types/team';
 import { ClockIcon, UserIcon } from '@heroicons/react/20/solid';
@@ -22,40 +22,29 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     const isPosterOnly = cardSize === 'poster';
 
     useEffect(() => {
+        const currentRef = cardRef.current;
+        if (!currentRef) return;
+
         const observer = new IntersectionObserver(
-            ([entry]) => setIsVisible(entry.isIntersecting),
-            { 
-                threshold: 0.1, // Trigger when 10% of the card is visible
-                rootMargin: '50px' // Start loading slightly before the card enters viewport
+            ([entry]) => {
+                // Only update state when there's an actual change
+                setIsVisible(prev => {
+                    if (prev !== entry.isIntersecting) {
+                        return entry.isIntersecting;
+                    }
+                    return prev;
+                });
+            },
+            {
+                threshold: 0.1,
+                rootMargin: '50px'
             }
         );
-        
-        const currentRef = cardRef.current;
-        if (currentRef) {
-            observer.observe(currentRef);
-            
-            // Check initial visibility immediately after setting up observer
-            // This handles cards that are already in viewport on mount
-            const rect = currentRef.getBoundingClientRect();
-            const isInitiallyVisible = (
-                rect.top < window.innerHeight &&
-                rect.bottom > 0 &&
-                rect.left < window.innerWidth &&
-                rect.right > 0
-            );
-            
-            if (isInitiallyVisible) {
-                setIsVisible(true);
-            }
-        }
-        
-        // Cleanup observer on component unmount
-        return () => {
-            if (currentRef) {
-                observer.unobserve(currentRef);
-            }
-        };
-    }, []); // Empty dependency array means this effect runs once on mount
+
+        observer.observe(currentRef);
+
+        return () => observer.disconnect();
+    }, []);
 
     // Extract movie club info safely
     const clubRatings = film.movieClubInfo?.clubRatings;
@@ -74,7 +63,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
         ? new Date(film.movieClubInfo.watchDate).toLocaleDateString('en-US', {
             month: 'short', day: 'numeric', year: '2-digit' // e.g., Apr 26 '25
         }).replace(/\//g, "'") // Replace slashes just in case (though format shouldn't have them)
-         .replace('', '')     // Remove comma after day
+            .replace('', '')     // Remove comma after day
         : null;
 
 
@@ -146,7 +135,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                 {film.year}
                             </div>
                         )}
-                        
+
                     </div>
 
                     {/* Card Content Section: Below poster, contains text info - NOT shown in poster-only mode */}
@@ -162,7 +151,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             </h3>
 
                             {/* Meta Info Row: Selector and Date/Runtime */}
-                             <div className={`flex items-center justify-between mb-0 ${isCompact ? 'text-xs' : 'text-sm'}`}>
+                            <div className={`flex items-center justify-between mb-0 ${isCompact ? 'text-xs' : 'text-sm'}`}>
                                 {/* Selector info badge */}
                                 {selectorName && (
                                     <div className={`
@@ -178,19 +167,19 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                         ></span>
                                         <span>{selectorName}</span>
                                     </div>
-                                 )}
+                                )}
                                 {/* Watch Date OR Runtime (if Up Next) */}
                                 {watchedDateDisplay ? (
-                                     <span className="text-slate-500 tracking-wide ml-2 text-[10px]">
-                                            {watchedDateDisplay}
-                                     </span>
-                                 ) : film.runtime && film.runtime !== "N/A" ? (
+                                    <span className="text-slate-500 tracking-wide ml-2 text-[10px]">
+                                        {watchedDateDisplay}
+                                    </span>
+                                ) : film.runtime && film.runtime !== "N/A" ? (
                                     <div className="flex items-center text-slate-400 ml-2" title="Runtime">
                                         <ClockIcon className={`w-3 h-3 mr-1 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
                                         <span className="text-xs tracking-wide">{film.runtime}</span>
                                     </div>
-                                 ) : null /* Hide if no date and no runtime */}
-                             </div>
+                                ) : null /* Hide if no date and no runtime */}
+                            </div>
 
 
                             {/* Conditional Content Area: Ratings OR Film Info */}
@@ -209,15 +198,15 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                         {/* Director */}
                                         {film.director && film.director !== "N/A" && (
                                             <div className="flex items-center text-slate-300 truncate col-span-2" title="Director">
-                                                 <UserIcon className={`w-3 h-3 mr-1.5 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
-                                                 <span className="truncate">{film.director.split(',')[0]}</span> {/* Show first director */}
+                                                <UserIcon className={`w-3 h-3 mr-1.5 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
+                                                <span className="truncate">{film.director.split(',')[0]}</span> {/* Show first director */}
                                             </div>
                                         )}
                                         {/* IMDb Rating */}
                                         {film.language && film.country !== "N/A" && (
                                             <div className="flex items-center text-slate-300 col-span-2" title="IMDb Rating">
-                                                 <GlobeEuropeAfricaIcon className={`w-3 h-3 mr-1.5 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
-                                                 <span className="text-slate-500">{film.country}</span>
+                                                <GlobeEuropeAfricaIcon className={`w-3 h-3 mr-1.5 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
+                                                <span className="text-slate-500">{film.country}</span>
                                             </div>
                                         )}
                                         {/* Fallback if no info */}
@@ -245,14 +234,14 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                                                 ${isCompact ? 'py-0.5' : 'py-1'}
                                                             `}
                                                         >
-                                                             {/* Member Initials */}
-                                                             <div className={`uppercase font-mono text-[10px] text-slate-400 leading-none tracking-wide whitespace-nowrap ${isCompact ? 'text-[9px]' : 'text-[10px]'}`}>
-                                                                 {rating.user.substring(0, 2)} {/* Show 2 initials */}
-                                                             </div>
-                                                             {/* Member Rating */}
-                                                             <div className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[12px]' : 'text-base'}`}>
-                                                                 {rating.score}
-                                                             </div>
+                                                            {/* Member Initials */}
+                                                            <div className={`uppercase font-mono text-[10px] text-slate-400 leading-none tracking-wide whitespace-nowrap ${isCompact ? 'text-[9px]' : 'text-[10px]'}`}>
+                                                                {rating.user.substring(0, 2)} {/* Show 2 initials */}
+                                                            </div>
+                                                            {/* Member Rating */}
+                                                            <div className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[12px]' : 'text-base'}`}>
+                                                                {rating.score}
+                                                            </div>
                                                         </div>
                                                     );
                                                 })}
@@ -260,31 +249,31 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                         )}
 
                                         {/* Club Average Rating Display */}
-                                         {false && clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && ( // Only show if ratings exist
+                                        {false && clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && ( // Only show if ratings exist
                                             <div className={`w-full flex items-center justify-end text-xs text-slate-400 mt-2 ${isCompact ? 'mt-1.5 text-[10px]' : 'mt-2 text-xs'}`}>
-                                                 {/* Popcorn component on the left */}
-                                                 <PopcornRating
-                                                     rating={clubAverageDisplay as number}
-                                                     maxRating={9} // Assuming max rating is 9
-                                                     size={isCompact ? 'small' : 'regular'}
-                                                     showPartialFill={true}
-                                                     title={`Average Club Rating: ${clubAverageDisplay?.toFixed(1)}/9`}
-                                                     className="mr-auto opacity-70" // Pushes popcorns left
-                                                 />
-                                                 {/* Explicit average number on the right */}
-                                                 {/* <span className="font-semibold text-slate-300">{clubAverageDisplay.toFixed(1)}</span>
+                                                {/* Popcorn component on the left */}
+                                                <PopcornRating
+                                                    rating={clubAverageDisplay as number}
+                                                    maxRating={9} // Assuming max rating is 9
+                                                    size={isCompact ? 'small' : 'regular'}
+                                                    showPartialFill={true}
+                                                    title={`Average Club Rating: ${clubAverageDisplay?.toFixed(1)}/9`}
+                                                    className="mr-auto opacity-70" // Pushes popcorns left
+                                                />
+                                                {/* Explicit average number on the right */}
+                                                {/* <span className="font-semibold text-slate-300">{clubAverageDisplay.toFixed(1)}</span>
                                                  <span className="text-slate-500">/9</span> */}
-                                             </div>
-                                         )}
+                                            </div>
+                                        )}
                                     </>
                                 )}
                             </div> {/* End Conditional Content Area */}
 
-                        </div> 
+                        </div>
                     )}
                 </div> {/* End Inner Card Div */}
             </Link>
-        </div> 
+        </div>
     );
 };
 
