@@ -15,7 +15,6 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
         
         return {
             poster: upNextFilm.poster,
-            // Random portion of the poster to show
             clipX: 20 + Math.random() * 40,
             clipY: 10 + Math.random() * 50,
         };
@@ -25,9 +24,12 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
 
     return (
         <div className={`absolute inset-0 overflow-hidden pointer-events-none rounded-lg ${className}`}>
-            {/* Left edge poster only */}
-            <div 
-                className="absolute top-0 bottom-0 left-0 w-1/2 overflow-hidden"
+            <div
+                className="absolute top-0 bottom-0 left-0 w-2/3 h-full"
+                style={{
+                    maskImage: 'linear-gradient(to right, black 0%, black 20%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to right, black 0%, black 20%, transparent 100%)',
+                }}
             >
                 <img
                     src={segment.poster}
@@ -36,10 +38,8 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
                     className="w-full h-full object-cover"
                     style={{
                         objectPosition: `${segment.clipX}% ${segment.clipY}%`,
-                        transform: 'scale(2.8)',
+                        transform: 'scale(1.8)',
                         opacity: 0.25,
-                        maskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
-                        WebkitMaskImage: 'linear-gradient(to right, black 0%, transparent 100%)',
                     }}
                     loading="lazy"
                 />
