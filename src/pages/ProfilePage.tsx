@@ -13,6 +13,7 @@ import ControversialFilmItem from '../components/profile/ControversialFilmItem';
 import PageLayout from '../components/layout/PageLayout';
 import ProfileBlurbItem from '../components/profile/ProfileBlurbItem';
 import BaseCard from '../components/common/BaseCard';
+import ProfileHeroBackground from '../components/profile/ProfileHeroBackground';
 
 import { useProfileData } from '../hooks/useProfileData'; 
 
@@ -65,8 +66,11 @@ const ProfilePage: React.FC = () => {
                 Back
             </button>
 
-            <BaseCard className="bg-gradient-to-br from-slate-800 to-slate-800 rounded-lg overflow-hidden mb-8 border">
-                <div className="py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
+            <BaseCard className="bg-gradient-to-br from-slate-800 to-slate-800 rounded-lg overflow-hidden mb-8 border relative">
+                {/* Film poster collage background */}
+                <ProfileHeroBackground films={topRatedFilms} />
+                
+                <div className="relative z-30 py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
                     <CircularImage
                         src={member.image}
                         alt={member.name}
@@ -85,7 +89,7 @@ const ProfilePage: React.FC = () => {
                            </div>
                          )}
                     </div>
-                    </div>
+                </div>
             </BaseCard>
 
             {member.interview && member.interview.length > 0 && (
