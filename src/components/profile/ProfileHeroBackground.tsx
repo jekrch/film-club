@@ -6,13 +6,6 @@ interface ProfileHeroBackgroundProps {
     className?: string;
 }
 
-interface CollageSegment {
-    imdbID: string;
-    poster: string;
-    clipX: number;
-    clipY: number;
-}
-
 const ProfileHeroBackground: React.FC<ProfileHeroBackgroundProps> = ({ films, className = '' }) => {
     const segments = useMemo(() => {
         // Filter films that have posters (and not the N/A placeholder)
