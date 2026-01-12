@@ -1,24 +1,35 @@
 import React, { useMemo } from 'react';
-import { Film } from '../../types/film';
 
 interface SelectionCommitteeBackgroundProps {
-    upNextFilm: Film | undefined;
+    imageUrl: string | undefined;
     className?: string;
+    /** Manual X position for object-position (0-100). If not provided, uses random value between 20-60 */
+    objectPositionX?: number;
+    /** Manual Y position for object-position (0-100). If not provided, uses random value between 10-60 */
+    objectPositionY?: number;
+    /** Transform scale value. Defaults to 1.8 */
+    scale?: number;
+    /** Image opacity (0-1). Defaults to 0.25 */
+    opacity?: number;
 }
 
 const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> = ({ 
-    upNextFilm, 
-    className = '' 
+    imageUrl, 
+    className = '',
+    objectPositionX,
+    objectPositionY,
+    scale = 1.8,
+    opacity = 0.25,
 }) => {
     const segment = useMemo(() => {
-        if (!upNextFilm?.poster || upNextFilm.poster.includes('N/A')) return null;
+        if (!imageUrl || imageUrl.includes('N/A')) return null;
         
         return {
-            poster: upNextFilm.poster,
-            clipX: 20 + Math.random() * 40,
-            clipY: 10 + Math.random() * 50,
+            poster: imageUrl,
+            clipX: objectPositionX ?? (20 + Math.random() * 40),
+            clipY: objectPositionY ?? (10 + Math.random() * 50),
         };
-    }, [upNextFilm]);
+    }, [imageUrl, objectPositionX, objectPositionY]);
 
     if (!segment) return null;
 
@@ -38,8 +49,8 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
                     className="w-full h-full object-cover"
                     style={{
                         objectPosition: `${segment.clipX}% ${segment.clipY}%`,
-                        transform: 'scale(1.8)',
-                        opacity: 0.25,
+                        transform: `scale(${scale})`,
+                        opacity,
                     }}
                     loading="lazy"
                 />

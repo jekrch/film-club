@@ -152,7 +152,11 @@ const HomePage = () => {
       <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg mb-8 mt-2 text-center px-4 sm:px-6 lg:px-10">
 
         {/* Background poster image */}
-        <SelectionCommitteeBackground upNextFilm={upNextFilm} />
+        <SelectionCommitteeBackground 
+            imageUrl={"https://s3.amazonaws.com/criterion-production/editorial_content_posts/hero/1517-/cHESEt5eUl3ETx4iqwxbwa8PmVSbPX_large.jpg"} //?? upNextFilm?.poster} 
+            scale={1}
+            opacity={0.35}
+        />
 
         {/* --- Display Cycle Order with Profile Pics and Responsive Arrows --- */}
         {activeCycleMembersList.length > 0 && (
