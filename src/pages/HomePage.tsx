@@ -41,7 +41,7 @@ const HomePage = () => {
   const [totalRuntimeString, setTotalRuntimeString] = useState<string>('');
   const [currentSelectorName, setCurrentSelectorName] = useState<string | null>(null);
   const [activeCycleMembersList, setActiveCycleMembersList] = useState<TeamMember[]>([]);
-  const [upNextFilm, setUpNextFilm] = useState<Film | undefined>(undefined);
+  const [, setUpNextFilm] = useState<Film | undefined>(undefined);
 
   // --- Data Fetching and Processing Effect ---
   useEffect(() => {
