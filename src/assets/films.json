@@ -4507,5 +4507,56 @@
       "trophyInfo": null,
       "trophyNotes": "Gabe gets togetherness trophy, Joey gets in sickness and in health trophy"
     }
+  },
+  {
+    "title": "Sweet Sweetback's Baadasssss Song",
+    "year": "1971",
+    "rated": "R",
+    "released": "22 Mar 1973",
+    "runtime": "97 min",
+    "genre": "Crime, Drama, Thriller",
+    "director": "Melvin Van Peebles",
+    "writer": "Melvin Van Peebles",
+    "actors": "Melvin Van Peebles, Hubert Scales, John Dullaghan",
+    "plot": "Sweet Sweetback is a black orphan who, having grown up in a brothel, now works there as part of a sex show. When the police need a patsy for a murder in the black community, His employer gives him up to two white cops, whom he ends up killing. Suddenly the target of a massive manhunt, he decides to flee to Mexico. As he makes his way there, he is captured by, and escapes from, both the cops and a chapter of the Hell's Angels.",
+    "language": "English",
+    "country": "United States",
+    "awards": "1 win total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYmZkNzNjN2UtOWEzYS00Y2UwLWFhYTctMzdlYjI2OTVkYmY0XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "5.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "73%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "71/100"
+      }
+    ],
+    "metascore": "71",
+    "imdbRating": "5.5",
+    "imdbVotes": "6,215",
+    "imdbID": "tt0067810",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "cinematographer": "Robert Maxwell",
+    "editor": "Melvin Van Peebles",
+    "musicComposer": "Melvin Van Peebles",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
