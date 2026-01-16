@@ -4481,10 +4481,31 @@
     "costumeDesigner": "Hein Heckroth",
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": null,
-      "clubRatings": [],
+      "watchDate": "1/15/26",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 4.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 7,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
-      "trophyNotes": null
+      "trophyNotes": "Gabe gets togetherness trophy, Joey gets in sickness and in health trophy"
     }
   }
 ]
