@@ -5,7 +5,7 @@ import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUti
 import { CardSize } from '../../contexts/ViewSettingsContext';
 import PopcornRating from '../common/PopcornRating';
 import { getTeamMemberColorByName } from '../../types/team';
-import { ClockIcon, UserIcon } from '@heroicons/react/20/solid';
+import { UserIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
 
 
@@ -58,18 +58,18 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     // Calculate club average rating
     const clubAverageDisplay = calculateClubAverage(clubRatings);
 
-    // Format watch date if available
-    const watchedDateDisplay = film.movieClubInfo?.watchDate
+    // Format watch date for overlay (MM/DD/YY)
+    const watchDateFormatted = film.movieClubInfo?.watchDate
         ? new Date(film.movieClubInfo.watchDate).toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: '2-digit' // e.g., Apr 26 '25
-        }).replace(/\//g, "'") // Replace slashes just in case (though format shouldn't have them)
-            .replace('', '')     // Remove comma after day
+            month: '2-digit',
+            day: '2-digit',
+            year: '2-digit'
+        })
         : null;
-
 
     // Determine if the "Up Next" elements should be shown
     // True if there's no watch date BUT there is a selector assigned
-    const showUpNext = !watchedDateDisplay && selectorName;
+    const showUpNext = !watchDateFormatted && selectorName;
 
     return (
         // Outermost container: Handles visibility transition and relative positioning for the banner
@@ -127,91 +127,90 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             loading="lazy"
                             onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; }} // Fallback image
                         />
-                        {/* Gradient overlay at the bottom of the poster */}
-                        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-slate-800/10 to-transparent z-10"></div>
+                        
+                        {/* Gradient overlay at the bottom of the poster - enhanced for text readability */}
+                        <div className={`absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none ${!isPosterOnly ? 'bg-gradient-to-t from-black/70 via-black/30 to-transparent' : ''}`}></div>
+                        
                         {/* Year badge positioned on the poster */}
                         {!isPosterOnly && film.year && (
-                            <div className="absolute top-2 right-2 bg-slate-800/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded z-20 shadow-md">
+                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white/90 text-[11px] font-medium px-1.5 py-0.5 rounded z-20">
                                 {film.year}
                             </div>
                         )}
 
+                        {/* Selector and Date overlay at bottom of poster */}
+                        {!isPosterOnly && (selectorName || watchDateFormatted) && (
+                            <div className={`
+                                absolute bottom-0 left-0 right-0 z-20
+                                flex items-end justify-between
+                                ${isCompact ? 'px-1.5 pb-1.5' : 'px-2 pb-2'}
+                            `}>
+                                {/* Selector badge - left side */}
+                                {selectorName && (
+                                    <div className={`
+                                        flex items-center gap-1.5
+                                        bg-black/60 backdrop-blur-sm
+                                        text-white/95 font-semibold uppercase tracking-wider
+                                        rounded shadow-lg
+                                        ${isCompact ? 'text-[8px] px-1.5 py-0.5 gap-1' : 'text-[10px] px-2 py-1'}
+                                    `}>
+                                        <span className={`
+                                            rounded-full flex-shrink-0 bg-emerald-400
+                                            ${isCompact ? 'w-1 h-1' : 'w-1.5 h-1.5'}
+                                        `}></span>
+                                        <span>{selectorName}</span>
+                                    </div>
+                                )}
+                                
+                                {/* Watch date - right side */}
+                                {watchDateFormatted && (
+                                    <div className={`
+                                        bg-black/60 backdrop-blur-sm
+                                        text-white/80 font-monox tracking-wide rounded shadow-lg
+                                        ${isCompact ? 'text-[9px] px-1.5 py-0.5' : 'text-[11px] px-2 py-1'}
+                                        ${!selectorName ? 'ml-auto' : ''}
+                                    `}>
+                                        {watchDateFormatted}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Card Content Section: Below poster, contains text info - NOT shown in poster-only mode */}
                     {!isPosterOnly && (
-                        <div className={`flex flex-col flex-grow p-3 ${isCompact ? 'p-2' : 'p-3'} bg-gradient-to-b from-slate-800 to-[#27364f] to-slate-700x rounded-b-md`}>
+                        <div className={`flex flex-col flex-grow ${isCompact ? 'p-1.5' : 'p-2'} bg-gradient-to-b from-slate-800 to-[#27364f] to-slate-700x rounded-b-md`}>
                             {/* Film Title */}
                             <h3 className={`
-                                font-normal text-slate-200 mb-2 truncate leading-tight tracking-wide
+                                font-normal text-slate-200 truncate leading-tight tracking-wide
                                 group-hover:text-blue-400 transition-colors duration-200
-                                ${isCompact ? 'text-sm' : 'text-base'}
+                                ${isCompact ? 'text-xs mb-1' : 'text-sm mb-1.5'}
                             `}>
                                 {film.title}
                             </h3>
 
-                            {/* Meta Info Row: Selector and Date/Runtime */}
-                            <div className={`flex items-center justify-between mb-0 ${isCompact ? 'text-xs' : 'text-sm'}`}>
-                                {/* Selector info badge */}
-                                {selectorName && (
-                                    <div className={`
-                                        text-slate-300 px-2 py-1 rounded-sm text-xs font-bold uppercase flex items-center shadow-sm flex-shrink-0 /* Prevent shrinking */
-                                        ${isCompact ? 'px-1.5 py-0.5 text-[10px]' : ''}
-                                        bg-slate-700 pr-3
-                                    `}>
-                                        {/* Colored dot based on team member */}
-                                        <span className={`
-                                                w-1.5 h-1.5 rounded-full mr-1.5 inline-block 
-                                                ${getTeamMemberColorByName(selectorName) ? `bg-${getTeamMemberColorByName(selectorName)}` : 'bg-slate-500'} /* Fallback color */
-                                            bg-slate-400`}
-                                        ></span>
-                                        <span>{selectorName}</span>
-                                    </div>
-                                )}
-                                {/* Watch Date OR Runtime (if Up Next) */}
-                                {watchedDateDisplay ? (
-                                    <span className="text-slate-500 tracking-wide ml-2 text-[10px]">
-                                        {watchedDateDisplay}
-                                    </span>
-                                ) : film.runtime && film.runtime !== "N/A" ? (
-                                    <div className="flex items-center text-slate-400 ml-2" title="Runtime">
-                                        <ClockIcon className={`w-3 h-3 mr-1 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
-                                        <span className="text-xs tracking-wide">{film.runtime}</span>
-                                    </div>
-                                ) : null /* Hide if no date and no runtime */}
-                            </div>
-
-
                             {/* Conditional Content Area: Ratings OR Film Info */}
-                            {/* This div grows to fill space and has top border */}
-                            <div className={`mt-auto pt-0 border-t border-slate-700/50 ${isCompact ? 'pt-1' : 'pt-2'}`}>
+                            <div className={`mt-auto ${isCompact ? '' : ''}`}>
                                 {showUpNext ? (
                                     // --- RENDER IF "UP NEXT" ---
-                                    <div className={`grid grid-cols-2 gap-x-2 gap-y-1 ${isCompact ? 'text-xs' : 'text-sm'}`}>
-                                        {/* Genre */}
-                                        {/* {film.genre && film.genre !== "N/A" && (
-                                            <div className="flex items-center text-slate-300 truncate" title="Genre">
-                                                 <FilmIcon className={`w-3 h-3 mr-1.5 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
-                                                 <span className="truncate">{formatGenre(film.genre)}</span>
-                                            </div>
-                                        )} */}
+                                    <div className={`grid grid-cols-2 gap-x-2 gap-y-0.5 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
                                         {/* Director */}
                                         {film.director && film.director !== "N/A" && (
-                                            <div className="flex items-center text-slate-300 truncate col-span-2" title="Director">
-                                                <UserIcon className={`w-3 h-3 mr-1.5 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
-                                                <span className="truncate">{film.director.split(',')[0]}</span> {/* Show first director */}
+                                            <div className="flex items-center text-slate-400 truncate col-span-2" title="Director">
+                                                <UserIcon className={`mr-1 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} />
+                                                <span className="truncate">{film.director.split(',')[0]}</span>
                                             </div>
                                         )}
-                                        {/* IMDb Rating */}
+                                        {/* Country */}
                                         {film.language && film.country !== "N/A" && (
-                                            <div className="flex items-center text-slate-300 col-span-2" title="IMDb Rating">
-                                                <GlobeEuropeAfricaIcon className={`w-3 h-3 mr-1.5 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2.5 h-2.5' : 'w-3 h-3'}`} />
-                                                <span className="text-slate-500">{film.country}</span>
+                                            <div className="flex items-center text-slate-400 col-span-2" title="Country">
+                                                <GlobeEuropeAfricaIcon className={`mr-1 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} />
+                                                <span className="text-slate-500 truncate">{film.country}</span>
                                             </div>
                                         )}
                                         {/* Fallback if no info */}
                                         {(!film.genre || film.genre === "N/A") && (!film.director || film.director === "N/A") && (!film.imdbRating || film.imdbRating === "N/A") && (
-                                            <div className="text-slate-500 text-xs italic col-span-2">More info coming soon...</div>
+                                            <div className="text-slate-500 text-[10px] italic col-span-2">More info coming soon...</div>
                                         )}
                                     </div>
                                 ) : (
@@ -219,27 +218,27 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     <>
                                         {/* Member Ratings Display */}
                                         {ratingEntries.length > 0 && (
-                                            <div className={`flex flex-wrap items-stretch gap-1.5 ${isCompact ? 'gap-1 text-xs' : 'text-sm'}`}>
+                                            <div className={`flex flex-wrap items-stretch gap-1 ${isCompact ? 'gap-0.5' : 'gap-1'}`}>
                                                 {ratingEntries.map((rating) => {
                                                     const numericRating = rating.score as number;
-                                                    const ratingColorClass = getRatingColorClass(numericRating); // Apply color based on rating
+                                                    const ratingColorClass = getRatingColorClass(numericRating);
                                                     return (
                                                         <div
                                                             key={rating.user}
                                                             title={`${rating.user}: ${rating.score}/9`}
                                                             className={`
-                                                                flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-12 /* Flex properties for wrapping */
-                                                                text-center bg-white/5 rounded-sm py-1 shadow-inner shadow-black/20
+                                                                flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-10
+                                                                text-center bg-white/5 rounded-sm shadow-inner shadow-black/20
                                                                 transition-all duration-150 ease-out hover:bg-slate-600 hover:shadow-md
                                                                 ${isCompact ? 'py-0.5' : 'py-1'}
                                                             `}
                                                         >
                                                             {/* Member Initials */}
-                                                            <div className={`uppercase font-mono text-[10px] text-slate-400 leading-none tracking-wide whitespace-nowrap ${isCompact ? 'text-[9px]' : 'text-[10px]'}`}>
-                                                                {rating.user.substring(0, 2)} {/* Show 2 initials */}
+                                                            <div className={`uppercase font-mono text-slate-400 leading-none tracking-wide whitespace-nowrap ${isCompact ? 'text-[8px]' : 'text-[9px]'}`}>
+                                                                {rating.user.substring(0, 2)}
                                                             </div>
                                                             {/* Member Rating */}
-                                                            <div className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[12px]' : 'text-base'}`}>
+                                                            <div className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[11px]' : 'text-sm'}`}>
                                                                 {rating.score}
                                                             </div>
                                                         </div>
@@ -249,25 +248,21 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                         )}
 
                                         {/* Club Average Rating Display */}
-                                        {false && clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && ( // Only show if ratings exist
+                                        {false && clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && (
                                             <div className={`w-full flex items-center justify-end text-xs text-slate-400 mt-2 ${isCompact ? 'mt-1.5 text-[10px]' : 'mt-2 text-xs'}`}>
-                                                {/* Popcorn component on the left */}
                                                 <PopcornRating
                                                     rating={clubAverageDisplay as number}
-                                                    maxRating={9} // Assuming max rating is 9
+                                                    maxRating={9}
                                                     size={isCompact ? 'small' : 'regular'}
                                                     showPartialFill={true}
                                                     title={`Average Club Rating: ${clubAverageDisplay?.toFixed(1)}/9`}
-                                                    className="mr-auto opacity-70" // Pushes popcorns left
+                                                    className="mr-auto opacity-70"
                                                 />
-                                                {/* Explicit average number on the right */}
-                                                {/* <span className="font-semibold text-slate-300">{clubAverageDisplay.toFixed(1)}</span>
-                                                 <span className="text-slate-500">/9</span> */}
                                             </div>
                                         )}
                                     </>
                                 )}
-                            </div> {/* End Conditional Content Area */}
+                            </div>
 
                         </div>
                     )}

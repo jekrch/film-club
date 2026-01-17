@@ -39,7 +39,7 @@ const FilmsPage = () => {
 
     return (
         <PageLayout className="pt-4">
-            <div className="text-3xl text-slate-100 mb-8">Film Collection</div>
+            <div className="text-3xl text-slate-300 mb-8">Film Collection</div>
 
             <BaseCard key={'search-card'} className="bg-slate-700 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg shadow-lg p-6 mb-8 text-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">

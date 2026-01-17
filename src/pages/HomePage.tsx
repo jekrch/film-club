@@ -153,7 +153,7 @@ const HomePage = () => {
 
         {/* Background poster image */}
         <SelectionCommitteeBackground 
-            imageUrl={"https://s3.amazonaws.com/criterion-production/editorial_content_posts/hero/1517-/cHESEt5eUl3ETx4iqwxbwa8PmVSbPX_large.jpg"} //?? upNextFilm?.poster} 
+            imageUrl={"https://s3.amazonaws.com/criterion-production/janus_stills/5221-/32000id_016_0001_32000id_138_w1600.jpg"} //?? upNextFilm?.poster} 
             scale={1}
             opacity={0.35}
         />
