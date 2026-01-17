@@ -127,7 +127,7 @@ const ProfilePage: React.FC = () => {
                     </div>
                     {hasEnoughControversialFilms && (
                         <div className="lg:col-span-1">
-                            <BaseCard className="p-6 bg-slate-700/50! h-full">
+                            <BaseCard className="p-6 bg-slate-700 h-full">
                                 <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-600/50">
                                     Most Divergent Scores
                                 </h4>
@@ -150,7 +150,7 @@ const ProfilePage: React.FC = () => {
 
 
             {reviewBlurbs.length > 0 && (
-                <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
+                <BaseCard className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
                     <h4 className="text-xl font-bold text-slate-100 mb-6 border-b border-slate-700 pb-3">In Their Own Words</h4>
                     <div className="space-y-5">
                         {displayedBlurbs.map((blurbItem) => (
@@ -170,7 +170,7 @@ const ProfilePage: React.FC = () => {
                             </button>
                         </div>
                     )}
-                </div>
+                </BaseCard>
             )}
 
             {topRatedFilms.length > 0 && (

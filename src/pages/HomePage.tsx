@@ -10,6 +10,8 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
 import PageLayout from '../components/layout/PageLayout';
+import CorinthianPillar from '../components/layout/CorinthianPillar';
+
 
 // --- Helper function to format total minutes ---
 const formatTotalMinutes = (totalMinutes: number): string => {
@@ -158,6 +160,10 @@ const HomePage = () => {
             opacity={0.35}
         />
 
+        {/* Corinthian Pillars */}
+        <CorinthianPillar side="left"  flipped width={75}/>
+        <CorinthianPillar side="right" flipped width={75} />
+
         {/* --- Display Cycle Order with Profile Pics and Responsive Arrows --- */}
         {activeCycleMembersList.length > 0 && (
             <div className="mb-6 relative z-10">
@@ -209,7 +215,7 @@ const HomePage = () => {
                                     )}
                                 </div>
                                 {/* Member Name */}
-                                <span className={`block text-xs mt-1.5 font-medium transition-colors duration-200 ${isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}`}>
+                                <span className={`block text-xs mt-1.5 font-medium transition-colors duration-200 ${isActive ? 'text-emerald-400' : 'text-slate-300 group-hover:text-slate-200'}`}>
                                     {member.name}
                                 </span>
                             </Link>
