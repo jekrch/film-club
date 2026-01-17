@@ -4,7 +4,6 @@ import { Film } from '../../types/film';
 import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils';
 import { CardSize } from '../../contexts/ViewSettingsContext';
 import PopcornRating from '../common/PopcornRating';
-import { getTeamMemberColorByName } from '../../types/team';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
 
