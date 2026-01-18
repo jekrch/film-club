@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./fonts.css";
 
+body {
+  background-color: #0f172b;
+}
+
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
@@ -14,7 +18,7 @@
 
   /* color-scheme: light dark; */
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0f172b;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,14 +28,13 @@
 
 html,
 body,
-#root { /* Target the root element where your React app mounts */
+#root { 
   height: 100%; /* Allow children (like App's main div) to use percentage heights or min-h-screen */
   width: 100%;  /* Allow children to naturally expand to full width */
-  margin: 0;     /* Remove default browser margin on body */
-  padding: 0;    /* Remove potential default padding */
-  box-sizing: border-box; /* Recommended practice */
+  margin: 0;    
+  padding: 0;  
+  box-sizing: border-box; 
 }
-
 /* Optional: Apply a default background to the body to see its extent */
 
 
@@ -44,6 +47,7 @@ a {
   color: var(--color-blue-300);
   text-decoration: inherit;
 }
+
 a:hover {
   color: var(--color-blue-400);
 }
