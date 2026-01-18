@@ -214,7 +214,8 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
             if 'trophy_notes' in row: 
                 current_trophy_notes = movie_to_update['movieClubInfo'].get('trophyNotes')
                 new_trophy_notes = None if pd.isna(trophy_notes_sheet) else trophy_notes_sheet
-                if current_trophy_notes != new_trophy_notes:
+                # Only update if current value is null/None and sheet has a non-null value
+                if current_trophy_notes is None and new_trophy_notes is not None:
                     movie_to_update['movieClubInfo']['trophyNotes'] = new_trophy_notes
             
             if 'clubRatings' not in movie_to_update['movieClubInfo']:
@@ -380,4 +381,3 @@ if __name__ == "__main__":
         exit(0)
     else:
         exit(1)
-
