@@ -14,6 +14,7 @@ import PageLayout from '../components/layout/PageLayout';
 import ProfileBlurbItem from '../components/profile/ProfileBlurbItem';
 import BaseCard from '../components/common/BaseCard';
 import ProfileHeroBackground from '../components/profile/ProfileHeroBackground';
+import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
 
 import { useProfileData } from '../hooks/useProfileData'; 
 
@@ -29,6 +30,7 @@ const ProfilePage: React.FC = () => {
         currentUserStats,
         rankings,
         reviewBlurbs,
+        allFilms,
         loading,
         error,
         isInterviewExpanded,
@@ -105,7 +107,7 @@ const ProfilePage: React.FC = () => {
                     {needsInterviewExpansion && (
                         <div className="mt-4 text-center border-t border-slate-700 pt-4">
                             <button
-                                onClick={toggleInterviewExpanded} // Use handler from hook
+                                onClick={toggleInterviewExpanded}
                                 className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
                                 aria-expanded={isInterviewExpanded}
                             >
@@ -122,7 +124,7 @@ const ProfilePage: React.FC = () => {
                         {hasStats ? (
                             <ProfileStatsSection stats={currentUserStats} rankings={rankings} />
                         ) : (
-                            <div className="hidden lg:block lg:col-span-2"></div> /* Placeholder for grid */
+                            <div className="hidden lg:block lg:col-span-2"></div>
                         )}
                     </div>
                     {hasEnoughControversialFilms && (
@@ -142,12 +144,11 @@ const ProfilePage: React.FC = () => {
                             </BaseCard>
                         </div>
                     )}
-                     {!hasEnoughControversialFilms && hasStats && ( /* Ensure grid consistency if only stats shown */
+                     {!hasEnoughControversialFilms && hasStats && (
                         <div className="lg:col-span-1 hidden lg:block"></div>
                     )}
                 </div>
             )}
-
 
             {reviewBlurbs.length > 0 && (
                 <BaseCard className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
@@ -162,7 +163,7 @@ const ProfilePage: React.FC = () => {
                     {needsBlurbsSectionExpansion && (
                         <div className="mt-6 text-center border-t border-slate-700 pt-4">
                             <button
-                                onClick={toggleBlurbsSectionExpanded} // Use handler from hook
+                                onClick={toggleBlurbsSectionExpanded}
                                 className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
                                 aria-expanded={isBlurbsSectionExpanded}
                             >
@@ -171,6 +172,11 @@ const ProfilePage: React.FC = () => {
                         </div>
                     )}
                 </BaseCard>
+            )}
+
+            {/* Trophy Case Section */}
+            {allFilms && member.name && (
+                <ProfileTrophyGallery memberName={member.name} films={allFilms} />
             )}
 
             {topRatedFilms.length > 0 && (

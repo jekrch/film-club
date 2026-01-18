@@ -108,7 +108,7 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
     return (
         <div className="mt-8 pt-6 border-t border-slate-700">
             <div className="flex items-center gap-2.5 mb-4">
-                <TrophyIcon className="h-5 w-5 text-amber-400" />
+                {/* <TrophyIcon className="h-5 w-5 text-amber-400" /> */}
                 <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
                     Trophy Gallery
                 </h3>

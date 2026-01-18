@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Film, filmData as allFilmsData, getClubRating } from '../types/film';
+import { Film, filmData as allFilmsData, filmData, getClubRating } from '../types/film';
 import { teamMembers as allTeamMembersData, TeamMember } from '../types/team';
 import {
     calculateMemberStats,
@@ -19,6 +19,7 @@ export interface UseProfileDataReturn {
     currentUserStats: UserProfileStats | null;
     rankings: UserRankings | null;
     reviewBlurbs: ProfileReviewBlurb[];
+    allFilms: Film[];
     loading: boolean;
     error: string | null;
     isInterviewExpanded: boolean;
@@ -229,6 +230,7 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
         currentUserStats,
         rankings,
         reviewBlurbs,
+        allFilms: filmData,
         loading,
         error,
         isInterviewExpanded,
