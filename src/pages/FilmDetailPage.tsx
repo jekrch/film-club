@@ -10,7 +10,9 @@ import BaseCard from '../components/common/BaseCard';
 import CollapsibleContent from '../components/common/CollapsableContent';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';  
-import { useFilmDetails } from '../hooks/useFilmDetails'; 
+import { useFilmDetails } from '../hooks/useFilmDetails';
+import TrophyGallery from '../components/common/TrophyGallery';
+
 
 const FilmDetailPage = () => {
     const { imdbId } = useParams<{ imdbId: string }>();
@@ -29,6 +31,7 @@ const FilmDetailPage = () => {
         personAllFilmographies,
     } = useFilmDetails(imdbId);
 
+    const capitalizeFirstLetter = (str: string): string => str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 
     // UI Helper function (can remain in component or be moved to utils if more broadly used)
     const renderClickableCreditNames = (namesString: string | undefined) => {
@@ -78,7 +81,6 @@ const FilmDetailPage = () => {
     const clubAverageDisplay = numberOfValidRatings >= 2 ? calculateClubAverage(film.movieClubInfo?.clubRatings) : null;
     const imdbRatingDisplay = getImdbRatingDisplay(film.imdbRating);
     const selectorName = film.movieClubInfo?.selector;
-    const capitalizeFirstLetter = (str: string): string => str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
     const MAX_RATING = 9;
     const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
 
@@ -267,9 +269,17 @@ const FilmDetailPage = () => {
                                     </Link>
                                 )}
                             </div>
-                            {(film.movieClubInfo.trophyInfo || film.movieClubInfo.trophyNotes) && (
-                                <div className="mt-8 pt-6 border-t border-slate-700 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                                    {film.movieClubInfo.trophyNotes && (<div> <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy gallery</h3> <p className="text-slate-300 whitespace-pre-line">{film.movieClubInfo.trophyNotes}</p> </div>)}
+                            
+                            {/* Trophy Gallery Section */}
+                            {film.movieClubInfo.trophyNotes && (
+                                <TrophyGallery trophyNotes={film.movieClubInfo.trophyNotes} />
+                            )}
+                            
+                            {/* Trophy Info (if separate from notes) */}
+                            {film.movieClubInfo.trophyInfo && !film.movieClubInfo.trophyNotes && (
+                                <div className="mt-8 pt-6 border-t border-slate-700">
+                                    <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Trophy Info</h3>
+                                    <p className="text-slate-300 whitespace-pre-line">{film.movieClubInfo.trophyInfo}</p>
                                 </div>
                             )}
                         </div>
