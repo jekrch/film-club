@@ -20,7 +20,11 @@ import MemberStatCard from '../components/almanac/MemberStatCard';
 import CreditsModal from '../components/common/CreditsModal';
 import PageLayout from '../components/layout/PageLayout';
 import SectionHeader from '../components/common/SectionHeader';
-import BaseCard from '../components/common/BaseCard'; // Ensure BaseCard is imported
+import BaseCard from '../components/common/BaseCard';
+
+import { useUnanimousScores } from '../hooks/useUnanimousScores';
+import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
+
 
 // Helper Functions (can be moved to utils if not already there)
 const formatTotalMinutes = (totalMinutes: number): string => {
@@ -42,7 +46,6 @@ const daysBetween = (date1: Date, date2: Date): number => {
     const utc2 = Date.UTC(date2.getUTCFullYear(), date2.getUTCMonth(), date2.getUTCDate());
     return Math.floor(Math.abs(utc2 - utc1) / oneDay);
 };
-
 
 const AlmanacPage: React.FC = () => {
     const {
@@ -117,6 +120,12 @@ const AlmanacPage: React.FC = () => {
         setSelectedCategory(category);
     }, [setSelectedCategory]);
 
+    const {
+        unanimousScores,
+        totalUnanimousCount,
+    } = useUnanimousScores(filmData, teamMembersData as TeamMember[]);
+
+
     return (
         <PageLayout>
             {creditsModalState.isOpen && (
@@ -181,7 +190,7 @@ const AlmanacPage: React.FC = () => {
                 <p className="mb-2 text-center text-xs text-slate-400 italic">
                     Click on a point to see which film was watched at the end of that interval.
                 </p>
-                 {meetingIntervalChartOptions.series && ((meetingIntervalChartOptions.series[0] as Highcharts.SeriesLineOptions).data?.length || 0) > 0 ? (
+                {meetingIntervalChartOptions.series && ((meetingIntervalChartOptions.series[0] as Highcharts.SeriesLineOptions).data?.length || 0) > 0 ? (
                     <HighchartsReact highcharts={Highcharts} options={meetingIntervalChartOptions} />
                 ) : (<div className="text-center py-8 text-slate-400 text-sm">Loading intervals...</div>)}
                 {selectedIntervalDetail && (
@@ -256,6 +265,12 @@ const AlmanacPage: React.FC = () => {
                     </p>
                 )}
             </div>
+
+            {/* Unanimous Scores Section */}
+            <UnanimousScoresCard
+                unanimousScores={unanimousScores}
+                totalCount={totalUnanimousCount}
+            />
         </PageLayout>
     );
 };

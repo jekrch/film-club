@@ -119,7 +119,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
         <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
             <div className="flex items-center gap-2.5 mb-6 border-b border-slate-700 pb-3">
                 {/* <TrophyIcon className="h-6 w-6 text-amber-400" /> */}
-                <h4 className="text-xl font-bold text-slate-100">Trophy Case</h4>
+                <h4 className="text-xl font-bold text-slate-100">Trophy Shelf</h4>
                 <span className="ml-auto text-sm text-slate-400">
                     {memberTrophies.length} award{memberTrophies.length !== 1 ? 's' : ''}
                 </span>
