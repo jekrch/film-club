@@ -124,7 +124,7 @@ Changes are typically synced and deployed twice daily (see "Automated Workflows"
 
 ### Member Data
 
-Edit `src/assets/club.json` to update member information. You can do this directly on GitHub or by cloning the repository locally.
+Edit `src/assets/club.json` to update member information. You can do this directly on GitHub or by cloning the repository locally and committing your changes to the main branch.
 
 ### Profile Pictures
 
