@@ -155,7 +155,7 @@ const HomePage = () => {
 
         {/* Background poster image */}
         <SelectionCommitteeBackground 
-            imageUrl={"https://s3.amazonaws.com/criterion-production/janus_stills/5221-/32000id_016_0001_32000id_138_w1600.jpg"} //?? upNextFilm?.poster} 
+            imageUrl={"https://static.tcm.com/2025-08/gold%20diggers%20of%201933%202%201080x720.png?w=1200"} //?? upNextFilm?.poster} 
             scale={1}
             opacity={0.35}
         />
