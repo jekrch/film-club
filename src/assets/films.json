@@ -4550,5 +4550,53 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "Gold Diggers of 1933",
+    "year": "1933",
+    "rated": "Passed",
+    "released": "27 May 1933",
+    "runtime": "97 min",
+    "genre": "Comedy, Drama, Musical",
+    "director": "Mervyn LeRoy",
+    "writer": "Erwin Gelsey, James Seymour, David Boehm",
+    "actors": "Warren William, Joan Blondell, Aline MacMahon",
+    "plot": "Chorus girls Polly, Carol and Trixie are ecstatic when they learn that Broadway producer Barney Hopkins is putting on a new show. He promises all of the girls parts in the new show and even hires their neighbor Brad Roberts, an unknown composer, to write some of the music. There's only one problem: he doesn't have the money to bankroll it all. That problem is solved when Brad turns out to be quite rich but he insists that he not perform. When opening night comes, the juvenile lead can't go on forcing Brad to take the stage. He's recognized of course and his upper crust family wants him to quit. When he refuses, they tell him to end his relationship with Polly or face having his income cut off. When Brad's snobbish brother Lawrence mistakes Carol for Polly, the girls decide to have a bit of fun and teach him a lesson.",
+    "language": "English",
+    "country": "United States",
+    "awards": "Nominated for 1 Oscar. 4 wins & 1 nomination total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjIyMTQ4MzQwOF5BMl5BanBnXkFtZTgwMzA4NDE1MjE@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.7",
+    "imdbVotes": "9,740",
+    "imdbID": "tt0024069",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "costumeDesigner": "Orry-Kelly",
+    "cinematographer": "Sol Polito",
+    "editor": "George Amy",
+    "musicComposer": "Al Dubin, Harry Warren",
+    "movieClubInfo": {
+      "selector": "Gabe",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
