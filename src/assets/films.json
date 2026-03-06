@@ -4543,7 +4543,28 @@
     "movieClubInfo": {
       "selector": "Gabe",
       "watchDate": null,
-      "clubRatings": [],
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5.5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 5,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
