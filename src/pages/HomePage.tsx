@@ -155,7 +155,7 @@ const HomePage = () => {
 
         {/* Background poster image */}
         <SelectionCommitteeBackground 
-            imageUrl={"https://static.tcm.com/2025-08/gold%20diggers%20of%201933%202%201080x720.png?w=1200"} //?? upNextFilm?.poster} 
+            imageUrl={"https://www.electric-shadows.com/wp-content/uploads/2017/06/The-Fisher-King-The-Red-Knight.jpg"} //?? upNextFilm?.poster} 
             scale={1}
             opacity={0.35}
         />
