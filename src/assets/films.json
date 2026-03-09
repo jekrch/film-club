@@ -4568,5 +4568,57 @@
       "trophyInfo": null,
       "trophyNotes": "Joey gets togetherness award"
     }
+  },
+  {
+    "title": "The Fisher King",
+    "year": "1991",
+    "rated": "R",
+    "released": "27 Sep 1991",
+    "runtime": "137 min",
+    "genre": "Comedy, Drama, Fantasy",
+    "director": "Terry Gilliam",
+    "writer": "Richard LaGravenese",
+    "actors": "Jeff Bridges, Robin Williams, Adam Bryant",
+    "plot": "Jack Lucas was once a famous, arrogant and egotistical New York City call-in radio talk show host. Largely self-inflicted due to remorse and grief, Jack goes on a quick downward spiral, both personally and professionally, after a glib comment he makes to one of his regular callers results in that caller going on a murder spree. Three years later, the only emotional and financial support a despondent Jack receives is from his current video store owning girlfriend, Anne. When Jack hits rock bottom, he meets a seemingly crazy and homeless man calling himself Parry. Parry does have mental health issues, namely hallucinations centered around the story of the Fisher King, which is why he has an obsession with obtaining the Holy Grail. When Jack learns of Parry's own background and the reason he got to where he is, Jack feels he needs to be part of Parry's salvation. He figures the way to do so is to connect Parry with Lydia Sinclair, a shy and uncoordinated woman who Parry loves from afar. In doing so, Jack may himself be able to recapture his old life back. But if he does, he may not realize that he was no saint in that former life.",
+    "language": "English",
+    "country": "United States",
+    "awards": "Won 1 Oscar. 14 wins & 39 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZTg2OGU4MmMtZThkZi00YjJjLTkwMjItMDMwYWE4NTA3NzRlXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "84%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "67/100"
+      }
+    ],
+    "metascore": "67",
+    "imdbRating": "7.5",
+    "imdbVotes": "96,141",
+    "imdbID": "tt0101889",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$41,895,491",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "musicComposer": "George Fenton",
+    "cinematographer": "Roger Pratt",
+    "editor": "Lesley Walker",
+    "productionDesigner": "Mel Bourne",
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
