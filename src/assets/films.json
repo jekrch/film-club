@@ -4615,8 +4615,29 @@
     "productionDesigner": "Mel Bourne",
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": null,
-      "clubRatings": [],
+      "watchDate": "3/24",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 7,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
