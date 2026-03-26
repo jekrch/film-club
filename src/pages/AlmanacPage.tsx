@@ -24,6 +24,7 @@ import BaseCard from '../components/common/BaseCard';
 
 import { useUnanimousScores } from '../hooks/useUnanimousScores';
 import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
+import FilmConnectionGraph from '../components/almanac/FilmConnectionGraph';
 
 
 // Helper Functions (can be moved to utils if not already there)
@@ -266,6 +267,9 @@ const AlmanacPage: React.FC = () => {
                 )}
             </div>
 
+            <FilmConnectionGraph films={filmData} />
+            
+            <div className="h-8"/>
             {/* Unanimous Scores Section */}
             <UnanimousScoresCard
                 unanimousScores={unanimousScores}
