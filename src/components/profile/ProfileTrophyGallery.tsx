@@ -124,7 +124,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                     {memberTrophies.length} award{memberTrophies.length !== 1 ? 's' : ''}
                 </span>
             </div>
-            
+
             <div className="space-y-6">
                 {groupedTrophies.map((group, groupIndex) => (
                     <div key={groupIndex} className="group">
@@ -148,7 +148,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                                         <Link
                                             key={film.filmId}
                                             to={`/films/${film.filmId}`}
-                                            className="group/film flex items-center gap-2 px-2 py-1.5 bg-slate-700/60 hover:bg-slate-600/80 rounded-lg transition-all hover:scale-[1.02]"
+                                            className="group/film flex items-center gap-2 px-2 py-1.5 bg-slate-700/60 hover:bg-slate-600/80 rounded-md transition-colors duration-150"
                                             title={`${film.filmTitle} (${film.filmYear})`}
                                         >
                                             <img
@@ -162,7 +162,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                                             <span className="text-sm text-slate-300 group-hover/film:text-slate-100 truncate max-w-[150px]">
                                                 {film.filmTitle}
                                             </span>
-                                            <span className="text-xs text-slate-500">
+                                            <span className="text-xs text-slate-500 ml-">
                                                 ({film.filmYear})
                                             </span>
                                         </Link>

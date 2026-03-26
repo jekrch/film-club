@@ -155,7 +155,7 @@ const HomePage = () => {
 
         {/* Background poster image */}
         <SelectionCommitteeBackground 
-            imageUrl={"https://www.electric-shadows.com/wp-content/uploads/2017/06/The-Fisher-King-The-Red-Knight.jpg"} //?? upNextFilm?.poster} 
+            imageUrl={"https://quinlan.it/upload/images/2021/02/jane-b-par-agnes-v-1988-agnes-varda-06.jpg"} //?? upNextFilm?.poster} 
             scale={1}
             opacity={0.35}
         />

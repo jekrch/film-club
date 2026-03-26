@@ -7,14 +7,14 @@ interface TrophyGalleryProps {
     trophyNotes: string;
 }
 
-const capitalizeFirstLetter = (str: string): string => 
+const capitalizeFirstLetter = (str: string): string =>
     str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 
 const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
     const renderTrophyItem = (trophyText: string, index: number) => {
         // Find all member names in the trophy text (case-insensitive)
         const memberMatches: { name: string; start: number; end: number }[] = [];
-        
+
         teamMembers.forEach(member => {
             const regex = new RegExp(`\\b${member.name}\\b`, 'gi');
             let match;
@@ -64,12 +64,12 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
                 <Link
                     key={`member-${matchIndex}`}
                     to={`/profile/${encodeURIComponent(displayName)}`}
-                    className="inline-flex items-center gap-1.5 mx-0.5 pl-0.5 pr-2 py-0.5 bg-slate-700/60 hover:bg-slate-600/80 rounded-full transition-all hover:scale-105 group/member"
+                    className="inline-flex items-center gap-1.5 ml-0 pl-0.5 pr-2 py-0.5 bg-slate-700/60 hover:bg-slate-600/80 rounded-lg transition-colors duration-150 group/member mt-[0.1] mr-2"
                     title={`View ${displayName}'s profile`}
                 >
-                    <CircularImage 
-                        alt={capitalizeFirstLetter(displayName)} 
-                        size="w-5 h-5" 
+                    <CircularImage
+                        alt={capitalizeFirstLetter(displayName)}
+                        size="w-5 h-5"
                     />
                     <span className="text-blue-300 group-hover/member:text-blue-200 font-medium text-sm">
                         {trophyText.slice(match.start, match.end)}
@@ -92,7 +92,7 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
         return (
             <div key={index} className="flex items-start gap-3 group">
                 <div className="flex-shrink-0 mt-0.5">
-                    <div className="p-1.5 bg-amber-500/20 rounded-lg group-hover:bg-amber-500/30 transition-colors">
+                    <div className="p-1.5 bg-amber-500/20 rounded-lg group-hover:bg-amber-500/30 transition-colors -mt-[1.2px]">
                         <TrophyIcon className="h-4 w-4 text-amber-400" />
                     </div>
                 </div>
@@ -104,7 +104,7 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
     };
 
     const trophies = trophyNotes.split(',').map(t => t.trim()).filter(t => t !== '');
-    
+
     return (
         <div className="mt-8 pt-6 border-t border-slate-700">
             <div className="flex items-center gap-2.5 mb-4">
