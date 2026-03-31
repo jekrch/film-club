@@ -5,7 +5,6 @@ import {
     Edge,
     Background,
     Controls,
-    MiniMap,
     useNodesState,
     useEdgesState,
     Position,
@@ -486,11 +485,13 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
     }
 
     return (
+        <>
+        <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">Connection Graph</h3>
         <div
             className={className}
             style={{
                 width: '100%',
-                height: 600,
+                height: 500,
                 borderRadius: 10,
                 overflow: 'hidden',
                 position: 'relative',
@@ -522,7 +523,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                         borderRadius: 8,
                     }}
                 />
-                <MiniMap
+                {/* <MiniMap
                     nodeColor={() => '#3b82f6'}
                     maskColor="rgba(15, 23, 42, 0.8)"
                     style={{
@@ -530,7 +531,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                         border: '1px solid #475569',
                         borderRadius: 8,
                     }}
-                />
+                /> */}
             </ReactFlow>
 
             {selectedConnection && (
@@ -540,6 +541,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                 />
             )}
         </div>
+        </>
     );
 };
 

@@ -267,7 +267,7 @@ const AlmanacPage: React.FC = () => {
                 )}
             </div>
 
-            <FilmConnectionGraph films={filmData} />
+            <FilmConnectionGraph films={filmData} className="backdrop-grayscale-50 backdrop-opacity-50" />
             
             <div className="h-8"/>
             {/* Unanimous Scores Section */}
