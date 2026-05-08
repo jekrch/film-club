@@ -155,7 +155,7 @@ const HomePage = () => {
 
         {/* Background poster image */}
         <SelectionCommitteeBackground 
-            imageUrl={"https://quinlan.it/upload/images/2021/02/jane-b-par-agnes-v-1988-agnes-varda-06.jpg"} //?? upNextFilm?.poster} 
+            imageUrl={"https://m.media-amazon.com/images/S/pv-target-images/f00b9fcb9b24a81bb870e32b532cf46def19aa439e2a28723048a2eacdd69d15.jpg"} //?? upNextFilm?.poster} 
             scale={1}
             opacity={0.35}
         />
