@@ -4684,9 +4684,30 @@
     "movieClubInfo": {
       "selector": "Jacob",
       "watchDate": null,
-      "clubRatings": [],
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 4,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 5,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
-      "trophyNotes": null
+      "trophyNotes": "Joey gets both togetherness and bad boy, Andy gets reframer trophy"
     }
   }
 ]
