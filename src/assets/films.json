@@ -4683,7 +4683,7 @@
     "productionDesigner": "Olivier Radot",
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": null,
+      "watchDate": "5/7/26",
       "clubRatings": [
         {
           "user": "andy",
@@ -4708,6 +4708,54 @@
       ],
       "trophyInfo": null,
       "trophyNotes": "Joey gets both togetherness and bad boy, Andy gets reframer trophy"
+    }
+  },
+  {
+    "title": "Z",
+    "year": "1969",
+    "rated": "M/PG",
+    "released": "08 Dec 1969",
+    "runtime": "127 min",
+    "genre": "Crime, Drama, Thriller",
+    "director": "Costa-Gavras",
+    "writer": "Vassilis Vassilikos, Jorge Semprún, Costa-Gavras",
+    "actors": "Yves Montand, Irene Papas, Jean-Louis Trintignant",
+    "plot": "In a mid-sized metropolis (population 500,000) in a right-wing military led country, a pacifist organization, which supports the opposition party in the government, is planning on holding an anti-military, nuclear disarmament rally. The organization's charismatic leader - the deputy - is scheduled to arrive in the town from the capital the day of the rally. Beyond the problems arranging the rally due to the probable incitement of violence at such a rally, the organization learns of an unconfirmed report that there will be an attempt on the deputy's life. The rally does happen, after which a three-wheeled kamikaze runs over the deputy, who eventually passes away from his injuries. The official report is that the incident was a drunken accident. In reality, the deputy's death was murder orchestrated by the secret police, the general for who likens the pacifist organization to mildew killing off agricultural crops. A magistrate is assigned to the case. Although he does have political views, he is more interested in finding out the truth, and as such has to wade through the political rhetoric and politically motivated testimony he hears. Thrown into the mix is a photojournalist who too is looking for the truth, as it, he believes, will make a great front page story.",
+    "language": "French, Russian, English",
+    "country": "France, Algeria",
+    "awards": "Won 2 Oscars. 12 wins & 13 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDRkZGI0YTctNWRiNy00MTFhLWE2NTQtM2Y3YTY0MTM0MGE0XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "86/100"
+      }
+    ],
+    "metascore": "86",
+    "imdbRating": "8.1",
+    "imdbVotes": "32,517",
+    "imdbID": "tt0065234",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$83,305",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "movieClubInfo": {
+      "selector": "Andy",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
     }
   }
 ]
