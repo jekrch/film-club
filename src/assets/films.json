@@ -4752,6 +4752,76 @@
     "tmdbCrewDataFetched": true,
     "movieClubInfo": {
       "selector": "Andy",
+      "watchDate": "6/11/26",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 7,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 8,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 6.5,
+          "blurb": null
+        }
+      ],
+      "trophyInfo": null,
+      "trophyNotes": "Jacob gets togetherness trophy, Gabe gets helmet"
+    }
+  },
+  {
+    "title": "For All Mankind",
+    "year": "1989",
+    "rated": "Not Rated",
+    "released": "19 May 1989",
+    "runtime": "80 min",
+    "genre": "Documentary, History",
+    "director": "Al Reinert",
+    "writer": "N/A",
+    "actors": "Jim Lovell, Ken Mattingly, Russell Schweickart",
+    "plot": "An in-depth look at various NASA moon landing missions, starting with Apollo 8.",
+    "language": "English",
+    "country": "United States",
+    "awards": "Nominated for 1 Oscar. 3 wins & 3 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZWM2YjFiOGQtZDViZC00M2M0LWJlNzEtMTAzZTI0NGYxZTg2XkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "95%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "79/100"
+      }
+    ],
+    "metascore": "79",
+    "imdbRating": "8.1",
+    "imdbVotes": "6,937",
+    "imdbID": "tt0097372",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$770,132",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "editor": "Susan Korda",
+    "movieClubInfo": {
+      "selector": "Gabe",
       "watchDate": null,
       "clubRatings": [],
       "trophyInfo": null,
