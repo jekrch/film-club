@@ -155,7 +155,7 @@ const HomePage = () => {
 
         {/* Background poster image */}
         <SelectionCommitteeBackground 
-            imageUrl={"https://m.media-amazon.com/images/S/pv-target-images/f00b9fcb9b24a81bb870e32b532cf46def19aa439e2a28723048a2eacdd69d15.jpg"} //?? upNextFilm?.poster} 
+            imageUrl={"https://criterion-production.s3.amazonaws.com/carousel-files/phoBCwinvJjAliSJYq0utFVyZ5YgOw2l4j4TBXAK.jpeg"} //?? upNextFilm?.poster} 
             scale={1}
             opacity={0.35}
         />
