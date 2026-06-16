@@ -85,7 +85,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                 <div
                     className={`
                         absolute -top-px -left-px z-30 overflow-hidden pointer-events-none /* Square clip-wrapper anchored to top-left corner */
-                        ${isCompact || isPosterOnly ? 'w-[64px] h-[64px]' : 'w-[92px] h-[92px]'}
+                        ${isCompact || isPosterOnly ? 'w-[74px] h-[74px]' : 'w-[104px] h-[104px]'}
                     `}
                 >
                     <div
@@ -98,8 +98,8 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             group-hover:scale-105 group-hover:shadow-xl /* Hover effects */
                             group-hover:from-emerald-500 group-hover:to-emerald-600 /* Hover colors */
                             ${isCompact || isPosterOnly
-                                ? 'w-[96px] -left-[26px] top-[13px] py-0.5 text-[9px]'
-                                : 'w-[140px] -left-[36px] top-[20px] py-1.5 text-base'}
+                                ? 'w-[112px] -left-[28px] top-[15px] py-1 text-xs'
+                                : 'w-[160px] -left-[40px] top-[24px] py-1.5 text-lg'}
                         `}
                     >
                         UP NEXT

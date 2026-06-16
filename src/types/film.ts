@@ -106,6 +106,7 @@ export interface Film {
     country: string;
     awards?: string; 
     poster: string; // URL
+    backdropImage?: string; // Optional: URL for a wide background/banner image shown behind the selection committee (home) and film details
     ratings: Rating[]; // Array of ratings from different sources
     metascore?: string; // Optional: Removed if "N/A"
     imdbRating?: string; // Optional: Removed if "N/A"

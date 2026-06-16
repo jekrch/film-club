@@ -43,7 +43,7 @@ const HomePage = () => {
   const [totalRuntimeString, setTotalRuntimeString] = useState<string>('');
   const [currentSelectorName, setCurrentSelectorName] = useState<string | null>(null);
   const [activeCycleMembersList, setActiveCycleMembersList] = useState<TeamMember[]>([]);
-  const [, setUpNextFilm] = useState<Film | undefined>(undefined);
+  const [upNextFilm, setUpNextFilm] = useState<Film | undefined>(undefined);
 
   // --- Data Fetching and Processing Effect ---
   useEffect(() => {
@@ -154,8 +154,8 @@ const HomePage = () => {
       <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg mb-8 mt-2 text-center px-4 sm:px-6 lg:px-10">
 
         {/* Background poster image */}
-        <SelectionCommitteeBackground 
-            imageUrl={"https://criterion-production.s3.amazonaws.com/carousel-files/phoBCwinvJjAliSJYq0utFVyZ5YgOw2l4j4TBXAK.jpeg"} //?? upNextFilm?.poster} 
+        <SelectionCommitteeBackground
+            imageUrl={upNextFilm?.backdropImage ?? upNextFilm?.poster}
             scale={1}
             opacity={0.35}
         />

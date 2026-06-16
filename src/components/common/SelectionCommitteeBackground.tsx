@@ -11,15 +11,22 @@ interface SelectionCommitteeBackgroundProps {
     scale?: number;
     /** Image opacity (0-1). Defaults to 0.25 */
     opacity?: number;
+    /**
+     * Which side the image is anchored to and fades away from.
+     * 'left' (default): image on the left, fades out to the right.
+     * 'right': image mirrored on the right, fades out to the left.
+     */
+    align?: 'left' | 'right';
 }
 
-const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> = ({ 
-    imageUrl, 
+const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> = ({
+    imageUrl,
     className = '',
     objectPositionX,
     objectPositionY,
     scale = 1.8,
     opacity = 0.25,
+    align = 'left',
 }) => {
     const segment = useMemo(() => {
         if (!imageUrl || imageUrl.includes('N/A')) return null;
@@ -33,13 +40,17 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
 
     if (!segment) return null;
 
+    const isRight = align === 'right';
+    const fadeDirection = isRight ? 'to left' : 'to right';
+    const maskGradient = `linear-gradient(${fadeDirection}, black 0%, black 20%, transparent 100%)`;
+
     return (
         <div className={`absolute inset-0 overflow-hidden pointer-events-none rounded-lg ${className}`}>
             <div
-                className="absolute top-0 bottom-0 left-0 w-2/3 h-full"
+                className={`absolute top-0 bottom-0 w-2/3 h-full ${isRight ? 'right-0' : 'left-0'}`}
                 style={{
-                    maskImage: 'linear-gradient(to right, black 0%, black 20%, transparent 100%)',
-                    WebkitMaskImage: 'linear-gradient(to right, black 0%, black 20%, transparent 100%)',
+                    maskImage: maskGradient,
+                    WebkitMaskImage: maskGradient,
                 }}
             >
                 <img
@@ -49,7 +60,7 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
                     className="w-full h-full object-cover"
                     style={{
                         objectPosition: `${segment.clipX}% ${segment.clipY}%`,
-                        transform: `scale(${scale})`,
+                        transform: `scale(${scale})${isRight ? ' scaleX(-1)' : ''}`,
                         opacity,
                     }}
                     loading="lazy"

@@ -12,6 +12,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';  
 import { useFilmDetails } from '../hooks/useFilmDetails';
 import TrophyGallery from '../components/common/TrophyGallery';
+import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
 
 
 const FilmDetailPage = () => {
@@ -149,7 +150,17 @@ const FilmDetailPage = () => {
                             )}
                         </div>
 
-                        <div className="p-6 md:p-8 flex-grow">
+                        <div className="relative p-6 md:p-8 flex-grow overflow-hidden">
+                            {film.backdropImage && (
+                                <SelectionCommitteeBackground
+                                    imageUrl={film.backdropImage}
+                                    className="!rounded-none"
+                                    scale={1}
+                                    opacity={0.14}
+                                    align="right"
+                                />
+                            )}
+                            <div className="relative z-10">
                             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
                                 <h1 className="text-3xl lg:text-4xl font-bold text-slate-100 mb-1 sm:mb-0 pr-4">{film.title}</h1>
                                 <span className="text-xl font-semibold text-slate-400 flex-shrink-0">({film.year})</span>
@@ -218,6 +229,7 @@ const FilmDetailPage = () => {
                                     </div>
                                 </div>
                             )}
+                            </div>
                         </div>
                     </div>
 
