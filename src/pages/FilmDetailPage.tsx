@@ -68,6 +68,21 @@ const FilmDetailPage = () => {
     };
 
 
+    const renderPlotParagraphs = (plot: string | undefined) => {
+        if (!plot) {
+            return <span className="italic text-slate-500">Plot not available.</span>;
+        }
+        const paragraphs = plot.split(/\n+/).map(p => p.trim()).filter(p => p !== '');
+        if (paragraphs.length === 0) {
+            return <span className="italic text-slate-500">Plot not available.</span>;
+        }
+        return paragraphs.map((paragraph, index) => (
+            <p key={index} className={index < paragraphs.length - 1 ? 'mb-3' : ''}>
+                {paragraph}
+            </p>
+        ));
+    };
+
     if (loading) {
         return <LoadingSpinner />;
     }
@@ -156,7 +171,7 @@ const FilmDetailPage = () => {
                             </div>
                             <div className="mb-5 text-slate-300 ">
                                 <CollapsibleContent buttonSize="sm" lineClamp={3}>
-                                    {film.plot || <span className="italic text-slate-500">Plot not available.</span>}
+                                    {renderPlotParagraphs(film.plot)}
                                 </CollapsibleContent>
                             </div>
 

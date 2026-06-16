@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { TrophyIcon } from '@heroicons/react/24/solid';
+import { TrophyIcon } from '@heroicons/react/24/outline';
 import { Film } from '../../types/film';
+import { resolveTrophyIcon, TrophyWatermark } from '../common/trophyIcons';
 
 interface TrophyAward {
     filmId: string;
@@ -117,28 +118,32 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
 
     return (
         <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-            <div className="flex items-center gap-2.5 mb-6 border-b border-slate-700 pb-3">
-                {/* <TrophyIcon className="h-6 w-6 text-amber-400" /> */}
+            <div className="flex items-center gap-3 mb-6">
+                <TrophyIcon className="h-5 w-5 text-amber-400/80" />
                 <h4 className="text-xl font-bold text-slate-100">Trophy Shelf</h4>
-                <span className="ml-auto text-sm text-slate-400">
+                <span className="h-px flex-grow bg-gradient-to-r from-amber-400/25 via-slate-700/60 to-transparent" />
+                <span className="text-sm text-slate-400 whitespace-nowrap">
                     {memberTrophies.length} award{memberTrophies.length !== 1 ? 's' : ''}
                 </span>
             </div>
 
-            <div className="space-y-6">
-                {groupedTrophies.map((group, groupIndex) => (
-                    <div key={groupIndex} className="group">
-                        <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0 mt-0.5">
-                                <div className="p-2 bg-amber-500/20 rounded-lg group-hover:bg-amber-500/30 transition-colors">
-                                    <TrophyIcon className="h-5 w-5 text-amber-400" />
-                                </div>
-                            </div>
-                            <div className="flex-grow min-w-0">
-                                <h5 className="text-slate-200 font-medium mb-2">
+            <div className="space-y-2">
+                {groupedTrophies.map((group, groupIndex) => {
+                    const Icon = resolveTrophyIcon(group.awardName);
+                    return (
+                        <div
+                            key={groupIndex}
+                            className="group relative overflow-hidden flex items-start gap-3.5 rounded-xl border border-slate-700/40 bg-slate-800/30 px-4 py-3.5 transition-all duration-200 hover:border-amber-500/25 hover:bg-slate-800/60"
+                        >
+                            <TrophyWatermark className="-right-6 -bottom-10 h-40 w-40 transition-colors duration-200 group-hover:text-amber-400/[0.1]" />
+                            <span className="relative flex-shrink-0 mt-0.5 text-amber-400/80 transition-transform duration-200 group-hover:scale-110 group-hover:text-amber-300">
+                                <Icon className="h-6 w-6" />
+                            </span>
+                            <div className="relative flex-grow min-w-0">
+                                <h5 className="text-slate-200 font-medium mb-2.5">
                                     {group.awardName}
                                     {group.films.length > 1 && (
-                                        <span className="ml-2 text-xs text-amber-400/80 font-normal">
+                                        <span className="ml-2 text-xs text-amber-400/80 font-normal tabular-nums">
                                             ×{group.films.length}
                                         </span>
                                     )}
@@ -148,13 +153,13 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                                         <Link
                                             key={film.filmId}
                                             to={`/films/${film.filmId}`}
-                                            className="group/film flex items-center gap-2 px-2 py-1.5 bg-slate-700/60 hover:bg-slate-600/80 rounded-md transition-colors duration-150"
+                                            className="group/film flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-md bg-slate-700/50 ring-1 ring-amber-400/15 hover:ring-amber-400/40 hover:bg-slate-700/80 transition-all duration-150"
                                             title={`${film.filmTitle} (${film.filmYear})`}
                                         >
                                             <img
                                                 src={film.poster}
                                                 alt={film.filmTitle}
-                                                className="w-6 h-9 object-cover rounded shadow-sm"
+                                                className="w-6 h-9 object-cover rounded shadow-sm ring-1 ring-amber-400/20"
                                                 onError={(e) => {
                                                     (e.target as HTMLImageElement).src = '/placeholder-poster.png';
                                                 }}
@@ -162,7 +167,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                                             <span className="text-sm text-slate-300 group-hover/film:text-slate-100 truncate max-w-[150px]">
                                                 {film.filmTitle}
                                             </span>
-                                            <span className="text-xs text-slate-500 ml-">
+                                            <span className="text-xs text-slate-500">
                                                 ({film.filmYear})
                                             </span>
                                         </Link>
@@ -170,8 +175,8 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

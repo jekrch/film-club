@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { TrophyIcon } from '@heroicons/react/24/solid';
+import { TrophyIcon } from '@heroicons/react/24/outline';
 import { teamMembers } from '../../types/team';
 import CircularImage from './CircularImage';
+import { resolveTrophyIcon, TrophyWatermark } from './trophyIcons';
 
 interface TrophyGalleryProps {
     trophyNotes: string;
@@ -11,7 +12,7 @@ const capitalizeFirstLetter = (str: string): string =>
     str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 
 const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
-    const renderTrophyItem = (trophyText: string, index: number) => {
+    const renderTrophyContent = (trophyText: string) => {
         // Find all member names in the trophy text (case-insensitive)
         const memberMatches: { name: string; start: number; end: number }[] = [];
 
@@ -30,21 +31,11 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
         // Sort matches by position
         memberMatches.sort((a, b) => a.start - b.start);
 
-        // Build the rendered content with member icons
         if (memberMatches.length === 0) {
-            return (
-                <div key={index} className="flex items-start gap-3 group">
-                    <div className="flex-shrink-0 mt-0.5">
-                        <div className="p-1.5 bg-amber-500/20 rounded-lg group-hover:bg-amber-500/30 transition-colors">
-                            <TrophyIcon className="h-4 w-4 text-amber-400" />
-                        </div>
-                    </div>
-                    <p className="text-slate-300 leading-relaxed pt-0.5">{trophyText.trim()}</p>
-                </div>
-            );
+            return <span className="text-slate-300">{trophyText.trim()}</span>;
         }
 
-        // Render text with inline member icons
+        // Render text with inline member chips
         const parts: React.ReactNode[] = [];
         let lastIndex = 0;
 
@@ -52,26 +43,25 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
             // Add text before this match
             if (match.start > lastIndex) {
                 parts.push(
-                    <span key={`text-${matchIndex}`}>
+                    <span key={`text-${matchIndex}`} className="text-slate-400">
                         {trophyText.slice(lastIndex, match.start)}
                     </span>
                 );
             }
 
-            // Add the member name with icon
+            // Add the member name as an avatar chip
             const displayName = capitalizeFirstLetter(match.name);
             parts.push(
                 <Link
                     key={`member-${matchIndex}`}
                     to={`/profile/${encodeURIComponent(displayName)}`}
-                    className="inline-flex items-center gap-1.5 ml-0 pl-0.5 pr-2 py-0.5 bg-slate-700/60 hover:bg-slate-600/80 rounded-lg transition-colors duration-150 group/member mt-[0.1] mr-2"
+                    className="group/member inline-flex items-center gap-1.5 align-middle pl-0.5 pr-2 py-0.5 mr-1 rounded-md bg-slate-700/50 ring-1 ring-amber-400/15 hover:ring-amber-400/40 hover:bg-slate-700/80 transition-all duration-150"
                     title={`View ${displayName}'s profile`}
                 >
-                    <CircularImage
-                        alt={capitalizeFirstLetter(displayName)}
-                        size="w-5 h-5"
-                    />
-                    <span className="text-blue-300 group-hover/member:text-blue-200 font-medium text-sm">
+                    <span className="ring-1 ring-amber-400/30 rounded-full">
+                        <CircularImage alt={displayName} size="w-5 h-5" />
+                    </span>
+                    <span className="text-amber-200/90 group-hover/member:text-amber-100 font-medium text-sm">
                         {trophyText.slice(match.start, match.end)}
                     </span>
                 </Link>
@@ -80,43 +70,49 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
             lastIndex = match.end;
         });
 
-        // Add remaining text
+        // Add remaining text (drop the connecting "gets"/"gets a" for a cleaner read)
         if (lastIndex < trophyText.length) {
             parts.push(
-                <span key="text-end">
+                <span key="text-end" className="text-slate-300">
                     {trophyText.slice(lastIndex).replace('gets a', '').replace('gets ', '')}
                 </span>
             );
         }
 
-        return (
-            <div key={index} className="flex items-start gap-3 group">
-                <div className="flex-shrink-0 mt-0.5">
-                    <div className="p-1.5 bg-amber-500/20 rounded-lg group-hover:bg-amber-500/30 transition-colors -mt-[1.2px]">
-                        <TrophyIcon className="h-4 w-4 text-amber-400" />
-                    </div>
-                </div>
-                <p className="text-slate-300 leading-relaxed pt-0.5 flex flex-wrap items-center gap-y-1">
-                    {parts}
-                </p>
-            </div>
-        );
+        return parts;
     };
 
     const trophies = trophyNotes.split(',').map(t => t.trim()).filter(t => t !== '');
 
     return (
         <div className="mt-8 pt-6 border-t border-slate-700">
-            <div className="flex items-center gap-2.5 mb-4">
-                {/* <TrophyIcon className="h-5 w-5 text-amber-400" /> */}
-                <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+            <div className="flex items-center gap-3 mb-4">
+                <TrophyIcon className="h-4 w-4 text-amber-400/80" />
+                <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-[0.2em]">
                     Trophy Gallery
                 </h3>
+                <span className="h-px flex-grow bg-gradient-to-r from-amber-400/25 via-slate-700/60 to-transparent" />
             </div>
-            <div className="bg-slate-800/40 rounded-lg p-4 border border-slate-700/50">
-                <div className="space-y-4">
-                    {trophies.map((trophy, index) => renderTrophyItem(trophy, index))}
-                </div>
+
+            <div className="space-y-1.5">
+                {trophies.map((trophy, index) => {
+                    const Icon = resolveTrophyIcon(trophy);
+                    return (
+                        <div
+                            key={index}
+                            className="group relative overflow-hidden flex items-start gap-3.5 rounded-xl border border-slate-700/40 bg-slate-800/30 px-4 py-3 transition-all duration-200 hover:border-amber-500/25 hover:bg-slate-800/60"
+                        >
+                            <TrophyWatermark className="-right-5 -bottom-7 h-32 w-32 transition-colors duration-200 group-hover:text-amber-400/[0.1]" />
+                            <span className="relative flex-shrink-0 pt-0.5 text-amber-400/80 transition-transform duration-200 group-hover:scale-110 group-hover:text-amber-300">
+                                <Icon className="h-6 w-6" />
+                            </span>
+
+                            <p className="relative leading-relaxed flex flex-wrap items-center gap-y-1.5">
+                                {renderTrophyContent(trophy)}
+                            </p>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

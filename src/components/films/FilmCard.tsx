@@ -80,24 +80,30 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                 relative group rounded-md overflow-hidden  /* group allows hover states for children */
             `}
         >
-            {/* --- UP NEXT BANNER (Larger, Emerald, Better Fit) --- */}
+            {/* --- UP NEXT BANNER (Corner ribbon: clip-wrapper keeps it flush to the corner across all sizes) --- */}
             {showUpNext && (
                 <div
                     className={`
-                        absolute top-[30px] -left-[40px] w-[10em] /* Position near top-left corner */
-                        bg-gradient-to-r from-emerald-600 to-emerald-700 opacity-90 /* Emerald gradient */
-                        text-white text-center /* Center text inside banner */
-                        !text-lg font-bold uppercase tracking-wider /* Text styling */
-                        px-10 py-1.5 /* Padding defines banner size */
-                        transform -rotate-45 origin-center /* Rotation */
-                        shadow-lg z-30 /* Elevation and stacking */
-                        transition-all duration-300 ease-out /* Smooth transitions */
-                        group-hover:scale-105 group-hover:shadow-xl /* Hover effects */
-                        group-hover:from-emerald-500 group-hover:to-emerald-00 /* Hover colors */
-                        ${isCompact || isPosterOnly ? 'text-xs -left-8 px-10 py-1 top-4 ' : ''} /* Smaller adjustments for compact view */
+                        absolute -top-px -left-px z-30 overflow-hidden pointer-events-none /* Square clip-wrapper anchored to top-left corner */
+                        ${isCompact || isPosterOnly ? 'w-[64px] h-[64px]' : 'w-[92px] h-[92px]'}
                     `}
                 >
-                    UP NEXT
+                    <div
+                        className={`
+                            absolute text-center text-white font-bold uppercase tracking-wider /* Text styling */
+                            bg-gradient-to-r from-emerald-600 to-emerald-700 /* Emerald gradient */
+                            shadow-lg
+                            transform -rotate-45 /* Diagonal; endpoints overshoot the wrapper and get clipped flush */
+                            transition-all duration-300 ease-out /* Smooth transitions */
+                            group-hover:scale-105 group-hover:shadow-xl /* Hover effects */
+                            group-hover:from-emerald-500 group-hover:to-emerald-600 /* Hover colors */
+                            ${isCompact || isPosterOnly
+                                ? 'w-[96px] -left-[26px] top-[13px] py-0.5 text-[9px]'
+                                : 'w-[140px] -left-[36px] top-[20px] py-1.5 text-base'}
+                        `}
+                    >
+                        UP NEXT
+                    </div>
                 </div>
             )}
 
