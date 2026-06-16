@@ -92,7 +92,7 @@ const HomePage = () => {
     setTopClubRatedFilms(topRated);
 
     // Process Film Lists (Recent Picks - based *only* on watched films)
-    let watchedFilmsSorted = [...allFilms]
+    const watchedFilmsSorted = [...allFilms]
        .filter(film => film.movieClubInfo?.watchDate)
        .sort((a, b) => (parseWatchDate(b.movieClubInfo?.watchDate)?.getTime() ?? 0) - (parseWatchDate(a.movieClubInfo?.watchDate)?.getTime() ?? 0));
 
@@ -234,7 +234,8 @@ const HomePage = () => {
         )}
         {/* --- End Display Cycle Order --- */}
 
-        {/* --- Display Total Runtime --- */}
+        {/* --- Display Total Runtime --- intentionally disabled toggle */}
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && totalRuntimeString && (
            <div className={`max-w-md mx-auto relative z-10 ${activeCycleMembersList.length > 0 ? 'border-t border-slate-600 pt-4 mt-6' : 'pt-0 mt-0'}`}>
              <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">Total Film Runtime Watched</p>

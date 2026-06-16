@@ -1,0 +1,8 @@
+dist
+dev-dist
+node_modules
+bun.lock
+src/assets/films.json
+src/assets/club.json
+src/assets/films.csv
+public

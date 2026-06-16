@@ -79,7 +79,7 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
         ) : (
           // Default rendering for other value types
           <p className={`text-2xl xl:text-3xl font-semibold ${valueClassName} break-words`}>
-            {value as any} {/* Render the value directly */}
+            {value as React.ReactNode} {/* Render the value directly */}
             {rankDisplay} {/* Append the formatted rank */}
           </p>
         )}

@@ -82,13 +82,7 @@ export const useMemberStatistics = (
             const getHighlight = (statKey: keyof MemberStatsDataForAlmanac['highlights'], value: number | null): MemberStatHighlight => {
                 if (value === null || typeof value !== 'number' || isNaN(value)) return null;
 
-                const { high, low } = (highlightsMap as any)[statKey]; // Access mapped highlights
-
-                // Special handling for avgRuntime (lower is better) vs avgSelectionYear (higher might be seen as "more recent")
-                // And selectionCountryCount (higher is better)
-                // @ts-ignore
-                let isHighValueGood = true;
-                if (statKey === 'avgRuntime') isHighValueGood = false; // Lower runtime might be "better" if that's the goal
+                const { high, low } = highlightsMap[statKey]; // Access mapped highlights
 
                 const isHigh = high !== null && value === high && high !== low;
                 const isLow = low !== null && value === low && high !== low;

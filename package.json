@@ -10,6 +10,9 @@
     "dev": "bun vite --port 5173",
     "build": "tsc -b && bun vite build",
     "lint": "bun eslint .",
+    "typecheck": "tsc -b",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "preview": "bun vite preview",
     "test": "bun jest"
   },
@@ -52,6 +55,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.5.3",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4.1.4",
     "ts-jest": "^29.3.4",
     "typescript": "~5.7.2",

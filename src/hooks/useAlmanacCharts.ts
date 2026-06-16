@@ -191,7 +191,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
          const topBottomChartMargin = 80;
          const minChartHeight = 200;
          const numberOfCategories = currentDonutChartData.length;
-         let calculatedHeight = Math.max((numberOfCategories * (pointWidthForCalc + verticalPaddingPerBar)) + topBottomChartMargin, minChartHeight);
+         const calculatedHeight = Math.max((numberOfCategories * (pointWidthForCalc + verticalPaddingPerBar)) + topBottomChartMargin, minChartHeight);
 
         return {
             chart: { type: 'pie', backgroundColor: '', style: { fontFamily: 'Inter, sans-serif' } },

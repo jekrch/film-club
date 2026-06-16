@@ -246,7 +246,8 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                             </div>
                                         )}
 
-                                        {/* Club Average Rating Display */}
+                                        {/* Club Average Rating Display — intentionally disabled toggle */}
+                                        {/* eslint-disable-next-line no-constant-binary-expression */}
                                         {false && clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && (
                                             <div className={`w-full flex items-center justify-end text-xs text-slate-400 mt-2 ${isCompact ? 'mt-1.5 text-[10px]' : 'mt-2 text-xs'}`}>
                                                 <PopcornRating

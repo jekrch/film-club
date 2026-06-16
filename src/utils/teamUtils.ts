@@ -25,7 +25,6 @@ export function identifyCurrentSelector(upNextFilm: Film | undefined, sortedActi
 
     // Fallback Logic: If no 'up next' film found OR its selector isn't valid/active
     if (!determinedSelectorName && sortedActiveMembers.length > 0) {
-        console.log("Executing fallback logic: No upcoming film found or selector invalid/inactive.");
         // Find all films that *have* been watched
         const watchedFilms = allFilms
             .filter(film => film.movieClubInfo?.watchDate)
@@ -44,7 +43,6 @@ export function identifyCurrentSelector(upNextFilm: Film | undefined, sortedActi
                     // Found the last selector in the active cycle, determine the next one
                     const nextSelectorIndex = (lastSelectorIndex + 1) % sortedActiveMembers.length; // Wrap around using modulo
                     determinedSelectorName = sortedActiveMembers[nextSelectorIndex].name;
-                    console.log(`Fallback: Setting next selector based on cycle after ${lastSelectorName}: ${determinedSelectorName}`);
                 } else {
                     // Edge Case: Last selector from film data isn't in the current active cycle. Default to the first person.
                     console.warn(`Fallback Warning: Selector "${lastSelectorName}" from most recent film not found in active cycle. Defaulting to the start of the cycle (${sortedActiveMembers[0]?.name}).`);

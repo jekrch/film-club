@@ -19,10 +19,11 @@ export interface ComprehensiveMemberStats {
     countryDiversityPercentage: number | null;
 }
 
-// Interfaces needed by ProfilePage specifically
-export interface UserProfileStats extends Omit<ComprehensiveMemberStats, 'selectionCountryCount' | 'avgSelectionYear'> {
-    // ProfilePage primarily uses these fields from ComprehensiveMemberStats
-}
+// Type needed by ProfilePage specifically — the subset of member stats it uses.
+export type UserProfileStats = Omit<
+    ComprehensiveMemberStats,
+    'selectionCountryCount' | 'avgSelectionYear'
+>;
 
 export interface UserRankings {
     totalRuntimeRank: string | null;

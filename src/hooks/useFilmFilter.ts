@@ -176,16 +176,18 @@ export const useFilmFiltering = (
                     case 'year':
                         comparison = handleNulls(parseInt(a.year, 10)) - handleNulls(parseInt(b.year, 10));
                         break;
-                    case 'clubRating':
+                    case 'clubRating': {
                         const avgA = calculateClubAverage(a.movieClubInfo?.clubRatings);
                         const avgB = calculateClubAverage(b.movieClubInfo?.clubRatings);
                         comparison = handleNulls(avgA) - handleNulls(avgB);
                         break;
-                    case 'watchDate':
+                    }
+                    case 'watchDate': {
                         const timeA = a.movieClubInfo?.watchDate ? new Date(a.movieClubInfo.watchDate).getTime() : NaN;
                         const timeB = b.movieClubInfo?.watchDate ? new Date(b.movieClubInfo.watchDate).getTime() : NaN;
                         comparison = handleNulls(timeA) - handleNulls(timeB);
                         break;
+                    }
                     case 'controversial':
                         comparison = handleNulls(calculateScoreDifference(a)) - handleNulls(calculateScoreDifference(b));
                         break;

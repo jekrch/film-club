@@ -8,11 +8,8 @@ import { Squares2X2Icon, RectangleGroupIcon, PhotoIcon } from '@heroicons/react/
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Scrollbar, Mousewheel } from 'swiper/modules'; // Import necessary modules
-// @ts-ignore
 import 'swiper/css';
-// @ts-ignore
 import 'swiper/css/free-mode';
-// @ts-ignore
 import 'swiper/css/scrollbar';
 
 

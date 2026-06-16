@@ -1,6 +1,44 @@
 import filmsData from '../assets/films.json';
 
-export const filmData = filmsData as Film[];
+/**
+ * Validates the shape of the bundled films dataset at module-load time.
+ *
+ * `films.json` is generated from a Google Sheet by the CI sync script, so a
+ * malformed row can slip in without any compile-time signal (the JSON import is
+ * untyped). This guard surfaces such problems loudly and early instead of as an
+ * opaque crash deep in a render. It checks the fields the app actually relies on
+ * to key/route/render; it is intentionally shallow, not a full schema.
+ */
+function assertFilmData(data: unknown): Film[] {
+    if (!Array.isArray(data)) {
+        throw new Error('films.json: expected an array of films');
+    }
+
+    data.forEach((film, index) => {
+        if (typeof film !== 'object' || film === null) {
+            throw new Error(`films.json[${index}]: expected an object`);
+        }
+        const f = film as Partial<Film>;
+        if (typeof f.imdbID !== 'string' || f.imdbID.length === 0) {
+            throw new Error(`films.json[${index}]: missing or invalid "imdbID"`);
+        }
+        if (typeof f.title !== 'string' || f.title.length === 0) {
+            throw new Error(`films.json[${index}] (${f.imdbID}): missing or invalid "title"`);
+        }
+        if (f.movieClubInfo !== undefined) {
+            const info = f.movieClubInfo;
+            if (typeof info !== 'object' || info === null || !Array.isArray(info.clubRatings)) {
+                throw new Error(
+                    `films.json[${index}] (${f.imdbID}): "movieClubInfo.clubRatings" must be an array`
+                );
+            }
+        }
+    });
+
+    return data as Film[];
+}
+
+export const filmData = assertFilmData(filmsData);
 
 // Interfaces related to component props 
 export interface FilmListProps {

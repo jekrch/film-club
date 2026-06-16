@@ -70,7 +70,7 @@ const FilmsPage = () => {
                                 style={{ backgroundImage: customSelectArrow, backgroundRepeat: 'no-repeat', backgroundPosition: `right 0.75rem center`, backgroundSize: `1.5em 1.5em` }}
                             >
                                 <option value="">All Genres</option>
-                                {allGenres.map((genre: any) => (
+                                {allGenres.map((genre) => (
                                     <option key={genre} value={genre}>{genre}</option>
                                 ))}
                             </select>
@@ -90,7 +90,7 @@ const FilmsPage = () => {
                                 style={{ backgroundImage: customSelectArrow, backgroundRepeat: 'no-repeat', backgroundPosition: `right 0.75rem center`, backgroundSize: `1.5em 1.5em` }}
                             >
                                 <option value="">All Selectors</option>
-                                {allSelectors.map((selector: any) => (
+                                {allSelectors.map((selector) => (
                                     <option key={selector} value={selector}>{selector}</option>
                                 ))}
                             </select>

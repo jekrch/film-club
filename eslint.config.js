@@ -23,6 +23,24 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      // Surface, but don't block on, remaining `any`s and stray console output.
+      // These are warnings so CI (which fails on errors) stays green while the
+      // debt stays visible. New code should avoid both.
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      // Allow intentionally-unused identifiers when prefixed with `_`.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+    },
+  },
+  // Test files lean on deliberately-malformed fixtures; keep the suppression
+  // rules but don't let console noise from tests fail anything.
+  {
+    files: ['**/*.test.{ts,tsx}'],
+    rules: {
+      'no-console': 'off',
     },
   },
 )

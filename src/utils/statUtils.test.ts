@@ -197,7 +197,7 @@ describe('statUtils', () => {
     });
 
     const filmsData: Film[] = [
-        // @ts-ignore
+        // @ts-expect-error - intentionally malformed fixture for this test
       {
         title: 'Film A', imdbID: 'tt001', year: '2020', genre: 'Action, Drama', runtime: '120 min', country: 'USA, UK', language: 'English, Spanish',
         poster: 'url1', director: 'Dir A', writer: 'Writer A', actors: 'Actor A', plot: 'Plot A',
@@ -209,7 +209,7 @@ describe('statUtils', () => {
           ]
         }
       },
-      // @ts-ignore
+      // @ts-expect-error - intentionally malformed fixture for this test
       {
         title: 'Film B', imdbID: 'tt002', year: '2021', genre: 'Comedy', runtime: '90 min', country: 'Canada', language: 'French',
         poster: 'url2', director: 'Dir B', writer: 'Writer B', actors: 'Actor B', plot: 'Plot B',
@@ -220,7 +220,7 @@ describe('statUtils', () => {
           ]
         }
       },
-      // @ts-ignore
+      // @ts-expect-error - intentionally malformed fixture for this test
       {
         title: 'Film C', imdbID: 'tt003', year: '1999', genre: 'Action, Sci-Fi', runtime: '150 min', country: 'USA', language: 'English',
         poster: 'url3', director: 'Dir C', writer: 'Writer C', actors: 'Actor C', plot: 'Plot C',
@@ -232,7 +232,7 @@ describe('statUtils', () => {
           ]
         }
       },
-       // @ts-ignore
+       // @ts-expect-error - intentionally malformed fixture for this test
        { // Film with only one rating (for avgSelectedScore test)
         title: 'Film D', imdbID: 'tt004', year: '2022', genre: 'Drama', runtime: '100 min', country: 'Germany', language: 'German',
         poster: 'url4', director: 'Dir D', writer: 'Writer D', actors: 'Actor D', plot: 'Plot D',
@@ -242,7 +242,7 @@ describe('statUtils', () => {
           ]
         }
       },
-      // @ts-ignore
+      // @ts-expect-error - intentionally malformed fixture for this test
       { // Film with N/A runtime, genre
         title: 'Film E', imdbID: 'tt005', year: '2000', genre: 'N/A', runtime: 'N/A', country: 'N/A', language: 'N/A',
         poster: 'url5', director: 'Dir E', writer: 'Writer E', actors: 'Actor E', plot: 'Plot E',
@@ -426,9 +426,9 @@ describe('statUtils', () => {
 
     it('should handle films with missing movieClubInfo or clubRatings gracefully', () => {
         const filmsWithMissingData: Film[] = [
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             { title: 'Film X', imdbID: 'tt00X', year: '2024', movieClubInfo: { selector: 'David' } }, // Missing clubRatings
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             { title: 'Film Y', imdbID: 'tt00Y', year: '2024', }
         ];
         const stats = calculateMemberStats('David', filmsWithMissingData);
@@ -448,11 +448,11 @@ describe('statUtils', () => {
 
     it('should correctly calculate averages when some values are null or counts are zero', () => {
         const filmsForAvgTest: Film[] = [
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             { title: 'No Runtime Film', imdbID: 'rt01', year: '2000', movieClubInfo: { selector: 'Tester', clubRatings: [{user: 'Tester', score: 8, blurb: null}, {user: 'Other', score: 7, blurb: null}] }, runtime: null },
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             { title: 'No Score Film', imdbID: 'sc01', year: '2000', movieClubInfo: { selector: 'Tester', clubRatings: [{user: 'Tester', score: null, blurb: null}] }, runtime: '100 min'},
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             { title: 'No Year Film', imdbID: 'yr01', year: '', movieClubInfo: { selector: 'Tester' }, runtime: '100 min' }
         ];
         mockCalculateClubAverage.mockImplementation((ratings: ClubRating[] | undefined) => {

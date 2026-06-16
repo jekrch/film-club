@@ -17,15 +17,15 @@ describe('teamUtils', () => {
             { name: 'Bob', bio: '', image: '', title: '' },
             { name: 'Charlie', bio: '', image: '', title: ''},
         ];
-        // @ts-ignore
+        // @ts-expect-error - intentionally malformed fixture for this test
         const film1: Film = { title: 'Film 1', imdbID: 'tt1', movieClubInfo: { selector: 'Alice', watchDate: '2023-01-01' } };
-        // @ts-ignore
+        // @ts-expect-error - intentionally malformed fixture for this test
         const film2: Film = { title: 'Film 2', imdbID: 'tt2', movieClubInfo: { selector: 'Bob', watchDate: '2023-01-08' } };
-        // @ts-ignore
+        // @ts-expect-error - intentionally malformed fixture for this test
         const film3Upcoming: Film = { title: 'Film 3 UPCOMING', imdbID: 'tt3', movieClubInfo: { selector: 'Charlie' /* No watchDate */ } };
-        // @ts-ignore
+        // @ts-expect-error - intentionally malformed fixture for this test
         const film4UpcomingInvalidSelector: Film = { title: 'Film 4 UPCOMING', imdbID: 'tt4', movieClubInfo: { selector: 'David' /* Not in activeMembers */ } };
-        // @ts-ignore
+        // @ts-expect-error - intentionally malformed fixture for this test
         const film5WatchedNoSelector: Film = { title: 'Film 5 Watched', imdbID: 'tt5', movieClubInfo: { watchDate: '2023-01-15' /* No selector */ } };
 
         beforeEach(() => {
@@ -73,12 +73,11 @@ describe('teamUtils', () => {
                 return null;
             });
             const selector = identifyCurrentSelector(undefined, activeMembers, null, allFilms);
-            expect(console.log).toHaveBeenCalledWith(expect.stringContaining("Executing fallback logic: No upcoming film found or selector invalid/inactive."));
             expect(selector).toBe('Charlie');
         });
 
         it('should correctly cycle to the first member if the last selector was the last in the active list', () => {
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             const filmLastMemberSelected: Film = { title: 'Last Cycle Film', imdbID: 'ttL', movieClubInfo: { selector: 'Charlie', watchDate: '2023-01-15' } };
             const allFilms = [film1, film2, filmLastMemberSelected]; // filmLastMemberSelected is most recent
             mockParseWatchDate.mockImplementation((dateStr) => {
@@ -93,7 +92,7 @@ describe('teamUtils', () => {
         });
 
         it('should default to first active member if last selector from film data is not in active cycle (fallback)', () => {
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             const filmWithInactiveSelector: Film = { title: 'Film Inactive', imdbID: 'ttI', movieClubInfo: { selector: 'David', watchDate: '2023-01-15' } }; // David not active
             const allFilms = [film1, filmWithInactiveSelector];
             mockParseWatchDate.mockImplementation((dateStr) => {
@@ -155,11 +154,11 @@ describe('teamUtils', () => {
         });
 
         it('should correctly parse watch dates and sort films to find the most recent', () => {
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             const filmA_older: Film = { title: 'Film A Older', imdbID: 'ttA', movieClubInfo: { selector: 'Alice', watchDate: '2023-01-01' } };
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             const filmB_newer: Film = { title: 'Film B Newer', imdbID: 'ttB', movieClubInfo: { selector: 'Bob', watchDate: '2023-03-01' } }; // Newer
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             const filmC_middle: Film = { title: 'Film C Middle', imdbID: 'ttC', movieClubInfo: { selector: 'Charlie', watchDate: '2023-02-01' } };
             const allFilms = [filmA_older, filmB_newer, filmC_middle];
 
@@ -177,9 +176,9 @@ describe('teamUtils', () => {
         });
 
         it('should handle if parseWatchDate returns null for some dates (they should be filtered out)', () => {
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             const filmWithBadDate: Film = { title: 'Film Bad Date', imdbID: 'ttBD', movieClubInfo: { selector: 'Alice', watchDate: 'invalid-date-string' } };
-            // @ts-ignore
+            // @ts-expect-error - intentionally malformed fixture for this test
             const filmValidDate: Film = { title: 'Film Valid Date', imdbID: 'ttVD', movieClubInfo: { selector: 'Bob', watchDate: '2023-01-10' } }; // This should be most recent
             const allFilms = [filmWithBadDate, filmValidDate, film1]; // film1: Alice, 2023-01-01
 
