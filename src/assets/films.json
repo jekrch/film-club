@@ -85,6 +85,7 @@
     "country": "Soviet Union",
     "awards": "3 wins",
     "poster": "https://m.media-amazon.com/images/M/MV5BNDlkZmVkZDAtZGFmMS00OWIzLWJkY2YtNWE5NjNhNjhiZGE3XkEyXkFqcGc@._V1_SX300.jpg",
+    "backdropImage": "https://s3.amazonaws.com/criterion-production/janus_stills/4026-/28895id_098_w1600.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -151,6 +152,7 @@
     "country": "West Germany",
     "awards": "4 wins & 1 nomination",
     "poster": "https://m.media-amazon.com/images/M/MV5BYzRmNmRjNTktZGRjNC00YzkxLTgxNjEtYzY3MTI5MjgwY2ZiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    "backdropImage": "https://jonathanrosenbaum.net/wp-content/uploads/2009/05/ali4.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -345,6 +347,7 @@
     "country": "Japan",
     "awards": "9 wins & 2 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BNDcyMTRiMWQtMjA4MS00OTk3LTkxYmMtMjI4ODAyNGVlZTU0XkEyXkFqcGc@._V1_SX300.jpg",
+    "backdropImage": "https://miro.medium.com/v2/resize:fit:1400/1*ItshH6BYKmNhLI5wXleiMA.jpeg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -752,6 +755,7 @@
     "country": "Sweden",
     "awards": "Won 1 Oscar. 4 wins & 4 nominations total",
     "poster": "https://s3.amazonaws.com/criterion-production/films/801e84275fd24d65ca5c0f42aac9d3e6/7Cd0pGdJRCLCu2KTtuANf8lBDlSPbs_large.jpg",
+    "backdropImage": "https://harvardfilmarchive.org/public/upload/events/medium_wide/5cf03e498b050.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -947,6 +951,7 @@
     "country": "United States",
     "awards": "2 wins & 1 nomination total",
     "poster": "https://s3.amazonaws.com/criterion-production/films/4769edd08606508fb82f823c778297f4/6EpySxomWsrT7vfmRGVtFhIvfBDFva_medium.jpg",
+    "backdropImage": "https://benbrigade.wordpress.com/wp-content/uploads/2019/06/noth-house-in-pond.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -1640,6 +1645,7 @@
     "country": "France",
     "awards": "1 win & 2 nominations",
     "poster": "https://m.media-amazon.com/images/M/MV5BNTE4ODE4MzktMTYzNy00YWFmLWE4OTMtMDg5OTYxYzRjZDhjXkEyXkFqcGc@._V1_SX300.jpg",
+    "backdropImage": "https://cdn.filmmakermagazine.com/uploads/2018/04/cold.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -1846,6 +1852,7 @@
     "country": "France, Italy",
     "awards": "2 wins & 1 nomination",
     "poster": "https://s3.amazonaws.com/criterion-production/films/663198837fba81d3992553bb8667acbb/Zg4RuVPc8pnb4Rd23sN9by6Jfx8t6O_medium.jpg",
+    "backdropImage": "https://i.guim.co.uk/img/media/087622a81148f3663bc9ab58d6b0426485af6417/0_168_2633_1580/master/2633.jpg?width=1200&quality=85&auto=format&fit=max&s=9753d339e8c51e834e55e1028b9c61b0",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -3086,6 +3093,7 @@
     "country": "Canada, United States",
     "awards": "2 wins & 3 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BZGFjNWVhMzktZjJkZi00NWI3LWJiY2MtMTM1MGMxYzI0NmFjXkEyXkFqcGc@._V1_SX300.jpg",
+    "backdropImage": "https://www.syfy.com/sites/syfy/files/2019/11/du4ge1aaxnu21.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -3425,6 +3433,7 @@
     "country": "United Kingdom, United States",
     "awards": "4 wins",
     "poster": "https://m.media-amazon.com/images/M/MV5BYjQzYzFmNmUtMWVkNS00MmU1LTkyMzUtYzhmNjIwM2ZjOWZmXkEyXkFqcGc@._V1_SX300.jpg",
+    "backdropImage": "https://static0.colliderimages.com/wordpress/wp-content/uploads/2025/05/screenshot-2025-05-13-at-9-16-57-pm.jpg?q=70&fit=crop&w=825&dpr=1",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -3496,6 +3505,7 @@
     "country": "United Kingdom",
     "awards": "1 nomination",
     "poster": "https://assets.mediafilm.ca/67ec6688-1789-49f6-9aea-858592165e9b.jpeg",
+    "backdropImage": "https://images.squarespace-cdn.com/content/v1/596a07c029687fd47a2d41cc/1541256906458-U12L3TC8IRPJKU4QDVX7/eareye-group.png",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -3629,6 +3639,7 @@
     "country": "India",
     "awards": "2 wins & 2 nominations total",
     "poster": "https://m.media-amazon.com/images/M/MV5BYTQ3ZGEyYjQtMWI5Mi00Zjc2LTk0YTYtZmY2OGQzNDc1ZDFkXkEyXkFqcGc@._V1_SX300.jpg",
+    "backdropImage": "https://images.mubicdn.net/images/film/21931/cache-34112-1745490454/image-w1280.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -3694,6 +3705,7 @@
     "country": "Soviet Union",
     "awards": "4 wins & 1 nomination total",
     "poster": "https://s3.amazonaws.com/criterion-production/films/cef59cc409f2026448ee1292336bb5c2/USAkq7ABJffPQM1hvXfwfvMQntufhR_medium.jpg",
+    "backdropImage": "https://images.squarespace-cdn.com/content/v1/55aadde2e4b0a0d1a2ff1791/9f9f1047-c8d2-4015-9fe0-a749411920cd/rublevbell.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -3759,6 +3771,7 @@
     "country": "West Germany",
     "awards": "1 win",
     "poster": "https://m.media-amazon.com/images/M/MV5BNTZiYzdjNWItM2QwOS00YjBlLWJmOTItOWUyN2ZmNmM3NGM0XkEyXkFqcGc@._V1_SX300.jpg",
+    "backdropImage": "https://vaguevisages.com/wp-content/uploads/2016/04/vague-visages-of-love-and-other-demons-in-a-year-with-13-moons-one.png?w=750",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -3891,6 +3904,7 @@
     "country": "Soviet Union",
     "awards": "1 win & 1 nomination",
     "poster": "https://s3.amazonaws.com/criterion-production/films/0972e94eb6deb7848c417d7ac83c1efb/thoVlhVudcPZcmdyX8qfGrIFKFByDg_medium.jpg",
+    "backdropImage": "https://i0.wp.com/www.theroxytheater.org/wp-content/uploads/2025/02/color20pom.jpg?fit=1200%2C675&quality=89&ssl=1",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -4225,6 +4239,7 @@
     "country": "United States",
     "awards": "Nominated for 2 Oscars. 10 wins & 7 nominations total",
     "poster": "https://s3.amazonaws.com/criterion-production/films/0c82e8d0929b009cd65748aaae041b5a/0pC5sDXG6E0GQXo7qCiCXhvEqKq98b_large.jpg",
+    "backdropImage": "https://miro.medium.com/1*FdRkwCeZfZyl8Fwt1v1U_g.jpeg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -4297,6 +4312,7 @@
     "country": "France, Italy, West Germany",
     "awards": "2 wins & 2 nominations total",
     "poster": "https://s3.amazonaws.com/criterion-production/films/709194f9d2983a7de56dbe73d112c255/lLNC4pN9sudu4N9SnppidWe30cS7Ci_medium.jpg",
+    "backdropImage": "https://spectrumculture.com/wp-content/uploads/2014/10/the-trial1.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -4367,6 +4383,7 @@
     "country": "France",
     "awards": "2 wins & 3 nominations",
     "poster": "https://s3.amazonaws.com/criterion-production/films/7c604a1485ffa92af2ac0bb7f75e047d/y0swsJWTqQG39mt3e4zdmVjixJVPYX_medium.jpg",
+    "backdropImage": "https://m.media-amazon.com/images/I/81b+wafDtML._AC_UF894,1000_QL80_.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",

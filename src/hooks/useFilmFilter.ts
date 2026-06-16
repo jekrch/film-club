@@ -204,7 +204,9 @@ export const useFilmFiltering = (
             setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
         } else {
             setSortBy(option);
-            setSortDirection(['clubRating', 'controversial', 'watchDate'].includes(option) ? 'desc' : 'asc');
+            const defaultsToDesc = ['clubRating', 'controversial', 'watchDate'].includes(option)
+                || clubMemberNames.includes(option as MemberSortOption);
+            setSortDirection(defaultsToDesc ? 'desc' : 'asc');
         }
     }, [sortBy]);
 

@@ -107,7 +107,10 @@ export default defineConfig({
         ],
       },
       devOptions: {
-        enabled: true, // Enable PWA in development for testing
+        // Keep the service worker OFF during `vite dev` so local edits show up
+        // without a hard refresh. The real SW still runs in `vite build` +
+        // `vite preview`, which is where you should test PWA/caching behavior.
+        enabled: false,
         type: 'module',
       },
     }),
@@ -132,14 +135,6 @@ export default defineConfig({
       interval: 300,
       ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**']
     },
-    headers: {
-      'Cache-Control': 'public, max-age=31536000',
-      '.woff': 'font/woff',
-      '.woff2': 'font/woff2',
-      '.ttf': 'font/ttf',
-      '.eot': 'application/vnd.ms-fontobject',
-      '.otf': 'font/otf'
-    }
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],

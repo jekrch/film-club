@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Criterion Club pillar icon -->
+  <circle cx="256" cy="256" r="256" fill="#1e293b"/>
+  <g fill="#f1f5f9">
+    <!-- Capital (flares wider toward the top) -->
+    <rect x="146" y="110" width="220" height="24" rx="6"/>
+    <rect x="158" y="134" width="196" height="18" rx="4"/>
+    <rect x="170" y="152" width="172" height="14" rx="4"/>
+    <!-- Shaft -->
+    <rect x="181" y="166" width="150" height="180"/>
+    <!-- Base (mirrors the capital, widening toward the bottom) -->
+    <rect x="170" y="346" width="172" height="14" rx="4"/>
+    <rect x="158" y="360" width="196" height="18" rx="4"/>
+    <rect x="146" y="378" width="220" height="24" rx="6"/>
+  </g>
+  <!-- Fluting -->
+  <g stroke="#94a3b8" stroke-width="6" stroke-linecap="round">
+    <line x1="206" y1="176" x2="206" y2="336"/>
+    <line x1="231" y1="176" x2="231" y2="336"/>
+    <line x1="256" y1="176" x2="256" y2="336"/>
+    <line x1="281" y1="176" x2="281" y2="336"/>
+    <line x1="306" y1="176" x2="306" y2="336"/>
+  </g>
+</svg>
