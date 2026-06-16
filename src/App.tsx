@@ -8,9 +8,11 @@ import FilmDetailPage from './pages/FilmDetailPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
 import AlmanacPage from './pages/AlmanacPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 import "./index.css";
 import ScrollToTop from './components/layout/ScrollToTop';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 function AppContent() {
   const location = useLocation();
@@ -41,6 +43,7 @@ function AppContent() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/almanac" element={<AlmanacPage />} />
           <Route path="/profile/:memberName" element={<ProfilePage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
 
@@ -58,7 +61,9 @@ function App() {
     <ViewSettingsProvider>
       <Router>
         <ScrollToTop />
-        <AppContent />
+        <ErrorBoundary>
+          <AppContent />
+        </ErrorBoundary>
       </Router>
     </ViewSettingsProvider>
   );

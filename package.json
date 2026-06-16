@@ -14,7 +14,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "bun vite preview",
-    "test": "bun jest"
+    "test": "bun jest",
+    "test:coverage": "bun jest --coverage"
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.0.0",
