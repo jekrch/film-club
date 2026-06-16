@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 interface SelectionCommitteeBackgroundProps {
     imageUrl: string | undefined;
@@ -38,6 +38,13 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
         };
     }, [imageUrl, objectPositionX, objectPositionY]);
 
+    const [loaded, setLoaded] = useState(false);
+
+    // Reset the fade-in whenever the image source changes
+    useEffect(() => {
+        setLoaded(false);
+    }, [segment?.poster]);
+
     if (!segment) return null;
 
     const isRight = align === 'right';
@@ -57,13 +64,15 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
                     src={segment.poster}
                     alt=""
                     aria-hidden="true"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-opacity duration-700 ease-out"
                     style={{
                         objectPosition: `${segment.clipX}% ${segment.clipY}%`,
                         transform: `scale(${scale})${isRight ? ' scaleX(-1)' : ''}`,
-                        opacity,
+                        opacity: loaded ? opacity : 0,
                     }}
                     loading="lazy"
+                    onLoad={() => setLoaded(true)}
+                    ref={(node) => { if (node?.complete) setLoaded(true); }}
                 />
             </div>
         </div>
