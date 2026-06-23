@@ -13,12 +13,62 @@ interface FilmCardProps {
     cardSize: CardSize;
 }
 
+/*
+ * A single shared IntersectionObserver for every card on the page.
+ *
+ * Previously each FilmCard created its own observer, which (combined with a
+ * per-card opacity/scale fade) thrashed iOS Safari's compositing layers during
+ * momentum scrolling. The shared observer only decides *when to start fetching*
+ * each poster: a generous rootMargin means images begin loading ~1.5 screens
+ * before they enter view, so they are painted by the time you reach them
+ * instead of popping in late. Native loading="lazy" fires too late on iOS.
+ */
+type IntersectCallback = (entry: IntersectionObserverEntry) => void;
+const observerCallbacks = new WeakMap<Element, IntersectCallback>();
+let sharedObserver: IntersectionObserver | null = null;
+
+const getSharedObserver = (): IntersectionObserver => {
+    if (sharedObserver) return sharedObserver;
+    sharedObserver = new IntersectionObserver(
+        (entries) => {
+            for (const entry of entries) {
+                observerCallbacks.get(entry.target)?.(entry);
+            }
+        },
+        // ~1.5 screens of look-ahead so fetches start before the card is visible.
+        { rootMargin: '1500px 0px', threshold: 0 }
+    );
+    return sharedObserver;
+};
+
+const observeOnce = (el: Element, cb: IntersectCallback): (() => void) => {
+    observerCallbacks.set(el, cb);
+    getSharedObserver().observe(el);
+    return () => {
+        observerCallbacks.delete(el);
+        sharedObserver?.unobserve(el);
+    };
+};
 
 const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     const cardRef = useRef<HTMLDivElement>(null);
+    // shouldLoad: the card is near the viewport, so begin fetching the poster.
+    const [shouldLoad, setShouldLoad] = useState(false);
+    // loaded: the poster has decoded, so fade it in from the placeholder tone.
+    const [loaded, setLoaded] = useState(false);
+    // isVisible: the card is actually on screen, driving the entrance fade.
     const [isVisible, setIsVisible] = useState(false);
     const isCompact = cardSize === 'compact';
     const isPosterOnly = cardSize === 'poster';
+
+    useEffect(() => {
+        const currentRef = cardRef.current;
+        if (!currentRef || shouldLoad) return;
+
+        return observeOnce(currentRef, (entry) => {
+            if (entry.isIntersecting) setShouldLoad(true);
+        });
+    }, [shouldLoad]);
 
     useEffect(() => {
         const currentRef = cardRef.current;
@@ -117,21 +167,33 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     transition-all duration-300 ease-in-out
                     ${isPosterOnly ? 'border-slate-800' : ''}
                 `}>
-                    {/* Poster Container: Fixed aspect ratio, clips image */}
-                    <div className={`relative w-full overflow-hidden ${isPosterOnly ? 'rounded-md' : 'rounded-t-md'}`} style={{ paddingBottom: '140%' /* Shorter aspect ratio */ }}>
-                        {/* Poster Image: Covers container, aligned top */}
-                        <img
-                            src={film.poster}
-                            alt={`${film.title} poster`}
-                            className={`
-                                absolute inset-0 w-full h-full object-cover object-top /* Cover and align top */
-                                transform-gpu transition-transform duration-500 ease-out
-                                group-hover:scale-105 group-hover:duration-300 /* Hover zoom */
-                                ${isVisible ? 'scale-100' : 'scale-[0.97]'} /* Initial scale state for transition */
-                            `}
-                            loading="lazy"
-                            onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; }} // Fallback image
-                        />
+                    {/* Poster Container: Fixed aspect ratio, clips image. The slate
+                        placeholder background means an in-flight image fades from a
+                        neutral tone instead of flashing black on iOS. */}
+                    <div className={`relative w-full overflow-hidden bg-slate-800 ${isPosterOnly ? 'rounded-md' : 'rounded-t-md'}`} style={{ paddingBottom: '140%' /* Shorter aspect ratio */ }}>
+                        {/* Poster Image: Covers container, aligned top.
+                            No transform-gpu: forcing a GPU layer on every poster
+                            thrashes iOS Safari's limited compositing-tile budget
+                            during scroll. will-change is applied only transiently on
+                            hover (group-hover is gated behind @media (hover: hover) in
+                            Tailwind v4, so iOS never promotes these layers). */}
+                        {shouldLoad && (
+                            <img
+                                src={film.poster}
+                                alt={`${film.title} poster`}
+                                decoding="async"
+                                className={`
+                                    absolute inset-0 w-full h-full object-cover object-top /* Cover and align top */
+                                    transition-[scale,opacity] duration-500 ease-out /* Tailwind v4 animates the scale property (not transform), so scale must be named here or the zoom snaps */
+                                    [@media(hover:hover)]:[will-change:transform] /* Persistent GPU layer on hover-capable devices only — keeps the zoom smooth without thrashing iOS layers */
+                                    group-hover:scale-105 group-hover:duration-300 /* Hover zoom (desktop only) */
+                                    ${isVisible ? 'scale-100' : 'scale-[0.97]'} /* Entrance scale state for transition */
+                                    ${loaded ? 'opacity-100' : 'opacity-0'} /* Fade in from placeholder once decoded */
+                                `}
+                                onLoad={() => setLoaded(true)}
+                                onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; setLoaded(true); }} // Fallback image
+                            />
+                        )}
                         
                         {/* Gradient overlay at the bottom of the poster - enhanced for text readability */}
                         <div className={`absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none ${!isPosterOnly ? 'bg-gradient-to-t from-black/70 via-black/30 to-transparent' : ''}`}></div>
