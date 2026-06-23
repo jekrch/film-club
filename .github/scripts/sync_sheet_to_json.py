@@ -57,14 +57,30 @@ def get_omdb_film_details(imdb_id, api_key):
 
 # --- TMDb Helper Function ---
 EXPECTED_TMDB_CREW_FIELDS = [
-    "cinematographer", "editor", "productionDesigner", 
+    "cinematographer", "editor", "productionDesigner",
     "musicComposer", "costumeDesigner"
 ]
 TMDB_FETCH_FLAG = "tmdbCrewDataFetched"
+# Bump this whenever get_tmdb_film_details starts collecting new fields, so that
+# already-synced films are re-fetched once to backfill the additions.
+TMDB_FETCH_VERSION = 2
+TMDB_VERSION_FIELD = "tmdbDataVersion"
+
+# Base URL for TMDb cast profile images. w185 is a good balance of size/quality
+# for the headshot strip rendered on the film detail page.
+TMDB_PROFILE_IMAGE_BASE = "https://image.tmdb.org/t/p/w185"
+# Number of top-billed cast members to retain per film.
+TMDB_CAST_LIMIT = 12
 
 
 def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
-    """Fetch film credits (including cinematographer) from TMDb API by IMDb ID using Bearer Token."""
+    """Fetch extended film data from TMDb by IMDb ID using Bearer Token.
+
+    Returns a flat dict that is merged onto the film entry, containing crew
+    fields (cinematographer, editor, ...) plus tagline, budget, revenue,
+    keywords, the primary trailer key, and a top-billed cast list. A single
+    details request with append_to_response pulls credits/keywords/videos at once.
+    """
     if not tmdb_bearer_token:
         print("Warning: TMDB_KEY (Bearer Token) is not set. Cannot fetch additional crew data.")
         return None
@@ -101,15 +117,20 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
     if not tmdb_movie_id or not media_type:
         return None
 
-    credits_url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_movie_id}/credits"
-    extracted_crew = {}
+    details_url = (
+        f"https://api.themoviedb.org/3/{media_type}/{tmdb_movie_id}"
+        "?append_to_response=credits,keywords,videos"
+    )
+    extracted = {}
     try:
-        response = requests.get(credits_url, headers=headers)
+        response = requests.get(details_url, headers=headers)
         response.raise_for_status()
-        credits_data = response.json()
-        
+        data = response.json()
+
+        # --- Crew (preserves original field set/format) ---
+        credits_data = data.get("credits", {})
         if "crew" in credits_data:
-            job_to_names = {} 
+            job_to_names = {}
             target_jobs = {
                 "Director of Photography": "cinematographer",
                 "Editor": "editor",
@@ -117,7 +138,7 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
                 "Original Music Composer": "musicComposer",
                 "Costume Design": "costumeDesigner",
             }
-            
+
             for crew_member in credits_data["crew"]:
                 job = crew_member.get("job")
                 name = crew_member.get("name")
@@ -125,19 +146,62 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
                     continue
                 if job in target_jobs:
                     field_name = target_jobs[job]
-                    if field_name not in job_to_names:
-                        job_to_names[field_name] = []
-                    job_to_names[field_name].append(name)
-            
+                    job_to_names.setdefault(field_name, []).append(name)
+
             for field, names in job_to_names.items():
-                extracted_crew[field] = ", ".join(sorted(list(set(names))))
-        return extracted_crew
-    
+                extracted[field] = ", ".join(sorted(list(set(names))))
+
+        # --- Cast (top-billed, with characters and profile images) ---
+        cast_members = credits_data.get("cast", [])
+        cast = []
+        for member in sorted(cast_members, key=lambda c: c.get("order", 9999))[:TMDB_CAST_LIMIT]:
+            name = member.get("name")
+            if not name:
+                continue
+            profile_path = member.get("profile_path")
+            cast.append({
+                "name": name,
+                "character": member.get("character") or None,
+                "profileUrl": f"{TMDB_PROFILE_IMAGE_BASE}{profile_path}" if profile_path else None,
+            })
+        if cast:
+            extracted["cast"] = cast
+
+        # --- Tagline / financials (movies only; TV omits budget/revenue) ---
+        tagline = data.get("tagline")
+        if tagline:
+            extracted["tagline"] = tagline
+        budget = data.get("budget")
+        if isinstance(budget, int) and budget > 0:
+            extracted["budget"] = budget
+        revenue = data.get("revenue")
+        if isinstance(revenue, int) and revenue > 0:
+            extracted["revenue"] = revenue
+
+        # --- Keywords (movies use "keywords", TV uses "results") ---
+        keywords_block = data.get("keywords", {})
+        raw_keywords = keywords_block.get("keywords") or keywords_block.get("results") or []
+        keywords = [kw["name"] for kw in raw_keywords if kw.get("name")]
+        if keywords:
+            extracted["keywords"] = keywords
+
+        # --- Trailer (prefer an official YouTube trailer) ---
+        videos = data.get("videos", {}).get("results", [])
+        youtube_trailers = [
+            v for v in videos
+            if v.get("site") == "YouTube" and v.get("type") == "Trailer" and v.get("key")
+        ]
+        if youtube_trailers:
+            official = next((v for v in youtube_trailers if v.get("official")), None)
+            extracted["trailerKey"] = (official or youtube_trailers[0])["key"]
+
+        return extracted
+
     except requests.exceptions.RequestException as e:
-        print(f"Error during TMDb credits request for {imdb_id} (TMDb ID: {tmdb_movie_id}, Type: {media_type}): {e}. Response text: {e.response.text if e.response else 'No response'}")
+        print(f"Error during TMDb details request for {imdb_id} (TMDb ID: {tmdb_movie_id}, Type: {media_type}): {e}. Response text: {e.response.text if e.response else 'No response'}")
         return None
     except json.JSONDecodeError as e:
-        print(f"Error decoding JSON response from TMDb credits for {imdb_id}: {e}")
+        print(f"Error decoding JSON response from TMDb details for {imdb_id}: {e}")
         return None
 
 def get_sheet_data(sheet_id):
@@ -254,20 +318,22 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
                         'user': user, 'score': new_score, 'blurb': new_blurb
                     })
             
-            # Conditional TMDb data fetch
+            # Conditional TMDb data fetch. Re-fetch when the stored data version is
+            # behind TMDB_FETCH_VERSION so new fields are backfilled exactly once.
             if tmdb_bearer_token:
-                if not movie_to_update.get(TMDB_FETCH_FLAG, False):
-                    print(f"Existing film {imdb_id_sheet} needs TMDb crew data (flag is false or missing). Fetching from TMDb...")
-                    tmdb_crew_data = get_tmdb_film_details(imdb_id_sheet, tmdb_bearer_token)
-                    if tmdb_crew_data:
-                        for key, value in tmdb_crew_data.items():
-                            movie_to_update[key] = value 
-                        print(f"Backfilled/Updated crew data for {imdb_id_sheet} from TMDb: {list(tmdb_crew_data.keys())}")
+                if movie_to_update.get(TMDB_VERSION_FIELD, 0) < TMDB_FETCH_VERSION:
+                    print(f"Existing film {imdb_id_sheet} needs TMDb data (version behind). Fetching from TMDb...")
+                    tmdb_data = get_tmdb_film_details(imdb_id_sheet, tmdb_bearer_token)
+                    if tmdb_data:
+                        for key, value in tmdb_data.items():
+                            movie_to_update[key] = value
+                        print(f"Backfilled/Updated TMDb data for {imdb_id_sheet}: {list(tmdb_data.keys())}")
                     else:
-                        print(f"Could not backfill crew data from TMDb for {imdb_id_sheet}. No new crew data added.")
-                    movie_to_update[TMDB_FETCH_FLAG] = True 
+                        print(f"Could not backfill TMDb data for {imdb_id_sheet}. No new data added.")
+                    movie_to_update[TMDB_FETCH_FLAG] = True
+                    movie_to_update[TMDB_VERSION_FIELD] = TMDB_FETCH_VERSION
                 else:
-                    print(f"Existing film {imdb_id_sheet} has TMDb crew data already fetched (flag is true). Skipping TMDb fetch.")
+                    print(f"Existing film {imdb_id_sheet} is at TMDb data version {TMDB_FETCH_VERSION}. Skipping TMDb fetch.")
             
             final_movie_state_str = json.dumps(movie_to_update, sort_keys=True)
             if initial_movie_state_str != final_movie_state_str:
@@ -279,19 +345,21 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
             
             if new_film_data_omdb:
                 new_film_entry = new_film_data_omdb # Start with OMDB data
-                new_film_entry[TMDB_FETCH_FLAG] = False 
+                new_film_entry[TMDB_FETCH_FLAG] = False
+                new_film_entry[TMDB_VERSION_FIELD] = 0
                 if tmdb_bearer_token:
-                    print(f"Fetching additional crew data from TMDb for new film {imdb_id_sheet}...")
-                    tmdb_crew_data = get_tmdb_film_details(imdb_id_sheet, tmdb_bearer_token)
-                    if tmdb_crew_data:
-                        for key, value in tmdb_crew_data.items():
-                            new_film_entry[key] = value 
-                        print(f"Successfully added crew data from TMDb for new film: {list(tmdb_crew_data.keys())}")
+                    print(f"Fetching additional data from TMDb for new film {imdb_id_sheet}...")
+                    tmdb_data = get_tmdb_film_details(imdb_id_sheet, tmdb_bearer_token)
+                    if tmdb_data:
+                        for key, value in tmdb_data.items():
+                            new_film_entry[key] = value
+                        print(f"Successfully added TMDb data for new film: {list(tmdb_data.keys())}")
                     else:
-                        print(f"Could not fetch or process crew data from TMDb for new film {imdb_id_sheet}.")
-                    new_film_entry[TMDB_FETCH_FLAG] = True 
+                        print(f"Could not fetch or process TMDb data for new film {imdb_id_sheet}.")
+                    new_film_entry[TMDB_FETCH_FLAG] = True
+                    new_film_entry[TMDB_VERSION_FIELD] = TMDB_FETCH_VERSION
                 else:
-                    print("TMDb Bearer Token (TMDB_KEY) not provided. Skipping TMDb crew data fetch for new film.")
+                    print("TMDb Bearer Token (TMDB_KEY) not provided. Skipping TMDb data fetch for new film.")
 
                 new_film_entry['movieClubInfo'] = {
                     "selector": selector_sheet, "watchDate": watch_date_sheet,

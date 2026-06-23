@@ -34,6 +34,20 @@ export const getImdbRatingDisplay = (rating: string | undefined | null): string 
     return isNaN(parsed) ? null : parsed.toFixed(1);
 };
 
+/**
+ * Formats a USD amount (e.g. a TMDb budget/revenue figure) as a compact currency
+ * string. Returns null for missing, non-numeric, or zero values (TMDb uses 0 to
+ * mean "unknown").
+ */
+export const formatCurrency = (amount: number | undefined | null): string | null => {
+    if (typeof amount !== 'number' || isNaN(amount) || amount <= 0) return null;
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0,
+    }).format(amount);
+};
+
 export const countValidRatings = (clubRatings: ClubRating[] | undefined): number => {
     if (!clubRatings || !Array.isArray(clubRatings)) return 0;
     return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score)).length;

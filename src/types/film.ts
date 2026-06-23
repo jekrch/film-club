@@ -67,6 +67,15 @@ export interface Rating {
 }
 
 /**
+ * Represents a single cast member, sourced from TMDb credits.
+ */
+export interface CastMember {
+    name: string;
+    character?: string | null; // The role played, if known
+    profileUrl?: string | null; // Full TMDb profile image URL, if available
+}
+
+/**
  * Represents a single rating entry from a movie club member.
  */
 export interface ClubRating {
@@ -119,11 +128,18 @@ export interface Film {
     website?: string; // Optional: Removed if "N/A"
     streamUrl?: string; // Optional: URL for streaming the film
     noStreaming?: boolean; // Optional: Flag to indicate if the film is not available for streaming
-    editor?: string; 
+    editor?: string;
     productionDesigner?: string;
-    cinematographer?: string; 
+    cinematographer?: string;
     costumeDesigner?: string;
-    musicComposer?: string; 
+    musicComposer?: string;
+    // --- Extended TMDb data (optional; populated by the sync script) ---
+    tagline?: string; // Marketing tagline, e.g. "In space no one can hear you scream."
+    budget?: number; // Production budget in USD (0 if unknown)
+    revenue?: number; // Worldwide box office in USD per TMDb (0 if unknown)
+    keywords?: string[]; // Thematic keywords/tags from TMDb
+    trailerKey?: string; // YouTube video key for the primary trailer
+    cast?: CastMember[]; // Top-billed cast with characters and profile images
     // Optional: Movie club specific information.
     movieClubInfo?: MovieClubDetails;
 }

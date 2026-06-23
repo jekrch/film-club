@@ -43,7 +43,7 @@ bun install
 
 Film and club data is managed through a combination of JSON files, a Google Sheet, and external APIs:
 
-- `src/assets/films.json`: Film data, including details fetched from OMDb (plot, cast, poster, ratings), extended crew from TMDb (cinematographer, editor, production designer, composer, costume designer), and club-specific fields such as member reviews, watch dates, and selectors.
+- `src/assets/films.json`: Film data, including details fetched from OMDb (plot, poster, ratings, awards, box office), extended data from TMDb (crew — cinematographer, editor, production designer, composer, costume designer; plus tagline, budget, revenue, keywords, trailer, and top-billed cast with headshots), and club-specific fields such as member reviews, watch dates, and selectors.
 - `src/assets/club.json`: Club member information.
 - [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing): The source of truth for member ratings, blurbs, watch metadata, and new film entries (added by IMDb ID).
 - Profile pictures live in `public/images/` and follow the `[firstname].jpg` convention (e.g., `jacob.jpg`).

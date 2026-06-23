@@ -4,7 +4,8 @@ import FilmList from '../components/films/FilmList';
 import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
-import { countValidRatings, formatRuntime, getImdbRatingDisplay, parseGenres } from '../utils/filmUtils';
+import { countValidRatings, formatCurrency, formatRuntime, parseGenres } from '../utils/filmUtils';
+import FilmCastStrip from '../components/films/FilmCastStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
 import CollapsibleContent from '../components/common/CollapsableContent';
@@ -14,6 +15,13 @@ import { useFilmDetails } from '../hooks/useFilmDetails';
 import TrophyGallery from '../components/common/TrophyGallery';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
 
+
+// Shortens OMDb's verbose rating source names for the rating chips.
+const RATING_SOURCE_LABELS: Record<string, string> = {
+    'Internet Movie Database': 'IMDb',
+    'Rotten Tomatoes': 'Rotten Tomatoes',
+    'Metacritic': 'Metacritic',
+};
 
 const FilmDetailPage = () => {
     const { imdbId } = useParams<{ imdbId: string }>();
@@ -95,8 +103,13 @@ const FilmDetailPage = () => {
     const runtimeDisplay = formatRuntime(film.runtime);
     const numberOfValidRatings = countValidRatings(film.movieClubInfo?.clubRatings);
     const clubAverageDisplay = numberOfValidRatings >= 2 ? calculateClubAverage(film.movieClubInfo?.clubRatings) : null;
-    const imdbRatingDisplay = getImdbRatingDisplay(film.imdbRating);
     const selectorName = film.movieClubInfo?.selector;
+    const externalRatings = (film.ratings ?? []).filter(r => r.value && r.value.toLowerCase() !== 'n/a');
+    const boxOfficeDisplay = (film.boxOffice && film.boxOffice.toLowerCase() !== 'n/a')
+        ? film.boxOffice
+        : formatCurrency(film.revenue);
+    const budgetDisplay = formatCurrency(film.budget);
+    const awardsDisplay = film.awards && film.awards.toLowerCase() !== 'n/a' ? film.awards : null;
     const MAX_RATING = 9;
     const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
 
@@ -165,6 +178,9 @@ const FilmDetailPage = () => {
                                 <h1 className="text-3xl lg:text-4xl font-bold text-slate-100 mb-1 sm:mb-0 pr-4">{film.title}</h1>
                                 <span className="text-xl font-semibold text-slate-400 flex-shrink-0">({film.year})</span>
                             </div>
+                            {film.tagline && (
+                                <p className="text-slate-400 italic mb-4 -mt-1">{film.tagline}</p>
+                            )}
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-400 mb-5">
                                 {clubAverageDisplay && (
                                     <div className="flex items-center font-medium text-base" title={`Average Club Rating (${numberOfValidRatings} ratings)`}>
@@ -174,12 +190,24 @@ const FilmDetailPage = () => {
                                 )}
                                 {runtimeDisplay && <span className={clubAverageDisplay ? "border-l border-slate-600 pl-4" : ""}>{runtimeDisplay}</span>}
                                 {film.rated !== 'N/A' && <span className={(clubAverageDisplay || runtimeDisplay) ? "border-l border-slate-600 pl-4" : ""}>{film.rated}</span>}
-                                {imdbRatingDisplay && (
-                                    <span className={(clubAverageDisplay || runtimeDisplay || film.rated !== 'N/A') ? "border-l border-slate-600 pl-4 flex items-center text-xs text-slate-500" : "flex items-center text-xs text-slate-500"} title="IMDb Rating">
-                                        IMDb: {imdbRatingDisplay}/10
-                                    </span>
-                                )}
                             </div>
+
+                            {externalRatings.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mb-5">
+                                    {externalRatings.map((rating) => (
+                                        <span
+                                            key={rating.source}
+                                            className="inline-flex items-baseline gap-1.5 px-3 py-1 bg-slate-700/60 rounded-md text-sm"
+                                            title={rating.source}
+                                        >
+                                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                                                {RATING_SOURCE_LABELS[rating.source] ?? rating.source}
+                                            </span>
+                                            <span className="font-semibold text-slate-100">{rating.value}</span>
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                             <div className="mb-5 text-slate-300 ">
                                 <CollapsibleContent buttonSize="sm" lineClamp={3}>
                                     {renderPlotParagraphs(film.plot)}
@@ -217,6 +245,15 @@ const FilmDetailPage = () => {
                                 {film.country && film.country.toLowerCase() !== 'n/a' && (
                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Country</h3><p className="text-slate-300">{film.country}</p></div>
                                 )}
+                                {budgetDisplay && (
+                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Budget</h3><p className="text-slate-300">{budgetDisplay}</p></div>
+                                )}
+                                {boxOfficeDisplay && (
+                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Box Office</h3><p className="text-slate-300">{boxOfficeDisplay}</p></div>
+                                )}
+                                {awardsDisplay && (
+                                    <div className="md:col-span-2"><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Awards</h3><p className="text-slate-300 leading-relaxed">{awardsDisplay}</p></div>
+                                )}
                             </div>
 
                             {filmGenres.length > 0 && (
@@ -226,6 +263,37 @@ const FilmDetailPage = () => {
                                         {filmGenres.map((genre) => (
                                             <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full">{genre}</span>
                                         ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {film.cast && film.cast.length > 0 && (
+                                <FilmCastStrip cast={film.cast} />
+                            )}
+
+                            {film.keywords && film.keywords.length > 0 && (
+                                <div className="mt-6">
+                                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Keywords</h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {film.keywords.map((keyword) => (
+                                            <span key={keyword} className="px-2.5 py-1 bg-slate-700/50 text-slate-400 text-xs rounded-full">{keyword}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {film.trailerKey && (
+                                <div className="mt-6">
+                                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Trailer</h2>
+                                    <div className="relative w-full max-w-2xl aspect-video rounded-lg overflow-hidden border border-slate-700">
+                                        <iframe
+                                            className="absolute inset-0 w-full h-full"
+                                            src={`https://www.youtube-nocookie.com/embed/${film.trailerKey}`}
+                                            title={`${film.title} trailer`}
+                                            loading="lazy"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        />
                                     </div>
                                 </div>
                             )}
