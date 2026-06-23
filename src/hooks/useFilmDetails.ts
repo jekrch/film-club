@@ -118,7 +118,13 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
                 creditString.split(',').map(p => p.trim()).filter(p => p).forEach(p => personsInCurrentFilm.add(p));
             }
         });
-        
+
+        // Include the TMDb cast list so cast-strip names can be grouped too.
+        film.cast?.forEach(member => {
+            const name = member?.name?.trim();
+            if (name) personsInCurrentFilm.add(name);
+        });
+
         personsInCurrentFilm.forEach(personName => {
             data[personName] = getAllFilmCreditsForPerson(personName, allFilmsData);
         });

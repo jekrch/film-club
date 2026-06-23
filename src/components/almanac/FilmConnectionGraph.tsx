@@ -74,16 +74,22 @@ const CREDIT_FIELDS: { field: keyof Film; role: string }[] = [
 
 function extractCredits(film: Film): Map<string, Set<string>> {
     const credits = new Map<string, Set<string>>();
+    const addCredit = (name: string, role: string) => {
+        if (!name) return;
+        if (!credits.has(name)) credits.set(name, new Set());
+        credits.get(name)!.add(role);
+    };
+
     for (const { field, role } of CREDIT_FIELDS) {
         const value = film[field] as string | undefined;
         if (!value || typeof value !== 'string' || value.toLowerCase() === 'n/a') continue;
-        value.split(',').forEach((raw) => {
-            const name = raw.trim();
-            if (!name) return;
-            if (!credits.has(name)) credits.set(name, new Set());
-            credits.get(name)!.add(role);
-        });
+        value.split(',').forEach((raw) => addCredit(raw.trim(), role));
     }
+
+    // Include the extended TMDb cast so connections aren't limited to the
+    // shorter "Stars" string — anyone billed in both films links them.
+    film.cast?.forEach((member) => addCredit(member?.name?.trim() ?? '', 'Actor'));
+
     return credits;
 }
 
@@ -107,36 +113,181 @@ function computeSharedCredits(filmA: Film, filmB: Film): SharedCredit[] {
 const NODE_WIDTH = 160;
 const NODE_HEIGHT = 240;
 
+const GAP = 80; // spacing between nodes and between packed components
+
+interface LaidComponent {
+    // Node centre positions, normalised so the component's top-left box corner is (0,0).
+    centres: Map<string, { x: number; y: number }>;
+    width: number;
+    height: number;
+}
+
+/**
+ * Splits the graph into connected components (sets of films reachable from one
+ * another through shared credits). Disconnected groups are laid out and packed
+ * separately, so two unrelated chains can never interleave and cross.
+ */
+function connectedComponents(nodeIds: string[], edges: Edge[]): string[][] {
+    const adj = new Map<string, string[]>();
+    nodeIds.forEach((id) => adj.set(id, []));
+    edges.forEach((e) => {
+        adj.get(e.source)?.push(e.target);
+        adj.get(e.target)?.push(e.source);
+    });
+
+    const visited = new Set<string>();
+    const components: string[][] = [];
+    nodeIds.forEach((start) => {
+        if (visited.has(start)) return;
+        const comp: string[] = [];
+        const stack = [start];
+        visited.add(start);
+        while (stack.length) {
+            const id = stack.pop()!;
+            comp.push(id);
+            (adj.get(id) ?? []).forEach((nb) => {
+                if (!visited.has(nb)) {
+                    visited.add(nb);
+                    stack.push(nb);
+                }
+            });
+        }
+        components.push(comp);
+    });
+    return components;
+}
+
+/**
+ * Nudges single-connection ("leaf") films so they sit directly above/below their
+ * one neighbour, turning a long diagonal edge into a straight vertical one. A
+ * leaf has no other edges, so moving it horizontally within its own rank cannot
+ * introduce any new crossing — we only skip the move when another node already
+ * occupies that slot, so nodes never overlap.
+ */
+function alignLeafNodes(
+    g: InstanceType<typeof dagre.graphlib.Graph>,
+    nodeIds: string[],
+    edges: Edge[]
+): void {
+    // dagre's node labels are loosely typed; after layout they carry x/y.
+    const pos = (id: string) => g.node(id) as { x: number; y: number };
+
+    const degree = new Map<string, number>();
+    const neighbour = new Map<string, string>();
+    edges.forEach((e) => {
+        degree.set(e.source, (degree.get(e.source) ?? 0) + 1);
+        degree.set(e.target, (degree.get(e.target) ?? 0) + 1);
+        neighbour.set(e.source, e.target);
+        neighbour.set(e.target, e.source);
+    });
+
+    // Group nodes by rank (shared y) so we can check for an occupied slot.
+    const rankOf = (id: string) => Math.round(pos(id).y);
+    const byRank = new Map<number, string[]>();
+    nodeIds.forEach((id) => {
+        const r = rankOf(id);
+        (byRank.get(r) ?? byRank.set(r, []).get(r)!).push(id);
+    });
+
+    const minGap = NODE_WIDTH + 40; // keep clear of any neighbour in the rank
+
+    nodeIds.forEach((id) => {
+        if (degree.get(id) !== 1) return;
+        const nb = neighbour.get(id);
+        if (!nb) return;
+        const desiredX = pos(nb).x;
+        const peers = byRank.get(rankOf(id)) ?? [];
+        const blocked = peers.some(
+            (other) => other !== id && Math.abs(pos(other).x - desiredX) < minGap
+        );
+        if (!blocked) pos(id).x = desiredX;
+    });
+}
+
+/** Runs dagre on a single connected component and returns normalised centres + size. */
+function layoutComponent(nodeIds: string[], edges: Edge[]): LaidComponent {
+    const g = new dagre.graphlib.Graph();
+    g.setDefaultEdgeLabel(() => ({}));
+    g.setGraph({ rankdir: 'TB', nodesep: GAP, ranksep: 120, marginx: 0, marginy: 0 });
+
+    const idSet = new Set(nodeIds);
+    nodeIds.forEach((id) => g.setNode(id, { width: NODE_WIDTH, height: NODE_HEIGHT }));
+    const internalEdges = edges.filter((e) => idSet.has(e.source) && idSet.has(e.target));
+    internalEdges.forEach((e) => g.setEdge(e.source, e.target));
+
+    dagre.layout(g);
+    alignLeafNodes(g, nodeIds, internalEdges);
+
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    nodeIds.forEach((id) => {
+        const p = g.node(id) as { x: number; y: number };
+        minX = Math.min(minX, p.x - NODE_WIDTH / 2);
+        maxX = Math.max(maxX, p.x + NODE_WIDTH / 2);
+        minY = Math.min(minY, p.y - NODE_HEIGHT / 2);
+        maxY = Math.max(maxY, p.y + NODE_HEIGHT / 2);
+    });
+
+    const centres = new Map<string, { x: number; y: number }>();
+    nodeIds.forEach((id) => {
+        const p = g.node(id) as { x: number; y: number };
+        centres.set(id, { x: p.x - minX, y: p.y - minY });
+    });
+
+    return { centres, width: maxX - minX, height: maxY - minY };
+}
+
+/**
+ * Lays out the whole graph: each connected component is positioned independently
+ * (so disconnected chains stay in their own lane and never cross), then the
+ * components are shelf-packed left-to-right, wrapping onto a new row once a
+ * roughly square overall bound is reached so the result stays compact.
+ */
 function applyDagreLayout(
     nodes: Node<FilmNodeData>[],
     edges: Edge[]
 ): Node<FilmNodeData>[] {
-    const g = new dagre.graphlib.Graph();
-    g.setDefaultEdgeLabel(() => ({}));
-    g.setGraph({
-        rankdir: 'TB',
-        nodesep: 80,
-        ranksep: 120,
-        marginx: 40,
-        marginy: 40,
-    });
+    const components = connectedComponents(nodes.map((n) => n.id), edges)
+        .map((ids) => layoutComponent(ids, edges))
+        // Tallest first packs into tidier shelves.
+        .sort((a, b) => b.height - a.height);
 
-    nodes.forEach((node) => {
-        g.setNode(node.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
-    });
-    edges.forEach((edge) => {
-        g.setEdge(edge.source, edge.target);
-    });
+    // Bias the packing toward a wide bound (the graph canvas is much wider than
+    // it is tall), so components spread across the width instead of stacking into
+    // tall shelves. ASPECT ≈ target width:height of the overall layout.
+    const ASPECT = 2.6;
+    const totalArea = components.reduce((sum, c) => sum + (c.width + GAP) * (c.height + GAP), 0);
+    const targetWidth = Math.max(
+        Math.sqrt(totalArea * ASPECT),
+        ...components.map((c) => c.width)
+    );
 
-    dagre.layout(g);
+    const centreById = new Map<string, { x: number; y: number }>();
+    let shelfX = 0;
+    let shelfY = 0;
+    let shelfHeight = 0;
+    components.forEach((c) => {
+        if (shelfX > 0 && shelfX + c.width > targetWidth) {
+            shelfX = 0;
+            shelfY += shelfHeight + GAP;
+            shelfHeight = 0;
+        }
+        c.centres.forEach((p, id) => {
+            centreById.set(id, { x: shelfX + p.x, y: shelfY + p.y });
+        });
+        shelfX += c.width + GAP;
+        shelfHeight = Math.max(shelfHeight, c.height);
+    });
 
     return nodes.map((node) => {
-        const pos = g.node(node.id);
+        const centre = centreById.get(node.id) ?? { x: 0, y: 0 };
         return {
             ...node,
             position: {
-                x: pos.x - NODE_WIDTH / 2,
-                y: pos.y - NODE_HEIGHT / 2,
+                x: centre.x - NODE_WIDTH / 2,
+                y: centre.y - NODE_HEIGHT / 2,
             },
         };
     });

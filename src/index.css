@@ -95,6 +95,27 @@ button:focus-visible {
    }
 }
 
+/* Thin, dark-themed scrollbar matching the site's slate palette.
+   Used for overflow containers like the cast strip. */
+.themed-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #475569 transparent; /* thumb / track (Firefox) */
+}
+.themed-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+.themed-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.themed-scrollbar::-webkit-scrollbar-thumb {
+  background: #475569; /* slate-600 */
+  border-radius: 9999px;
+}
+.themed-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b; /* slate-500 */
+}
+
 .swiper-scrollbar {
   /* Make the scrollbar track slightly thicker */
   height: 10px !important; /* Default is often 4px or 6px. Adjust as needed. */

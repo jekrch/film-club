@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import FilmList from '../components/films/FilmList';
 import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
+import TrailerModal from '../components/common/TrailerModal';
 import { countValidRatings, formatCurrency, formatRuntime, parseGenres } from '../utils/filmUtils';
 import FilmCastStrip from '../components/films/FilmCastStrip';
 import PageLayout from '../components/layout/PageLayout';
@@ -26,6 +28,7 @@ const RATING_SOURCE_LABELS: Record<string, string> = {
 const FilmDetailPage = () => {
     const { imdbId } = useParams<{ imdbId: string }>();
     const navigate = useNavigate();
+    const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
     const {
         film,
@@ -125,6 +128,15 @@ const FilmDetailPage = () => {
                 />
             )}
 
+            {film.trailerKey && (
+                <TrailerModal
+                    isOpen={isTrailerOpen}
+                    onClose={() => setIsTrailerOpen(false)}
+                    trailerKey={film.trailerKey}
+                    title={film.title}
+                />
+            )}
+
             <div className="">
                 <button onClick={() => navigate(-1)} className="mb-6 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group">
                     {/* ... back button svg ... */}
@@ -190,6 +202,18 @@ const FilmDetailPage = () => {
                                 )}
                                 {runtimeDisplay && <span className={clubAverageDisplay ? "border-l border-slate-600 pl-4" : ""}>{runtimeDisplay}</span>}
                                 {film.rated !== 'N/A' && <span className={(clubAverageDisplay || runtimeDisplay) ? "border-l border-slate-600 pl-4" : ""}>{film.rated}</span>}
+                                {film.trailerKey && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsTrailerOpen(true)}
+                                        className={`inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors focus:outline-none focus:ring-1 focus:ring-blue-400/50 rounded-sm ${(clubAverageDisplay || runtimeDisplay || film.rated !== 'N/A') ? "border-l border-slate-600 pl-4" : ""}`}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                        </svg>
+                                        Trailer
+                                    </button>
+                                )}
                             </div>
 
                             {externalRatings.length > 0 && (
@@ -268,35 +292,13 @@ const FilmDetailPage = () => {
                             )}
 
                             {film.cast && film.cast.length > 0 && (
-                                <FilmCastStrip cast={film.cast} />
+                                <FilmCastStrip
+                                    cast={film.cast}
+                                    personAllFilmographies={personAllFilmographies}
+                                    onPersonClick={handleCreditPersonClick}
+                                />
                             )}
 
-                            {film.keywords && film.keywords.length > 0 && (
-                                <div className="mt-6">
-                                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Keywords</h2>
-                                    <div className="flex flex-wrap gap-2">
-                                        {film.keywords.map((keyword) => (
-                                            <span key={keyword} className="px-2.5 py-1 bg-slate-700/50 text-slate-400 text-xs rounded-full">{keyword}</span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {film.trailerKey && (
-                                <div className="mt-6">
-                                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Trailer</h2>
-                                    <div className="relative w-full max-w-2xl aspect-video rounded-lg overflow-hidden border border-slate-700">
-                                        <iframe
-                                            className="absolute inset-0 w-full h-full"
-                                            src={`https://www.youtube-nocookie.com/embed/${film.trailerKey}`}
-                                            title={`${film.title} trailer`}
-                                            loading="lazy"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                        />
-                                    </div>
-                                </div>
-                            )}
                             </div>
                         </div>
                     </div>

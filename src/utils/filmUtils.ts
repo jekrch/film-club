@@ -83,9 +83,12 @@ export const getAllFilmCreditsForPerson = (personName: string, allFilms: Film[])
 
     allFilms.forEach(f => {
         const rolesForFilm: string[] = [];
+        const addRole = (roleName: string) => {
+            if (!rolesForFilm.includes(roleName)) rolesForFilm.push(roleName);
+        };
         const checkCreditField = (creditField: string | undefined, roleName: string) => {
             if (creditField && typeof creditField === 'string' && creditField.toLowerCase().split(',').map(n => n.trim()).includes(trimmedPersonName)) {
-                rolesForFilm.push(roleName);
+                addRole(roleName);
             }
         };
 
@@ -97,6 +100,12 @@ export const getAllFilmCreditsForPerson = (personName: string, allFilms: Film[])
         checkCreditField(f.productionDesigner, 'Production Designer');
         checkCreditField(f.musicComposer, 'Music Composer');
         checkCreditField(f.costumeDesigner, 'Costume Designer');
+
+        // Also scan the TMDb cast list so people credited only there (not in the
+        // shorter "Stars" string) are still grouped across films.
+        if (Array.isArray(f.cast) && f.cast.some(member => member?.name?.trim().toLowerCase() === trimmedPersonName)) {
+            addRole('Actor');
+        }
 
         if (rolesForFilm.length > 0) {
             credits.push({ film: f, roles: rolesForFilm });
