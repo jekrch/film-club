@@ -68,7 +68,96 @@
     "cinematographer": "Dick Pope",
     "costumeDesigner": "Lindy Hemming",
     "productionDesigner": "Alison Chitty",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "David Thewlis",
+        "character": "Johnny",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sNuYyT8ocLlQr3TdAW9CoKVbCU8.jpg"
+      },
+      {
+        "name": "Lesley Sharp",
+        "character": "Louise",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oujHtdmwMCyppe9b7QHWJeNFN7i.jpg"
+      },
+      {
+        "name": "Katrin Cartlidge",
+        "character": "Sophie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cAG4WHKsLV2g08hnuZncy94HGOK.jpg"
+      },
+      {
+        "name": "Greg Cruttwell",
+        "character": "Jeremy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qgoBvIrI0QdUa8fmC1LPNHUBkSh.jpg"
+      },
+      {
+        "name": "Claire Skinner",
+        "character": "Sandra",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/odJEMUo4utv11ylHLmrOgbhUQHZ.jpg"
+      },
+      {
+        "name": "Peter Wight",
+        "character": "Brian",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wE77RhCuPoE45LrqEfZuAg0KIIp.jpg"
+      },
+      {
+        "name": "Ewen Bremner",
+        "character": "Archie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u80rtfJRqCg4qKcdEPmYv8IkCvu.jpg"
+      },
+      {
+        "name": "Susan Vidler",
+        "character": "Maggie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AhTD7RyJu7rA2pN0h5gMl7xp5CK.jpg"
+      },
+      {
+        "name": "Deborah Maclaren",
+        "character": "Woman in Window",
+        "profileUrl": null
+      },
+      {
+        "name": "Gina McKee",
+        "character": "Cafe Girl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rHL7GGeFZ2x9PbFL2P3hVkLfvAS.jpg"
+      },
+      {
+        "name": "Carolina Giammetta",
+        "character": "Masseuse",
+        "profileUrl": null
+      },
+      {
+        "name": "Elizabeth Berrington",
+        "character": "Giselle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wFz71bIKTlQoa8v1s243TIh5wUm.jpg"
+      }
+    ],
+    "tagline": "When unbalance leads to submission",
+    "revenue": 1769305,
+    "keywords": [
+      "london, england",
+      "rape",
+      "nihilism",
+      "sadism",
+      "narcissism",
+      "mental breakdown",
+      "alienation",
+      "sexual violence",
+      "loneliness",
+      "urban",
+      "drifter",
+      "cruelty",
+      "desolate",
+      "humiliation",
+      "stranger",
+      "character study",
+      "misogynist",
+      "voyeurism",
+      "existentialism",
+      "manchester",
+      "self hatred"
+    ],
+    "trailerKey": "TdKPbyvS0qc",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Come and See",
@@ -135,7 +224,94 @@
     "editor": "Valeriya Belova",
     "costumeDesigner": "Eleonora Semyonova",
     "cinematographer": "Alexey Rodionov",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Aleksei Kravchenko",
+        "character": "Flyora Gayshun",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/o7UD6o30iJ29dTHPCbtOScv9s5E.jpg"
+      },
+      {
+        "name": "Olga Mironova",
+        "character": "Glasha",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wSeCtQNuWVVUlHMAAkxVRSCYh7s.jpg"
+      },
+      {
+        "name": "Liubomiras Laucevičius",
+        "character": "Kosach",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r6Gdi2P7D6cPHcgTvvO4NSzvb9I.jpg"
+      },
+      {
+        "name": "Vladas Bagdonas",
+        "character": "Rubezh",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/58chkP7aSp51iKDjEtP295ZWl6k.jpg"
+      },
+      {
+        "name": "Jüri Lumiste",
+        "character": "Obersturmführer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wU5CyMxiwzEU5mCSSUsTZeIHp8A.jpg"
+      },
+      {
+        "name": "Viktors Lorencs",
+        "character": "Sturmbannführer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/24LC3IfTgkY7Mj7fjQENx6Q9oaf.jpg"
+      },
+      {
+        "name": "Kazimir Rabetsky",
+        "character": "Village Headman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qQzj2XqMqf4OpFwBFYGR5lRETtY.jpg"
+      },
+      {
+        "name": "Yevgeni Tilicheyev",
+        "character": "Gezhel",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1je1iVIpiAvJ0CAt4KDk6ALe434.jpg"
+      },
+      {
+        "name": "Aleksandr Berda",
+        "character": "Chief of Staff of the Partisan Detachment",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rUldJxRhCDRhlYegoaTK6U4fl2H.jpg"
+      },
+      {
+        "name": "G. Velts",
+        "character": "Medical NCO",
+        "profileUrl": null
+      },
+      {
+        "name": "Viktor Vasiliev",
+        "character": "German",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7ZbYdDqSyYNhRMhKaJTFGK9GLvV.jpg"
+      },
+      {
+        "name": "Igor Gnevashev",
+        "character": "Jew",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2cN6eH5nRDbUSgzcWtjeMtxGBcd.jpg"
+      }
+    ],
+    "tagline": "The cruelest side of war.",
+    "budget": 5000000,
+    "revenue": 20929648,
+    "keywords": [
+      "nazi",
+      "war crimes",
+      "insanity",
+      "world war ii",
+      "surrealism",
+      "wehrmacht",
+      "teenage girl",
+      "atrocity",
+      "genocide",
+      "russian army",
+      "mine field",
+      "horrors of war",
+      "premature aging",
+      "byelorussia",
+      "disturbed",
+      "children in wartime",
+      "grimdark",
+      "horrified"
+    ],
+    "trailerKey": "UHaSQU-4wss",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Ali: Fear Eats the Soul",
@@ -201,7 +377,86 @@
     "editor": "Thea Eymèsz",
     "productionDesigner": "Rainer Werner Fassbinder",
     "musicComposer": "Rainer Werner Fassbinder",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Brigitte Mira",
+        "character": "Emmi Kurowski",
+        "profileUrl": null
+      },
+      {
+        "name": "El Hedi ben Salem",
+        "character": "Ali",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sPMb9tLQ5uPmzZrkbODFUyqtbAM.jpg"
+      },
+      {
+        "name": "Irm Hermann",
+        "character": "Krista",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4NzeDGGAqq0Aw8QpqTuOAu7DkeN.jpg"
+      },
+      {
+        "name": "Barbara Valentin",
+        "character": "Barbara",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/j5fCsNIPKoQJLjIme20VmKS4Baj.jpg"
+      },
+      {
+        "name": "Elma Karlowa",
+        "character": "Mrs. Kargus",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zCjJn98UgeI8eK3Y4fbTaDfxVTl.jpg"
+      },
+      {
+        "name": "Anita Bucher",
+        "character": "Mrs. Ellis",
+        "profileUrl": null
+      },
+      {
+        "name": "Gusti Kreissl",
+        "character": "Paula",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vVJsqVlynHxprTOVs6LTeS6aKB3.jpg"
+      },
+      {
+        "name": "Doris Mattes",
+        "character": "Mrs. Angermayer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iR8BaWABNQqgkxXPljBmTVY2wZ8.jpg"
+      },
+      {
+        "name": "Margit Symo",
+        "character": "Hedwig",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zLpxMT1zWfEKyz6S3XLXy8lGuRJ.jpg"
+      },
+      {
+        "name": "Katharina Herberg",
+        "character": "Bardame",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/elZWYAiImpC55DMGWxAtOXd4rwr.jpg"
+      },
+      {
+        "name": "Lilo Pempeit",
+        "character": "Mrs. Munchmeyer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cKTUKW1TLHqi86hgNMRwiii8eLQ.jpg"
+      },
+      {
+        "name": "Walter Sedlmayr",
+        "character": "Mr. Angermayer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9cESnCVgyYbWnJzLEMkyyqm6G1U.jpg"
+      }
+    ],
+    "budget": 130000,
+    "revenue": 186757,
+    "keywords": [
+      "husband wife relationship",
+      "unsociability",
+      "parent child relationship",
+      "germany",
+      "cleaning lady",
+      "foreigner",
+      "german-turkish living together",
+      "munich, germany",
+      "older woman younger man relationship",
+      "new german cinema",
+      "age-gap relationship"
+    ],
+    "trailerKey": "KG12cB5xGCo",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Amarcord",
@@ -267,7 +522,83 @@
     "cinematographer": "Giuseppe Rotunno",
     "productionDesigner": "Danilo Donati",
     "costumeDesigner": "Danilo Donati",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Pupella Maggio",
+        "character": "Miranda Biondi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/p6ah7IoZ2yFEWp9UMjAHtsT2t3O.jpg"
+      },
+      {
+        "name": "Armando Brancia",
+        "character": "Aurelio Biondi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aK5PXqwsBJdBJZn1QFkSJ1RwEkX.jpg"
+      },
+      {
+        "name": "Magali Noël",
+        "character": "Gradisca",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mEFJnEVJ3MVOFrQLD40a8HMPr4O.jpg"
+      },
+      {
+        "name": "Ciccio Ingrassia",
+        "character": "Teo, Titta's Uncle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hQdJbjJSoJZXDFjnb4rQVDO4Bye.jpg"
+      },
+      {
+        "name": "Nando Orfei",
+        "character": "Patacca, Titta's Uncle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vYoLBdbFZbXs8KBjfmLjYcRyU4k.jpg"
+      },
+      {
+        "name": "Luigi Rossi",
+        "character": "Lawyer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t4RFCwsylzy4rlVvtnNK9JOWzZ5.jpg"
+      },
+      {
+        "name": "Bruno Zanin",
+        "character": "Titta Biondi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dyn7xcUGVZkR4Pb7UtuIVAKVs7o.jpg"
+      },
+      {
+        "name": "Gianfilippo Carcano",
+        "character": "Don Baravelli",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3HgEtup5AxE3mRVBVQyDaYBTS2L.jpg"
+      },
+      {
+        "name": "Josiane Tanzilli",
+        "character": "Volpina",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k6bprlyCuQySlvajyODQlcyTnry.jpg"
+      },
+      {
+        "name": "Maria Antonietta Beluzzi",
+        "character": "Tobacconist",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cCyaX1vkXY6fKMioaz6BoWMg4vE.jpg"
+      },
+      {
+        "name": "Giuseppe Ianigro",
+        "character": "Titta's Grandfather",
+        "profileUrl": null
+      },
+      {
+        "name": "Ferruccio Brembilla",
+        "character": "Fascist Leader",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/paLasrDfASlinijtxwtxXo8RLYm.jpg"
+      }
+    ],
+    "tagline": "The Fantastic World of Fellini!",
+    "keywords": [
+      "small town",
+      "fascism",
+      "surrealism",
+      "sheik",
+      "coming of age",
+      "rural area",
+      "bathtub",
+      "semi autobiographical",
+      "1930s"
+    ],
+    "trailerKey": "BtG9ZM-ZHnY",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Onibaba",
@@ -330,7 +661,87 @@
     "musicComposer": "Hikaru Hayashi",
     "editor": "Toshio Enoki",
     "cinematographer": "Kiyomi Kuroda",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Nobuko Otowa",
+        "character": "Woman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6vcByiFlOE9JiLGWNKRtN8k0uil.jpg"
+      },
+      {
+        "name": "Jitsuko Yoshimura",
+        "character": "Young Woman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wlH7kdIzQuTwOJDLmM9Qw43uf5z.jpg"
+      },
+      {
+        "name": "Kei Satō",
+        "character": "Hachi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xyb1DI4HViq1aEvc3pgJV5Xw2Sn.jpg"
+      },
+      {
+        "name": "Jūkichi Uno",
+        "character": "The Samurai",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jxXsvpNQDo0AOG3fippKtlZHQUm.jpg"
+      },
+      {
+        "name": "Taiji Tonoyama",
+        "character": "Ushi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k88bvJ91SiL2Nn6QtQf7hB8U4iv.jpg"
+      },
+      {
+        "name": "Someshō Matsumoto",
+        "character": "Runaway Warrior",
+        "profileUrl": null
+      },
+      {
+        "name": "Kentarô Kaji",
+        "character": "Runaway Warrior",
+        "profileUrl": null
+      },
+      {
+        "name": "Fudeko Tanaka",
+        "character": "Old Woman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/95L5bDgQfYTnp4b25KVNguwV9Q5.jpg"
+      },
+      {
+        "name": "Hiroyoshi Yamaguchi",
+        "character": "Horse Riding Samurai",
+        "profileUrl": null
+      },
+      {
+        "name": "Hiroshi Tanaka",
+        "character": "Horse Riding Samurai",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/syy1wzPDojswjSMznKNwGLV2x91.jpg"
+      },
+      {
+        "name": "Kanzō Uni",
+        "character": "Horse Riding Samurai",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nszpp25PKI4RxxH0O3mYHBgqGT2.jpg"
+      },
+      {
+        "name": "Hosui Araya",
+        "character": "Ushi's Follower",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "The most daring film import ever...From Japan!",
+    "keywords": [
+      "japan",
+      "samurai",
+      "jealousy",
+      "desertion",
+      "hold-up robbery",
+      "bamboo hut",
+      "survival",
+      "murder",
+      "black and white",
+      "demon",
+      "jidaigeki",
+      "sengoku period",
+      "14th century"
+    ],
+    "trailerKey": "s2SkmwgU8qs",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Cure",
@@ -398,9 +809,100 @@
     "costumeDesigner": "Hiroshi Kotô, Ryûsui Morita",
     "musicComposer": "Gary Ashiya",
     "productionDesigner": "Tomoyuki Maruo",
-    "cinematographer": "Tokushô Kikumura",
+    "cinematographer": "Tokushō Kikumura",
     "editor": "Kan Suzuki",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Koji Yakusho",
+        "character": "Kenichi Takabe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rF3pmX1yqoMXJLgRkgaLc7PGv68.jpg"
+      },
+      {
+        "name": "Masato Hagiwara",
+        "character": "Kunio Mamiya",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iS8eHxcb6R2eL84XcBGJagQCNRj.jpg"
+      },
+      {
+        "name": "Tsuyoshi Ujiki",
+        "character": "Makoto Sakuma",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/b1LQzwzIVb4qzQ6chQfsElg5CtF.jpg"
+      },
+      {
+        "name": "Anna Nakagawa",
+        "character": "Fumie Takabe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jTOES5SyxvvloxBx2Ih2ejiRQqp.jpg"
+      },
+      {
+        "name": "Yukijiro Hotaru",
+        "character": "Ichiro Kuwano",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y7njnXkFqKAc1Lv4kGCaxcxX5ux.jpg"
+      },
+      {
+        "name": "Yoriko Doguchi",
+        "character": "Dr. Akiko Miyajima",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9b5id7aCE8AoMuoTNjQwjKH1if0.jpg"
+      },
+      {
+        "name": "Denden",
+        "character": "OIda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eC7mmWy83TlWJ0RYr4yCWAqycC5.jpg"
+      },
+      {
+        "name": "Ren Osugi",
+        "character": "Fujiwara",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/49BL0p9gni4ERgnEciMJIXbJZDk.jpg"
+      },
+      {
+        "name": "Masahiro Toda",
+        "character": "Tôru Hanaoka",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iqRNCGESIoFgg68VdJVBYu6uuOX.jpg"
+      },
+      {
+        "name": "Misayo Haruki",
+        "character": "Tomoko Hanaoka",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9ACSjzZFZT4FaXfFFHRQb5CnOmB.jpg"
+      },
+      {
+        "name": "Shun Nakayama",
+        "character": "Kimura",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uc3U4BYX6VMM4FlcuB9F7zeRqb8.jpg"
+      },
+      {
+        "name": "Akira Otaka",
+        "character": "Yasukawa",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2YZhtoCzAfhfuXdcATqPYHfiUfJ.jpg"
+      }
+    ],
+    "tagline": "Madness. Terror. Murder.",
+    "budget": 20000,
+    "revenue": 234821,
+    "keywords": [
+      "hotel",
+      "prostitute",
+      "amnesia",
+      "based on novel or book",
+      "investigation",
+      "hallucination",
+      "interview",
+      "murder",
+      "serial killer",
+      "tokyo, japan",
+      "interrogation",
+      "stranger",
+      "hypnotism",
+      "psychosis",
+      "record player",
+      "mental hospital",
+      "neo-noir",
+      "personality disorder",
+      "anxious",
+      "psychological horror",
+      "sinister",
+      "crime horror"
+    ],
+    "trailerKey": "pv91E5L6_Tw",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Lost in America",
@@ -471,7 +973,87 @@
     "musicComposer": "Arthur B. Rubinstein",
     "productionDesigner": "Richard Sawyer",
     "cinematographer": "Eric Saarinen",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Albert Brooks",
+        "character": "David Howard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8iDSGu5l93N7benjf6b3AysBore.jpg"
+      },
+      {
+        "name": "Julie Hagerty",
+        "character": "Linda Howard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bQZ0bcFNyE4a3GDNfYMmfO7eWMl.jpg"
+      },
+      {
+        "name": "Michael Greene",
+        "character": "Paul Dunn",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/n7HXLaYOqYsjvHXwUkT8fd1SM1y.jpg"
+      },
+      {
+        "name": "Garry Marshall",
+        "character": "Casino Manager",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uYVagiSCH4gj3BcYownQySVwfy7.jpg"
+      },
+      {
+        "name": "Maggie Roswell",
+        "character": "Patty",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pLdSmH5HZYSwTd3aiPlZLbNzvPD.jpg"
+      },
+      {
+        "name": "Tom Tarpey",
+        "character": "Brad Tooley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lFFS16gA8g4j4DRr3VPUgSHdgLW.jpg"
+      },
+      {
+        "name": "Ernie Brown",
+        "character": "Pharmacist",
+        "profileUrl": null
+      },
+      {
+        "name": "Joey Coleman",
+        "character": "Skippy",
+        "profileUrl": null
+      },
+      {
+        "name": "Art Frankel",
+        "character": "Employment Agent",
+        "profileUrl": null
+      },
+      {
+        "name": "Donald Gibb",
+        "character": "Ex-Convict",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3SGqGltQ6J0LUJ84DZTdWSMh8O8.jpg"
+      },
+      {
+        "name": "Sylvia Farrel",
+        "character": "Receptionist",
+        "profileUrl": null
+      },
+      {
+        "name": "Tina Kincaid",
+        "character": "Model",
+        "profileUrl": null
+      }
+    ],
+    "budget": 4000000,
+    "revenue": 10179000,
+    "keywords": [
+      "new york city",
+      "gambling",
+      "yuppie",
+      "satire",
+      "roulette",
+      "las vegas",
+      "fired from the job",
+      "recreational vehicle",
+      "road movie",
+      "hoover dam",
+      "crossing guard",
+      "nest egg"
+    ],
+    "trailerKey": "bW-m70vJU1o",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Love Witch",
@@ -542,7 +1124,91 @@
     "cinematographer": "M. David Mullen",
     "productionDesigner": "Anna Biller",
     "costumeDesigner": "Anna Biller",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Samantha Robinson",
+        "character": "Elaine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uA7HT2XwOSxXAsEY8NVM5GX5D97.jpg"
+      },
+      {
+        "name": "Gian Keys",
+        "character": "Griff",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pDCUhcxVsmicIdEDrCqaGbylVC.jpg"
+      },
+      {
+        "name": "Laura Waddell",
+        "character": "Trish",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u0b5I93SGT4FGANy5jmXG4R5mEq.jpg"
+      },
+      {
+        "name": "Jeffrey Vincent Parise",
+        "character": "Wayne",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zblNX1E05s7TDwDUtDuPBKOLsRF.jpg"
+      },
+      {
+        "name": "Jared Sanford",
+        "character": "Gahan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tb7zxT279Mf8RopRAkuVQtwOwSO.jpg"
+      },
+      {
+        "name": "Robert Seeley",
+        "character": "Richard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gFO7OQdyxvOvJx23Wz9o35k9BML.jpg"
+      },
+      {
+        "name": "Jennifer Ingrum",
+        "character": "Barbara",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k3FRMYRXUUo9t61BtrwUjzjLu50.jpg"
+      },
+      {
+        "name": "Randy Evans",
+        "character": "Steve",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jfSoG2x8rLm4tqf2HAM0aKyzn8s.jpg"
+      },
+      {
+        "name": "Clive Ashborn",
+        "character": "Professor King",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/b2Y5aOXsTgDBsAB9C3CKONE4iaA.jpg"
+      },
+      {
+        "name": "Lily Holleman",
+        "character": "Miss Curtis",
+        "profileUrl": null
+      },
+      {
+        "name": "Jennifer Couch",
+        "character": "Wendy",
+        "profileUrl": null
+      },
+      {
+        "name": "Stephen Wozniak",
+        "character": "Jerry",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "She loved men... to death",
+    "revenue": 228894,
+    "keywords": [
+      "magic",
+      "poison",
+      "painting",
+      "grave",
+      "love",
+      "crying",
+      "death",
+      "witchcraft",
+      "stockings",
+      "white horse",
+      "love potion",
+      "woman director",
+      "searching for love",
+      "woman seduces a man",
+      "sarcastic",
+      "sincere"
+    ],
+    "trailerKey": "F4DoZlT7KSE",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Carnival of Souls",
@@ -604,7 +1270,84 @@
     "editor": "Bill de Jarnette, Dan Palmquist, Herbert L. Strock",
     "musicComposer": "Gene Moore",
     "cinematographer": "Maurice Prather",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Candace Hilligoss",
+        "character": "Mary Henry",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2snLWDrBcNfkOIf0f8TlBG404eV.jpg"
+      },
+      {
+        "name": "Herk Harvey",
+        "character": "The Man",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3QxMAsXAfmxJYDFq1PwlQnk90ce.jpg"
+      },
+      {
+        "name": "Sidney Berger",
+        "character": "John Linden",
+        "profileUrl": null
+      },
+      {
+        "name": "Frances Feist",
+        "character": "Mrs. Thomas",
+        "profileUrl": null
+      },
+      {
+        "name": "Art Ellison",
+        "character": "Minister",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aotetJSYJwr2cPWX67PaYBCQEr0.jpg"
+      },
+      {
+        "name": "Stan Levitt",
+        "character": "Dr. Samuels",
+        "profileUrl": null
+      },
+      {
+        "name": "Tom McGinnis",
+        "character": "Organ Factory Boss",
+        "profileUrl": null
+      },
+      {
+        "name": "Forbes Caldwell",
+        "character": "Organ Factory Worker",
+        "profileUrl": null
+      },
+      {
+        "name": "Dan Palmquist",
+        "character": "Gas Station Attendant",
+        "profileUrl": null
+      },
+      {
+        "name": "Bill de Jarnette",
+        "character": "Mechanic",
+        "profileUrl": null
+      },
+      {
+        "name": "Steve Boozer",
+        "character": "Chip the Man at Juke Box",
+        "profileUrl": null
+      },
+      {
+        "name": "Pamela Ballard",
+        "character": "Dress Sales Lady",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "She Escaped Death. Now It Wants Her Back!",
+    "budget": 30000,
+    "keywords": [
+      "organ",
+      "car crash",
+      "b movie",
+      "female protagonist",
+      "scare",
+      "psychotronic",
+      "organ music",
+      "scared",
+      "visions"
+    ],
+    "trailerKey": "uDMkgcKas3U",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Nosferatu the Vampyre",
@@ -674,7 +1417,98 @@
     "editor": "Beate Mainka-Jellinghaus",
     "costumeDesigner": "Ann Poppel, Gisela Storch",
     "musicComposer": "Popol Vuh",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Klaus Kinski",
+        "character": "Count Dracula",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/twuyGlZJzJXFcbhVS2jlQOsTVFK.jpg"
+      },
+      {
+        "name": "Isabelle Adjani",
+        "character": "Lucy Harker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ad0GTy4ivzDhep1R0CgiR0O0g2v.jpg"
+      },
+      {
+        "name": "Bruno Ganz",
+        "character": "Jonathan Harker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8bhS1PObqe8OOVcyIRxV5Rcdufd.jpg"
+      },
+      {
+        "name": "Roland Topor",
+        "character": "Renfield",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AwrJsLOQcZAb5qXsqOEN55BAjla.jpg"
+      },
+      {
+        "name": "Walter Ladengast",
+        "character": "Dr. Van Helsing",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/znnPyPSa4wdreODEdoTUpWmBC1s.jpg"
+      },
+      {
+        "name": "Martje Grohmann",
+        "character": "Mina",
+        "profileUrl": null
+      },
+      {
+        "name": "Carsten Bodinus",
+        "character": "Schrader",
+        "profileUrl": null
+      },
+      {
+        "name": "Beverly Walker",
+        "character": "Abbess",
+        "profileUrl": null
+      },
+      {
+        "name": "Jacques Dufilho",
+        "character": "Captain",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7CK8OE5ww4AOdH61M1jVMZeimjE.jpg"
+      },
+      {
+        "name": "Clemens Scheitz",
+        "character": "Clerk",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jzPlAjMDNM4iRAGeBtm3MeIkYfJ.jpg"
+      },
+      {
+        "name": "John Leddy",
+        "character": "Coachman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ciCglSZKfSbqzK6wiBk4Q5XPGTz.jpg"
+      },
+      {
+        "name": "Rudolf Wolf",
+        "character": "Coachman",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "It is fear and fun. It is a scream of horror and a cry of delight. It is Nosferatu, the Vampyre.",
+    "budget": 1400000,
+    "revenue": 3451,
+    "keywords": [
+      "small town",
+      "ship",
+      "based on novel or book",
+      "transylvania",
+      "vampire",
+      "bite",
+      "coffin",
+      "bed",
+      "castle",
+      "house",
+      "melancholy",
+      "remake",
+      "cowardliness",
+      "doctor",
+      "gothic horror",
+      "gothic",
+      "plague",
+      "dread",
+      "gothic romance",
+      "gypsies",
+      "german expressionism",
+      "dracula"
+    ],
+    "trailerKey": "fnJqLNGBAPc",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Summer with Monika",
@@ -738,7 +1572,80 @@
     "musicComposer": "Erik Nordgren, Eskil Eckert-Lundin, Walle Söderlund",
     "editor": "Gösta Lewin, Tage Holmberg",
     "productionDesigner": "P.A. Lundgren",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Harriet Andersson",
+        "character": "Monika Eriksson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rFQNqEAyzAw5XAMeVPFZlcveNgF.jpg"
+      },
+      {
+        "name": "Lars Ekborg",
+        "character": "Harry Lund",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t6VQyuw0kUdnMQ319yW8Civpajx.jpg"
+      },
+      {
+        "name": "Dagmar Ebbesen",
+        "character": "Mrs. Lindström",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qSV7xxmnF8gGuHZqgS8T6b2Zcjv.jpg"
+      },
+      {
+        "name": "Åke Fridell",
+        "character": "Ludwig Eriksson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7bqRE3uQp2ss3KjnIkp3kdTVkbY.jpg"
+      },
+      {
+        "name": "Naemi Briese",
+        "character": "Monika's Mother",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gd7lbLJA1quVFQyTYvlYOnDHCF4.jpg"
+      },
+      {
+        "name": "Åke Grönberg",
+        "character": "Harry's Friend at Work",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3EgENuAFWznRC2zzi1Safqb9VOj.jpg"
+      },
+      {
+        "name": "Sigge Fürst",
+        "character": "Johan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tJhH6GsEkXV9oyo1O8ppb6jvH3v.jpg"
+      },
+      {
+        "name": "John Harryson",
+        "character": "Lelle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6z1j5QOcHS4QmoGyt27Xqw9nQYW.jpg"
+      },
+      {
+        "name": "Georg Skarstedt",
+        "character": "Harry's Father",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6ClV2EelFAoLxNTTK9Fzw91HjFL.jpg"
+      },
+      {
+        "name": "Gösta Ericsson",
+        "character": "Forsberg",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uPBLAF1ebw4vX0Yofa3NtMX3vtJ.jpg"
+      },
+      {
+        "name": "Gösta Gustafson",
+        "character": "Forsberg's Accountant",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fccmhxVlWY6ciVfpGLYnImkHEuc.jpg"
+      },
+      {
+        "name": "Gösta Prüzelius",
+        "character": "Salesman at Forsbergs",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tVJEosWBRRdl9qI6tUp8ga9DQnS.jpg"
+      }
+    ],
+    "tagline": "A Picture for Wide Screens and Broad Minds.",
+    "keywords": [
+      "pregnancy",
+      "stockholm, sweden",
+      "black and white",
+      "young love",
+      "archipelago",
+      "midsummer"
+    ],
+    "trailerKey": "W_yx-_D7b-c",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Virgin Spring",
@@ -804,7 +1711,85 @@
     "productionDesigner": "P.A. Lundgren",
     "editor": "Oscar Rosander",
     "cinematographer": "Sven Nykvist",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Max von Sydow",
+        "character": "Töre",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u16BsGyT6v9yuO7wWAF62NayDth.jpg"
+      },
+      {
+        "name": "Birgitta Valberg",
+        "character": "Märeta",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yuEUmHKrnw5DwonMHdpLr6H8C57.jpg"
+      },
+      {
+        "name": "Gunnel Lindblom",
+        "character": "Ingeri",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/93heWge7LBJtmTlvVUvCHRogcmJ.jpg"
+      },
+      {
+        "name": "Birgitta Pettersson",
+        "character": "Karin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aPdYBqa7T4QrxLVrFuqEDyu6oQx.jpg"
+      },
+      {
+        "name": "Axel Düberg",
+        "character": "Thin Herdsman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aAAs99OOsbdjySLHiYW4yqtsD77.jpg"
+      },
+      {
+        "name": "Allan Edwall",
+        "character": "Beggar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tleoCES9SH3D6Z8Vp8PcGzu5Rzt.jpg"
+      },
+      {
+        "name": "Tor Isedal",
+        "character": "Mute Herdsman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3nvZpF9lWfnZPFMA3rvCYaswZaY.jpg"
+      },
+      {
+        "name": "Ove Porath",
+        "character": "Boy",
+        "profileUrl": null
+      },
+      {
+        "name": "Axel Slangus",
+        "character": "Bridge Keeper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7CYAcjajOEMxbIDsl9BtQ5KVruc.jpg"
+      },
+      {
+        "name": "Gudrun Brost",
+        "character": "Frida",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eVqJNK796VYGaq4imWAFMr38NfT.jpg"
+      },
+      {
+        "name": "Oscar Ljung",
+        "character": "Simon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dvDszm39KK7vVLttrErFYNFlz55.jpg"
+      },
+      {
+        "name": "Tor Borong",
+        "character": "Farm-hand",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/B4d4QSPYyL5pcAG5VkKh5B4XjJ.jpg"
+      }
+    ],
+    "tagline": "Ravished innocence... brings terrible revenge!",
+    "revenue": 700000,
+    "keywords": [
+      "rape",
+      "brother",
+      "peasant",
+      "child murder",
+      "revenge",
+      "pregnant woman",
+      "medieval",
+      "rape and revenge",
+      "13th century",
+      "spring (water)"
+    ],
+    "trailerKey": "IBf4PnJGkZk",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Cremator",
@@ -869,7 +1854,87 @@
     "cinematographer": "Stanislav Milota",
     "productionDesigner": "Zbyněk Hloch",
     "costumeDesigner": "Olga Dimitrovová",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Rudolf Hrušínský",
+        "character": "Karel Kopfrkingl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xbOll9C0VYLTRmQz7jqdkRFEDyU.jpg"
+      },
+      {
+        "name": "Vlasta Chramostová",
+        "character": "Lakmé / Dagmar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8d6k7k9R2KnavlUegnfMZ7uxk0B.jpg"
+      },
+      {
+        "name": "Jana Stehnová",
+        "character": "Zina",
+        "profileUrl": null
+      },
+      {
+        "name": "Miloš Vognič",
+        "character": "Mili",
+        "profileUrl": null
+      },
+      {
+        "name": "Ilja Prachař",
+        "character": "Walter Reinke",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oiaRSp0hcPpxxT8tzKxvqRqt52O.jpg"
+      },
+      {
+        "name": "Zora Božinová",
+        "character": "Reinkeová",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/98tA2umVKjCCrF5g5coMAh2nbX1.jpg"
+      },
+      {
+        "name": "Eduard Kohout",
+        "character": "Bettleheim",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/az5WXhKjNkYuCKRdz7ddNTHHigD.jpg"
+      },
+      {
+        "name": "Jiří Lír",
+        "character": "Strauss",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2hlyXomshZChCJD1VW3uQyfZZsL.jpg"
+      },
+      {
+        "name": "Dimitri Rafalsky",
+        "character": "Fenek",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/YV6xHcuFLyGPxip2aL3MXKLva8.jpg"
+      },
+      {
+        "name": "Jan Vlček",
+        "character": "Vrána",
+        "profileUrl": null
+      },
+      {
+        "name": "Václav Halama",
+        "character": "Pelikán",
+        "profileUrl": null
+      },
+      {
+        "name": "Jiří Hálek",
+        "character": "Rámar Holý",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tiZIWWFJDk4AoqbtCeumIBVE46h.jpg"
+      }
+    ],
+    "tagline": "NO ONE WILL SUFFER.",
+    "keywords": [
+      "based on novel or book",
+      "insanity",
+      "child murder",
+      "zoo",
+      "dark comedy",
+      "crematorium",
+      "exterminator",
+      "funeral director",
+      "nazi collaborationism",
+      "czech new wave",
+      "family killed",
+      "czech resistance",
+      "human zoo exhibit"
+    ],
+    "trailerKey": "yMOT553AyAE",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Loves of a Blonde",
@@ -934,7 +1999,79 @@
     "cinematographer": "Miroslav Ondříček",
     "editor": "Miroslav Hájek",
     "productionDesigner": "Karel Černý",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Hana Brejchová",
+        "character": "Andula",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ethNiyWrfswh1kNwQGtxbV8a9OE.jpg"
+      },
+      {
+        "name": "Vladimír Pucholt",
+        "character": "Milda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s6jaOz2WKFDXTqcssDBLHNWJLcU.jpg"
+      },
+      {
+        "name": "Vladimír Menšík",
+        "character": "Vacovský",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yM705NlRGUOdsoLQz8tBS5Ur4Ka.jpg"
+      },
+      {
+        "name": "Ivan Kheil",
+        "character": "Maňas",
+        "profileUrl": null
+      },
+      {
+        "name": "Jiří Hrubý",
+        "character": "Burda",
+        "profileUrl": null
+      },
+      {
+        "name": "Milada Ježková",
+        "character": "Milda's Mother",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lLJ9K6CkAparopJoZGtZIA4V8gG.jpg"
+      },
+      {
+        "name": "Josef Šebánek",
+        "character": "Milda's Father",
+        "profileUrl": null
+      },
+      {
+        "name": "Josef Kolb",
+        "character": "Pokorný",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/icsX4hS7uccAtcandjansAtzDgD.jpg"
+      },
+      {
+        "name": "Marie Salačová",
+        "character": "Marie",
+        "profileUrl": null
+      },
+      {
+        "name": "Jana Nováková",
+        "character": "Jana",
+        "profileUrl": null
+      },
+      {
+        "name": "Jarka Crkalová",
+        "character": "Jaruška",
+        "profileUrl": null
+      },
+      {
+        "name": "Táňa Zelinková",
+        "character": "Girl with Guitar",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "factory worker",
+      "small town",
+      "prague, czech republic",
+      "one-night stand",
+      "black and white",
+      "czech new wave"
+    ],
+    "trailerKey": "2wN7COyj0k4",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Night of the Hunter",
@@ -1004,7 +2141,100 @@
     "cinematographer": "Stanley Cortez",
     "musicComposer": "Walter Schumann",
     "editor": "Robert Golden",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Robert Mitchum",
+        "character": "Preacher Harry Powell",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eXbqoAGBdF3gWqcuS3Zb7zkkqFw.jpg"
+      },
+      {
+        "name": "Shelley Winters",
+        "character": "Willa Harper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sY7LVp0M8yJgFD0o2uAIJgfLGm9.jpg"
+      },
+      {
+        "name": "Lillian Gish",
+        "character": "Rachel Cooper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xUBj1vajDHS8GntuBzhpztRMVy4.jpg"
+      },
+      {
+        "name": "Billy Chapin",
+        "character": "John Harper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yLoQrExPjkzy7YSfN7nZdwu1AM9.jpg"
+      },
+      {
+        "name": "Sally Jane Bruce",
+        "character": "Pearl Harper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hatkRVK7fJCiRju7k1cnJLQeTY5.jpg"
+      },
+      {
+        "name": "James Gleason",
+        "character": "Uncle Birdie Steptoe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nIWAiRVuVbEfD8iSWymhOSJlWUm.jpg"
+      },
+      {
+        "name": "Evelyn Varden",
+        "character": "Icey Spoon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9jwPCGSUtOXEahyxdf4tU6sNeBy.jpg"
+      },
+      {
+        "name": "Don Beddoe",
+        "character": "Walt Spoon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9NI9ofN3DlPCuhLhCdTiWYg8C0L.jpg"
+      },
+      {
+        "name": "Peter Graves",
+        "character": "Ben Harper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ySLwIT6L9mWIjFcCagmNENQGq7J.jpg"
+      },
+      {
+        "name": "James Griffith",
+        "character": "District Attorney",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7ES9uMQei0uAY7pTTXBAD7xLzx0.jpg"
+      },
+      {
+        "name": "Gloria Castillo",
+        "character": "Ruby",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/l6S7ZuDolRklLH3p3daznCBCdDl.jpg"
+      },
+      {
+        "name": "Gloria Pall",
+        "character": "Burlesque Dancer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oRTLac8gYPfsZ5oS8oiNcCfo15Q.jpg"
+      }
+    ],
+    "tagline": "It’s a hard world for little things.",
+    "budget": 795000,
+    "keywords": [
+      "prison",
+      "robbery",
+      "based on novel or book",
+      "psychopath",
+      "widow",
+      "boat",
+      "fanatic",
+      "count",
+      "money",
+      "film noir",
+      "murder",
+      "religion",
+      "black and white",
+      "theft",
+      "preacher",
+      "gothic",
+      "doll",
+      "hymn",
+      "children on the run",
+      "ex-con",
+      "expressionism",
+      "stashed cash",
+      "southern gothic",
+      "secret",
+      "bluebeard"
+    ],
+    "trailerKey": "GAxs6tChiKo",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Mishima: A Life in Four Chapters",
@@ -1072,10 +2302,89 @@
     },
     "musicComposer": "Philip Glass",
     "cinematographer": "John Bailey",
-    "editor": "Michael Chandler, Tomoyo Ōshima",
+    "editor": "Michael Chandler, Tomoyo Oshima",
     "costumeDesigner": "Eiko Ishioka, Etsuko Yagyu",
     "productionDesigner": "Eiko Ishioka",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Ken Ogata",
+        "character": "Yukio Mishima",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t3V4ajdDNTNaLnH3xhOEAuOXmB6.jpg"
+      },
+      {
+        "name": "Kenji Sawada",
+        "character": "Osamu",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nGurfJ5u488bjt1WtLacfrozAkO.jpg"
+      },
+      {
+        "name": "Bandō Mitsugorō X",
+        "character": "Mizoguchi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/v8IDXELP1SjoQXKnvpgcnSAc7jm.jpg"
+      },
+      {
+        "name": "Toshiyuki Nagashima",
+        "character": "Isao",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5igGUezxWjZydZ2ghnV50VbedVa.jpg"
+      },
+      {
+        "name": "Masayuki Shionoya",
+        "character": "Morita",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3NDUQxToBoGU2EZl4eoKZco06zZ.jpg"
+      },
+      {
+        "name": "Hiroshi Mikami",
+        "character": "Cadet #1",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/haVdI3tBaC61PwBQo2wtZHkfs5J.jpg"
+      },
+      {
+        "name": "Junya Fukuda",
+        "character": "Cadet #2",
+        "profileUrl": null
+      },
+      {
+        "name": "Yuu Tokui",
+        "character": "Cadet #3",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rE5vKobisonYFmZLGx2As1tIMqL.jpg"
+      },
+      {
+        "name": "Junkichi Orimoto",
+        "character": "General Mashita",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tW3lTUVeVJKVh56SKV31Z6MwRWF.jpg"
+      },
+      {
+        "name": "Naoko Ohtani",
+        "character": "Mother",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/81V2QpnJZTTdXq0YIjDJwbdkhsO.jpg"
+      },
+      {
+        "name": "Go Riju",
+        "character": "Mishima, age 18-19",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/89aD3FGPRp1uoWdW6llqh9DyxOq.jpg"
+      },
+      {
+        "name": "Masato Aizawa",
+        "character": "Mishima, age 9-14",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "On November 25, 1970, Japan's most celebrated writer, Yukio Mishima, shocked the world.",
+    "budget": 5000000,
+    "revenue": 502758,
+    "keywords": [
+      "suicide",
+      "identity",
+      "patriotism",
+      "nationalism",
+      "coup d'etat",
+      "author",
+      "art",
+      "lgbt",
+      "gay theme",
+      "four chapters"
+    ],
+    "trailerKey": "5nVKJDSrxNg",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Passion of Joan of Arc",
@@ -1144,7 +2453,100 @@
     "editor": "Carl Theodor Dreyer, Marguerite Beaugé",
     "costumeDesigner": "Valentine Hugo",
     "cinematographer": "Rudolph Maté",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Maria Falconetti",
+        "character": "Jeanne d'Arc",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zlZX11vxjxukuBW76ZhF11ffPh5.jpg"
+      },
+      {
+        "name": "Eugène Silvain",
+        "character": "Bishop Pierre Cauchon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/a0K5np0UVaFcGKXixA7BCTZ1sXC.jpg"
+      },
+      {
+        "name": "André Berley",
+        "character": "Jean d'Estivet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/w33Urmm5nROsJNWdmQFy0MPcG8r.jpg"
+      },
+      {
+        "name": "Maurice Schutz",
+        "character": "Nicolas Loyseleur",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/94drhs4q0P1oTM6kkGT00vDTlw8.jpg"
+      },
+      {
+        "name": "Antonin Artaud",
+        "character": "Jean Massieu",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dIMl6oIhK7Yid3do0dGHQ7Wxjza.jpg"
+      },
+      {
+        "name": "Michel Simon",
+        "character": "Jean Lemaître",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cB7x5hkjMEd2fsVC86tIpEZ9jff.jpg"
+      },
+      {
+        "name": "Jean d'Yd",
+        "character": "Guillaume Evrard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/b9mtziX14RF8wQIZl8DMZ76guN1.jpg"
+      },
+      {
+        "name": "Louis Ravet",
+        "character": "Jean Beaupère",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gixCabXZyuKcJpKJBJTRSLGydIn.jpg"
+      },
+      {
+        "name": "Armand Lurville",
+        "character": "Judge",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kxdxMGbaunHLYOrDj6bfcIk6jkX.jpg"
+      },
+      {
+        "name": "Jacques Arnna",
+        "character": "Judge",
+        "profileUrl": null
+      },
+      {
+        "name": "Alexandre Mihalesco",
+        "character": "Judge",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aiOaqzS7wmQdIR0Q4b7o1UAwh1K.jpg"
+      },
+      {
+        "name": "Léon Larive",
+        "character": "Judge",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/igrzIXXMqZ2PPJkivGkFWSCAgxX.jpg"
+      }
+    ],
+    "tagline": "An Immortal Screen Classic that will live Forever!",
+    "revenue": 18121,
+    "keywords": [
+      "suffering",
+      "court case",
+      "judge",
+      "sentence",
+      "woman martyr",
+      "heresy",
+      "trial",
+      "religion",
+      "torture chamber",
+      "black and white",
+      "saint",
+      "martyrdom",
+      "dove",
+      "silent film",
+      "catholicism",
+      "martyr",
+      "joan of arc",
+      "forgery",
+      "judiciary",
+      "15th century",
+      "burning at stake",
+      "holy communion",
+      "bloodletting",
+      "inspirational",
+      "jeanne d'arc"
+    ],
+    "trailerKey": "Iz3XmfNzrNs",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Paths of Glory",
@@ -1214,7 +2616,94 @@
     "musicComposer": "Gerald Fried",
     "editor": "Eva Kroll",
     "costumeDesigner": "Ilse Dubois",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Kirk Douglas",
+        "character": "Col. Dax",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t94It9bPI6uBvNuuQlQipyYyURC.jpg"
+      },
+      {
+        "name": "Ralph Meeker",
+        "character": "Cpl. Philippe Paris",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3gxXZRouc813WFmA6zVUl3ciq0P.jpg"
+      },
+      {
+        "name": "Adolphe Menjou",
+        "character": "Gen. George Broulard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/88FfjxT3cFDIbCIK0UmwyjEF6tU.jpg"
+      },
+      {
+        "name": "George Macready",
+        "character": "Gen. Paul Mireau",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gGtegV82TMbcd5psHx6w7by5FgO.jpg"
+      },
+      {
+        "name": "Wayne Morris",
+        "character": "Lt. Roget/Singing man",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2HFQHQrPdlr8eRca5x9BAfeQnjc.jpg"
+      },
+      {
+        "name": "Richard Anderson",
+        "character": "Maj. Saint-Auban",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eNVusMxsfee5t79jXbYBP8JnVvm.jpg"
+      },
+      {
+        "name": "Joe Turkel",
+        "character": "Pvt. Pierre Arnaud",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rqpNzjLFCoMrvGSf6SIL5JnWwMT.jpg"
+      },
+      {
+        "name": "Christiane Kubrick",
+        "character": "German Singer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vAMX00LJH0B38o5mCNCKn6DDdEI.jpg"
+      },
+      {
+        "name": "Jerry Hausner",
+        "character": "Proprietor of Cafe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dHgJKJHJ7BTg698YlGRVFZSoa7G.jpg"
+      },
+      {
+        "name": "Peter Capell",
+        "character": "Narrator of Opening Sequence",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jChyXZyqeCzOUXAjMo8QhbCBzUY.jpg"
+      },
+      {
+        "name": "Emile Meyer",
+        "character": "Father Dupree",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uwEr8gjLRsclk7HbqiOrgkGgRcv.jpg"
+      },
+      {
+        "name": "Bert Freed",
+        "character": "Sgt. Boulanger",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2TLuIMSx3NaCgfhoQBsicbdEIBE.jpg"
+      }
+    ],
+    "tagline": "It explodes in the no-man's land no picture ever dared cross before!",
+    "budget": 935000,
+    "revenue": 1200000,
+    "keywords": [
+      "army",
+      "france",
+      "based on novel or book",
+      "general",
+      "germany",
+      "world war i",
+      "patriotism",
+      "cowardice",
+      "idealism",
+      "idealist",
+      "black and white",
+      "soldier",
+      "anti war",
+      "1910s",
+      "war",
+      "fighting the system",
+      "psychological drama",
+      "excited"
+    ],
+    "trailerKey": "FESvZ0HG2p4",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Hellraiser",
@@ -1286,7 +2775,106 @@
     "editor": "Richard Marden, Tony Randel",
     "productionDesigner": "Michael Buchanan",
     "costumeDesigner": "Jane Wildgoose, Joanna Johnston",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Andrew Robinson",
+        "character": "Larry",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zHlqGUhVgvs4Cx16YALEqX799Oq.jpg"
+      },
+      {
+        "name": "Clare Higgins",
+        "character": "Julia",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7Jb5cg5GdADejWR6kzm0IP9spUn.jpg"
+      },
+      {
+        "name": "Sean Chapman",
+        "character": "Frank",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iAuP9HCstZE71p3Ipl5moe8kxgo.jpg"
+      },
+      {
+        "name": "Robert Hines",
+        "character": "Steve",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/p7ewJ1cQv1FfObLES5SKE92OIre.jpg"
+      },
+      {
+        "name": "Ashley Laurence",
+        "character": "Kirsty",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cmvfP4abA5wQ6a7GUJNAWuaDcK0.jpg"
+      },
+      {
+        "name": "Oliver Smith",
+        "character": "Frank the Monster",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uEiLPXACTyKcLv0bNa2Zzw3Owrr.jpg"
+      },
+      {
+        "name": "Anthony Allen",
+        "character": "1st Victim",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wEL7vju5qRKEFDYRggjTjq8XdwE.jpg"
+      },
+      {
+        "name": "Leon Davis",
+        "character": "2nd Victim",
+        "profileUrl": null
+      },
+      {
+        "name": "Michael Cassidy",
+        "character": "3rd Victim",
+        "profileUrl": null
+      },
+      {
+        "name": "Frank Baker",
+        "character": "Derelict",
+        "profileUrl": null
+      },
+      {
+        "name": "Kenneth Nelson",
+        "character": "Bill",
+        "profileUrl": null
+      },
+      {
+        "name": "Gay Baynes",
+        "character": "Evelyn",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "Demon to some. Angel to others.",
+    "budget": 1000000,
+    "revenue": 14580380,
+    "keywords": [
+      "based on novel or book",
+      "sexual obsession",
+      "pain",
+      "ritual",
+      "supernatural",
+      "haunted house",
+      "seduction",
+      "gore",
+      "surrealism",
+      "undead",
+      "stepmother",
+      "revenge",
+      "human sacrifice",
+      "body double",
+      "demon",
+      "puzzle box",
+      "attic",
+      "occult",
+      "bdsm",
+      "cenobite",
+      "sexual awakening",
+      "return from dead",
+      "reanimated corpse",
+      "sexual pleasure",
+      "hiding in attic",
+      "psycho-sexual",
+      "body snatcher",
+      "lovecraftian",
+      "wicked uncle",
+      "sexual adventure"
+    ],
+    "trailerKey": "tOcth6-HjPg",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Driller Killer",
@@ -1354,7 +2942,90 @@
     "musicComposer": "Joe Delia",
     "editor": "Abel Ferrara, Bonnie Constant, Michael Constant, Orlando Gallini",
     "cinematographer": "Ken Kelsch",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Abel Ferrara",
+        "character": "Reno Miller",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wdOxXWyxE3HjrtdeOJvc9xB5eUv.jpg"
+      },
+      {
+        "name": "Carolyn Marz",
+        "character": "Carol Slaughter",
+        "profileUrl": null
+      },
+      {
+        "name": "Baybi Day",
+        "character": "Pamela",
+        "profileUrl": null
+      },
+      {
+        "name": "Harry Schultz",
+        "character": "Dalton Briggs",
+        "profileUrl": null
+      },
+      {
+        "name": "Alan Wynroth",
+        "character": "Al the Landlord",
+        "profileUrl": null
+      },
+      {
+        "name": "Maria Helhoski",
+        "character": "The Nun",
+        "profileUrl": null
+      },
+      {
+        "name": "James O'Hara",
+        "character": "Man in Church",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9TVlLzmVdbNMqDmMUZJecDXn7vU.jpg"
+      },
+      {
+        "name": "Richard Howorth",
+        "character": "Stephen - Carol's Husband",
+        "profileUrl": null
+      },
+      {
+        "name": "Louis Mascolo",
+        "character": "Knife Victim",
+        "profileUrl": null
+      },
+      {
+        "name": "Tommy Santora",
+        "character": "Attacker",
+        "profileUrl": null
+      },
+      {
+        "name": "Rita Gooding",
+        "character": "TV Spot",
+        "profileUrl": null
+      },
+      {
+        "name": "Chuck Saaf",
+        "character": "TV Spot",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "The Blood Runs In Rivers... And The Drill Keeps Tearing Through Flesh And Bone.",
+    "budget": 20000,
+    "keywords": [
+      "new york city",
+      "concert",
+      "painting",
+      "artist",
+      "dark comedy",
+      "hallucination",
+      "insomnia",
+      "punk rock",
+      "murder",
+      "church",
+      "maniac",
+      "drill",
+      "punk band",
+      "homeless",
+      "video nasty"
+    ],
+    "trailerKey": "gy23UT85piY",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Schizopolis",
@@ -1423,7 +3094,80 @@
     "cinematographer": "Steven Soderbergh",
     "editor": "Sarah Flack",
     "musicComposer": "Cliff Martinez, Jeff Rona, Steven Soderbergh",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Steven Soderbergh",
+        "character": "Fletcher Munson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y8JlSDcQzd7gAaKyxFpExupMwDz.jpg"
+      },
+      {
+        "name": "Scott Allen",
+        "character": "Right Hand Man",
+        "profileUrl": null
+      },
+      {
+        "name": "Betsy Brantley",
+        "character": "Mrs. Munson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dGSROHU3THDWRJzCywWNj0G9mqq.jpg"
+      },
+      {
+        "name": "Marcus Lyle Brown",
+        "character": "Corporate Mole",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zHsqlROpMRsvtW70bgbkSEqakCd.jpg"
+      },
+      {
+        "name": "Joe Chrest",
+        "character": "Man in Parking Lot",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/Lu2MRQTBAR3eCYG3af3020RRoN.jpg"
+      },
+      {
+        "name": "Silas Cooper",
+        "character": "The Mysterious Couple",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/i3y4kuWJdYKgfLfpz0fJTsgwcSH.jpg"
+      },
+      {
+        "name": "C.C. Courtney",
+        "character": "Man Being Interviewed",
+        "profileUrl": null
+      },
+      {
+        "name": "Sonny Cranch",
+        "character": "Pastor",
+        "profileUrl": null
+      },
+      {
+        "name": "Ann Dalrymple",
+        "character": "Secretary",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AjoiyXu282LH9deBxDXSJHZhR8V.jpg"
+      },
+      {
+        "name": "Darrin Dickerson",
+        "character": "Photo Store Customer",
+        "profileUrl": null
+      },
+      {
+        "name": "Andre du Broc",
+        "character": "Corporate Drone",
+        "profileUrl": null
+      },
+      {
+        "name": "Ann Hamilton",
+        "character": "Mrs. Schwitters",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mOuAnNAdSGDLvn9qFcDzdPLLxRb.jpg"
+      }
+    ],
+    "tagline": "Come early! Come often!",
+    "budget": 250000,
+    "revenue": 10580,
+    "keywords": [
+      "assassination",
+      "dentist",
+      "exterminator",
+      "whimsical"
+    ],
+    "trailerKey": "f2E7ArARdaE",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Homicide",
@@ -1494,7 +3238,82 @@
     "editor": "Barbara Tulliver",
     "costumeDesigner": "Nan Cibula",
     "musicComposer": "Alaric Jans",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Joe Mantegna",
+        "character": "Bob Gold",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4jzvAE6B1eoiZDUnDUuMazirCPP.jpg"
+      },
+      {
+        "name": "William H. Macy",
+        "character": "Tim Sullivan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hdVEGSrP8qWlJnt0v5vSVcGOjy7.jpg"
+      },
+      {
+        "name": "Natalija Nogulich",
+        "character": "Chava",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/axKrCucnVBd3Jdgrmse0GNlbaeC.jpg"
+      },
+      {
+        "name": "Ving Rhames",
+        "character": "Randolph",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tOVDvu1EQP78AwaUw6uh1wN818E.jpg"
+      },
+      {
+        "name": "Vincent Guastaferro",
+        "character": "Lieutenant Senna",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3i6qQWbkDfqEdNENokjvBQo4PQi.jpg"
+      },
+      {
+        "name": "Rebecca Pidgeon",
+        "character": "Ms. Klein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/c8nJjBpB7zYtdnEY1GNPtUSophZ.jpg"
+      },
+      {
+        "name": "J.J. Johnston",
+        "character": "Jilly Curran",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5CoCxaxf2EGUOgNem0hKU8sn8X3.jpg"
+      },
+      {
+        "name": "Jack Wallace",
+        "character": "Frank",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mg23nIdVa4MzUOHuEAdUB0kyZUV.jpg"
+      },
+      {
+        "name": "Lionel Mark Smith",
+        "character": "Charlie Olcott",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ejhLI0UrMnLWCWA8Ups80CI05Rd.jpg"
+      },
+      {
+        "name": "Adolph Mall",
+        "character": "Benjamin",
+        "profileUrl": null
+      },
+      {
+        "name": "Paul Butler",
+        "character": "Commissioner Walker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qQIjo92vpwqK9Uwt54Myjlc1sfs.jpg"
+      },
+      {
+        "name": "Colin Stinton",
+        "character": "Walter B. Wells",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/py45eR9pshr0xDUMRN4B8FsqrsH.jpg"
+      }
+    ],
+    "tagline": "Powerful. Provocative. Controversial.",
+    "budget": 11000000,
+    "revenue": 2900000,
+    "keywords": [
+      "detective",
+      "confidence",
+      "jewish life",
+      "cop",
+      "antisemitism",
+      "jewish american"
+    ],
+    "trailerKey": "P9-Q0ZRFk7g",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Beyond the Hills",
@@ -1564,7 +3383,81 @@
     "costumeDesigner": "Dana Păpăruz",
     "productionDesigner": "Călin Papură, Mihaela Poenaru",
     "cinematographer": "Oleg Mutu",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Cosmina Stratan",
+        "character": "Voichita",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1KyB6jnyjBjySzxL2Ew0zOE1LRU.jpg"
+      },
+      {
+        "name": "Cristina Flutur",
+        "character": "Alina",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yg6zdfnl4MigKjpzLGSzedONxp3.jpg"
+      },
+      {
+        "name": "Valeriu Andriuță",
+        "character": "Priest",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lASuGh1msogVRs5jUmELugBFPAu.jpg"
+      },
+      {
+        "name": "Dana Tapalagă",
+        "character": "Mother superior",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hc95m7XiRGDVF0wkoNTvA1hd1pl.jpg"
+      },
+      {
+        "name": "Cătălina Harabagiu",
+        "character": "Antonia",
+        "profileUrl": null
+      },
+      {
+        "name": "Gina Tandura",
+        "character": "nun Iustina",
+        "profileUrl": null
+      },
+      {
+        "name": "Vica Agache",
+        "character": "nun Elisabeta",
+        "profileUrl": null
+      },
+      {
+        "name": "Nora Covali",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Luminița Gheorghiu",
+        "character": "Schoolteacher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2DdsK4FFtw869rMjcnhlFSwddwx.jpg"
+      },
+      {
+        "name": "Dionisie Vitcu",
+        "character": "Mr. Valerica",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/b81ZhZBcXVnmCleSikcTroq4qGv.jpg"
+      },
+      {
+        "name": "Ionut Ghinea",
+        "character": "Ionut",
+        "profileUrl": null
+      },
+      {
+        "name": "Liliana Mocanu",
+        "character": "mother Elena",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uDBjCneWrRBl6ZPL0ykeeH8Pn0P.jpg"
+      }
+    ],
+    "revenue": 124919,
+    "keywords": [
+      "nun",
+      "ex-lover",
+      "female friendship",
+      "belief in god",
+      "romania",
+      "orthodox",
+      "romanian new wave"
+    ],
+    "trailerKey": "ajvJo0b4KbE",
+    "tmdbDataVersion": 2
   },
   {
     "title": "El Sur",
@@ -1628,7 +3521,74 @@
     "editor": "Pablo G. del Amo",
     "productionDesigner": "Antonio Belizón",
     "costumeDesigner": "Maiki Marín",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Omero Antonutti",
+        "character": "Agustín Arenas",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3JLrGj8i0tmTkvBJV7aEWVstNvW.jpg"
+      },
+      {
+        "name": "Sonsoles Aranguren",
+        "character": "Estrella - 8 años",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1pE3Ek3U6KJUXgeRO9OTvriBD7M.jpg"
+      },
+      {
+        "name": "Icíar Bollaín",
+        "character": "Estrella - 15 años",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r9w9yZJN6bojt8R1bQH4K73nqjL.jpg"
+      },
+      {
+        "name": "Lola Cardona",
+        "character": "Julia",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bluLtr05C17EnxcaoHlS9Yi3C0Z.jpg"
+      },
+      {
+        "name": "Rafaela Aparicio",
+        "character": "Milagros",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yOHAj7TV66QAYznxCHIAijxd78K.jpg"
+      },
+      {
+        "name": "Aurore Clément",
+        "character": "Irene Ríos / Laura",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9vZxPV8LvY1wp32AIm35CZ7WelG.jpg"
+      },
+      {
+        "name": "Maria Caro",
+        "character": "Casilda",
+        "profileUrl": null
+      },
+      {
+        "name": "Francisco Merino",
+        "character": "Enamorado",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yxDHATaiZl8D7hn6FiZbgOkLA3x.jpg"
+      },
+      {
+        "name": "José Vivó",
+        "character": "Camarero",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2wbpkJBk5iyC0DdKkpfvZui09P7.jpg"
+      },
+      {
+        "name": "Germaine Montero",
+        "character": "Doña Rosario",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6yLNvcbeFDqyCRCIpZWs4vMvJWl.jpg"
+      },
+      {
+        "name": "José García Morilla",
+        "character": "Chófer",
+        "profileUrl": null
+      },
+      {
+        "name": "María Massip",
+        "character": "Estrella adulta (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sI07qCji3K07vreJ7zGCUS0dxXK.jpg"
+      }
+    ],
+    "keywords": [
+      "spain"
+    ],
+    "trailerKey": "Ox_Vs1T2AWM",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Cold Water",
@@ -1699,7 +3659,75 @@
     "productionDesigner": "Gilbert Gagneux",
     "cinematographer": "Denis Lenoir",
     "editor": "Luc Barnier",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Virginie Ledoyen",
+        "character": "Christine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sIx8EAaGqEaveQtUrCzQOqmoY2J.jpg"
+      },
+      {
+        "name": "Cyprien Fouquet",
+        "character": "Gilles",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1MgG7Zf1AR9H8pS37TeRNL4zZyX.jpg"
+      },
+      {
+        "name": "László Szabó",
+        "character": "Le père de Gilles",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5kGcihh33EjWxZWQCCMywvKrbpC.jpg"
+      },
+      {
+        "name": "Jean-Pierre Darroussin",
+        "character": "L'inspecteur",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bFIJ3bdn5bjx3r5Tm4VPjlaxwfr.jpg"
+      },
+      {
+        "name": "Dominique Faysse",
+        "character": "La mère de Christine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xxvtDYp4IKFGtdt7Ee0LY91hERI.jpg"
+      },
+      {
+        "name": "Jackie Berroyer",
+        "character": "Le père de Christine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cFmjGLqETzoz5oLvRLHbkbGlscx.jpg"
+      },
+      {
+        "name": "Smaïl Mekki",
+        "character": "Mourad",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sxYlgnolluCm01plHXAqpd5Q1IV.jpg"
+      },
+      {
+        "name": "Jean-Christophe Bouvet",
+        "character": "Le professeur",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5iBuBcAXSj55e8xvtAVXAK5Yl2M.jpg"
+      },
+      {
+        "name": "Ilona Györi",
+        "character": "Marie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aAzwNLGnPVzQIGxeUwvcInXhpV4.jpg"
+      },
+      {
+        "name": "Renée Amzallag",
+        "character": "L'infirmière",
+        "profileUrl": null
+      },
+      {
+        "name": "Mathieu Mardoukhaev",
+        "character": "Frère de Gilles",
+        "profileUrl": null
+      },
+      {
+        "name": "Jérôme Simonin",
+        "character": "Vendeur de dynamite",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "paris, france",
+      "runaway"
+    ],
+    "trailerKey": "bauqwKeEEmM",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Dheepan",
@@ -1770,7 +3798,82 @@
     "cinematographer": "Éponine Momenceau",
     "productionDesigner": "Michel Barthélémy",
     "costumeDesigner": "Chattoune",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Antonythasan Jesuthasan",
+        "character": "Dheepan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/awXSDRRPXXVBB1YRy5mtpC49Ooy.jpg"
+      },
+      {
+        "name": "Kalieaswari Srinivasan",
+        "character": "Yalini",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lnMHu0USWAkxrPPd2UohQtTCJkm.jpg"
+      },
+      {
+        "name": "Claudine Vinasithamby",
+        "character": "Illayaal",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xjZDaCNQs7k1a5nYlcDWK8lZCKO.jpg"
+      },
+      {
+        "name": "Vincent Rottiers",
+        "character": "Brahim",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m0o6G0uYoOWQgMPVSgaA27uH56f.jpg"
+      },
+      {
+        "name": "Marc Zinga",
+        "character": "Youssouf",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kAX08gkt2rlfnQXgn6ASgjOYOoG.jpg"
+      },
+      {
+        "name": "Faouzi Bensaïdi",
+        "character": "Monsieur Habib",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mtD7j4nujvg7shkDlBsBb5yjhlW.jpg"
+      },
+      {
+        "name": "Bass Dhem",
+        "character": "Azziz",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yuOsB4WQUh6g6zudjwgDGeCIpoc.jpg"
+      },
+      {
+        "name": "Franck Falise",
+        "character": "Hall C Guard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nbUDR9wPslk3SC7iahIU2SPihHT.jpg"
+      },
+      {
+        "name": "Joséphine de Meaux",
+        "character": "School Principal",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kpkTzxQTcVhaANLEtqX5TKZ9Njr.jpg"
+      },
+      {
+        "name": "Jean-Baptiste Pouilloux",
+        "character": "The Lawyer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lD88PIHG8jbXTPTlH3fpk4xAj3x.jpg"
+      },
+      {
+        "name": "Nathan Anthonypillai",
+        "character": "The Interpreter",
+        "profileUrl": null
+      },
+      {
+        "name": "Vasanth Selvam",
+        "character": "Colonel Cheran",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2SQaAUI8eAvdeIk8tuJbFVmJv1s.jpg"
+      }
+    ],
+    "tagline": "When the war continues to rage in your heart and mind",
+    "revenue": 7704357,
+    "keywords": [
+      "paris, france",
+      "freedom fighter",
+      "sri lanka",
+      "social realism",
+      "drug gang",
+      "war refugees",
+      "dangerous neighborhood"
+    ],
+    "trailerKey": "dFzLscT8_Dw",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Pather Panchali",
@@ -1835,7 +3938,91 @@
     "cinematographer": "Subrata Mitra",
     "productionDesigner": "Bansi Chandragupta",
     "musicComposer": "Ravi Shankar",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Kanu Bannerjee",
+        "character": "Harihar Ray",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4Si1KHQMsgIlmRtxoMualY6Iazv.jpg"
+      },
+      {
+        "name": "Karuna Banerjee",
+        "character": "Sarbojaya Ray",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pm4DcNLgkzzuHO53mi1BEuYnliv.jpg"
+      },
+      {
+        "name": "Chunibala Devi",
+        "character": "Indir Thakrun",
+        "profileUrl": null
+      },
+      {
+        "name": "Uma Das Gupta",
+        "character": "Durga Ray",
+        "profileUrl": null
+      },
+      {
+        "name": "Subir Banerjee",
+        "character": "Apurba \"Apu\" Kumar Ray",
+        "profileUrl": null
+      },
+      {
+        "name": "Runki Banerjee",
+        "character": "Little Durga Ray",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/stIqJonoZE6oeHpWsc5vFHrLHlw.jpg"
+      },
+      {
+        "name": "Reba Devi",
+        "character": "Seja Thakrun",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rwCatordwQdDqizNLtiUlIB75i2.jpg"
+      },
+      {
+        "name": "Aparna Devi",
+        "character": "Nilmoni's Wife",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pQ2WmrepdJS4ry0hr7tlvoHpeEh.jpg"
+      },
+      {
+        "name": "Tulsi Chakraborty",
+        "character": "Prasanna, School Teacher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rRyitVbDqnP8pnq1KYfelSD2PNJ.jpg"
+      },
+      {
+        "name": "Binoy Mukherjee",
+        "character": "Baidyanath Majumdar",
+        "profileUrl": null
+      },
+      {
+        "name": "Haren Banerjee",
+        "character": "Chinibas, Sweet-seller",
+        "profileUrl": null
+      },
+      {
+        "name": "Nibhanani Devi",
+        "character": "Dasi Thakurun",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qY95iJSXYPFt1jh53vCvXBXvFiz.jpg"
+      }
+    ],
+    "revenue": 536364,
+    "keywords": [
+      "robbery",
+      "misery",
+      "difficult childhood",
+      "move",
+      "monsoon",
+      "teacher",
+      "priest",
+      "remembered death",
+      "black and white",
+      "writer",
+      "railroad",
+      "unemployment",
+      "calm",
+      "candid",
+      "admiring",
+      "adoring",
+      "cheerful"
+    ],
+    "trailerKey": "mgv68E_o6VM",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Playtime",
@@ -1906,7 +4093,83 @@
     "editor": "Gérard Pollicand",
     "productionDesigner": "Eugène Roman",
     "costumeDesigner": "Jacques Cottin",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Jacques Tati",
+        "character": "Monsieur Hulot",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eNZoS6LrQE2E4o71w7A6dBUhYoo.jpg"
+      },
+      {
+        "name": "Barbara Dennek",
+        "character": "Young Tourist",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vVpI0nu5QYIhd06E7DFHBmlp0u5.jpg"
+      },
+      {
+        "name": "Rita Maiden",
+        "character": "Mr. Schultz's Companion",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/z21gHqDxwCgBxdzySbmZVYHNARQ.jpg"
+      },
+      {
+        "name": "France Rumilly",
+        "character": "Woman Selling Eyeglasses",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1ac5D5IliuUWxRlHZ5WbJPNI44h.jpg"
+      },
+      {
+        "name": "France Delahalle",
+        "character": "Shopper in Department Store",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qPkk4QmDkOldaAhrY6NiOslHeO9.jpg"
+      },
+      {
+        "name": "Valérie Camille",
+        "character": "Mr. Lacs's Secretary",
+        "profileUrl": null
+      },
+      {
+        "name": "Erika Dentzler",
+        "character": "Mme. Giffard",
+        "profileUrl": null
+      },
+      {
+        "name": "Nicole Ray",
+        "character": "Singer",
+        "profileUrl": null
+      },
+      {
+        "name": "Yvette Ducreux",
+        "character": "Hat Check Girl",
+        "profileUrl": null
+      },
+      {
+        "name": "Nathalie Jem",
+        "character": "Customer of the Royal Garden",
+        "profileUrl": null
+      },
+      {
+        "name": "Jacqueline Lecomte",
+        "character": "Young Tourist's Friend",
+        "profileUrl": null
+      },
+      {
+        "name": "Olivia Poli",
+        "character": "Customer of the Royal Garden",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "An incomparable spectacle.",
+    "keywords": [
+      "paris, france",
+      "modernity",
+      "restaurant",
+      "modern society",
+      "glass",
+      "american tourist",
+      "steel",
+      "satirical",
+      "hilarious"
+    ],
+    "trailerKey": "zrYB8hgyq4s",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Promise",
@@ -1976,7 +4239,79 @@
     "productionDesigner": "Igor Gabriel",
     "costumeDesigner": "Monic Parelle",
     "editor": "Marie-Hélène Dozo",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Jérémie Renier",
+        "character": "Igor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3oBBshsyiBEh4PkR9YDMCl3iyp1.jpg"
+      },
+      {
+        "name": "Olivier Gourmet",
+        "character": "Roger",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tmvSqnbTfyXyB3fgAAFLfEJDQql.jpg"
+      },
+      {
+        "name": "Assita Ouedraogo",
+        "character": "Assita",
+        "profileUrl": null
+      },
+      {
+        "name": "Florian Delain",
+        "character": "Riri",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2d6MwQN2mLxbjLGYHOcXLGnrAGQ.jpg"
+      },
+      {
+        "name": "Hachemi Haddad",
+        "character": "Nabil",
+        "profileUrl": null
+      },
+      {
+        "name": "Rasmané Ouédraogo",
+        "character": "Amidou",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ty3dpL5HsaFcWE1py8szIEXoL4A.jpg"
+      },
+      {
+        "name": "Jean-Michel Balthazar",
+        "character": "The Labour Inspector",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/CqT2kvWG3vp3S1IpkQhbZemTV4.jpg"
+      },
+      {
+        "name": "Frédéric Bodson",
+        "character": "The Garage Boss",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/w9WHYUYnoVgWmO3FDSAf7fugwqo.jpg"
+      },
+      {
+        "name": "Jean-Paul Dermont",
+        "character": "Muller",
+        "profileUrl": null
+      },
+      {
+        "name": "Alain Holtgen",
+        "character": "The Postman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rzDZGS2s7LmMQoVQirdcGgdxdpb.jpg"
+      },
+      {
+        "name": "Geneviève Joly-Provost",
+        "character": "Geneviève",
+        "profileUrl": null
+      },
+      {
+        "name": "Rifi Kythouka",
+        "character": "The Seer",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "parent child relationship",
+      "moral conflict",
+      "undocumented immigrant",
+      "construction site",
+      "troubled teen",
+      "exploited immigrants"
+    ],
+    "trailerKey": "OsOi17HJZ5k",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Thief",
@@ -2046,7 +4381,104 @@
     "cinematographer": "Donald E. Thorin",
     "productionDesigner": "Mel Bourne",
     "musicComposer": "Christopher Franke, Edgar Froese, Johannes Schmölling, Klaus Krüger",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "James Caan",
+        "character": "Frank",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/z2Lz3rtxZ7aJjzBUkCnExvo8stn.jpg"
+      },
+      {
+        "name": "Tuesday Weld",
+        "character": "Jessie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9d58qElviT6Q9soeixJmxWtaMBc.jpg"
+      },
+      {
+        "name": "Robert Prosky",
+        "character": "Leo Alderman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yV95RE8UGyN8rZYF9W4fOGaAV6U.jpg"
+      },
+      {
+        "name": "Willie Nelson",
+        "character": "David 'Okla' Bertinneau",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/e5rXc3fn4v642bIDVFWUr6UlVM3.jpg"
+      },
+      {
+        "name": "Jim Belushi",
+        "character": "Barry Stratagakis",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wIvFYH110ER7ukwR0qryQJJDQYH.jpg"
+      },
+      {
+        "name": "Tom Signorelli",
+        "character": "Vincent Attaglia",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pfaWtNisdGji8lO4AgfwjZCZjRu.jpg"
+      },
+      {
+        "name": "Dennis Farina",
+        "character": "Carl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4hEWe0ZcDpGlB3nRizLkVMcG13B.jpg"
+      },
+      {
+        "name": "Nick Nickeas",
+        "character": "Nick",
+        "profileUrl": null
+      },
+      {
+        "name": "W.R. Brown",
+        "character": "Mitch Kanoff",
+        "profileUrl": null
+      },
+      {
+        "name": "Norm Tobin",
+        "character": "Guido",
+        "profileUrl": null
+      },
+      {
+        "name": "John Santucci",
+        "character": "Sgt. Urizzi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dfnzltDKfp8y97U1MYQTKn1joJ9.jpg"
+      },
+      {
+        "name": "Gavin MacFadyen",
+        "character": "Det. Boreksco",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7J1o5gYuypu04N1w7I7YEIaboN8.jpg"
+      }
+    ],
+    "tagline": "Tonight, his take home pay is $410,000... tax free.",
+    "budget": 5500000,
+    "revenue": 11494812,
+    "keywords": [
+      "chicago, illinois",
+      "based on novel or book",
+      "shadowing",
+      "loss of loved one",
+      "burglar",
+      "gangster",
+      "car dealer",
+      "rain",
+      "idealist",
+      "safe",
+      "error",
+      "thief",
+      "dirty cop",
+      "convict",
+      "diamond heist",
+      "ex-con",
+      "safecracker",
+      "police surveillance",
+      "neo-noir",
+      "provocative",
+      "violence",
+      "suspenseful",
+      "critical",
+      "ambiguous",
+      "assertive",
+      "awestruck",
+      "commanding",
+      "harsh"
+    ],
+    "trailerKey": "YDa_z0op7iU",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Friends of Eddie Coyle",
@@ -2116,7 +4548,81 @@
     "musicComposer": "Dave Grusin",
     "editor": "Pat Jaffe",
     "productionDesigner": "Gene Callahan",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Robert Mitchum",
+        "character": "Eddie 'Fingers' Coyle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eXbqoAGBdF3gWqcuS3Zb7zkkqFw.jpg"
+      },
+      {
+        "name": "Peter Boyle",
+        "character": "Dillon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6TapQmC46mPDYrwm67tyJaEM97I.jpg"
+      },
+      {
+        "name": "Richard Jordan",
+        "character": "Dave Foley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qrrpdZYy6cLLBUrrA6AqyWJKa0w.jpg"
+      },
+      {
+        "name": "Steven Keats",
+        "character": "Jackie Brown",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ApJ12kisMrQdfj4IyjOBqqm5iRq.jpg"
+      },
+      {
+        "name": "Alex Rocco",
+        "character": "Jimmy Scalise",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uAG4qvYhYHuCyyXGm3lqC4o6ujc.jpg"
+      },
+      {
+        "name": "Joe Santos",
+        "character": "Artie 'Van' Valentropo",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/86TX5CrNq5Dg5LAied1Ho4XeaIf.jpg"
+      },
+      {
+        "name": "Mitchell Ryan",
+        "character": "Waters",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9XrbQfOjDeqjXJUHeSIA6OxJAJa.jpg"
+      },
+      {
+        "name": "Peter MacLean",
+        "character": "Mr. Partridge",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y50RozZ4AHmt10TSo4PuVs4BsTS.jpg"
+      },
+      {
+        "name": "Marvin Lichterman",
+        "character": "Vernon",
+        "profileUrl": null
+      },
+      {
+        "name": "Carolyn Pickman",
+        "character": "Nancy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cyRMAwQKuaVmXoW3y7QoaRgb9d9.jpg"
+      },
+      {
+        "name": "Matthew Cowles",
+        "character": "Pete",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7QB1XFjVaBCCO8rqeg2LzUabp8N.jpg"
+      },
+      {
+        "name": "Helena Carroll",
+        "character": "Sheila Coyle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jtK3Vs07KuCSl4lnKTqyJVF5C1M.jpg"
+      }
+    ],
+    "tagline": "It’s a grubby, violent, dangerous world. But it’s the only world they know. And they’re the only friends Eddie has.",
+    "keywords": [
+      "based on novel or book",
+      "boston, massachusetts",
+      "gangster",
+      "fbi",
+      "boston garden",
+      "informant",
+      "new england"
+    ],
+    "trailerKey": "vWdqoPHW-F8",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Daisies",
@@ -2181,7 +4687,89 @@
     "musicComposer": "Jiří Šlitr, Jiří Šust",
     "cinematographer": "Jaroslav Kučera",
     "productionDesigner": "Karel Lier",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "costumeDesigner": "Ester Krumbachová",
+    "cast": [
+      {
+        "name": "Jitka Cerhová",
+        "character": "Marie I",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5VsHZILrIet3IGIWKpksQrZ24Dc.jpg"
+      },
+      {
+        "name": "Ivana Karbanová",
+        "character": "Marie II",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/x7A1hObZIkwNVTGtohN5SJVmolK.jpg"
+      },
+      {
+        "name": "Helena Anýžová",
+        "character": "Woman in toilet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kogI1voFJwGBxsyBe4QCxbIP9fX.jpg"
+      },
+      {
+        "name": "Julius Albert",
+        "character": "Elderly Gentleman",
+        "profileUrl": null
+      },
+      {
+        "name": "Jan Klusák",
+        "character": "Young Gentleman",
+        "profileUrl": null
+      },
+      {
+        "name": "Jiřina Myšková",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Oldřich Hora",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Marcela Březinová",
+        "character": "Toilet Keeper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kU5ST3BC8nAPQ6voQN7hMBNcOMu.jpg"
+      },
+      {
+        "name": "Václav Chochola",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Jaromír Vomáčka",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Josef Koníček",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "František Uldrich",
+        "character": null,
+        "profileUrl": null
+      }
+    ],
+    "tagline": "Ups-a daisy… downs-a-daisy… turned-ons-a-daisy.",
+    "revenue": 13692,
+    "keywords": [
+      "eroticism",
+      "feminism",
+      "collage",
+      "teenage girl",
+      "rebellious youth",
+      "flapper",
+      "woman director",
+      "repeated line",
+      "phallic symbol",
+      "dumbwaiter",
+      "sound effect",
+      "czech new wave",
+      "crazy girl"
+    ],
+    "trailerKey": "9vBGo95SJz4",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Shadow of a Doubt",
@@ -2251,7 +4839,105 @@
     "editor": "Milton Carruth",
     "costumeDesigner": "Adrian, Vera West",
     "musicComposer": "Dimitri Tiomkin, Franz Lehár",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Teresa Wright",
+        "character": "Young Charlie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zKMNRKXNlisGov6FfJZpXHsrk66.jpg"
+      },
+      {
+        "name": "Joseph Cotten",
+        "character": "Uncle Charlie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/djfCB0jPOgmq3w7RD3BMLzWsAu8.jpg"
+      },
+      {
+        "name": "Macdonald Carey",
+        "character": "Jack Graham",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/o9lTQsuzEGimjjMGISKjppT4CxA.jpg"
+      },
+      {
+        "name": "Henry Travers",
+        "character": "Joseph Newton",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cfIfjkovcHOUyLW25eVAr8NvuvG.jpg"
+      },
+      {
+        "name": "Patricia Collinge",
+        "character": "Emma Newton",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/25U9CEzagRoC12pJvBpoW5DHl1y.jpg"
+      },
+      {
+        "name": "Hume Cronyn",
+        "character": "Herbie Hawkins",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2Tdh3cbagprrV0wN6q96u8wTTNJ.jpg"
+      },
+      {
+        "name": "Wallace Ford",
+        "character": "Fred Saunders",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/icHpMpE6QRTGgIACyCLtfjlqSEG.jpg"
+      },
+      {
+        "name": "Edna May Wonacott",
+        "character": "Ann Newton",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ujZgHLi3nrJXA8Any33MnFccSVX.jpg"
+      },
+      {
+        "name": "Charles Bates",
+        "character": "Roger Newton",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xL6j6fSUDfZ1nFTzdS4p3tvIplx.jpg"
+      },
+      {
+        "name": "Irving Bacon",
+        "character": "Station Master",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oFczw1DlGJ2p1wr4osdC2flX9qN.jpg"
+      },
+      {
+        "name": "Clarence Muse",
+        "character": "Pullman Porter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9k5D1LxHU7C0MhErSiY1uVt0mm8.jpg"
+      },
+      {
+        "name": "Janet Shaw",
+        "character": "Louise Finch",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/47BsrMS5YJQuxDndgQL7oDKgVjZ.jpg"
+      }
+    ],
+    "tagline": "What horror did her secret life hold… that made her dread this man of her dreams?",
+    "keywords": [
+      "small town",
+      "california",
+      "library",
+      "widow",
+      "bank",
+      "detective",
+      "telegram",
+      "housewife",
+      "film noir",
+      "incest overtones",
+      "murder",
+      "fugitive",
+      "teenage girl",
+      "black and white",
+      "murderer",
+      "police detective",
+      "privacy",
+      "visit",
+      "gender roles",
+      "brother sister ",
+      "wealthy widow",
+      "precocious child",
+      "misogynist",
+      "americana",
+      "uncle niece relationship",
+      "money in the bank",
+      "murder suspect",
+      "northern california",
+      "conflicting worldviews",
+      "defiant",
+      "bluebeard"
+    ],
+    "trailerKey": "d9p3xKsckgY",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Age of Innocence",
@@ -2323,7 +5009,84 @@
     "editor": "Thelma Schoonmaker",
     "costumeDesigner": "Gabriella Pescucci",
     "productionDesigner": "Dante Ferretti",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Daniel Day-Lewis",
+        "character": "Newland Archer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3kNA9VcmymoEwT0btQ4bvMYxzcP.jpg"
+      },
+      {
+        "name": "Michelle Pfeiffer",
+        "character": "Ellen Olenska",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lm2kLVjQPXpnVLREzUdBlwMIV4R.jpg"
+      },
+      {
+        "name": "Winona Ryder",
+        "character": "May Welland",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8RVrlgtua8b53wmK7oZAAkm0N5O.jpg"
+      },
+      {
+        "name": "Alexis Smith",
+        "character": "Louisa van der Luyden",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ebfBrXSI6QgdrU0JeD7FdrwtIkS.jpg"
+      },
+      {
+        "name": "Geraldine Chaplin",
+        "character": "Mrs. Welland",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/teiPgoY0Fgyw4Xs07IGDsJmcsjL.jpg"
+      },
+      {
+        "name": "Jonathan Pryce",
+        "character": "Rivière",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zwSv5uXzPTtmitFe39UdqnVwmdL.jpg"
+      },
+      {
+        "name": "Richard E. Grant",
+        "character": "Lawrence \"Larry\" Lefferts",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/720dpCjuN5cEYFn43GwzZqXtpWv.jpg"
+      },
+      {
+        "name": "Alec McCowen",
+        "character": "Sillerton Jackson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/f0J6VHLTMNo4rNTgHpJUv0odlFM.jpg"
+      },
+      {
+        "name": "Mary Beth Hurt",
+        "character": "Regina Beaufort",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fGhNkPM1qPErNNl20zZ9LLcsFTF.jpg"
+      },
+      {
+        "name": "Stuart Wilson",
+        "character": "Julius Beaufort",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ghP4hkVaNc4upspxsLQCwkOBhy6.jpg"
+      },
+      {
+        "name": "Howard Erskine",
+        "character": "Beaufort Guest",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9lMzFyWK0lOdlRfFUO0NXqrOVm4.jpg"
+      },
+      {
+        "name": "John McLoughlin",
+        "character": "Party Guest",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "In a world of tradition. In an age of innocence. They dared to break the rules.",
+    "budget": 34000000,
+    "revenue": 32255440,
+    "keywords": [
+      "infidelity",
+      "new york city",
+      "based on novel or book",
+      "upper class",
+      "lover",
+      "countess",
+      "lawyer",
+      "19th century"
+    ],
+    "trailerKey": "I3Mx8OSlNYM",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Valerie and Her Week of Wonders",
@@ -2387,7 +5150,93 @@
     "cinematographer": "Jan Čuřík",
     "editor": "Josef Valušiak",
     "musicComposer": "Luboš Fišer",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Jaroslava Schallerová",
+        "character": "Valerie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/asdfIwo324DNKyrR2IdSt2DwPf7.jpg"
+      },
+      {
+        "name": "Helena Anýžová",
+        "character": "Grandmother / Elsa / Mother / Redhead",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kogI1voFJwGBxsyBe4QCxbIP9fX.jpg"
+      },
+      {
+        "name": "Petr Kopřiva",
+        "character": "Orlík",
+        "profileUrl": null
+      },
+      {
+        "name": "Jiří Prýmek",
+        "character": "Tchoř-Constable",
+        "profileUrl": null
+      },
+      {
+        "name": "Jan Klusák",
+        "character": "Gracián",
+        "profileUrl": null
+      },
+      {
+        "name": "Libuše Komancová",
+        "character": "Handmaid in Training",
+        "profileUrl": null
+      },
+      {
+        "name": "Karel Engel",
+        "character": "Coachman Ondřej",
+        "profileUrl": null
+      },
+      {
+        "name": "Alena Stojáková",
+        "character": "Hedvika",
+        "profileUrl": null
+      },
+      {
+        "name": "Otto Hradecký",
+        "character": "Landlord",
+        "profileUrl": null
+      },
+      {
+        "name": "Martin Wielgus",
+        "character": "Tchoř-Father",
+        "profileUrl": null
+      },
+      {
+        "name": "Jiřina Machalická",
+        "character": "Flower Girl",
+        "profileUrl": null
+      },
+      {
+        "name": "Michaela Klocová",
+        "character": "Handmaid",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "A journey into womanhood...",
+    "keywords": [
+      "puberty",
+      "corruption",
+      "based on novel or book",
+      "magic",
+      "vampire",
+      "sexuality",
+      "allegory",
+      "innocence",
+      "supernatural",
+      "priest",
+      "religion",
+      "demon",
+      "occult",
+      "sexual awakening",
+      "vampirism",
+      "dream like experience",
+      "czech new wave",
+      "polecat",
+      "bohemians"
+    ],
+    "trailerKey": "NPLSMpngACo",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Ratcatcher",
@@ -2458,7 +5307,80 @@
     "editor": "Lucia Zucchetti",
     "productionDesigner": "Jane Morton",
     "costumeDesigner": "Gill Horn",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "William Eadie",
+        "character": "James",
+        "profileUrl": null
+      },
+      {
+        "name": "Tommy Flanagan",
+        "character": "Da",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5OnvT1KpEk3juZavqOCSAEYOtwl.jpg"
+      },
+      {
+        "name": "Mandy Matthews",
+        "character": "Ma",
+        "profileUrl": null
+      },
+      {
+        "name": "Michelle Stewart",
+        "character": "Ellen",
+        "profileUrl": null
+      },
+      {
+        "name": "Lynne Ramsay Jr.",
+        "character": "Anne Marie",
+        "profileUrl": null
+      },
+      {
+        "name": "Leanne Mullen",
+        "character": "Margaret Anne",
+        "profileUrl": null
+      },
+      {
+        "name": "John Miller",
+        "character": "Kenny",
+        "profileUrl": null
+      },
+      {
+        "name": "Jackie Quinn",
+        "character": "Mrs Quinn",
+        "profileUrl": null
+      },
+      {
+        "name": "James Ramsay",
+        "character": "Mr Quinn",
+        "profileUrl": null
+      },
+      {
+        "name": "Anne McLean",
+        "character": "Mrs Fowler",
+        "profileUrl": null
+      },
+      {
+        "name": "Craig Bonar",
+        "character": "Matt Monroe",
+        "profileUrl": null
+      },
+      {
+        "name": "Andrew McKenna",
+        "character": "Billy",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "scotland",
+      "glasgow, scotland",
+      "1970s",
+      "neighbor",
+      "canal",
+      "woman director",
+      "escapism"
+    ],
+    "trailerKey": "CHZ_MS2-iM0",
+    "tmdbDataVersion": 2
   },
   {
     "title": "La Ceremonie",
@@ -2524,7 +5446,87 @@
     "cinematographer": "Bernard Zitzermann",
     "musicComposer": "Matthieu Chabrol",
     "productionDesigner": "Daniel Mercier",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Sandrine Bonnaire",
+        "character": "Sophie Bonhomme",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iTHkJuVdFcAuZZtBH2frKTeujKG.jpg"
+      },
+      {
+        "name": "Isabelle Huppert",
+        "character": "Jeanne",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hwJQBS3jJA4i5RZ1iv6heBoXUGL.jpg"
+      },
+      {
+        "name": "Jean-Pierre Cassel",
+        "character": "Georges Lelièvre",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mXCkJdqzbnh0Kv30K4OtXbO0gTw.jpg"
+      },
+      {
+        "name": "Jacqueline Bisset",
+        "character": "Catherine Lelièvre",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4exg9F02WamsI67Hww6AZfTX0kI.jpg"
+      },
+      {
+        "name": "Virginie Ledoyen",
+        "character": "Melinda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sIx8EAaGqEaveQtUrCzQOqmoY2J.jpg"
+      },
+      {
+        "name": "Valentin Merlet",
+        "character": "Gilles",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2aHZi6FwCRnjtHxAjBjeyn6cdcD.jpg"
+      },
+      {
+        "name": "Julien Rochefort",
+        "character": "Jeremie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iwNckphkpwsFkzDieksZbQeiAAd.jpg"
+      },
+      {
+        "name": "Dominique Frot",
+        "character": "Madame Lantier",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/di5JlJvRVxnkCUqR8YlOMGGu67m.jpg"
+      },
+      {
+        "name": "Jean-François Perrier",
+        "character": "Priest",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mGqSXdW1K0tCy7jOiJIEtnVHEdo.jpg"
+      },
+      {
+        "name": "Ludovic Brillant",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Claire Chiron",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Claire-Marie Dentraygues",
+        "character": null,
+        "profileUrl": null
+      }
+    ],
+    "tagline": "France's Alfred Hitchcock Returns...",
+    "revenue": 10882920,
+    "keywords": [
+      "class society",
+      "france",
+      "illiteracy",
+      "country life",
+      "bourgeoisie",
+      "female friendship",
+      "pregnant minor",
+      "post",
+      "gallery owner",
+      "femme fatale",
+      "maid",
+      "family"
+    ],
+    "trailerKey": "2yTdbrL6MvM",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Metropolitan",
@@ -2594,7 +5596,83 @@
     "musicComposer": "Mark Suozzo, Tom Judson",
     "costumeDesigner": "Mary Jane Fort",
     "cinematographer": "John Thomas",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Edward Clements",
+        "character": "Tom Townsend",
+        "profileUrl": null
+      },
+      {
+        "name": "Chris Eigeman",
+        "character": "Nick Smith",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tXzouEBdfTQE3tUYZhfG5NDlJG3.jpg"
+      },
+      {
+        "name": "Taylor Nichols",
+        "character": "Charlie Black",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2VnYWsBXx19tNvBX1diwfjdLkjU.jpg"
+      },
+      {
+        "name": "Carolyn Farina",
+        "character": "Audrey Rouget",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pw05DL4jGc4BtXXZVGGbIc04QY9.jpg"
+      },
+      {
+        "name": "Isabel Gillies",
+        "character": "Cynthia McLean",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6va65ZAmrXKUT92c9RPPtDVZddP.jpg"
+      },
+      {
+        "name": "Dylan Hundley",
+        "character": "Sally Fowler",
+        "profileUrl": null
+      },
+      {
+        "name": "Allison Parisi",
+        "character": "Jane Clarke",
+        "profileUrl": null
+      },
+      {
+        "name": "Bryan Leder",
+        "character": "Fred Neff",
+        "profileUrl": null
+      },
+      {
+        "name": "Will Kempe",
+        "character": "Rick Von Sloneker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pz9IOUsrjCk3XyG6Crh4FfzMnSo.jpg"
+      },
+      {
+        "name": "Ellia Thompson",
+        "character": "Serena Slocum",
+        "profileUrl": null
+      },
+      {
+        "name": "Stephen Uys",
+        "character": "Victor Lemley",
+        "profileUrl": null
+      },
+      {
+        "name": "Roger W. Kirby",
+        "character": "Man at Bar",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "Finally... A film about the downwardly mobile.",
+    "budget": 225000,
+    "revenue": 2900000,
+    "keywords": [
+      "new york city",
+      "upper class",
+      "philosophy",
+      "manhattan, new york city",
+      "debutante",
+      "socialite party",
+      "young adult"
+    ],
+    "trailerKey": "_spYUaPcRp4",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Red Desert",
@@ -2659,7 +5737,82 @@
     "editor": "Eraldo Da Roma",
     "cinematographer": "Carlo Di Palma",
     "costumeDesigner": "Gitt Magrini",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Monica Vitti",
+        "character": "Giuliana",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fwDSIup9fJHnu7DHlAp20OSTDly.jpg"
+      },
+      {
+        "name": "Richard Harris",
+        "character": "Corrado Zeller",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lCvcVMuxrg1f5A8OMqY9AqkkcZR.jpg"
+      },
+      {
+        "name": "Carlo Chionetti",
+        "character": "Ugo",
+        "profileUrl": null
+      },
+      {
+        "name": "Xenia Valderi",
+        "character": "Linda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zsF3tycwQJR2SHVP9YM6Zy83lbe.jpg"
+      },
+      {
+        "name": "Rita Renoir",
+        "character": "Emilia",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6GdPgZeE6zTg5ChPKwOczeOj35e.jpg"
+      },
+      {
+        "name": "Lili Rheims",
+        "character": "Telescope Operator's Wife",
+        "profileUrl": null
+      },
+      {
+        "name": "Aldo Grotti",
+        "character": "Max",
+        "profileUrl": null
+      },
+      {
+        "name": "Valerio Bartoleschi",
+        "character": "Valerio",
+        "profileUrl": null
+      },
+      {
+        "name": "Emanuela Pala Carboni",
+        "character": "Girl in Fable",
+        "profileUrl": null
+      },
+      {
+        "name": "Giuliano Missirini",
+        "character": "Radio Telescope Operator",
+        "profileUrl": null
+      },
+      {
+        "name": "Bruno Borghi",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Beppe Conti",
+        "character": null,
+        "profileUrl": null
+      }
+    ],
+    "tagline": "This is the story of a woman… Her hidden thirsts and hungers…",
+    "keywords": [
+      "adultery",
+      "depression",
+      "factory",
+      "husband wife relationship",
+      "italy",
+      "fog",
+      "loneliness",
+      "mother son relationship"
+    ],
+    "trailerKey": "SY_MEkvIRuo",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Near Dark",
@@ -2731,7 +5884,94 @@
     "editor": "Howard E. Smith",
     "costumeDesigner": "Joseph A. Porro",
     "productionDesigner": "Stephen Altman",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Adrian Pasdar",
+        "character": "Caleb Colton",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4KdM69ljovbLumGoVe8ct9s6GJm.jpg"
+      },
+      {
+        "name": "Jenny Wright",
+        "character": "Mae",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uBY9QkFSjP8dhIqC7FoMif7X25u.jpg"
+      },
+      {
+        "name": "Lance Henriksen",
+        "character": "Jesse Hooker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1PkFmD5HdjmRa2DumtwINnnAjTH.jpg"
+      },
+      {
+        "name": "Bill Paxton",
+        "character": "Severen",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aLdNe6mt1cSi2zWlUYRregzfis5.jpg"
+      },
+      {
+        "name": "Jenette Goldstein",
+        "character": "Diamondback",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4YZVLLWEFtxPLaOAlndfzxH1WG1.jpg"
+      },
+      {
+        "name": "Tim Thomerson",
+        "character": "Loy Colton",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dCqpmO9nDA07NYSdyQF5JYnmxpL.jpg"
+      },
+      {
+        "name": "Joshua John Miller",
+        "character": "Homer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8OjkRkXUJemmvP3BgSwcg2iupQ5.jpg"
+      },
+      {
+        "name": "Marcie Leeds",
+        "character": "Sarah Colton",
+        "profileUrl": null
+      },
+      {
+        "name": "Kenny Call",
+        "character": "Deputy Sheriff",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mIxWMjp0cmiCZiUzmFmP2EToUGq.jpg"
+      },
+      {
+        "name": "Edward Corbett",
+        "character": "Ticket Seller",
+        "profileUrl": null
+      },
+      {
+        "name": "Troy Evans",
+        "character": "Plainclothes Officer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hRdsLKr430COdIIyeHY3QAdg45e.jpg"
+      },
+      {
+        "name": "Bill Cross",
+        "character": "Sheriff Eakers",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "...pray for daylight.",
+    "budget": 5000000,
+    "revenue": 3400000,
+    "keywords": [
+      "farm",
+      "small town",
+      "vampire",
+      "motel",
+      "sunlight",
+      "victim",
+      "kiss",
+      "gang leader",
+      "femme fatale",
+      "redneck",
+      "hitchhiker",
+      "exploding car",
+      "blood transfusion",
+      "road movie",
+      "police raid",
+      "woman director",
+      "neo-noir",
+      "nomad"
+    ],
+    "trailerKey": "XBDhZrzqcPY",
+    "tmdbDataVersion": 2
   },
   {
     "title": "A Girl Walks Home Alone at Night",
@@ -2803,7 +6043,81 @@
     "cinematographer": "Lyle Vincent",
     "costumeDesigner": "Natalie O'Brien",
     "musicComposer": "Bei Ru, Johnny Jewel",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Sheila Vand",
+        "character": "The Girl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zJ527qgVYG8pJ7JEUmTPq57ueYD.jpg"
+      },
+      {
+        "name": "Arash Marandi",
+        "character": "Arash",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2t0oSf4RHIiG2XlLqaSKBvMiRwx.jpg"
+      },
+      {
+        "name": "Marshall Manesh",
+        "character": "Hossein 'The Junkie'",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tnoopXK3bK3Hes2O5YHuCPoPVS4.jpg"
+      },
+      {
+        "name": "Mozhan Navabi",
+        "character": "Atti 'The Prostitute'",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s1LoPZVAzgGYuPXNNJv8mqoLMSe.jpg"
+      },
+      {
+        "name": "Dominic Rains",
+        "character": "Saeed 'The Pimp'",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fOTgkYQWryERySm6nX4wkfjRx1H.jpg"
+      },
+      {
+        "name": "Rome Shadanloo",
+        "character": "Shaydah 'The Princess'",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7jJqJ2mEH2RfRnfwS7K2bCrS2av.jpg"
+      },
+      {
+        "name": "Milad Eghbali",
+        "character": "The Street Urchin",
+        "profileUrl": null
+      },
+      {
+        "name": "Reza Sixo Safai",
+        "character": "Rockabilly",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/28Q7OhJXroL9gRIlRMsRK5z3AZy.jpg"
+      },
+      {
+        "name": "Ray Haratian",
+        "character": "The Boss 'Commercial'",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1DcOx50pdS1xgybHBiDNBpkRFkz.jpg"
+      },
+      {
+        "name": "Ana Lily Amirpour",
+        "character": "Skeleton Partygirl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bay1UyEh7oRwhW5ZIXvzpc33pXe.jpg"
+      },
+      {
+        "name": "Pej Vahdat",
+        "character": "DJ Porno",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aFxI4rU0m2XuLHp9ZqAzuYMLIRQ.jpg"
+      }
+    ],
+    "tagline": "The first Iranian Vampire Western.",
+    "budget": 1000000,
+    "revenue": 395000,
+    "keywords": [
+      "vampire",
+      "loneliness",
+      "black and white",
+      "prostitution",
+      "drugs",
+      "woman director",
+      "vampiress (female vampire)",
+      "critical",
+      "depressing",
+      "powerful"
+    ],
+    "trailerKey": "2zyGQuEkDT8",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Police Story",
@@ -2873,7 +6187,89 @@
     "costumeDesigner": "Ginger Fung Oi-Man",
     "editor": "Peter Cheung Yiu-Chung",
     "musicComposer": "Michael Lai Siu-Tin",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Jackie Chan",
+        "character": "Sergeant 'Kevin' Chan Ka-Kui",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nraZoTzwJQPHspAVsKfgl3RXKKa.jpg"
+      },
+      {
+        "name": "Brigitte Lin",
+        "character": "Salina Fong",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8Nq6F8bPy1HUHl4HkNIF0YGW1xD.jpg"
+      },
+      {
+        "name": "Maggie Cheung",
+        "character": "May",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hre6xmoDbh67YN7wR5nhUazPTlb.jpg"
+      },
+      {
+        "name": "Bill Tung Biu",
+        "character": "Inspector \"Uncle\" Bill Chou",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nB6ywhsUy3TlZpsulqtgR45IFUK.jpg"
+      },
+      {
+        "name": "Chor Yuen",
+        "character": "Chu Tao",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zDHHM7CAVoixsgkRDwmxqtTxpAi.jpg"
+      },
+      {
+        "name": "Charlie Cho Cha-Lee",
+        "character": "John Ko",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cpBOiG6IhklSXS1L13lxQm1XAx0.jpg"
+      },
+      {
+        "name": "Lam Kwok-Hung",
+        "character": "Superintendent Raymond Li",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6FTZA2PN7MaHPBmT3CayvNJEOxl.jpg"
+      },
+      {
+        "name": "Kam Hing-Yin",
+        "character": "Inspector Man",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oxSsZ66O4oRxeKJHDPIQF6nuzPQ.jpg"
+      },
+      {
+        "name": "Mars",
+        "character": "Kim",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sCeU2wtUOARcNXiNfswp1zoDFg5.jpg"
+      },
+      {
+        "name": "Kent Tong Chun-Yip",
+        "character": "Tak",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r6p6QSyynm0b1WZ5H9PCh5jR9sy.jpg"
+      },
+      {
+        "name": "David Lau Chi-Wing",
+        "character": "Counsellor Cheung",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4HxauNpFfZvMRYnKPRu1J8giYUV.jpg"
+      },
+      {
+        "name": "Wan Fat",
+        "character": "Jacknife / Mad Wing",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/d8fzlrn0NtGAEwjOGIFU8EozawP.jpg"
+      }
+    ],
+    "tagline": "You may know the name, but the game has changed.",
+    "budget": 500000,
+    "revenue": 18724000,
+    "keywords": [
+      "martial arts",
+      "kung fu",
+      "undercover",
+      "chase",
+      "gangster",
+      "fistfight",
+      "car crash",
+      "sword fight",
+      "murder",
+      "organized crime",
+      "police chase",
+      "hong kong",
+      "action hero"
+    ],
+    "trailerKey": "ccRgWRcKb9w",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Long Good Friday",
@@ -2941,7 +6337,87 @@
     "costumeDesigner": "Tudor George",
     "cinematographer": "Phil Meheux",
     "musicComposer": "Francis Monkman",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Bob Hoskins",
+        "character": "Harold Shand",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qOeE7bVHAsNTbP77Qk6TwrrWHZc.jpg"
+      },
+      {
+        "name": "Helen Mirren",
+        "character": "Victoria",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1reKRrsdsHXJaRVHVyOEg4oPTcZ.jpg"
+      },
+      {
+        "name": "Dave King",
+        "character": "Parky",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/empYTVZrarEYPqvXpueU08BlYBG.jpg"
+      },
+      {
+        "name": "Bryan Marshall",
+        "character": "Harris",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7g6rBCW7N49J9wwuFxoUr3KSeFk.jpg"
+      },
+      {
+        "name": "Derek Thompson",
+        "character": "Jeff",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yjOUReUYIH2hfTW5N4F2ZrUTR29.jpg"
+      },
+      {
+        "name": "Eddie Constantine",
+        "character": "Charlie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rhxMbjrygEvvxOKJIGiSeXntTN5.jpg"
+      },
+      {
+        "name": "Paul Freeman",
+        "character": "Colin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qrjgLfuNdXektuBwNL6onZBkbHw.jpg"
+      },
+      {
+        "name": "P.H. Moriarty",
+        "character": "Razors",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k0geInO1w0hWGqN5A2fx0l6K8NM.jpg"
+      },
+      {
+        "name": "Alan Ford",
+        "character": "Jack",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nSlngfcFsCPENxiqCwZnB1twKuC.jpg"
+      },
+      {
+        "name": "Paul Barber",
+        "character": "Erroll",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9MkXuS9egXer8htsSLLXLXYgTdc.jpg"
+      },
+      {
+        "name": "Karl Howman",
+        "character": "David",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oSmEQDITOVrB5VRremET6Uv5G8o.jpg"
+      },
+      {
+        "name": "Nick Stringer",
+        "character": "Billy",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "Who lit the fuse that tore Harold's world apart?",
+    "budget": 1000000,
+    "revenue": 500000,
+    "keywords": [
+      "london, england",
+      "casino",
+      "england",
+      "gangster",
+      "crime boss",
+      "car bomb",
+      "slaughterhouse",
+      "ira (irish republican army)",
+      "bombing",
+      "neo-noir",
+      "gay theme"
+    ],
+    "trailerKey": "aCp2dY6X_Qg",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Dogtooth",
@@ -3010,7 +6486,74 @@
     "editor": "Yorgos Mavropsaridis",
     "costumeDesigner": "Elli Papageorgakopoulou",
     "cinematographer": "Thimios Bakatakis",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Christos Stergioglou",
+        "character": "Father",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9nNyIj4A9B5PTTQTpkuc0cGLN9j.jpg"
+      },
+      {
+        "name": "Michele Valley",
+        "character": "Mother",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yVm0C5HXGvLCvOV8UqNHc6cCIRR.jpg"
+      },
+      {
+        "name": "Hristos Passalis",
+        "character": "Son",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oqnv7OUhTo8eOeB4NGMf595Y2vW.jpg"
+      },
+      {
+        "name": "Angeliki Papoulia",
+        "character": "Older Daughter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/59vmhblokh20zXL19Velo0ri1jA.jpg"
+      },
+      {
+        "name": "Mary Tsoni",
+        "character": "Younger Daughter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ki2T3DKS4NjqQVpJg2DRf86H5LL.jpg"
+      },
+      {
+        "name": "Anna Kalaitzidou",
+        "character": "Christina",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vYi8fa9L9gS7ScCVqwZgFfdmJ1R.jpg"
+      },
+      {
+        "name": "Steve Krikris",
+        "character": "Colleague",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qfGOVRvlrGjlm0kXDGqanfJWk8H.jpg"
+      },
+      {
+        "name": "Sissi Petropoulou",
+        "character": "Secretary",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fmyhw2rbUOKPgvOKDLEXoeQbYS6.jpg"
+      },
+      {
+        "name": "Alexander Voulgaris",
+        "character": "Dog Trainer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7ySTfVKBvi4le5XvIqQwvgwNFTh.jpg"
+      }
+    ],
+    "budget": 275000,
+    "revenue": 110248,
+    "keywords": [
+      "hostage",
+      "paranoia",
+      "dysfunctional family",
+      "incest",
+      "mental illness",
+      "tooth",
+      "sexual awakening",
+      "fantasy world",
+      "isolated house",
+      "home education",
+      "brother sister sex",
+      "strict father",
+      "amused",
+      "brother sister incest"
+    ],
+    "trailerKey": "YJe4eZ9l5KY",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Wise Blood",
@@ -3076,7 +6619,81 @@
     },
     "editor": "Roberto Silvi",
     "cinematographer": "Gerry Fisher",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "musicComposer": "Alex North",
+    "cast": [
+      {
+        "name": "Brad Dourif",
+        "character": "Hazel Motes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ex7AmuHM3owhUetYZAyOmN1ehWS.jpg"
+      },
+      {
+        "name": "Dan Shor",
+        "character": "Enoch Emory",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xsdNaTwcqogHFKBipxtiAZJFAlX.jpg"
+      },
+      {
+        "name": "Amy Wright",
+        "character": "Sabbath Lily",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wejr7718NPsCjTF2mvyOOIukRsc.jpg"
+      },
+      {
+        "name": "Harry Dean Stanton",
+        "character": "Asa Hawks",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9zOTpVMwMHNjPFBNoPy9vOBT1NC.jpg"
+      },
+      {
+        "name": "Mary Nell Santacroce",
+        "character": "Landlady",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qG5XHkQYpHVIs8Bpe0glSJB5teM.jpg"
+      },
+      {
+        "name": "Ned Beatty",
+        "character": "Hoover Shoates",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rUNNq9CYLkyOwnyGd8QA0LzhmJf.jpg"
+      },
+      {
+        "name": "John Huston",
+        "character": "Grandfather",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/saIbkr0jPzscRBKNG1suhgd3Yxb.jpg"
+      },
+      {
+        "name": "William Hickey",
+        "character": "Preacher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sqqmvSkDK6vDNrmEgUAjzWztg9c.jpg"
+      },
+      {
+        "name": "J.L. Parker",
+        "character": "Karl",
+        "profileUrl": null
+      },
+      {
+        "name": "Marvin Sapp",
+        "character": "Raymond",
+        "profileUrl": null
+      },
+      {
+        "name": "Richard Earle",
+        "character": "Jakob Winslow",
+        "profileUrl": null
+      },
+      {
+        "name": "Herb Kossover",
+        "character": "Jacob Wood",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "An American Masterpiece!",
+    "keywords": [
+      "based on novel or book",
+      "southern usa",
+      "christianity",
+      "redemption",
+      "preacher",
+      "blindness"
+    ],
+    "trailerKey": "GtvjLdwEBMM",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Johnny Mnemonic",
@@ -3148,7 +6765,85 @@
     "musicComposer": "Brad Fiedel, Mychael Danna",
     "productionDesigner": "Nilo Rodis-Jamero",
     "costumeDesigner": "Olga Dimitrovová",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Keanu Reeves",
+        "character": "Johnny Mnemonic",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kEoUZKEG7dzbCESDjd0CKAN1r0n.jpg"
+      },
+      {
+        "name": "Dina Meyer",
+        "character": "Jane",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1AQEXem8soBEKjjDhE0mOyXtjCG.jpg"
+      },
+      {
+        "name": "Takeshi Kitano",
+        "character": "Takahashi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6pnXXkCx8wkCHvOrcWjaY58KA7k.jpg"
+      },
+      {
+        "name": "Ice-T",
+        "character": "J-Bone",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/96TdPckI16ggfHcPrSFf6bHYLLe.jpg"
+      },
+      {
+        "name": "Dolph Lundgren",
+        "character": "Street Preacher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fB1tOws6Gav0xE8LYlELEb82hJt.jpg"
+      },
+      {
+        "name": "Denis Akiyama",
+        "character": "Shinji",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3tbch0bf53gf6YYVnBvPL61Vkaw.jpg"
+      },
+      {
+        "name": "Henry Rollins",
+        "character": "Spider",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2E0cZdoJsdt1Lv4waG3s6fsfJeU.jpg"
+      },
+      {
+        "name": "Barbara Sukowa",
+        "character": "Anna Kalmann",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lBPD683veT1RYdXqMAdAsldAtvI.jpg"
+      },
+      {
+        "name": "Udo Kier",
+        "character": "Ralfi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lIOGDMvrVHMgPXdhicLI41tY1zf.jpg"
+      },
+      {
+        "name": "Tracy Tweed",
+        "character": "Pretty",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5ztCr5bserDBYO28AsqH7S6NyXt.jpg"
+      },
+      {
+        "name": "Falconer Abraham",
+        "character": "Yomamma",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yedXzkCKaXl0BvB4PTFa6iTO0rX.jpg"
+      },
+      {
+        "name": "Don Francks",
+        "character": "Hooky",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/q1bvy838NZCLDxWLpwhJYC5FsDA.jpg"
+      }
+    ],
+    "tagline": "The future's most wanted fugitive.",
+    "budget": 25000000,
+    "revenue": 19075720,
+    "keywords": [
+      "virtual reality",
+      "dystopia",
+      "pharmaceutical industry",
+      "computer chip",
+      "courier",
+      "cyber",
+      "cyberpunk",
+      "cyberspace",
+      "based on short story"
+    ],
+    "trailerKey": "PDzjBr1c4qs",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Modern Times",
@@ -3218,7 +6913,102 @@
     "editor": "Charlie Chaplin, Willard Nico",
     "productionDesigner": "Charles D. Hall",
     "musicComposer": "Charlie Chaplin",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Charlie Chaplin",
+        "character": "The Tramp (A Factory Worker)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lRI9Ky1SMOehn04OqhYJ5hQfgIK.jpg"
+      },
+      {
+        "name": "Paulette Goddard",
+        "character": "A Gamin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7fMtXuVbJMbsFB4U3CsgDdivizP.jpg"
+      },
+      {
+        "name": "Henry Bergman",
+        "character": "Cafe Proprietor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/x41Z1XOGnBg6xnFhxunVQBmcJ36.jpg"
+      },
+      {
+        "name": "Tiny Sandford",
+        "character": "Big Bill",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dsfbvZOIb1rdBx8eUGa2QTYyqGE.jpg"
+      },
+      {
+        "name": "Chester Conklin",
+        "character": "Mechanic",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qaEgtSQU4eTX2fMng7Grc7G2xzq.jpg"
+      },
+      {
+        "name": "Hank Mann",
+        "character": "Burglar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5EGNEc8hjNmyNA6bh39czJ0BcGS.jpg"
+      },
+      {
+        "name": "Stanley Blystone",
+        "character": "Gamin's Father",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9kYGxCZeyYJWTJuvpt7YFrZOx3Y.jpg"
+      },
+      {
+        "name": "Al Ernest Garcia",
+        "character": "President of the Electro Steel Corp.",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pz1VDUCBCvNiZ8qAHg9N4ejXmSX.jpg"
+      },
+      {
+        "name": "Richard Alexander",
+        "character": "Prison Cellmate",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/slzm6BNole2pXxjrfnoeZKmFEUY.jpg"
+      },
+      {
+        "name": "Cecil Reynolds",
+        "character": "Minister",
+        "profileUrl": null
+      },
+      {
+        "name": "Mira McKinney",
+        "character": "Minister's Wife",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8cLD5TlKrKwob3dQozTbC2C28Z2.jpg"
+      },
+      {
+        "name": "Murdock MacQuarrie",
+        "character": "J. Widdecombe Billows",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xjXY0di1hFXfnErsfAwkOgBSCjd.jpg"
+      }
+    ],
+    "tagline": "He stands alone as the greatest entertainer of modern times! No one on earth can make you laugh as heartily or touch your heart as deeply...the whole world laughs, cries and thrills to his priceless genius!",
+    "budget": 1500000,
+    "revenue": 1800000,
+    "keywords": [
+      "factory",
+      "ambulance",
+      "invention",
+      "mental breakdown",
+      "tramp",
+      "great depression",
+      "industrial revolution",
+      "slapstick comedy",
+      "automation",
+      "jail",
+      "hospital",
+      "black and white",
+      "machine",
+      "pardon",
+      "silent film",
+      "unemployment",
+      "screwdriver",
+      "police arrest",
+      "wrongful conviction",
+      "communism",
+      "assembly line",
+      "prison break attempt",
+      "burglars",
+      "smuggling",
+      "hilarious",
+      "orphans"
+    ],
+    "trailerKey": "NNznUyDmSFc",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Involuntary",
@@ -3286,7 +7076,80 @@
     "productionDesigner": "Pia Aleborg",
     "costumeDesigner": "Pia Aleborg",
     "cinematographer": "Marius Dybwad Brandrud",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Villmar Björkman",
+        "character": "Villmar",
+        "profileUrl": null
+      },
+      {
+        "name": "Linnea Cart-Lamy",
+        "character": "Linnea",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8hzLS6FIVG4qjYPxxNymkhlnWGI.jpg"
+      },
+      {
+        "name": "Leif Edlund",
+        "character": "Leffe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4kGG48o44uc2h6n2n6Xhy7lqSQj.jpg"
+      },
+      {
+        "name": "Sara Eriksson",
+        "character": "Sara",
+        "profileUrl": null
+      },
+      {
+        "name": "Lola Ewerlund",
+        "character": "Lola",
+        "profileUrl": null
+      },
+      {
+        "name": "Olle Liljas",
+        "character": "Olle",
+        "profileUrl": null
+      },
+      {
+        "name": "Maria Lundqvist",
+        "character": "The Actress",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qpuCubTutyXo3H33DOS86S8Xh1.jpg"
+      },
+      {
+        "name": "Cecilia Milocco",
+        "character": "The Teacher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wjpy87iQiLw3da8vHObwzngJD8J.jpg"
+      },
+      {
+        "name": "Simeon Nordius",
+        "character": "The Son",
+        "profileUrl": null
+      },
+      {
+        "name": "Henrik Vikman",
+        "character": "Bus Driver",
+        "profileUrl": null
+      },
+      {
+        "name": "Vera Vitali",
+        "character": "Vera",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/haEZ30hA9rROlaiUs0IfpDLbWwX.jpg"
+      },
+      {
+        "name": "Hanna Lekander",
+        "character": "Hanna",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "homophobia",
+      "sweden",
+      "bus driver",
+      "photograph",
+      "tongue",
+      "multiple storylines",
+      "social conflict"
+    ],
+    "trailerKey": "MJMtun664tY",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Diabolique",
@@ -3350,7 +7213,92 @@
     "editor": "Madeleine Gug",
     "cinematographer": "Armand Thirard",
     "costumeDesigner": "Carven",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Véra Clouzot",
+        "character": "Christina Delassalle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/g9zC50D4awugizaukcLTvRDrZEs.jpg"
+      },
+      {
+        "name": "Simone Signoret",
+        "character": "Nicole Horner",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vRI2Vt3HX911uDrVK170waQsL8b.jpg"
+      },
+      {
+        "name": "Paul Meurisse",
+        "character": "Michel Delassalle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/i9YSdeQDiMGoN12aZwsPIwh0tjs.jpg"
+      },
+      {
+        "name": "Charles Vanel",
+        "character": "Police Inspector Alfred Fichet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ymJLGi92PXIQJSnGoJJxPGrsAmO.jpg"
+      },
+      {
+        "name": "Jean Brochard",
+        "character": "Plantiveau",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5g70gEvlUQyy3jRTNX7Rt99rBq.jpg"
+      },
+      {
+        "name": "Pierre Larquey",
+        "character": "Mr. Drain",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hXNfCJTnejlhSXqwTA3K4qkKdcn.jpg"
+      },
+      {
+        "name": "Michel Serrault",
+        "character": "Mr. Raymond",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/33lHlicDySXCjA94JyVigZZYXs1.jpg"
+      },
+      {
+        "name": "Yves-Marie Maurin",
+        "character": "Moinet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gdwmso8ObxrJ5blPqDEigiP1iCV.jpg"
+      },
+      {
+        "name": "Georges Poujouly",
+        "character": "Soudieu",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vXPOCMqGMSUQHdPQizrNXCdn8dP.jpg"
+      },
+      {
+        "name": "Thérèse Dorny",
+        "character": "Mrs. Herboux",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6kQR2P26DN35zvew4AIlqoPmTVc.jpg"
+      },
+      {
+        "name": "Noël Roquevert",
+        "character": "Mr. Herboux",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fDKPvwIaOdF35khvifDxYUvnzsY.jpg"
+      },
+      {
+        "name": "Jean Lefebvre",
+        "character": "Robert",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4YCnvkYHj1lEk2JZxhKOUoOuJRB.jpg"
+      }
+    ],
+    "tagline": "See it, be amazed at it, but...BE QUIET ABOUT IT!",
+    "keywords": [
+      "wife",
+      "female lover",
+      "morgue",
+      "swimming pool",
+      "teacher",
+      "plan gone wrong",
+      "mistress",
+      "black and white",
+      "french noir",
+      "boys' boarding school",
+      "headmaster",
+      "philanderer",
+      "mischievous children",
+      "missing body",
+      "abusive husband",
+      "abused wife",
+      "wicker trunk",
+      "frightened woman"
+    ],
+    "trailerKey": "BzbGtjtfZwA",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Thief of Bagdad",
@@ -3416,7 +7364,93 @@
     "editor": "Charles Crichton",
     "productionDesigner": "Vincent Korda",
     "costumeDesigner": "John Armstrong, Marcel Vertès, Oliver Messel",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Conrad Veidt",
+        "character": "Jaffar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rmlK341dwK57BVWz1S96tpv7SSF.jpg"
+      },
+      {
+        "name": "Sabu",
+        "character": "Abu",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4tBtK9Hi4Plns5AP7sjixaWJZat.jpg"
+      },
+      {
+        "name": "June Duprez",
+        "character": "Princess",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5aNLoJ9FkbtJR7FphXHXvSldX0V.jpg"
+      },
+      {
+        "name": "John Justin",
+        "character": "Ahmad",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mZGo1i0nbS8CUeVUDnrHHLJU9Q9.jpg"
+      },
+      {
+        "name": "Rex Ingram",
+        "character": "Djinn",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gYkV6lbIBJygBMzdaeV9h70F8iG.jpg"
+      },
+      {
+        "name": "Miles Malleson",
+        "character": "Sultan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lHJ3Rww0EpSxDMLuA3w71u6n2B.jpg"
+      },
+      {
+        "name": "Morton Selten",
+        "character": "The Old King",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nvB0zxZiyA2M59jVU2oWfMaWzgh.jpg"
+      },
+      {
+        "name": "Mary Morris",
+        "character": "Halima",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hMio0icUzhPKb1YOQnAd8CrZFIg.jpg"
+      },
+      {
+        "name": "Bruce Winston",
+        "character": "The Merchant",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rbXqHaHiZOZg8Uuhv6DhLrw8aew.jpg"
+      },
+      {
+        "name": "Hay Petrie",
+        "character": "Astrologer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/33sTp5sSEGS0aDQva2BQlKXPaMT.jpg"
+      },
+      {
+        "name": "Adelaide Hall",
+        "character": "Singer",
+        "profileUrl": null
+      },
+      {
+        "name": "Roy Emerton",
+        "character": "Jailer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tX0ytOGq3dRDuYEDhFHPT7JjV8d.jpg"
+      }
+    ],
+    "tagline": "ONE THOUSAND AND ONE SIGHTS FROM THE THOUSAND OF ONE NIGHTS....",
+    "keywords": [
+      "princess",
+      "love at first sight",
+      "giant spider",
+      "flying horse",
+      "sultan",
+      "flying carpet",
+      "bagdad",
+      "djinn",
+      "orient",
+      "thief",
+      "baghdad",
+      "blindness",
+      "genie",
+      "arabian nights",
+      "crystal ball",
+      "magician",
+      "turned into animal",
+      "wishes",
+      "vibrant"
+    ],
+    "trailerKey": "7F_FNm5GABw",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Devils",
@@ -3489,7 +7523,99 @@
     "productionDesigner": "Derek Jarman",
     "musicComposer": "Peter Maxwell Davies",
     "costumeDesigner": "Shirley Russell",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Vanessa Redgrave",
+        "character": "Sister Jeanne des Anges",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hBsjc7cW1DA0V6APwe3A7ESH3Lv.jpg"
+      },
+      {
+        "name": "Oliver Reed",
+        "character": "Father Urbain Grandier",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dWfotc1X71wNCGyPO9hXpv8U9Gw.jpg"
+      },
+      {
+        "name": "Dudley Sutton",
+        "character": "Baron de Laubardemont",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3xjbUsuCgRmR3NLZ5bPybE9XLEz.jpg"
+      },
+      {
+        "name": "Max Adrian",
+        "character": "Ibert",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xCU6ank4Z22ccltBgXjEGln9BE1.jpg"
+      },
+      {
+        "name": "Gemma Jones",
+        "character": "Madeleine de Brou",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hFApnOEWXyE55ONGGXis6a0PPHM.jpg"
+      },
+      {
+        "name": "Murray Melvin",
+        "character": "Father-Canon Jean Mignon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s9kz6einxqpufnMtjypeK1CIppB.jpg"
+      },
+      {
+        "name": "Michael Gothard",
+        "character": "Father Pierre Barre",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5wyxDscSXiTKeTDBxr6y17YuRXJ.jpg"
+      },
+      {
+        "name": "Georgina Hale",
+        "character": "Philippe Trincant",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/elEJol92JBxypUayYrYEzOvsKPY.jpg"
+      },
+      {
+        "name": "Brian Murphy",
+        "character": "Adam",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sWRDS8V2cWl0TeOt0kAICuiNwbS.jpg"
+      },
+      {
+        "name": "Christopher Logue",
+        "character": "Cardinal Richelieu",
+        "profileUrl": null
+      },
+      {
+        "name": "Graham Armitage",
+        "character": "King Louis XIII",
+        "profileUrl": null
+      },
+      {
+        "name": "John Woodvine",
+        "character": "Louis Trincant",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mqNKneqT3W4YEfW35BN1UJ1kJoy.jpg"
+      }
+    ],
+    "tagline": "Hell will hold no surprises for them...",
+    "budget": 2000000,
+    "revenue": 11000000,
+    "keywords": [
+      "based on novel or book",
+      "nun",
+      "chaos",
+      "inquisition",
+      "exploitation",
+      "satire",
+      "surrealism",
+      "biography",
+      "based on true story",
+      "based on play or musical",
+      "sin",
+      "hysteria",
+      "torture",
+      "blasphemy",
+      "convent (nunnery)",
+      "nunsploitation",
+      "17th century",
+      "grim",
+      "religious controversy",
+      "sexual perversion",
+      "psychological horror",
+      "psychological drama",
+      "bold"
+    ],
+    "trailerKey": "eCF2S3vchE4",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Ear for Eye",
@@ -3558,7 +7684,72 @@
     "editor": "Mdhamiri á Nkemi",
     "cinematographer": "Joel Honeywell, Luciana Riso Soto",
     "musicComposer": "Luke Sutherland",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Lashana Lynch",
+        "character": "US Female",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ypNxRag9uJ5nzPAN2um3amQK340.jpg"
+      },
+      {
+        "name": "Tosin Cole",
+        "character": "US Young Adult",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8sFFg9Pw2OmAXPr4Lhql8ANzd4e.jpg"
+      },
+      {
+        "name": "Danny Sapani",
+        "character": "US Adult",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/h6goTpKA74Z6ePB2BAEEyQnGtCF.jpg"
+      },
+      {
+        "name": "Carmen Munroe",
+        "character": "US Elder Woman",
+        "profileUrl": null
+      },
+      {
+        "name": "Hayden McLean",
+        "character": "US Son",
+        "profileUrl": null
+      },
+      {
+        "name": "Sharlene Whyte",
+        "character": "US Mom",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/14xDDiPwe0eLOHSMT2qDu7ue36u.jpg"
+      },
+      {
+        "name": "David Gyasi",
+        "character": "US Dad",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1382u2e4jiGhuDKgeK9UZtXXqfh.jpg"
+      },
+      {
+        "name": "Kayla Meikle",
+        "character": "US Young Woman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5JNDvRUGuPqzeDCbHlf6vB8uD51.jpg"
+      },
+      {
+        "name": "Jade Anouka",
+        "character": "UK Woman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/573wwbuWia2bgVLtE2MVzm00MYi.jpg"
+      },
+      {
+        "name": "Ronkẹ Adékoluẹjo",
+        "character": "UK Friend 1",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ytKTDHU5SX8P0M8heXP3mC6xJ5n.jpg"
+      },
+      {
+        "name": "Danielle Vitalis",
+        "character": "UK Friend 2",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9MypVBABbiI0TWrRJc5ihNQC15N.jpg"
+      },
+      {
+        "name": "Sule Rimi",
+        "character": "UK Dad",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wrcTxNLEkSB8EsboxFYbHv3mYuc.jpg"
+      }
+    ],
+    "tagline": "Change is gonna do it’s thing with or without you.",
+    "trailerKey": "l6x7Do2VgIw",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Ashes and Diamonds",
@@ -3622,7 +7813,81 @@
     "productionDesigner": "Roman Mann",
     "editor": "Halina Nawrocka",
     "costumeDesigner": "Katarzyna Chodorowicz",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Zbigniew Cybulski",
+        "character": "Maciek Chełmicki",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sJYAqyRdSd5C2DIEbu0KudSG1uv.jpg"
+      },
+      {
+        "name": "Ewa Krzyżewska",
+        "character": "Krystyna Rozbicka",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k92OArg6gXQdGb3za6lIYa9t51e.jpg"
+      },
+      {
+        "name": "Wacław Zastrzeżynski",
+        "character": "Szczuka",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3UwkbU9uZy23jb5egcIIiidL8RD.jpg"
+      },
+      {
+        "name": "Adam Pawlikowski",
+        "character": "Andrzej Kossecki",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hBFx4aSxTo9AQEIDB6j8NbeGivf.jpg"
+      },
+      {
+        "name": "Bogumił Kobiela",
+        "character": "Drewnowski",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5WqICkwXbhMLMmO8gOirhNTw90C.jpg"
+      },
+      {
+        "name": "Jan Ciecierski",
+        "character": "Porter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8bZJ3uTWGN05yZybocbKL7xSqGJ.jpg"
+      },
+      {
+        "name": "Stanisław Milski",
+        "character": "Pieniążek",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1pS2QUmrpc0HbONGQIaquRTTJ0n.jpg"
+      },
+      {
+        "name": "Artur Młodnicki",
+        "character": "Kotowicz",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/firrOAVhGCYvtkaXTT0OXtkmL1d.jpg"
+      },
+      {
+        "name": "Halina Kwiatkowska",
+        "character": "Staniewiczowa",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qUgmiD2YXwGAVT5z0yHkrWLXNOG.jpg"
+      },
+      {
+        "name": "Ignacy Machowski",
+        "character": "Waga",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ureFtcuwMCqB3czQsJmcUyf36FH.jpg"
+      },
+      {
+        "name": "Zbigniew Skowroński",
+        "character": "Slomka",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pjYFXI2HYnF0yVBBxg7Jrdm1Hci.jpg"
+      },
+      {
+        "name": "Barbara Krafftówna",
+        "character": "Stefka",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7Y2FonoCOScUNuA1qDhdjpB6Ous.jpg"
+      }
+    ],
+    "tagline": "Touched with the fire and rebellion of a new generation of Polish film makers",
+    "keywords": [
+      "polish resistance",
+      "world war ii",
+      "soviet military",
+      "black and white",
+      "post war",
+      "post world war ii",
+      "post-war poland"
+    ],
+    "trailerKey": "O6kcDS5QM6I",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Music Room",
@@ -3688,7 +7953,80 @@
     "cinematographer": "Subrata Mitra",
     "musicComposer": "Robin Majumdar, Ustad Vilayat Khan",
     "editor": "Dulal Dutta",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Chhabi Biswas",
+        "character": "Biswambhar Roy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yUmZUJVPPxFyUDC53bvfKpDk7Dq.jpg"
+      },
+      {
+        "name": "Gangapada Basu",
+        "character": "Mahim Ganguli",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9DkiVQLWtdCQvEZLLl7snAJEZ0K.jpg"
+      },
+      {
+        "name": "Kali Sarkar",
+        "character": "Anantha",
+        "profileUrl": null
+      },
+      {
+        "name": "Tulsi Lahiri",
+        "character": "Prashanna",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gXHbsZxLUMb7zoExyERA58oPJDR.jpg"
+      },
+      {
+        "name": "Padmadevi",
+        "character": "Mahamaya Roy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/j80DjlSvoC0nGEvF6jcKdNjjEAw.jpg"
+      },
+      {
+        "name": "Pinaki Sengupta",
+        "character": "Khoka Roy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6MkmjUtm6aMF8s4WBzN7jvLRgCQ.jpg"
+      },
+      {
+        "name": "Begum Akhtar",
+        "character": "Durga Bai",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/b1LrAO1AETt6FSmM277lPenUlUn.jpg"
+      },
+      {
+        "name": "Waheed Khan",
+        "character": "Ustad Ujir Khan",
+        "profileUrl": null
+      },
+      {
+        "name": "Roshan Kumari",
+        "character": "Krishna Bai",
+        "profileUrl": null
+      },
+      {
+        "name": "Sardar Akhtar",
+        "character": "Singer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2WhRyUKPabxa57s31Xhrl5OP2vW.jpg"
+      },
+      {
+        "name": "Bismillah Khan",
+        "character": "Musician",
+        "profileUrl": null
+      },
+      {
+        "name": "Dakshinamohan Thakur",
+        "character": "Musician",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "suicide",
+      "loss of loved one",
+      "servant",
+      "bankrupt",
+      "country house",
+      "country estate",
+      "teacher"
+    ],
+    "trailerKey": "woMURYCtTtQ",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Andrei Rublev",
@@ -3752,9 +8090,101 @@
     "musicComposer": "Vyacheslav Ovchinnikov",
     "editor": "Lyudmila Feiginova, Olga Shevkunenko, Tatyana Egorycheva",
     "costumeDesigner": "Lidiya Novi, Maya Abar-Baranovskaya",
-    "productionDesigner": "Yevgeni Chernyayev",
+    "productionDesigner": "Evgeniy Chernyaev, Ippolit Novoderyozhkin, Sergey Voronkov",
     "cinematographer": "Vadim Yusov",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Anatoliy Solonitsyn",
+        "character": "Andrei Rublev",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/37Vb7vNMHAz1s2WI5kW4BHt0X0N.jpg"
+      },
+      {
+        "name": "Ivan Lapikov",
+        "character": "Kirill",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4Bd5CsAvOtPfSoNi7dfCMWAs1A9.jpg"
+      },
+      {
+        "name": "Mykola Hrynko",
+        "character": "Daniil Chornyy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/n8lxXQbLYOed7AeowxA49yB2jyS.jpg"
+      },
+      {
+        "name": "Nikolai Sergeyev",
+        "character": "Theophanus the Greek",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6GB7fEtDEQLShIyEhWIaGZTKDYE.jpg"
+      },
+      {
+        "name": "Irma Raush",
+        "character": "God's Fool",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y4OrVv64rB5ffIZKuiSgCbkGDWd.jpg"
+      },
+      {
+        "name": "Nikolay Burlyaev",
+        "character": "Boriska",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lVpc5KNypdHVNdJJQZk7p4eijip.jpg"
+      },
+      {
+        "name": "Yuriy Nazarov",
+        "character": "Grand Duke / Minor Duke",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5kSJ2Q9fcUYD5yeGvQiw2z4tFxC.jpg"
+      },
+      {
+        "name": "Yuriy Nikulin",
+        "character": "Patrikey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sxiwVxrO5VHtdIieeQH8m14JE2k.jpg"
+      },
+      {
+        "name": "Rolan Bykov",
+        "character": "Buffoon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y5glWWySA61CeGk9kWA6CZkMG4J.jpg"
+      },
+      {
+        "name": "Nikolay Grabbe",
+        "character": "Stepan, Centurion of the Grand Duke",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tU7amnjnlUxQLdnhivzh2p5ToS0.jpg"
+      },
+      {
+        "name": "Mikhail Kononov",
+        "character": "Foma",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6RBn8sey5mQw1mBhfbRSwDNAjX0.jpg"
+      },
+      {
+        "name": "Stepan Krylov",
+        "character": "Senior Foundry Worker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6lMBWThnyKxvpqL8Z5WPkmJBBDi.jpg"
+      }
+    ],
+    "tagline": "In much wisdom there is much grief.",
+    "budget": 1300000,
+    "revenue": 24173,
+    "keywords": [
+      "rape",
+      "christianity",
+      "monk",
+      "artist",
+      "cathedral",
+      "crucifixion",
+      "famine",
+      "painter",
+      "icon",
+      "biography",
+      "tatars",
+      "teacher",
+      "bell",
+      "black and white",
+      "torture",
+      "massacre",
+      "brutality",
+      "middle ages (476-1453)",
+      "monastery",
+      "tartar",
+      "bell maker",
+      "15th century",
+      "religious vow"
+    ],
+    "trailerKey": "t1d5FSyMEd8",
+    "tmdbDataVersion": 2
   },
   {
     "title": "In a Year of 13 Moons",
@@ -3818,7 +8248,74 @@
     "musicComposer": "Peer Raben",
     "cinematographer": "Rainer Werner Fassbinder",
     "productionDesigner": "Franz Vacek",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Volker Spengler",
+        "character": "Elvira Weishaupt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8Sp51c1dL4XrLp4klyakr0UzD6E.jpg"
+      },
+      {
+        "name": "Ingrid Caven",
+        "character": "Zora la rouge",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/py0XImGnp27PIWYAMWIyNP78X5K.jpg"
+      },
+      {
+        "name": "Gottfried John",
+        "character": "Anton Saitz",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/duXWjkperrnUq094bgsYddJeIG0.jpg"
+      },
+      {
+        "name": "Elisabeth Trissenaar",
+        "character": "Irene Weishaupt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rdP7FOLgLel13mSQokktn7jrN0s.jpg"
+      },
+      {
+        "name": "Eva Mattes",
+        "character": "Marie-Ann",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/63ET2xZ3ezbDGKwXxz2eqwX0pxB.jpg"
+      },
+      {
+        "name": "Günther Kaufmann",
+        "character": "Chauffeur",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lRbiLa150KS13aRom2NI78Pd8YC.jpg"
+      },
+      {
+        "name": "Lilo Pempeit",
+        "character": "Schwester Gudrun",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cKTUKW1TLHqi86hgNMRwiii8eLQ.jpg"
+      },
+      {
+        "name": "Isolde Barth",
+        "character": "Sybille",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nYUvJewwKevpDp7ho3kRMSTUZip.jpg"
+      },
+      {
+        "name": "Karl Scheydt",
+        "character": "Hacker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nAOPQ4CU7LgLuKnSmKdPlOMmdSj.jpg"
+      },
+      {
+        "name": "Walter Bockmayer",
+        "character": "Seelen-Frieda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s4ALvX2jiGOJL2ZJii1aucGxyK6.jpg"
+      },
+      {
+        "name": "Gerhard Zwerenz",
+        "character": "Burghard Hauser",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "frankfurt am main, germany",
+      "sex change",
+      "slaughterhouse",
+      "transsexual",
+      "lgbt",
+      "gay theme"
+    ],
+    "trailerKey": "ksJWxr_ScDY",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Battle of Algiers",
@@ -3887,7 +8384,88 @@
     "editor": "Mario Morra, Mario Serandrei",
     "productionDesigner": "Sergio Canevari",
     "cinematographer": "Marcello Gatti",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Brahim Hadjadj",
+        "character": "Ali La Pointe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/84w4StAMYafVsw2Ci2sE70fyPpy.jpg"
+      },
+      {
+        "name": "Mohamed Ben Kassen",
+        "character": "Petit Omar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u9YNccRK8opw9W8M5yS291buNAg.jpg"
+      },
+      {
+        "name": "Yacef Saâdi",
+        "character": "El-Hadi Jaffar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hUjX6OaPx3xn0eTrbQjLSb1M79z.jpg"
+      },
+      {
+        "name": "Fouzia El Kader",
+        "character": "Halima",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7hJkCgyubDlc4CDaFW4XduXp3qy.jpg"
+      },
+      {
+        "name": "Hadj Smaine Mohamed Seghir",
+        "character": null,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/27OP1y0lfHpGV5Spu1b8BUA1Umx.jpg"
+      },
+      {
+        "name": "Larbi Zekkal",
+        "character": "Combattant FLN",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zbV5OjY1bhJ4eg0ttZHWky3o5qO.jpg"
+      },
+      {
+        "name": "Rouiched",
+        "character": "The Drunk Man (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xxI87MXvn9ZvEh6xmcHP0gBiZkW.jpg"
+      },
+      {
+        "name": "Noureddine Brahimi",
+        "character": "Responsable FLN",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8R6FukyLQ8obPQb4oEAXHBiPBcQ.jpg"
+      },
+      {
+        "name": "Si Mohamed Baghdadi",
+        "character": "Larbi Ben M'hidi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rjInfnTbj5FaXzFvA1JaorAmpHm.jpg"
+      },
+      {
+        "name": "Abderrahmane Brahimi",
+        "character": "Le Marié de la Casbah",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8NSuIWB8GYMtjmBS8kwzgLvRPwX.jpg"
+      },
+      {
+        "name": "Jean Martin",
+        "character": "Colonel Philippe Mathieu",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/f7J7ItHt6AHz8z2PQuWpdH0lCHz.jpg"
+      },
+      {
+        "name": "Fatiha Djoudi",
+        "character": "La Mariée de la Casbah",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "The Revolt that Stirred the World!",
+    "budget": 800000,
+    "revenue": 964028,
+    "keywords": [
+      "revolution",
+      "algerian",
+      "algiers, algeria",
+      "resistance fighter",
+      "french colonialism",
+      "algerian war (1954-62)",
+      "battle of algiers",
+      "struggle for independence",
+      "anti-colonialism",
+      "djazair",
+      "independance war",
+      "urban guerilla"
+    ],
+    "trailerKey": "vhhoS3zOskE",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Color of Pomegranates",
@@ -3952,7 +8530,78 @@
     "costumeDesigner": "Elene Akhvlediani, I. Karalyan, Zh. Sarabyan",
     "cinematographer": "Suren Shakhbazyan",
     "musicComposer": "Tigran Mansuryan",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Spartak Bagashvili",
+        "character": "Poet's Father",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qSWiFXjGbkjn7lQKWqneikazxBz.jpg"
+      },
+      {
+        "name": "Sofiko Chiaureli",
+        "character": "Poet as a Youth / Poet's Love / Poet's Muse / Mime / Angel of Resurrection",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/riiVQWII0ANwoOLiIIRVHjri68n.jpg"
+      },
+      {
+        "name": "Medea Japaridze",
+        "character": "Poet's Mother",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lv8WzBdjo7nhIgJT0M4Fb7YqC7E.jpg"
+      },
+      {
+        "name": "Vilen Galstyan",
+        "character": "Sayat-Nova",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mzvtSgxl5xM3j3tdEJNMWSHPFhl.jpg"
+      },
+      {
+        "name": "Gogi Gegechkori",
+        "character": "Old Poet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cDcYk3KJefYG3HWUUXfDuJoVTRo.jpg"
+      },
+      {
+        "name": "Melkon Alekyan",
+        "character": "Young Poet",
+        "profileUrl": null
+      },
+      {
+        "name": "Hovhannes Minasyan",
+        "character": "Prince",
+        "profileUrl": null
+      },
+      {
+        "name": "Onik Minasyan",
+        "character": "Prince",
+        "profileUrl": null
+      },
+      {
+        "name": "Yuri Amiryan",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "I. Babayan",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "Medea Bibileishvili",
+        "character": null,
+        "profileUrl": null
+      },
+      {
+        "name": "T. Dvali",
+        "character": null,
+        "profileUrl": null
+      }
+    ],
+    "tagline": "A poetic evocation of the life of Armenian poet Sayat Nova.",
+    "keywords": [
+      "poet",
+      "armenian",
+      "awestruck",
+      "bewildered"
+    ],
+    "trailerKey": "RsrUqqnPA3Q",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Only the River Flows",
@@ -4018,7 +8667,72 @@
     },
     "editor": "Matthieu Laclau",
     "cinematographer": "Zhiyuan Chengma",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Zhu Yilong",
+        "character": "Ma Zhe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tdm21vg4E7ubhd429UT1UpPpFGo.jpg"
+      },
+      {
+        "name": "Chloe Maayan",
+        "character": "Bai Jie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pWqis5tAvGtZexuObCNWzO5AKd3.jpg"
+      },
+      {
+        "name": "Hou Tianlai",
+        "character": "Chief of Police",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pyB9JPkbBNUNpc0yN6tc9rGNJLB.jpg"
+      },
+      {
+        "name": "Tong Linkai",
+        "character": "Xie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/p5mtK7HP48MrvtguX5TwFKKs2vG.jpg"
+      },
+      {
+        "name": "Kang Chunlei",
+        "character": "Madman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/chVYT4csIDEszB4YauQ7NT3wO6o.jpg"
+      },
+      {
+        "name": "Wang Jianyu",
+        "character": "Xu Liang",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5pJLnVlVBFGV8uY4v3BZJJkkwdN.jpg"
+      },
+      {
+        "name": "Moxi Zishi",
+        "character": "Wang Hong",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9jk2VpWxNeQlY49efkiUxWoYWmx.jpg"
+      },
+      {
+        "name": "Liu Baisha",
+        "character": "Qian Ling",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2j4JWzkYdQTJwEMhiYTBXS6mSL7.jpg"
+      },
+      {
+        "name": "Cao Yang",
+        "character": "Granny Four",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6wQV8tZEXrftzw6JMeRnu8SPSOP.jpg"
+      },
+      {
+        "name": "Zhou Qingyun",
+        "character": "Boy by the River",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rEKUvMhPrFHSsizBxMAxYE8d0bt.jpg"
+      },
+      {
+        "name": "Zeng Qi",
+        "character": "Ting",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ePmUq2yrAZGv65f8XxH42w20ti3.jpg"
+      },
+      {
+        "name": "Huang Jun",
+        "character": "Zhao",
+        "profileUrl": null
+      }
+    ],
+    "revenue": 42686993,
+    "trailerKey": "LbgUJvkkxgg",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Sawdust and Tinsel",
@@ -4082,7 +8796,77 @@
     "productionDesigner": "Bibi Lindström",
     "costumeDesigner": "Mago",
     "musicComposer": "Karl-Birger Blomdahl",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Åke Grönberg",
+        "character": "Albert Johansson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3EgENuAFWznRC2zzi1Safqb9VOj.jpg"
+      },
+      {
+        "name": "Harriet Andersson",
+        "character": "Anne",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rFQNqEAyzAw5XAMeVPFZlcveNgF.jpg"
+      },
+      {
+        "name": "Hasse Ekman",
+        "character": "Frans",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/njNREWOvIIeIPJQLwLUBMNdNwzU.jpg"
+      },
+      {
+        "name": "Anders Ek",
+        "character": "Frost",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/h3PjEay9gNA6RLOOZTDBavN6fQN.jpg"
+      },
+      {
+        "name": "Gudrun Brost",
+        "character": "Alma",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eVqJNK796VYGaq4imWAFMr38NfT.jpg"
+      },
+      {
+        "name": "Annika Tretow",
+        "character": "Agda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rQnIRns3YJPbzQ5MUZePwywCE9H.jpg"
+      },
+      {
+        "name": "Erik Strandmark",
+        "character": "Jens",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2NSQALE8130NUvMgOpNyd6EfNAh.jpg"
+      },
+      {
+        "name": "Gunnar Björnstrand",
+        "character": "Mr. Sjuberg",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vy5Y0c1ACGCI6d4rVjmTM6HOqNN.jpg"
+      },
+      {
+        "name": "Curt Löwgren",
+        "character": "Blom",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ekdY1MRFWfJ4qzApFLFmf8jQz4p.jpg"
+      },
+      {
+        "name": "Kiki",
+        "character": "The Dwarf",
+        "profileUrl": null
+      },
+      {
+        "name": "Julie Bernby",
+        "character": "Tightrope-dancer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/woUNa2N0mZkL0HCkh72AzsoH4bB.jpg"
+      },
+      {
+        "name": "Åke Fridell",
+        "character": null,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7bqRE3uQp2ss3KjnIkp3kdTVkbY.jpg"
+      }
+    ],
+    "keywords": [
+      "infidelity",
+      "forgiveness",
+      "unfaithful girlfriend",
+      "traveling circus",
+      "public humiliation"
+    ],
+    "tmdbDataVersion": 2
   },
   {
     "title": "Night of the Living Dead",
@@ -4148,7 +8932,91 @@
     },
     "editor": "George A. Romero, Hugh C. Daly",
     "cinematographer": "George A. Romero",
-    "tmdbCrewDataFetched": true
+    "tmdbCrewDataFetched": true,
+    "cast": [
+      {
+        "name": "Judith O'Dea",
+        "character": "Barbra",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nihfq3xdU22xnxHKmqA0Mv9rUvv.jpg"
+      },
+      {
+        "name": "Duane Jones",
+        "character": "Ben",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6IKcAo7UwByTM3U8awBBuJlHAQs.jpg"
+      },
+      {
+        "name": "Marilyn Eastman",
+        "character": "Helen Cooper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qQqJ6tUNHHJWTrUJNR3D5xYFf28.jpg"
+      },
+      {
+        "name": "Karl Hardman",
+        "character": "Harry Cooper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vs5xLO71stUS3Cn1UD1EWeGAa7b.jpg"
+      },
+      {
+        "name": "Judith Ridley",
+        "character": "Judy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/e6vZxGc7QP5CSlwUrvuQbSfiBvA.jpg"
+      },
+      {
+        "name": "Keith Wayne",
+        "character": "Tom",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5nyL4dSFZMcpvJS0inrJS41vWhQ.jpg"
+      },
+      {
+        "name": "Kyra Schon",
+        "character": "Karen Cooper / Corpse in House",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k0mRAFI9Ptzp40N9xh5pD2oaJPT.jpg"
+      },
+      {
+        "name": "Charles Craig",
+        "character": "TV Newscaster / Zombie",
+        "profileUrl": null
+      },
+      {
+        "name": "S. William Hinzman",
+        "character": "Zombie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jD1fEONB10zMGHbqamOSCt32AYK.jpg"
+      },
+      {
+        "name": "Bill Cardille",
+        "character": "Field Reporter",
+        "profileUrl": null
+      },
+      {
+        "name": "John Simpson",
+        "character": "Zombie",
+        "profileUrl": null
+      },
+      {
+        "name": "George Kosana",
+        "character": "Sheriff McClelland",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "If it doesn't scare you, you're already dead!",
+    "budget": 114000,
+    "revenue": 30236452,
+    "keywords": [
+      "sibling relationship",
+      "pennsylvania, usa",
+      "loss of loved one",
+      "gun",
+      "gas station",
+      "cemetery",
+      "cellar",
+      "halloween",
+      "house",
+      "barricade",
+      "zombie",
+      "black and white",
+      "trapped",
+      "bitten",
+      "farm house"
+    ],
+    "trailerKey": "V5XwrRFP7Zw",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Beau Travail",
@@ -4222,7 +9090,82 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cast": [
+      {
+        "name": "Denis Lavant",
+        "character": "Galoup",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yFbBnHd70Z0pdq6GIzn8amWvmto.jpg"
+      },
+      {
+        "name": "Michel Subor",
+        "character": "Commander Bruno Forestier",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/39BWTW7cuolYB7yeGYVhnlmsVtB.jpg"
+      },
+      {
+        "name": "Grégoire Colin",
+        "character": "Gilles Sentain",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jtolsceVVsMT1wWi8m8pdtaUE4f.jpg"
+      },
+      {
+        "name": "Richard Courcet",
+        "character": "Legionnaire",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fVm1bp4sTvqKEjgvL2bBGEsojQ0.jpg"
+      },
+      {
+        "name": "Nicolas Duvauchelle",
+        "character": "Legionnaire",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nQsvg9syyFY112gi9TC56xIKhRI.jpg"
+      },
+      {
+        "name": "Adiatou Massudi",
+        "character": "Legionnaire",
+        "profileUrl": null
+      },
+      {
+        "name": "Mickael Ravovski",
+        "character": "Legionnaire",
+        "profileUrl": null
+      },
+      {
+        "name": "Dan Herzberg",
+        "character": "Legionnaire",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3NNKmbZO70NIYmeWsINMCziZw0i.jpg"
+      },
+      {
+        "name": "Giuseppe Molino",
+        "character": "Legionnaire",
+        "profileUrl": null
+      },
+      {
+        "name": "Gianfranco Poddighe",
+        "character": "Legionnaire",
+        "profileUrl": null
+      },
+      {
+        "name": "Marc Veh",
+        "character": "Legionnaire",
+        "profileUrl": null
+      },
+      {
+        "name": "Thong Duy Nguyen",
+        "character": "Legionnaire",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "Maybe freedom begins with remorse.",
+    "keywords": [
+      "dance",
+      "based on novel or book",
+      "foreign legion",
+      "woman director",
+      "masculinity",
+      "power play",
+      "djibouti",
+      "gay theme"
+    ],
+    "trailerKey": "Hh4HzACZOOQ",
+    "tmdbDataVersion": 2
   },
   {
     "title": "A Woman Under the Influence",
@@ -4295,7 +9238,83 @@
       ],
       "trophyInfo": null,
       "trophyNotes": "Andy gets togetherness trophy"
-    }
+    },
+    "cast": [
+      {
+        "name": "Gena Rowlands",
+        "character": "Mabel Longhetti",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/j6Op08k2AkPGrNHpMNp30Pu8t36.jpg"
+      },
+      {
+        "name": "Peter Falk",
+        "character": "Nick Longhetti",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/e59x8ITouNlyz8Qa2abb5lxiQvI.jpg"
+      },
+      {
+        "name": "Fred Draper",
+        "character": "George Mortensen",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ti3kVdLCdevTQFSo7D5ydA4PbnG.jpg"
+      },
+      {
+        "name": "Lady Rowlands",
+        "character": "Martha Mortensen",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cm4hu8MDD6xjoaK6QAnCrV2oqA8.jpg"
+      },
+      {
+        "name": "Katherine Cassavetes",
+        "character": "Margaret Longhetti",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fPsaFnxMoNaF8SymbvqYrSwyXkT.jpg"
+      },
+      {
+        "name": "Matthew Labyorteaux",
+        "character": "Angelo Longhetti",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sjWJVXIM8y8tiOfN6cNS8iVwfMF.jpg"
+      },
+      {
+        "name": "Matthew Cassel",
+        "character": "Tony Longhetti",
+        "profileUrl": null
+      },
+      {
+        "name": "Christina Grisanti",
+        "character": "Maria Longhetti",
+        "profileUrl": null
+      },
+      {
+        "name": "George Dunn",
+        "character": "Garson Cross",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fxAjTihhAvPFL3sC2PsduYBcZ4m.jpg"
+      },
+      {
+        "name": "Mario Gallo",
+        "character": "Harold Jensen",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rogY5uQfrQHI0rr68q3AMmMOvay.jpg"
+      },
+      {
+        "name": "Eddie Shaw",
+        "character": "Dr. Zepp",
+        "profileUrl": null
+      },
+      {
+        "name": "Angelo Grisanti",
+        "character": "Vito Grimaldi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s9l16Go0hkp2KQfzkC4HUiPn55c.jpg"
+      }
+    ],
+    "tagline": "A woman of today, her world, her passions.",
+    "budget": 1000000,
+    "revenue": 12200000,
+    "keywords": [
+      "mental breakdown",
+      "unfaithfulness",
+      "los angeles, california",
+      "tense",
+      "ambivalent",
+      "cruel",
+      "disheartening"
+    ],
+    "trailerKey": "d5O7ujg3VQU",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Trial",
@@ -4366,7 +9385,114 @@
       ],
       "trophyInfo": null,
       "trophyNotes": "Andy gets togetherness trophy"
-    }
+    },
+    "cast": [
+      {
+        "name": "Anthony Perkins",
+        "character": "Josef K.",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7FipKwmg2woHNvt5ATeXLBirHXs.jpg"
+      },
+      {
+        "name": "Jeanne Moreau",
+        "character": "Marika Burstner",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lsIlRbcStJev5n1mypIeUUYKWuy.jpg"
+      },
+      {
+        "name": "Romy Schneider",
+        "character": "Leni",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7ZM51RfI5oMx8Q5hpyYZ7MyD6Do.jpg"
+      },
+      {
+        "name": "Orson Welles",
+        "character": "Albert Hastler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/e9lGmqQq3EsHeUQgQLByo275hcc.jpg"
+      },
+      {
+        "name": "Akim Tamiroff",
+        "character": "Bloch",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nhdT4BvYkcHhN8cR1fedWNw5a78.jpg"
+      },
+      {
+        "name": "Elsa Martinelli",
+        "character": "Hilda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nfDkkIsmXjbRFckp8UDOsjGdTdL.jpg"
+      },
+      {
+        "name": "Suzanne Flon",
+        "character": "Miss Pittl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4kpK9sdCTwSETHTv6iKAL28kiVU.jpg"
+      },
+      {
+        "name": "Madeleine Robinson",
+        "character": "Mrs. Grubach",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2YvbR42YJ94WkvabRXy0mKHuwXb.jpg"
+      },
+      {
+        "name": "Max Haufler",
+        "character": "Uncle Max",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zZEOfJ0K4UMKXTnMV5b3TSbFIKF.jpg"
+      },
+      {
+        "name": "Max Buchsbaum",
+        "character": "Examining Magistrate",
+        "profileUrl": null
+      },
+      {
+        "name": "Arnoldo Foà",
+        "character": "Inspector A",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1FlM1PWa6C0OXb3npKuilFfwd75.jpg"
+      },
+      {
+        "name": "Jess Hahn",
+        "character": "Assistant Inspector #2",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/he6uHoBzRXkNMi2rIrno9elh39X.jpg"
+      }
+    ],
+    "tagline": "The Most Remarkable Motion Picture Ever Made!",
+    "budget": 1300000,
+    "revenue": 94243,
+    "keywords": [
+      "bureaucracy",
+      "based on novel or book",
+      "court",
+      "society",
+      "sexuality",
+      "paranoia",
+      "dystopia",
+      "fascism",
+      "surreal",
+      "surrealism",
+      "trial",
+      "confusion",
+      "judgment",
+      "hegemony",
+      "church",
+      "interrogation",
+      "courtroom",
+      "oppression",
+      "uncle nephew relationship",
+      "oneiric",
+      "discrimination",
+      "guilty conscience",
+      "power relations",
+      "hierarchy",
+      "painter as artist",
+      "accusation",
+      "legal system",
+      "judicial system",
+      "anxious",
+      "office worker",
+      "franz kafka",
+      "law",
+      "ambiguity",
+      "surrealistic",
+      "enigma",
+      "social absurdity",
+      "ambiguous",
+      "human & society"
+    ],
+    "trailerKey": "ae3-01zSQOs",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Irma Vep",
@@ -4441,7 +9567,72 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cast": [
+      {
+        "name": "Maggie Cheung",
+        "character": "Maggie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hre6xmoDbh67YN7wR5nhUazPTlb.jpg"
+      },
+      {
+        "name": "Jean-Pierre Léaud",
+        "character": "René Vidal",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zkWjuuyncnHfYpkUfEguwTTRntb.jpg"
+      },
+      {
+        "name": "Nathalie Richard",
+        "character": "Zoé",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/299hXLV3NikHBGFm7J2iIO3c699.jpg"
+      },
+      {
+        "name": "Antoine Basler",
+        "character": "Journalist",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4VT9tZrVmiq3a27w0i0wyDju2jB.jpg"
+      },
+      {
+        "name": "Nathalie Boutefeu",
+        "character": "Laure",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lQDyQlP1mGLMegluZtBa0J218h6.jpg"
+      },
+      {
+        "name": "Alex Descas",
+        "character": "Desormeaux",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1FUMJTbVflnDR8vZL3J1Hv8f7tV.jpg"
+      },
+      {
+        "name": "Dominique Faysse",
+        "character": "Maïté",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xxvtDYp4IKFGtdt7Ee0LY91hERI.jpg"
+      },
+      {
+        "name": "Arsinée Khanjian",
+        "character": "L'américaine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/esBqKPyFIMVKzp5Tqja0qqrxSLl.jpg"
+      },
+      {
+        "name": "Bernard Nissile",
+        "character": "Markus",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7JXujcplJBmbT7wC0yG9wM9Aar9.jpg"
+      },
+      {
+        "name": "Olivier Torres",
+        "character": "Ferdinand / Moreno",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8LLxDdWbUlpv4TD1QRgoNGnnd7H.jpg"
+      },
+      {
+        "name": "Bulle Ogier",
+        "character": "Mireille",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lS4b8sdG6u2IBo7cBPTqNSqAq2O.jpg"
+      },
+      {
+        "name": "Lou Castel",
+        "character": "José Mirano",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nfSbW6awANxaRI769Bo2ZLDb22P.jpg"
+      }
+    ],
+    "tagline": "A Latex Comedy",
+    "trailerKey": "QyhEUvjDr9A",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Black Narcissus",
@@ -4516,7 +9707,82 @@
       ],
       "trophyInfo": null,
       "trophyNotes": "Gabe gets togetherness trophy, Joey gets in sickness and in health trophy"
-    }
+    },
+    "cast": [
+      {
+        "name": "Deborah Kerr",
+        "character": "Sister Clodagh",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dHFhOEhHnn5cQjQN29IGRxzoxBP.jpg"
+      },
+      {
+        "name": "Sabu",
+        "character": "The Young General",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4tBtK9Hi4Plns5AP7sjixaWJZat.jpg"
+      },
+      {
+        "name": "David Farrar",
+        "character": "Mr. Dean",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/d4CJBDYWhNnYXqEFmXi0dG2cPJK.jpg"
+      },
+      {
+        "name": "Flora Robson",
+        "character": "Sister Philippa",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8Ptdv8auJVrXEzx0lzkzpcaXNu8.jpg"
+      },
+      {
+        "name": "Esmond Knight",
+        "character": "The Old General",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/czwSqQgBDb8WpCpppeFrOn0JD8r.jpg"
+      },
+      {
+        "name": "Jean Simmons",
+        "character": "Kanchi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/scbR91Bl4SbfQqhXaH6OfhjxfYt.jpg"
+      },
+      {
+        "name": "Kathleen Byron",
+        "character": "Sister Ruth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AftFBxZ30sYwhg7Eh7Sv5DfckYm.jpg"
+      },
+      {
+        "name": "Jenny Laird",
+        "character": "Sister Honey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zEPHtONOCHPM7LqcAkc503lBihz.jpg"
+      },
+      {
+        "name": "Judith Furse",
+        "character": "Sister Briony",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/e054LhwQ9wPKXDU4dFYb2l3BwtK.jpg"
+      },
+      {
+        "name": "May Hallatt",
+        "character": "Angu Ayah",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iytNGPYOHzbYJQOO12AzWdBnQad.jpg"
+      },
+      {
+        "name": "Eddie Whaley Jr.",
+        "character": "Joseph Anthony",
+        "profileUrl": null
+      },
+      {
+        "name": "Shaun Noble",
+        "character": "Con",
+        "profileUrl": null
+      }
+    ],
+    "tagline": "A story of exquisite yearning in a strange and beautiful land. Towering over the screen ... as the mountains that saw it happen.",
+    "budget": 1200000,
+    "keywords": [
+      "based on novel or book",
+      "himalaya mountain range",
+      "nun",
+      "mountain",
+      "forbidden love",
+      "india",
+      "bengal"
+    ],
+    "trailerKey": "o7HQnwnUl1I",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Gold Diggers of 1933",
@@ -4586,7 +9852,86 @@
       ],
       "trophyInfo": null,
       "trophyNotes": "Joey gets togetherness award"
-    }
+    },
+    "cast": [
+      {
+        "name": "Warren William",
+        "character": "Lawrence",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/w2M7yW9iUSTric3qppRadXzbf7W.jpg"
+      },
+      {
+        "name": "Joan Blondell",
+        "character": "Carol",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eQNps8pPE5hQ1QOK8tcIRQYVV2n.jpg"
+      },
+      {
+        "name": "Aline MacMahon",
+        "character": "Trixie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6qnyQevfxRSSOgIlPiKqemWfO9R.jpg"
+      },
+      {
+        "name": "Ruby Keeler",
+        "character": "Polly",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/q9lnp6zQvq7uMvHXFC3jHkfehty.jpg"
+      },
+      {
+        "name": "Dick Powell",
+        "character": "Brad",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/msDrFPoalt7oWWK9S1ELCgSF3R2.jpg"
+      },
+      {
+        "name": "Guy Kibbee",
+        "character": "Peabody",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dYPlMilU91vyesTKvsZE6l9dlL1.jpg"
+      },
+      {
+        "name": "Ned Sparks",
+        "character": "Barney",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bRduH9CVoOKfD19dKmlxujvEe4Z.jpg"
+      },
+      {
+        "name": "Ginger Rogers",
+        "character": "Fay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ah4nyaNUOMZwmGbDOAtN8S8J6ap.jpg"
+      },
+      {
+        "name": "Etta Moten",
+        "character": "'Remember My Forgotten Man' Singer (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/48jNJRj3T5jeBwiEfJVIBbK0d52.jpg"
+      },
+      {
+        "name": "Charles C. Wilson",
+        "character": "Deputy (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/A6G7aPerIp3FbvXo3X4g1KwZztA.jpg"
+      },
+      {
+        "name": "Busby Berkeley",
+        "character": "Call Boy (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/141LdJOpkZFjxqis4uhqYPjaHfN.jpg"
+      },
+      {
+        "name": "Charles Lane",
+        "character": "Society Reporter (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ghyuQ8HoIY1ozRzbLGJNl2d1dz6.jpg"
+      }
+    ],
+    "tagline": "THE BIGGEST SHOW ON EARTH!",
+    "budget": 433000,
+    "revenue": 3200000,
+    "keywords": [
+      "mistaken identity",
+      "musical",
+      "great depression",
+      "songwriter",
+      "pre-code",
+      "hard times",
+      "chorus girl",
+      "broadway musical",
+      "hidden identity",
+      "show girls"
+    ],
+    "trailerKey": "n7LcBOOqgZo",
+    "tmdbDataVersion": 2
   },
   {
     "title": "The Fisher King",
@@ -4660,7 +10005,95 @@
       ],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cast": [
+      {
+        "name": "Robin Williams",
+        "character": "Parry",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iYdeP6K0qz44Wg2Nw9LPJGMBkQ5.jpg"
+      },
+      {
+        "name": "Jeff Bridges",
+        "character": "Jack",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xms1RAY6q7Lzp7wNeRCB0kzhucn.jpg"
+      },
+      {
+        "name": "Amanda Plummer",
+        "character": "Lydia",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wEwyajjePFVVn2wFdH1NH7z9Qn5.jpg"
+      },
+      {
+        "name": "Mercedes Ruehl",
+        "character": "Anne",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8GUgm1Xcsb6LJgNugQEQCOpx5Su.jpg"
+      },
+      {
+        "name": "Michael Jeter",
+        "character": "Homeless Cabaret Singer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pNBf8X56wCOHH7cArsMYJuke4fO.jpg"
+      },
+      {
+        "name": "William Jay Marshall",
+        "character": "Jamaican Bum",
+        "profileUrl": null
+      },
+      {
+        "name": "Chris Howell",
+        "character": "Red Knight",
+        "profileUrl": null
+      },
+      {
+        "name": "Adam Bryant",
+        "character": "Radio Engineer",
+        "profileUrl": null
+      },
+      {
+        "name": "Paul Lombardi",
+        "character": "Radio Engineer",
+        "profileUrl": null
+      },
+      {
+        "name": "David Hyde Pierce",
+        "character": "Lou Rosen",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9BSgq4yxjPry1Oghqq92S4wUIvs.jpg"
+      },
+      {
+        "name": "Ted Ross",
+        "character": "Limo Bum",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/70Hao5vB24h9u6UBUftySe2krr3.jpg"
+      },
+      {
+        "name": "Lara Harris",
+        "character": "Sondra",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nf2pmvdPV27ssG7uQC3X5VH0r7X.jpg"
+      }
+    ],
+    "tagline": "A Modern Day Tale About The Search For Love, Sanity, Ethel Merman And The Holy Grail.",
+    "budget": 24000000,
+    "revenue": 41895491,
+    "keywords": [
+      "homeless person",
+      "unsociability",
+      "holy grail",
+      "sense of guilt",
+      "loss of loved one",
+      "cynic",
+      "gun rampage",
+      "talk show",
+      "suppressed past",
+      "yuppie",
+      "forgiveness",
+      "legend",
+      "self-discovery",
+      "housebreaking",
+      "mental illness",
+      "fugue state",
+      "whimsical",
+      "exuberant",
+      "joyful"
+    ],
+    "trailerKey": "zyKILTuhFFg",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Jane B. for Agnes V.",
@@ -4729,7 +10162,81 @@
       ],
       "trophyInfo": null,
       "trophyNotes": "Joey gets both togetherness and bad boy, Andy gets reframer trophy"
-    }
+    },
+    "cast": [
+      {
+        "name": "Jane Birkin",
+        "character": "Self / Calamity Jane / Claude Jade / Joan Arc",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/snSO3HmSdV38MVCfkVLOuXsh0C8.jpg"
+      },
+      {
+        "name": "Jean-Pierre Léaud",
+        "character": "The Angry Lover",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zkWjuuyncnHfYpkUfEguwTTRntb.jpg"
+      },
+      {
+        "name": "Philippe Léotard",
+        "character": "Painter / Murderer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7MsP07iSJQE338eeZKtoqFeswlr.jpg"
+      },
+      {
+        "name": "Farid Chopel",
+        "character": "Colonial",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vxbzFU3mGy2rRImCZjl5vAkFl19.jpg"
+      },
+      {
+        "name": "Alain Souchon",
+        "character": "Verlaine's Reader",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dELoFjrkSeUISlZTocrEX2BWHaz.jpg"
+      },
+      {
+        "name": "Serge Gainsbourg",
+        "character": "Self",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6dWY7cho8Dy3f1Ec9A4omnbEqv8.jpg"
+      },
+      {
+        "name": "Laura Betti",
+        "character": "Lardy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7fQu63Y9LDvAKLGVprtvVBGTbi1.jpg"
+      },
+      {
+        "name": "Monique Godard",
+        "character": "Assistant Mistress",
+        "profileUrl": null
+      },
+      {
+        "name": "Ian Marshall",
+        "character": "Bailiff",
+        "profileUrl": null
+      },
+      {
+        "name": "Charlotte Gainsbourg",
+        "character": "Self - J's Daughter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vyZQlwBSpARVHzn6M91ZcJTy7P8.jpg"
+      },
+      {
+        "name": "Mathieu Demy",
+        "character": "Self - A's Son",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bnaoxj7P2LzpEzqy1RPFlQUuPCK.jpg"
+      },
+      {
+        "name": "James Millard",
+        "character": "Tarzan",
+        "profileUrl": null
+      }
+    ],
+    "keywords": [
+      "biography",
+      "historical figure",
+      "archive footage",
+      "woman director",
+      "old footage",
+      "celebrity interview",
+      "film archives",
+      "famous actress"
+    ],
+    "trailerKey": "nATEW42x75I",
+    "tmdbDataVersion": 2
   },
   {
     "title": "Z",
@@ -4799,7 +10306,107 @@
       ],
       "trophyInfo": null,
       "trophyNotes": "Jacob gets togetherness trophy, Gabe gets helmet"
-    }
+    },
+    "cinematographer": "Raoul Coutard",
+    "musicComposer": "Míkis Theodorakis",
+    "editor": "Françoise Bonnot",
+    "productionDesigner": "Jacques d'Ovidio",
+    "costumeDesigner": "Piet Bolscher",
+    "cast": [
+      {
+        "name": "Yves Montand",
+        "character": "Z",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wewmvQm200D2jD14G4YjSmg0WVb.jpg"
+      },
+      {
+        "name": "Irene Papas",
+        "character": "Hélène",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5L9s3RdHpHnexq5tskFwqEQyMIf.jpg"
+      },
+      {
+        "name": "Jean-Louis Trintignant",
+        "character": "Examining Magistrate",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wn6owr4wvkeaEvlsPtwXSldFGEW.jpg"
+      },
+      {
+        "name": "Jacques Perrin",
+        "character": "Photojournalist",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lGbDfSdDgFg3QHgungWIDsV9uh7.jpg"
+      },
+      {
+        "name": "Charles Denner",
+        "character": "Manuel",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fXrk3RHA1c60h3RuYc4CRQLRjCB.jpg"
+      },
+      {
+        "name": "François Périer",
+        "character": "Public Prosecutor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aTgZII5M2ZW936lQJIUh94wQTFV.jpg"
+      },
+      {
+        "name": "Bernard Fresson",
+        "character": "Matt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qhvabjQHfraSgqXoI9FMwXxjwVc.jpg"
+      },
+      {
+        "name": "Pierre Dux",
+        "character": "Gendarmerie General Missou",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wPEq2t5jtaC2qma5L5hobwQSjnR.jpg"
+      },
+      {
+        "name": "Georges Géret",
+        "character": "Nick",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yqeQrHfCuO0phd9CiqYWUJwotIb.jpg"
+      },
+      {
+        "name": "Magali Noël",
+        "character": "Nick's Sister",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mEFJnEVJ3MVOFrQLD40a8HMPr4O.jpg"
+      },
+      {
+        "name": "Marcel Bozzuffi",
+        "character": "Vago",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m1U5WSvkhfqJx00jPKvZXXuAk0p.jpg"
+      },
+      {
+        "name": "Julien Guiomar",
+        "character": "Gendarmerie Colonel",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3zkdxwP1pDrfIxqQdpmKFweSF5Y.jpg"
+      }
+    ],
+    "tagline": "He is alive!",
+    "revenue": 83305,
+    "keywords": [
+      "central intelligence agency (cia)",
+      "assassination",
+      "government",
+      "corruption",
+      "police",
+      "politics",
+      "fascism",
+      "greece",
+      "investigation",
+      "pacifism",
+      "coup d'etat",
+      "anti-communism",
+      "cover-up",
+      "conspiracy",
+      "police corruption",
+      "political assassination",
+      "justice",
+      "right wing",
+      "government corruption",
+      "military coup",
+      "dreyfus affair",
+      "rally",
+      "far right",
+      "greek military junta",
+      "far-right organization",
+      "power",
+      "direct"
+    ],
+    "trailerKey": "7E3QUHUMe5I",
+    "tmdbDataVersion": 2
   },
   {
     "title": "For All Mankind",
@@ -4849,6 +10456,82 @@
       "clubRatings": [],
       "trophyInfo": null,
       "trophyNotes": null
-    }
+    },
+    "cast": [
+      {
+        "name": "Jim Lovell",
+        "character": "Self - Narrator - Apollo 8, Apollo 13 (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fTxVmhcG3noMlycNvIJLcffumcj.jpg"
+      },
+      {
+        "name": "Russell Schweickart",
+        "character": "Self - Narrator - Apollo 9 (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eTXQRRtRQQplZqLQgCgr1W0dusS.jpg"
+      },
+      {
+        "name": "Eugene Cernan",
+        "character": "Self - Narrator - Apollo 10, Apollo 17 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "Michael Collins",
+        "character": "Self - Narrator - Apollo 11 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "Charles Conrad",
+        "character": "Self - Narrator - Apollo 12 (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/n7cG3NE3w7iNml0sxU7jadwHMlT.jpg"
+      },
+      {
+        "name": "Richard Gordon",
+        "character": "Self - Narrator - Apollo 12 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "Alan Bean",
+        "character": "Self - Narrator - Apollo 12 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "Jack Swigert",
+        "character": "Self - Narrator - Apollo 13 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "Stuart Roosa",
+        "character": "Self - Narrator - Apollo 14 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "James Irwin",
+        "character": "Self - Narrator - Apollo 15 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "Ken Mattingly",
+        "character": "Self - Narrator - Apollo 16 (voice)",
+        "profileUrl": null
+      },
+      {
+        "name": "Charlie Duke",
+        "character": "Self - Narrator - Apollo 16 (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eyZiNBkrGx8FrBSZpuLuK9MEb2R.jpg"
+      }
+    ],
+    "tagline": "From 1968 til 1972, twenty-four human beings went to the moon. Their journey lives as the ultimate adventure story.",
+    "revenue": 770132,
+    "keywords": [
+      "nasa",
+      "space mission",
+      "moon landing",
+      "astronaut",
+      "space exploration",
+      "apollo program",
+      "lunar mission",
+      "rocket launch site",
+      "to the moon"
+    ],
+    "tmdbDataVersion": 2
   }
 ]
