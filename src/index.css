@@ -79,9 +79,12 @@ button {
 button:hover {
   border-color: #5e5f72;
 }
-button:focus,
+button:focus {
+  outline: none;
+}
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 1px solid #64748b; /* slate-500 — muted, keyboard-only */
+  outline-offset: 2px;
 }
 
 

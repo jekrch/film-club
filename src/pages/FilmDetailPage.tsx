@@ -276,32 +276,33 @@ const FilmDetailPage = () => {
                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Box Office</h3><p className="text-slate-300">{boxOfficeDisplay}</p></div>
                                 )}
                                 {awardsDisplay && (
-                                    <div className="md:col-span-2"><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Awards</h3><p className="text-slate-300 leading-relaxed">{awardsDisplay}</p></div>
+                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Awards</h3><p className="text-slate-300 leading-relaxed">{awardsDisplay}</p></div>
+                                )}
+                                {filmGenres.length > 0 && (
+                                    <div>
+                                        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Genres</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {filmGenres.map((genre) => (
+                                                <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full">{genre}</span>
+                                            ))}
+                                        </div>
+                                    </div>
                                 )}
                             </div>
-
-                            {filmGenres.length > 0 && (
-                                <div className="mt-5">
-                                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Genres</h2>
-                                    <div className="flex flex-wrap gap-2">
-                                        {filmGenres.map((genre) => (
-                                            <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full">{genre}</span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {film.cast && film.cast.length > 0 && (
-                                <FilmCastStrip
-                                    cast={film.cast}
-                                    personAllFilmographies={personAllFilmographies}
-                                    onPersonClick={handleCreditPersonClick}
-                                />
-                            )}
 
                             </div>
                         </div>
                     </div>
+
+                    {film.cast && film.cast.length > 0 && (
+                        <div className="px-6 md:px-8 pb-6 md:pb-8">
+                            <FilmCastStrip
+                                cast={film.cast}
+                                personAllFilmographies={personAllFilmographies}
+                                onPersonClick={handleCreditPersonClick}
+                            />
+                        </div>
+                    )}
 
                     {film.movieClubInfo && (
                         <div className="bg-slate-850/70 border-t-2 border-slate-700 p-6 md:p-8">

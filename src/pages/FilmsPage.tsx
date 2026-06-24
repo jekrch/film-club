@@ -3,6 +3,7 @@ import { filmData as initialFilmData } from '../types/film';
 import { teamMembers } from '../types/team'; 
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
+import Select from '../components/common/Select';
 import { useFilmFiltering, SortOption, getSortOptionDisplayName } from '../hooks/useFilmFilter';
 
 // Define Member Names for sort options if not already defined in the hook or utils
@@ -26,8 +27,6 @@ const FilmsPage = () => {
         resultsText,
     } = useFilmFiltering(initialFilmData, 'watchDate', 'desc'); // Pass initial data and defaults
 
-    const customSelectArrow = `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`;
-
     const allSortOptions: SortOption[] = [
         'title',
         'year',
@@ -44,78 +43,82 @@ const FilmsPage = () => {
             <BaseCard key={'search-card'} className="bg-slate-700 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg shadow-lg p-6 mb-8 text-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label htmlFor="search" className="block font-medium text-slate-300 mb-1">
+                        <label htmlFor="search" className="block mb-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">
                             Search Films
                         </label>
-                        <input
-                            type="text"
-                            id="search"
-                            placeholder="Search title or director..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full px-4 py-2 border border-slate-500 bg-slate-600 text-slate-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-slate-400"
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="genre" className="block font-medium text-slate-300 mb-1">
-                            Filter by Genre
-                        </label>
-                        <div className="relative">
-                            <select
-                                id="genre"
-                                value={selectedGenre}
-                                onChange={(e) => setSelectedGenre(e.target.value)}
-                                className="w-full pl-4 pr-10 py-2 border border-slate-500 bg-slate-600 text-slate-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                                style={{ backgroundImage: customSelectArrow, backgroundRepeat: 'no-repeat', backgroundPosition: `right 0.75rem center`, backgroundSize: `1.5em 1.5em` }}
+                        <div className="group relative">
+                            <svg
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                aria-hidden="true"
+                                className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition-colors duration-200 group-focus-within:text-slate-300"
                             >
-                                <option value="">All Genres</option>
-                                {allGenres.map((genre) => (
-                                    <option key={genre} value={genre}>{genre}</option>
-                                ))}
-                            </select>
+                                <circle cx="9" cy="9" r="5.5" stroke="currentColor" strokeWidth="1.5" />
+                                <path d="M13.5 13.5L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                            </svg>
+                            <input
+                                type="text"
+                                id="search"
+                                placeholder="Search title or director..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full rounded-md border border-slate-600/80 bg-slate-800/70 pl-10 pr-9 py-2 text-sm text-slate-100 transition-colors duration-200 placeholder-slate-500 hover:border-slate-500 focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50"
+                            />
+                            {searchTerm && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSearchTerm('')}
+                                    aria-label="Clear search"
+                                    className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-sm border-none! bg-transparent! p-0! text-slate-400 transition-colors duration-150 hover:text-slate-100"
+                                >
+                                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="h-3.5 w-3.5">
+                                        <path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                    </svg>
+                                </button>
+                            )}
                         </div>
                     </div>
 
-                    <div>
-                        <label htmlFor="selector" className="block font-medium text-slate-300 mb-1">
-                            Filter by Selector
-                        </label>
-                        <div className="relative">
-                            <select
-                                id="selector"
-                                value={selectedSelector}
-                                onChange={(e) => setSelectedSelector(e.target.value)}
-                                className="w-full pl-4 pr-10 py-2 border border-slate-500 bg-slate-600 text-slate-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
-                                style={{ backgroundImage: customSelectArrow, backgroundRepeat: 'no-repeat', backgroundPosition: `right 0.75rem center`, backgroundSize: `1.5em 1.5em` }}
-                            >
-                                <option value="">All Selectors</option>
-                                {allSelectors.map((selector) => (
-                                    <option key={selector} value={selector}>{selector}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
+                    <Select
+                        id="genre"
+                        label="Filter by Genre"
+                        placeholder="All Genres"
+                        value={selectedGenre}
+                        onChange={setSelectedGenre}
+                        options={allGenres.map((genre) => ({ value: genre, label: genre }))}
+                    />
+
+                    <Select
+                        id="selector"
+                        label="Filter by Selector"
+                        placeholder="All Selectors"
+                        value={selectedSelector}
+                        onChange={setSelectedSelector}
+                        options={allSelectors.map((selector) => ({ value: selector, label: selector }))}
+                    />
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                    <label className="block font-medium text-slate-300 flex-shrink-0 sm:mb-0">
-                        Sort By:
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-5 pt-4 border-t border-slate-600/50">
+                    <label className="block flex-shrink-0 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400 sm:mb-0">
+                        Sort
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-x-1 gap-y-2">
                         {allSortOptions.map((option) => (
                             <button
                                 key={option}
                                 onClick={() => handleSortChange(option)}
-                                className={`px-3 py-1.5 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-700 focus:ring-blue-500 text-xs sm:text-sm ${sortBy === option
-                                    ? 'bg-blue-600 text-white font-semibold shadow-sm'
-                                    : 'bg-slate-500 text-slate-100 hover:bg-slate-400 hover:text-slate-50'
+                                className={`group inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border text-[9px] uppercase tracking-[0.12em] transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-slate-400/60 ${sortBy === option
+                                    ? 'border-slate-400! bg-slate-900/50! text-slate-100 font-medium'
+                                    : 'border-slate-600/60! bg-transparent! text-slate-400 hover:border-slate-400! hover:text-slate-100'
                                     }`}
                             >
                                 {getSortOptionDisplayName(option)}
-                                {sortBy === option && (
-                                    <span className="ml-1.5 text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                                )}
+                                <span
+                                    className={`text-[10px] leading-none transition-opacity duration-200 ${sortBy === option ? 'opacity-100' : 'opacity-0'}`}
+                                    aria-hidden={sortBy !== option}
+                                >
+                                    {sortDirection === 'asc' ? '↑' : '↓'}
+                                </span>
                             </button>
                         ))}
                     </div>
