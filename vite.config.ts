@@ -14,6 +14,10 @@ export default defineConfig({
       injectRegister: 'auto', 
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2,ttf,eot,otf}'], // Files to precache
+        // The bundled data (films.json + persons.json) makes individual chunks
+        // exceed Workbox's 2 MiB default. Raise the ceiling so they still precache
+        // for offline use; headroom left for the dataset growing over time.
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
           {
             // Cache JSON data files (films.json, club.json)
@@ -141,6 +145,18 @@ export default defineConfig({
     exclude: []
   },
   build: {
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        // Keep the large bundled data in their own chunks so they cache-bust
+        // independently of the app/vendor code (films.json + persons.json change
+        // on every daily sync), and so no single chunk balloons the app shell.
+        manualChunks(id) {
+          if (id.includes('src/assets/persons.json')) return 'persons-data';
+          if (id.includes('src/assets/films.json')) return 'films-data';
+          if (id.includes('node_modules')) return 'vendor';
+        },
+      },
+    },
   }
 })
