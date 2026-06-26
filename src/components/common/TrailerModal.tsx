@@ -1,4 +1,5 @@
 import React from 'react';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 
 interface TrailerModalProps {
   isOpen: boolean;
@@ -13,6 +14,9 @@ interface TrailerModalProps {
  * privacy-friendly youtube-nocookie host and autoplays on open.
  */
 const TrailerModal: React.FC<TrailerModalProps> = ({ isOpen, onClose, trailerKey, title }) => {
+  // Prevent scrolling the page behind the modal while it's open.
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   return (

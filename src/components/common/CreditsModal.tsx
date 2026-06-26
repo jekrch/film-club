@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Film } from '../../types/film';
 import { Link } from 'react-router-dom';
 import { getPersonInfoByName, getPersonProfileByName, tmdbPersonUrl } from '../../utils/personUtils';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 
 // Formats a TMDb date string (YYYY-MM-DD) for display, e.g. "May 14, 1944".
 const formatPersonDate = (value: string | null | undefined): string | null => {
@@ -29,6 +30,9 @@ const getCharacterForPerson = (film: Film, personNameLower: string): string | nu
 
 const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName, filmography, currentFilmId }) => {
   const personNameLower = (personName ?? '').trim().toLowerCase();
+
+  // Prevent scrolling the page behind the modal while it's open.
+  useBodyScrollLock(isOpen);
 
   // Normalized TMDb record (bio, birth/death, known-for, canonical headshot)
   // resolved from the person's name, if we have one for them.
@@ -69,11 +73,11 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
       className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fadeIn"
       onClick={onClose} // Allow closing by clicking overlay
     >
-      {/* Dialog Content: Modal panel. The person's headshot is a full-height
-          background on the right, fading out toward the left so the credits
-          stay legible while the photo continues down through the whole modal. */}
+      {/* Dialog Content: Modal panel. A very faint full-height headshot sits in
+          the background, while a sharper copy floats at the top-left of the bio
+          so the text wraps around it. */}
       <div
-        className="relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[90vh] flex flex-col animate-scaleIn overflow-hidden"
+        className="relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[88vh] flex flex-col animate-scaleIn overflow-hidden"
         onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
       >
         {profileUrl && (
@@ -82,7 +86,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
               src={profileUrl}
               alt=""
               aria-hidden="true"
-              className="absolute right-0 top-0 h-full w-2/3 object-cover object-top pointer-events-none"
+              className="absolute right-0 top-0 h-full w-2/3 object-cover object-top pointer-events-none opacity-10"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
             {/* Gradient fades the photo out aggressively toward the left, keeping text legible */}
@@ -112,20 +116,31 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
         </div>
 
         {/* Person details: bio, birth/death, and a link to the full TMDb profile. */}
-        {hasPersonDetails && (
-          <div className="relative z-10 px-4 md:px-5 py-3 border-b border-slate-700/60 flex-shrink-0 space-y-2">
-            {(birthLine || diedDate) && (
-              <p className="text-xs text-slate-400">
-                {birthLine && <span>Born {birthLine}</span>}
-                {birthLine && diedDate && <span className="mx-1">·</span>}
-                {diedDate && <span>Died {diedDate}</span>}
-              </p>
-            )}
-            {personInfo?.biography && (
-              <p className="text-sm text-slate-300 leading-relaxed max-h-32 overflow-y-auto themed-scrollbar pr-2">
-                {personInfo.biography}
-              </p>
-            )}
+        {(hasPersonDetails || profileUrl) && (
+          <div className="relative z-10 px-4 md:px-5 py-3 border-b border-slate-700/60 flex flex-col min-h-0 space-y-2">
+            {/* Scrolling text column; the headshot floats so the text wraps around it */}
+            <div className="min-h-0 overflow-y-auto themed-scrollbar pr-2">
+              {profileUrl && (
+                <img
+                  src={profileUrl}
+                  alt={personName ?? ''}
+                  className="float-left w-1/2 max-w-[12em] mr-3 mb-2 rounded shadow-sm border border-slate-600/50"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+              )}
+              {(birthLine || diedDate) && (
+                <p className="text-xs text-slate-400 mb-2">
+                  {birthLine && <span>Born {birthLine}</span>}
+                  {birthLine && diedDate && <span className="mx-1">·</span>}
+                  {diedDate && <span>Died {diedDate}</span>}
+                </p>
+              )}
+              {personInfo?.biography && (
+                <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+                  {personInfo.biography}
+                </p>
+              )}
+            </div>
             {tmdbId && (
               <a
                 href={tmdbPersonUrl(tmdbId)}
@@ -146,7 +161,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
         {sortedFilmography.length === 0 ? (
           <p className="relative z-10 p-4 md:p-6 text-slate-400 flex-grow">No film credits found for {personName}.</p>
         ) : (
-          <div className="relative z-10 overflow-y-auto flex-grow p-3 md:p-4 space-y-3 themed-scrollbar">
+          <div className={`relative z-10 overflow-y-auto min-h-0 p-3 md:p-4 space-y-3 themed-scrollbar ${sortedFilmography.length <= 2 ? 'flex-shrink-0' : 'flex-grow'}`}>
             {sortedFilmography.map(({ film: creditFilm, roles }) => {
               const character = getCharacterForPerson(creditFilm, personNameLower);
               return (
