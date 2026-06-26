@@ -6,7 +6,7 @@ import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
 import TrailerModal from '../components/common/TrailerModal';
-import { countValidRatings, formatCurrency, formatRuntime, parseGenres } from '../utils/filmUtils';
+import { countValidRatings, formatCurrency, formatDayGap, formatRuntime, parseGenres, parseWatchDate } from '../utils/filmUtils';
 import FilmCastStrip from '../components/films/FilmCastStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
@@ -15,7 +15,9 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';  
 import { useFilmDetails } from '../hooks/useFilmDetails';
 import TrophyGallery from '../components/common/TrophyGallery';
+import WatchTimelineNav from '../components/common/WatchTimelineNav';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
+import { CalendarDaysIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
 
 // Shortens OMDb's verbose rating source names for the rating chips.
@@ -35,6 +37,8 @@ const FilmDetailPage = () => {
         loading,
         error,
         filmsBySameSelector,
+        previousFilm,
+        nextFilm,
         watchUrl,
         linkCheckStatus,
         creditsModalState,
@@ -115,6 +119,18 @@ const FilmDetailPage = () => {
     const awardsDisplay = film.awards && film.awards.toLowerCase() !== 'n/a' ? film.awards : null;
     const MAX_RATING = 9;
     const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
+
+    // Time elapsed between this screening and the club's adjacent screenings.
+    const watchDateObj = parseWatchDate(film.movieClubInfo?.watchDate);
+    const prevWatchDateObj = parseWatchDate(previousFilm?.movieClubInfo?.watchDate);
+    const nextWatchDateObj = parseWatchDate(nextFilm?.movieClubInfo?.watchDate);
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const sincePreviousGap = watchDateObj && prevWatchDateObj
+        ? formatDayGap(Math.round((watchDateObj.getTime() - prevWatchDateObj.getTime()) / MS_PER_DAY))
+        : null;
+    const untilNextGap = watchDateObj && nextWatchDateObj
+        ? formatDayGap(Math.round((nextWatchDateObj.getTime() - watchDateObj.getTime()) / MS_PER_DAY))
+        : null;
 
     return (
         <PageLayout>
@@ -218,18 +234,42 @@ const FilmDetailPage = () => {
 
                             {externalRatings.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mb-5">
-                                    {externalRatings.map((rating) => (
-                                        <span
-                                            key={rating.source}
-                                            className="inline-flex items-baseline gap-1.5 px-3 py-1 bg-slate-700/60 rounded-md text-sm"
-                                            title={rating.source}
-                                        >
-                                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
-                                                {RATING_SOURCE_LABELS[rating.source] ?? rating.source}
+                                    {externalRatings.map((rating) => {
+                                        const isImdb = rating.source === 'Internet Movie Database';
+                                        const imdbUrl = isImdb && film.imdbID ? `https://www.imdb.com/title/${film.imdbID}/` : null;
+                                        const chipContent = (
+                                            <>
+                                                <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                                                    {RATING_SOURCE_LABELS[rating.source] ?? rating.source}
+                                                </span>
+                                                <span className="font-semibold text-slate-100">{rating.value}</span>
+                                            </>
+                                        );
+                                        return imdbUrl ? (
+                                            <a
+                                                key={rating.source}
+                                                href={imdbUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group inline-flex items-baseline gap-1.5 px-3 py-1 bg-slate-700/60 hover:bg-slate-600/60 ring-1 ring-yellow-500/30 hover:ring-yellow-500/60 rounded-md text-sm transition"
+                                                title={`View on IMDb`}
+                                            >
+                                                {chipContent}
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 self-center text-slate-400 group-hover:text-yellow-400 transition" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                                                    <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                                                </svg>
+                                            </a>
+                                        ) : (
+                                            <span
+                                                key={rating.source}
+                                                className="inline-flex items-baseline gap-1.5 px-3 py-1 bg-slate-700/60 rounded-md text-sm"
+                                                title={rating.source}
+                                            >
+                                                {chipContent}
                                             </span>
-                                            <span className="font-semibold text-slate-100">{rating.value}</span>
-                                        </span>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                             <div className="mb-5 text-slate-300 ">
@@ -269,30 +309,44 @@ const FilmDetailPage = () => {
                                 {film.country && film.country.toLowerCase() !== 'n/a' && (
                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Country</h3><p className="text-slate-300">{film.country}</p></div>
                                 )}
-                                {budgetDisplay && (
-                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Budget</h3><p className="text-slate-300">{budgetDisplay}</p></div>
-                                )}
-                                {boxOfficeDisplay && (
-                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Box Office</h3><p className="text-slate-300">{boxOfficeDisplay}</p></div>
-                                )}
-                                {awardsDisplay && (
-                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Awards</h3><p className="text-slate-300 leading-relaxed">{awardsDisplay}</p></div>
-                                )}
-                                {filmGenres.length > 0 && (
-                                    <div>
-                                        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Genres</h3>
-                                        <div className="flex flex-wrap gap-2">
-                                            {filmGenres.map((genre) => (
-                                                <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full">{genre}</span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
                             </div>
 
                             </div>
                         </div>
                     </div>
+
+                    {(filmGenres.length > 0 || budgetDisplay || boxOfficeDisplay || awardsDisplay) && (
+                        <div className="px-6 md:px-8 py-5 border-t border-slate-700/60 flex flex-col sm:flex-row sm:flex-wrap gap-6 sm:gap-x-10 sm:gap-y-6">
+                            {filmGenres.length > 0 && (
+                                <div className="flex-shrink-0">
+                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Genres</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {filmGenres.map((genre) => (
+                                            <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full">{genre}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            {budgetDisplay && (
+                                <div className="flex-shrink-0">
+                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Budget</h3>
+                                    <p className="text-slate-300">{budgetDisplay}</p>
+                                </div>
+                            )}
+                            {boxOfficeDisplay && (
+                                <div className="flex-shrink-0">
+                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Box Office</h3>
+                                    <p className="text-slate-300">{boxOfficeDisplay}</p>
+                                </div>
+                            )}
+                            {awardsDisplay && (
+                                <div className="sm:flex-1 sm:basis-80">
+                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Awards</h3>
+                                    <p className="text-slate-300 leading-relaxed">{awardsDisplay}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {film.cast && film.cast.length > 0 && (
                         <div className="px-6 md:px-8 pb-6 md:pb-8">
@@ -305,14 +359,26 @@ const FilmDetailPage = () => {
                     )}
 
                     {film.movieClubInfo && (
-                        <div className="bg-slate-850/70 border-t-2 border-slate-700 p-6 md:p-8">
-                            <h2 className="text-2xl font-semibold text-slate-100 mb-6">Film Club Facts</h2>
+                        <div className="relative bg-gradient-to-b from-slate-850/80 to-slate-900/40 border-t-2 border-slate-700 p-6 md:p-8 overflow-hidden">
+                            {/* Subtle ambient glow anchoring the club section */}
+                            <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-16 h-64 w-64 rounded-full bg-blue-500/[0.07] blur-3xl" />
+                            <div className="relative z-10">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 ring-1 ring-blue-400/20">
+                                    <UserGroupIcon className="h-5 w-5 text-blue-400" />
+                                </div>
+                                <h2 className="text-2xl font-semibold text-slate-100">Film Club Facts</h2>
+                                <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                            </div>
                             <div className="md:flex md:justify-between md:items-start">
                                 <div className="flex-1 mb-6 md:mb-0 md:pr-6">
                                     {film.movieClubInfo.watchDate && (
-                                        <div className="mb-6">
-                                            <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider block mb-1">Watch Date</span>
-                                            <span className="text-slate-200 text-lg">{film.movieClubInfo.watchDate}</span>
+                                        <div className="mb-6 inline-flex items-center gap-3 rounded-lg border border-slate-700/50 bg-slate-800/40 px-4 py-2.5">
+                                            <CalendarDaysIcon className="h-5 w-5 flex-shrink-0 text-blue-400/80" />
+                                            <div className="leading-tight">
+                                                <span className="block text-[11px] font-semibold text-slate-500 uppercase tracking-[0.15em]">Watch Date</span>
+                                                <span className="text-slate-100 text-base font-medium">{film.movieClubInfo.watchDate}</span>
+                                            </div>
                                         </div>
                                     )}
                                     {numberOfValidRatings > 0 ? (
@@ -343,11 +409,28 @@ const FilmDetailPage = () => {
                                                                 <PopcornRating rating={rating.score as number} maxRating={MAX_RATING} size="small" title={`${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`} />
                                                             </div>
                                                             {rating.blurb && (
-                                                                <div className="bg-[radial-gradient(circle_at_center,_#2b384e_0%,_#1e293b_40%)] px-3 pb-4 pt-4 rounded-lg ml-2 relative border-l-2 border-emerald-400/40 shadow-inner mt-4">
-                                                                    <svg className="absolute text-emerald-400/40 h-5 w-5 -top-1 left-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
-                                                                    <CollapsibleContent buttonSize="sm" lineClamp={3} className="text-sm italic">
-                                                                        {rating.blurb}
-                                                                    </CollapsibleContent>
+                                                                <div className="group/blurb relative ml-2 mt-4 overflow-hidden rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-800/80 via-slate-850/80 to-slate-900/90 shadow-lg shadow-black/20 transition-colors duration-300 hover:border-emerald-400/30">
+                                                                    {/* Faded reviewer portrait washing in from the right, fading toward the text */}
+                                                                    <img
+                                                                        src={`/images/${rating.user.toLowerCase()}.jpg`}
+                                                                        alt=""
+                                                                        aria-hidden="true"
+                                                                        className="pointer-events-none absolute inset-y-0 right-0 h-full w-2/5 object-cover object-top opacity-[0.16] grayscale transition-opacity duration-300 group-hover/blurb:opacity-25"
+                                                                        style={{
+                                                                            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
+                                                                            maskImage: 'linear-gradient(to right, transparent, black)',
+                                                                        }}
+                                                                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                                                    />
+                                                                    {/* Emerald accent rail */}
+                                                                    <span className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-emerald-400/70 via-emerald-400/30 to-transparent" />
+                                                                    <div className="relative z-10 px-4 pb-3 pt-3.5">
+                                                                        <svg className="mb-1.5 h-5 w-5 text-emerald-400/50" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
+                                                                        <CollapsibleContent buttonSize="sm" lineClamp={3} className="text-sm italic leading-relaxed text-slate-300">
+                                                                            {rating.blurb}
+                                                                            <span className="capitalize">&nbsp;&mdash;&nbsp;{capitalizeFirstLetter(rating.user)}</span>
+                                                                        </CollapsibleContent>
+                                                                    </div>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -380,6 +463,15 @@ const FilmDetailPage = () => {
                                     <p className="text-slate-300 whitespace-pre-line">{film.movieClubInfo.trophyInfo}</p>
                                 </div>
                             )}
+
+                            {/* Previous / Next film in the club's watch timeline */}
+                            <WatchTimelineNav
+                                previousFilm={previousFilm}
+                                nextFilm={nextFilm}
+                                sincePreviousGap={sincePreviousGap}
+                                untilNextGap={untilNextGap}
+                            />
+                            </div>
                         </div>
                     )}
                 </BaseCard>

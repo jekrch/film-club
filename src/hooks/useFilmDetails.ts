@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Film, filmData as allFilmsData } from '../types/film'; // Ensure filmData is imported as allFilmsData or similar
-import { getAllFilmCreditsForPerson, PersonCredit } from '../utils/filmUtils'; // Assuming this util exists
+import { getAllFilmCreditsForPerson, parseWatchDate, PersonCredit } from '../utils/filmUtils'; // Assuming this util exists
 
 export interface CreditsModalInfo {
     isOpen: boolean;
@@ -13,6 +13,8 @@ export interface UseFilmDetailsReturn {
     loading: boolean;
     error: string | null;
     filmsBySameSelector: Film[];
+    previousFilm: Film | null; // The film the club watched immediately before this one
+    nextFilm: Film | null;     // The film the club watched immediately after this one
     watchUrl: string | null;
     linkCheckStatus: 'idle' | 'valid' | 'not_found'; // Simplified for this hook example
     creditsModalState: CreditsModalInfo;
@@ -132,6 +134,33 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
     }, [film]); // Only depends on the current film
 
 
+    // Locate this film within the club's chronological watch history so the page
+    // can offer "previous"/"next" navigation. Films without a valid watch date
+    // (e.g. unwatched "up next" picks) are excluded from the timeline.
+    const { previousFilm, nextFilm } = useMemo(() => {
+        if (!film?.movieClubInfo?.watchDate || !parseWatchDate(film.movieClubInfo.watchDate)) {
+            return { previousFilm: null, nextFilm: null };
+        }
+
+        const watchedTimeline = allFilmsData
+            .filter(f => parseWatchDate(f.movieClubInfo?.watchDate))
+            .sort((a, b) => {
+                const dateA = parseWatchDate(a.movieClubInfo!.watchDate)!.getTime();
+                const dateB = parseWatchDate(b.movieClubInfo!.watchDate)!.getTime();
+                // Stable secondary sort by title keeps same-date pairs in a fixed order.
+                return (dateA - dateB) || (a.title ?? '').localeCompare(b.title ?? '');
+            });
+
+        const currentIndex = watchedTimeline.findIndex(f => f.imdbID === film.imdbID);
+        if (currentIndex === -1) return { previousFilm: null, nextFilm: null };
+
+        return {
+            previousFilm: currentIndex > 0 ? watchedTimeline[currentIndex - 1] : null,
+            nextFilm: currentIndex < watchedTimeline.length - 1 ? watchedTimeline[currentIndex + 1] : null,
+        };
+    }, [film]);
+
+
     const handleCreditPersonClick = (personName: string, filmographyForModal: PersonCredit[]) => {
         setCreditsModalState({
             isOpen: true,
@@ -149,6 +178,8 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         loading,
         error,
         filmsBySameSelector,
+        previousFilm,
+        nextFilm,
         watchUrl,
         linkCheckStatus,
         creditsModalState,

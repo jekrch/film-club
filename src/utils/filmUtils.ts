@@ -53,6 +53,27 @@ export const countValidRatings = (clubRatings: ClubRating[] | undefined): number
     return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score)).length;
 };
 
+/**
+ * Renders an interval between two watch dates as a short, human-readable phrase
+ * (e.g. "11 days", "3 weeks", "2 months"). Used to show how much time passed
+ * between consecutive club screenings. Returns null for invalid input.
+ */
+export const formatDayGap = (days: number | null | undefined): string | null => {
+    if (typeof days !== 'number' || isNaN(days) || days < 0) return null;
+    if (days === 0) return 'Same day';
+    if (days < 14) return `${days} day${days === 1 ? '' : 's'}`;
+    if (days < 60) {
+        const weeks = Math.round(days / 7);
+        return `${weeks} week${weeks === 1 ? '' : 's'}`;
+    }
+    if (days < 365) {
+        const months = Math.round(days / 30);
+        return `${months} month${months === 1 ? '' : 's'}`;
+    }
+    const years = Math.round((days / 365) * 10) / 10;
+    return `${years} year${years === 1 ? '' : 's'}`;
+};
+
 export const parseWatchDate = (dateString: string | null | undefined): Date | null => {
     // ... (date parsing logic) ...
     if (!dateString) return null;
