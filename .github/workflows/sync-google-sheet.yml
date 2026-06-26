@@ -41,7 +41,7 @@ jobs:
       - name: Check for changes
         id: check_changes # This step produces an output
         run: |
-          git add src/assets/films.json
+          git add src/assets/films.json src/assets/persons.json
           if git diff --staged --quiet; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import FilmList from '../components/films/FilmList';
@@ -7,7 +7,10 @@ import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
 import TrailerModal from '../components/common/TrailerModal';
 import { countValidRatings, formatCurrency, formatDayGap, formatRuntime, parseGenres, parseWatchDate } from '../utils/filmUtils';
+import { getPersonProfileByName } from '../utils/personUtils';
+import { Film } from '../types/film';
 import FilmCastStrip from '../components/films/FilmCastStrip';
+import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
 import CollapsibleContent from '../components/common/CollapsableContent';
@@ -19,6 +22,18 @@ import WatchTimelineNav from '../components/common/WatchTimelineNav';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
 import { CalendarDaysIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
+
+// Crew fields shown as headshot cards in the "Crew" strip, with their display
+// role. Actors are intentionally excluded — they're covered by the cast strip.
+const CREW_STRIP_FIELDS: { field: keyof Film; label: string }[] = [
+    { field: 'director', label: 'Director' },
+    { field: 'writer', label: 'Writer' },
+    { field: 'cinematographer', label: 'Cinematography' },
+    { field: 'editor', label: 'Editor' },
+    { field: 'productionDesigner', label: 'Production Design' },
+    { field: 'musicComposer', label: 'Music' },
+    { field: 'costumeDesigner', label: 'Costume Design' },
+];
 
 // Shortens OMDb's verbose rating source names for the rating chips.
 const RATING_SOURCE_LABELS: Record<string, string> = {
@@ -49,41 +64,39 @@ const FilmDetailPage = () => {
 
     const capitalizeFirstLetter = (str: string): string => str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 
+    // Build the "Crew" strip: one card per person, grouping a person's roles
+    // (e.g. someone who both directed and wrote) into a single subtitle, and
+    // resolving their TMDb headshot via personProfiles.
+    const crewPeople = useMemo<PersonStripEntry[]>(() => {
+        if (!film) return [];
+        const order: string[] = [];
+        const byKey = new Map<string, { name: string; roles: string[] }>();
+        CREW_STRIP_FIELDS.forEach(({ field, label }) => {
+            const value = film[field];
+            if (!value || typeof value !== 'string' || value.toLowerCase() === 'n/a') return;
+            value.split(',').map(n => n.trim()).filter(Boolean).forEach(name => {
+                const key = name.toLowerCase();
+                let entry = byKey.get(key);
+                if (!entry) {
+                    entry = { name, roles: [] };
+                    byKey.set(key, entry);
+                    order.push(key);
+                }
+                if (!entry.roles.includes(label)) entry.roles.push(label);
+            });
+        });
+        return order.map(key => {
+            const { name, roles } = byKey.get(key)!;
+            return {
+                name,
+                subtitle: roles.join(' · '),
+                profileUrl: getPersonProfileByName(name)?.profileUrl ?? null,
+                credits: personAllFilmographies[name] ?? [],
+            };
+        });
+    }, [film, personAllFilmographies]);
+
     // UI Helper function (can remain in component or be moved to utils if more broadly used)
-    const renderClickableCreditNames = (namesString: string | undefined) => {
-        if (!film || !namesString || typeof namesString !== 'string' || namesString.toLowerCase() === 'n/a' || namesString.trim() === '') {
-            return <>{namesString || 'N/A'}</>;
-        }
-        const individualNames = namesString.split(',').map(name => name.trim()).filter(name => name !== '');
-
-        return (
-            <>
-                {individualNames.map((name, index) => {
-                    const allCreditsForPerson = personAllFilmographies[name] || [];
-                    const isClickable = allCreditsForPerson.length > 1;
-
-                    return (
-                        <span key={`${name}-${index}`}>
-                            {isClickable ? (
-                                <a
-                                    onClick={() => handleCreditPersonClick(name, allCreditsForPerson)}
-                                    // Updated className for better Tailwind JIT compatibility & explicit styling
-                                    className="text-blue-400 hover:text-blue-300 underline cursor-pointer focus:outline-none focus:ring-1 focus:ring-blue-400/50 rounded-sm py-px px-0.5 transition-colors"
-                                >
-                                    {name}
-                                </a>
-                            ) : (
-                                name
-                            )}
-                            {index < individualNames.length - 1 && ', '}
-                        </span>
-                    );
-                })}
-            </>
-        );
-    };
-
-
     const renderPlotParagraphs = (plot: string | undefined) => {
         if (!plot) {
             return <span className="italic text-slate-500">Plot not available.</span>;
@@ -278,31 +291,9 @@ const FilmDetailPage = () => {
                                 </CollapsibleContent>
                             </div>
 
+                            {/* Crew & cast (director, writer, stars, ...) are shown as
+                                headshot cards in the Crew/Cast strips below. */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm mb-6">
-                                {film.director && film.director.toLowerCase() !== 'n/a' && (
-                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Director</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.director)}</p></div>
-                                )}
-                                {film.writer && film.writer.toLowerCase() !== 'n/a' && (
-                                    <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Writer</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.writer)}</p></div>
-                                )}
-                                {film.cinematographer && film.cinematographer.toLowerCase() !== 'n/a' && (
-                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Cinematography</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.cinematographer)}</p></div>
-                                )}
-                                {film.editor && film.editor.toLowerCase() !== 'n/a' && (
-                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Editor</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.editor)}</p></div>
-                                )}
-                                {film.productionDesigner && film.productionDesigner.toLowerCase() !== 'n/a' && (
-                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Production Design</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.productionDesigner)}</p></div>
-                                )}
-                                {film.musicComposer && film.musicComposer.toLowerCase() !== 'n/a' && (
-                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Music By</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.musicComposer)}</p></div>
-                                )}
-                                {film.costumeDesigner && film.costumeDesigner.toLowerCase() !== 'n/a' && (
-                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Costume Design</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.costumeDesigner)}</p></div>
-                                )}
-                                {film.actors && film.actors.toLowerCase() !== 'n/a' && (
-                                    <div className="md:col-span-2"><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Stars</h3><p className="text-slate-300 leading-relaxed">{renderClickableCreditNames(film.actors)}</p></div>
-                                )}
                                 {film.language && film.language.toLowerCase() !== 'n/a' && (
                                     <div><h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Language</h3><p className="text-slate-300">{film.language}</p></div>
                                 )}
@@ -348,13 +339,22 @@ const FilmDetailPage = () => {
                         </div>
                     )}
 
-                    {film.cast && film.cast.length > 0 && (
+                    {(crewPeople.length > 0 || (film.cast && film.cast.length > 0)) && (
                         <div className="px-6 md:px-8 pb-6 md:pb-8">
-                            <FilmCastStrip
-                                cast={film.cast}
-                                personAllFilmographies={personAllFilmographies}
-                                onPersonClick={handleCreditPersonClick}
-                            />
+                            {crewPeople.length > 0 && (
+                                <PersonStrip
+                                    title="Crew"
+                                    people={crewPeople}
+                                    onPersonClick={handleCreditPersonClick}
+                                />
+                            )}
+                            {film.cast && film.cast.length > 0 && (
+                                <FilmCastStrip
+                                    cast={film.cast}
+                                    personAllFilmographies={personAllFilmographies}
+                                    onPersonClick={handleCreditPersonClick}
+                                />
+                            )}
                         </div>
                     )}
 

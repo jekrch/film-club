@@ -76,6 +76,33 @@ export interface CastMember {
 }
 
 /**
+ * Per-film mapping of a credited person to their TMDb identity, keyed by the
+ * person's normalized (lowercase, trimmed) name. Lets the UI resolve a displayed
+ * name to a stable TMDb id without ambiguity, for person links and the modal.
+ * Populated by the sync script from TMDb crew + cast.
+ */
+export interface PersonProfile {
+    tmdbId: number;
+    profileUrl?: string | null; // Per-film TMDb headshot, if available
+}
+
+/**
+ * Normalized biographical record for a single person, keyed by TMDb id in
+ * persons.json. Shared across films and fetched once per person by the sync
+ * script from TMDb's /person endpoint.
+ */
+export interface PersonInfo {
+    tmdbId: number;
+    name: string;
+    biography?: string | null;
+    birthday?: string | null;
+    deathday?: string | null;
+    placeOfBirth?: string | null;
+    knownForDepartment?: string | null;
+    profileUrl?: string | null; // Canonical TMDb headshot
+}
+
+/**
  * Represents a single rating entry from a movie club member.
  */
 export interface ClubRating {
@@ -140,6 +167,7 @@ export interface Film {
     keywords?: string[]; // Thematic keywords/tags from TMDb
     trailerKey?: string; // YouTube video key for the primary trailer
     cast?: CastMember[]; // Top-billed cast with characters and profile images
+    personProfiles?: Record<string, PersonProfile>; // normalized name -> TMDb identity
     // Optional: Movie club specific information.
     movieClubInfo?: MovieClubDetails;
 }

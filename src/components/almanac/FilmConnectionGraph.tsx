@@ -14,7 +14,10 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import dagre from '@dagrejs/dagre';
+import { Link } from 'react-router-dom';
 import { Film } from '../../types/film';
+import CreditsModal from '../common/CreditsModal';
+import { getAllFilmCreditsForPerson, PersonCredit } from '../../utils/filmUtils';
 
 // Dark theme overrides for ReactFlow controls
 const DARK_FLOW_STYLES = `
@@ -411,10 +414,17 @@ const nodeTypes = { filmNode: FilmNode };
 function ConnectionDetailPanel({
     detail,
     onClose,
+    onPersonClick,
 }: {
     detail: ConnectionDetail;
     onClose: () => void;
+    onPersonClick: (name: string) => void;
 }) {
+    const filmLinkStyle: React.CSSProperties = {
+        color: '#e2e8f0',
+        textDecoration: 'none',
+        borderBottom: '1px dashed rgba(147, 197, 253, 0.5)',
+    };
     return (
         <div
             style={{
@@ -436,8 +446,13 @@ function ConnectionDetailPanel({
         >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                 <div style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.3 }}>
-                    {detail.filmA.title} <span style={{ color: '#64748b', fontWeight: 400 }}>&</span>{' '}
-                    {detail.filmB.title}
+                    <Link to={`/films/${detail.filmA.imdbID}`} onClick={onClose} style={filmLinkStyle}>
+                        {detail.filmA.title}
+                    </Link>{' '}
+                    <span style={{ color: '#64748b', fontWeight: 400 }}>&</span>{' '}
+                    <Link to={`/films/${detail.filmB.imdbID}`} onClick={onClose} style={filmLinkStyle}>
+                        {detail.filmB.title}
+                    </Link>
                 </div>
                 <button
                     onClick={onClose}
@@ -467,9 +482,25 @@ function ConnectionDetailPanel({
                             display: 'flex',
                             justifyContent: 'space-between',
                             gap: 8,
+                            alignItems: 'center',
                         }}
                     >
-                        <span style={{ fontWeight: 500 }}>{sc.name}</span>
+                        <button
+                            onClick={() => onPersonClick(sc.name)}
+                            style={{
+                                fontWeight: 500,
+                                background: 'none',
+                                border: 'none',
+                                padding: 0,
+                                color: '#93c5fd',
+                                cursor: 'pointer',
+                                textAlign: 'left',
+                                font: 'inherit',
+                            }}
+                            title={`View ${sc.name}'s credits`}
+                        >
+                            {sc.name}
+                        </button>
                         <span style={{ color: '#64748b', fontSize: 11, flexShrink: 0 }}>
                             {sc.roles.join(', ')}
                         </span>
@@ -494,7 +525,18 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
     style,
 }) => {
     const [selectedConnection, setSelectedConnection] = React.useState<ConnectionDetail | null>(null);
+    const [creditsPerson, setCreditsPerson] = React.useState<{
+        name: string;
+        filmography: PersonCredit[];
+    } | null>(null);
     const threshold = 1;
+
+    const handlePersonClick = useCallback(
+        (name: string) => {
+            setCreditsPerson({ name, filmography: getAllFilmCreditsForPerson(name, films) });
+        },
+        [films]
+    );
 
     // Compute all pairwise shared credits once
     const pairData = useMemo(() => {
@@ -569,6 +611,9 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                 target: p.idB,
                 type: 'default',
                 animated: weight >= maxWeight * 0.75,
+                // Widen the invisible hit area so the thin edges are far easier
+                // to click (default is ~20px).
+                interactionWidth: 40,
                 label: `${weight}`,
                 labelStyle: { fill: '#93c5fd', fontSize: 11, fontWeight: 600 },
                 labelBgStyle: { fill: '#0f172a', fillOpacity: 0.85 },
@@ -577,6 +622,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                 style: {
                     stroke: `rgba(99, 179, 237, ${0.3 + normalised * 0.7})`,
                     strokeWidth: 1.5 + normalised * 3.5,
+                    cursor: 'pointer',
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
@@ -689,6 +735,16 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                 <ConnectionDetailPanel
                     detail={selectedConnection}
                     onClose={() => setSelectedConnection(null)}
+                    onPersonClick={handlePersonClick}
+                />
+            )}
+
+            {creditsPerson && (
+                <CreditsModal
+                    isOpen
+                    onClose={() => setCreditsPerson(null)}
+                    personName={creditsPerson.name}
+                    filmography={creditsPerson.filmography}
                 />
             )}
         </div>

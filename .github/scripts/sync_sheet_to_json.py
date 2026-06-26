@@ -63,7 +63,8 @@ EXPECTED_TMDB_CREW_FIELDS = [
 TMDB_FETCH_FLAG = "tmdbCrewDataFetched"
 # Bump this whenever get_tmdb_film_details starts collecting new fields, so that
 # already-synced films are re-fetched once to backfill the additions.
-TMDB_FETCH_VERSION = 2
+# v3: added the per-film `personProfiles` map (name -> {tmdbId, profileUrl}).
+TMDB_FETCH_VERSION = 3
 TMDB_VERSION_FIELD = "tmdbDataVersion"
 
 # Base URL for TMDb cast profile images. w185 is a good balance of size/quality
@@ -72,14 +73,35 @@ TMDB_PROFILE_IMAGE_BASE = "https://image.tmdb.org/t/p/w185"
 # Number of top-billed cast members to retain per film.
 TMDB_CAST_LIMIT = 12
 
+# Crew jobs we resolve a TMDb person id for, so their names become clickable in
+# the UI and link to a normalized person record. Director/Writer/Story are
+# included even though their display names come from OMDB, so we can map those
+# OMDB-sourced names back to a TMDb id (best-effort, by normalized name).
+TMDB_PERSON_CREW_JOBS = {
+    "Director", "Writer", "Screenplay", "Story",
+    "Director of Photography", "Editor", "Production Design",
+    "Original Music Composer", "Costume Design",
+}
+
+# Normalized-name file shared across films, keyed by TMDb person id. Holds the
+# biographical data fetched once per person from the /person endpoint.
+PERSONS_FILENAME = "persons.json"
+
+
+def normalize_person_name(name):
+    """Key used to match a displayed name to its TMDb person record."""
+    return (name or "").strip().lower()
+
 
 def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
     """Fetch extended film data from TMDb by IMDb ID using Bearer Token.
 
     Returns a flat dict that is merged onto the film entry, containing crew
     fields (cinematographer, editor, ...) plus tagline, budget, revenue,
-    keywords, the primary trailer key, and a top-billed cast list. A single
-    details request with append_to_response pulls credits/keywords/videos at once.
+    keywords, the primary trailer key, a top-billed cast list, and a
+    `personProfiles` map (normalized name -> {tmdbId, profileUrl}) used by the
+    UI to link credited people to their person modal/record. A single details
+    request with append_to_response pulls credits/keywords/videos at once.
     """
     if not tmdb_bearer_token:
         print("Warning: TMDB_KEY (Bearer Token) is not set. Cannot fetch additional crew data.")
@@ -127,6 +149,24 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
         response.raise_for_status()
         data = response.json()
 
+        # Per-film index mapping a normalized person name to their TMDb id and
+        # profile image. Powers the clickable-name -> person-modal lookup in the
+        # UI. First non-null profile for a given name wins.
+        person_profiles = {}
+
+        def register_person(name, person_id, profile_path):
+            if not name or not person_id:
+                return
+            key = normalize_person_name(name)
+            if not key:
+                return
+            existing = person_profiles.get(key)
+            profile_url = f"{TMDB_PROFILE_IMAGE_BASE}{profile_path}" if profile_path else None
+            if existing is None:
+                person_profiles[key] = {"tmdbId": person_id, "profileUrl": profile_url}
+            elif existing.get("profileUrl") is None and profile_url is not None:
+                existing["profileUrl"] = profile_url
+
         # --- Crew (preserves original field set/format) ---
         credits_data = data.get("credits", {})
         if "crew" in credits_data:
@@ -147,6 +187,8 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
                 if job in target_jobs:
                     field_name = target_jobs[job]
                     job_to_names.setdefault(field_name, []).append(name)
+                if job in TMDB_PERSON_CREW_JOBS:
+                    register_person(name, crew_member.get("id"), crew_member.get("profile_path"))
 
             for field, names in job_to_names.items():
                 extracted[field] = ", ".join(sorted(list(set(names))))
@@ -164,8 +206,12 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
                 "character": member.get("character") or None,
                 "profileUrl": f"{TMDB_PROFILE_IMAGE_BASE}{profile_path}" if profile_path else None,
             })
+            register_person(name, member.get("id"), profile_path)
         if cast:
             extracted["cast"] = cast
+
+        if person_profiles:
+            extracted["personProfiles"] = person_profiles
 
         # --- Tagline / financials (movies only; TV omits budget/revenue) ---
         tagline = data.get("tagline")
@@ -203,6 +249,95 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON response from TMDb details for {imdb_id}: {e}")
         return None
+
+def get_tmdb_person_details(person_id, tmdb_bearer_token):
+    """Fetch normalized biographical data for a single TMDb person id.
+
+    Returns the record stored (per id) in persons.json, or None on failure.
+    """
+    if not tmdb_bearer_token or not person_id:
+        return None
+
+    headers = {
+        "Authorization": f"Bearer {tmdb_bearer_token}",
+        "accept": "application/json",
+    }
+    url = f"https://api.themoviedb.org/3/person/{person_id}"
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error during TMDb person request for {person_id}: {e}")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"Error decoding TMDb person response for {person_id}: {e}")
+        return None
+
+    profile_path = data.get("profile_path")
+    return {
+        "tmdbId": person_id,
+        "name": data.get("name"),
+        "biography": data.get("biography") or None,
+        "birthday": data.get("birthday") or None,
+        "deathday": data.get("deathday") or None,
+        "placeOfBirth": data.get("place_of_birth") or None,
+        "knownForDepartment": data.get("known_for_department") or None,
+        "profileUrl": f"{TMDB_PROFILE_IMAGE_BASE}{profile_path}" if profile_path else None,
+    }
+
+
+def sync_persons_file(films_data, persons_path, tmdb_bearer_token):
+    """Fetch and cache biographical data for every TMDb person referenced by any
+    film's `personProfiles`. Only ids not already cached are fetched, so reruns
+    are cheap. Writes the (id -> PersonInfo) map back to persons_path.
+
+    Returns True if persons.json was modified.
+    """
+    if not tmdb_bearer_token:
+        print("TMDB_KEY not set. Skipping persons.json sync.")
+        return False
+
+    try:
+        with open(persons_path, "r", encoding="utf-8") as f:
+            persons = json.load(f)
+        if not isinstance(persons, dict):
+            persons = {}
+    except (FileNotFoundError, json.JSONDecodeError):
+        persons = {}
+
+    referenced_ids = set()
+    for film in films_data:
+        for profile in (film.get("personProfiles") or {}).values():
+            person_id = profile.get("tmdbId")
+            if person_id:
+                referenced_ids.add(person_id)
+
+    missing_ids = [pid for pid in referenced_ids if str(pid) not in persons]
+    if not missing_ids:
+        print(f"persons.json is up to date ({len(persons)} people, no new ids).")
+        return False
+
+    print(f"Fetching {len(missing_ids)} new person record(s) from TMDb...")
+    fetched = 0
+    for person_id in sorted(missing_ids):
+        info = get_tmdb_person_details(person_id, tmdb_bearer_token)
+        if info:
+            persons[str(person_id)] = info
+            fetched += 1
+
+    if fetched == 0:
+        return False
+
+    try:
+        with open(persons_path, "w", encoding="utf-8") as f:
+            json.dump(persons, f, indent=2, ensure_ascii=False, sort_keys=True)
+        print(f"Wrote {persons_path} with {fetched} new person record(s) ({len(persons)} total).")
+        return True
+    except IOError as e:
+        print(f"Error writing persons file {persons_path}: {e}")
+        return False
+
 
 def get_sheet_data(sheet_id):
     """Fetch data from public Google Sheet using direct CSV export."""
@@ -412,7 +547,13 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
             return False
     else:
         print("No changes needed in JSON file.")
-    
+
+    # Backfill the normalized person records for any TMDb ids the films now
+    # reference. Independent of `changes_made` so a missing/incomplete
+    # persons.json gets filled even when films.json itself is unchanged.
+    persons_path = os.path.join(os.path.dirname(json_path), PERSONS_FILENAME)
+    sync_persons_file(films_data, persons_path, tmdb_bearer_token)
+
     return True
 
 def main():
