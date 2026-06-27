@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeftIcon, ChevronRightIcon, FilmIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, FilmIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { Film } from '../../types/film';
 
 interface WatchTimelineNavProps {
     previousFilm: Film | null;
     nextFilm: Film | null;
+    nextSelectorPlaceholder?: string | null; // Selector for the not-yet-chosen next film
     sincePreviousGap?: string | null; // Time elapsed since the previous film was watched
     untilNextGap?: string | null;     // Time until the next film was watched
 }
@@ -74,8 +75,48 @@ const NavCard = ({ film, direction }: NavCardProps) => {
     );
 };
 
-const WatchTimelineNav = ({ previousFilm, nextFilm, sincePreviousGap, untilNextGap }: WatchTimelineNavProps) => {
-    if (!previousFilm && !nextFilm) return null;
+// The next film after the "up next" pick hasn't been selected yet, so we render a
+// muted placeholder that still surfaces who selects next.
+const NextPlaceholderCard = ({ selector }: { selector: string }) => {
+    const selectorImage = `/images/${selector.toLowerCase()}.jpg`;
+
+    return (
+        <div
+            className="group relative overflow-hidden flex flex-row-reverse items-center gap-4 rounded-xl border border-dashed border-slate-700/50 bg-slate-800/20 p-3 text-right"
+            title={`${selector} selects next`}
+        >
+            <img
+                src={selectorImage}
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/3 h-full object-cover object-center opacity-[0.32] grayscale transition-opacity duration-300"
+                style={{
+                    WebkitMaskImage: 'linear-gradient(to right, black, transparent)',
+                    maskImage: 'linear-gradient(to right, black, transparent)',
+                }}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+            <div className="relative z-10 flex-shrink-0 w-12 h-[72px] rounded-md overflow-hidden bg-slate-800/60 ring-1 ring-dashed ring-slate-700/50 flex items-center justify-center">
+                <QuestionMarkCircleIcon className="h-6 w-6 text-slate-600" />
+            </div>
+            <div className="relative z-10 min-w-0 flex-grow">
+                <div className="flex items-center gap-1.5 flex-row-reverse text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500 mb-1">
+                    <ChevronRightIcon className="h-3.5 w-3.5 text-blue-400/70" />
+                    Next Film
+                </div>
+                <h4 className="text-slate-400 font-medium italic truncate">
+                    Not yet selected
+                </h4>
+                <p className="text-xs text-slate-500 mt-0.5 truncate">
+                    {selector} selects next
+                </p>
+            </div>
+        </div>
+    );
+};
+
+const WatchTimelineNav = ({ previousFilm, nextFilm, nextSelectorPlaceholder, sincePreviousGap, untilNextGap }: WatchTimelineNavProps) => {
+    if (!previousFilm && !nextFilm && !nextSelectorPlaceholder) return null;
 
     return (
         <div className="mt-8 pt-6 border-t border-slate-700">
@@ -100,7 +141,7 @@ const WatchTimelineNav = ({ previousFilm, nextFilm, sincePreviousGap, untilNextG
                 ) : (
                     <div className="hidden sm:block" aria-hidden="true" />
                 )}
-                {nextFilm && (
+                {nextFilm ? (
                     <div className="flex flex-col">
                         <NavCard film={nextFilm} direction="next" />
                         {untilNextGap && (
@@ -109,6 +150,12 @@ const WatchTimelineNav = ({ previousFilm, nextFilm, sincePreviousGap, untilNextG
                             </p>
                         )}
                     </div>
+                ) : nextSelectorPlaceholder ? (
+                    <div className="flex flex-col">
+                        <NextPlaceholderCard selector={nextSelectorPlaceholder} />
+                    </div>
+                ) : (
+                    <div className="hidden sm:block" aria-hidden="true" />
                 )}
             </div>
         </div>

@@ -161,7 +161,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
         {sortedFilmography.length === 0 ? (
           <p className="relative z-10 p-4 md:p-6 text-slate-400 flex-grow">No film credits found for {personName}.</p>
         ) : (
-          <div className={`relative z-10 overflow-y-auto min-h-0 p-3 md:p-4 space-y-3 themed-scrollbar ${sortedFilmography.length <= 2 ? 'flex-shrink-0' : 'flex-grow'}`}>
+          <div className="relative z-10 overflow-y-auto min-h-0 max-h-[29vh] flex-shrink-0 p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 themed-scrollbar">
             {sortedFilmography.map(({ film: creditFilm, roles }) => {
               const character = getCharacterForPerson(creditFilm, personNameLower);
               return (
@@ -169,7 +169,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
                   key={creditFilm.imdbID}
                   to={`/films/${creditFilm.imdbID}`}
                   onClick={onClose} // Close modal on navigation
-                  className={`group p-3 rounded-md flex items-start transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400
+                  className={`group p-2 rounded-md flex items-start transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400
                               ${creditFilm.imdbID === currentFilmId
                                 ? 'bg-slate-700/70 ring-1 ring-blue-500 shadow-md'
                                 : 'bg-slate-800/40 hover:bg-slate-700/60'}`}
@@ -177,21 +177,21 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
                   <img
                     src={creditFilm.poster || '/placeholder-poster.png'}
                     alt={`${creditFilm.title} poster`}
-                    className="flex-shrink-0 w-25 h-auto object-cover rounded shadow-sm border border-slate-600/50"
+                    className="flex-shrink-0 w-16 h-auto object-cover rounded shadow-sm border border-slate-600/50"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = '/placeholder-poster.png';
                       target.onerror = null;
                     }}
                   />
-                  <div className="ml-3 md:ml-4 flex-grow">
-                    <h3 className="text-base md:text-lg font-semibold text-slate-100 leading-tight group-hover:text-blue-300">{creditFilm.title}</h3>
-                    {creditFilm.year && <p className="text-xs text-slate-400 mt-1">({creditFilm.year})</p>}
-                    <p className="text-sm text-slate-300 mt-4">
+                  <div className="ml-2 md:ml-3 min-w-0 flex-grow">
+                    <h3 className="text-sm font-semibold text-slate-100 leading-tight group-hover:text-blue-300">{creditFilm.title}</h3>
+                    {creditFilm.year && <p className="text-xs text-slate-400 mt-0.5">({creditFilm.year})</p>}
+                    <p className="text-xs text-slate-300 mt-1.5">
                       <span className="font-medium text-slate-400">Role(s):</span> {roles.join(', ')}
                     </p>
                     {character && (
-                      <p className="text-sm text-slate-300 mt-1">
+                      <p className="text-xs text-slate-300 mt-0.5">
                         <span className="font-medium text-slate-400">as</span> <span className="italic">{character}</span>
                       </p>
                     )}

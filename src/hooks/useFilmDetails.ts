@@ -1,6 +1,20 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Film, filmData as allFilmsData } from '../types/film'; // Ensure filmData is imported as allFilmsData or similar
+import { teamMembers } from '../types/team';
 import { getAllFilmCreditsForPerson, parseWatchDate, PersonCredit } from '../utils/filmUtils'; // Assuming this util exists
+
+// Active selectors in cycle order (queue > 0, ascending). Used to figure out who
+// picks after the current "up next" selector once they've made their choice.
+const sortedActiveMembers = teamMembers
+    .filter(member => typeof member.queue === 'number' && member.queue > 0)
+    .sort((a, b) => (a.queue ?? Infinity) - (b.queue ?? Infinity));
+
+const getNextSelectorName = (currentSelector?: string | null): string | null => {
+    if (!currentSelector || sortedActiveMembers.length === 0) return null;
+    const idx = sortedActiveMembers.findIndex(m => m.name === currentSelector);
+    if (idx === -1) return null;
+    return sortedActiveMembers[(idx + 1) % sortedActiveMembers.length].name;
+};
 
 export interface CreditsModalInfo {
     isOpen: boolean;
@@ -15,6 +29,7 @@ export interface UseFilmDetailsReturn {
     filmsBySameSelector: Film[];
     previousFilm: Film | null; // The film the club watched immediately before this one
     nextFilm: Film | null;     // The film the club watched immediately after this one
+    nextSelectorPlaceholder: string | null; // Selector for the not-yet-chosen film after the "up next" pick
     watchUrl: string | null;
     linkCheckStatus: 'idle' | 'valid' | 'not_found'; // Simplified for this hook example
     creditsModalState: CreditsModalInfo;
@@ -135,12 +150,11 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
 
 
     // Locate this film within the club's chronological watch history so the page
-    // can offer "previous"/"next" navigation. Films without a valid watch date
-    // (e.g. unwatched "up next" picks) are excluded from the timeline.
-    const { previousFilm, nextFilm } = useMemo(() => {
-        if (!film?.movieClubInfo?.watchDate || !parseWatchDate(film.movieClubInfo.watchDate)) {
-            return { previousFilm: null, nextFilm: null };
-        }
+    // can offer "previous"/"next" navigation. The unwatched "up next" pick has no
+    // watch date, so it sits conceptually at the end of the timeline.
+    const { previousFilm, nextFilm, nextSelectorPlaceholder } = useMemo(() => {
+        const empty = { previousFilm: null, nextFilm: null, nextSelectorPlaceholder: null };
+        if (!film) return empty;
 
         const watchedTimeline = allFilmsData
             .filter(f => parseWatchDate(f.movieClubInfo?.watchDate))
@@ -151,12 +165,32 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
                 return (dateA - dateB) || (a.title ?? '').localeCompare(b.title ?? '');
             });
 
+        // The "up next" pick (a film with a selector but no watch date) follows the
+        // most recent watch. Its own "next" slot hasn't been selected yet, so we
+        // surface the selector who picks after it as a placeholder.
+        if (!parseWatchDate(film.movieClubInfo?.watchDate)) {
+            if (!film.movieClubInfo?.selector) return empty;
+            return {
+                previousFilm: watchedTimeline[watchedTimeline.length - 1] ?? null,
+                nextFilm: null,
+                nextSelectorPlaceholder: getNextSelectorName(film.movieClubInfo.selector),
+            };
+        }
+
         const currentIndex = watchedTimeline.findIndex(f => f.imdbID === film.imdbID);
-        if (currentIndex === -1) return { previousFilm: null, nextFilm: null };
+        if (currentIndex === -1) return empty;
+
+        const isMostRecentlyWatched = currentIndex === watchedTimeline.length - 1;
+        // Surface the unwatched "up next" pick as the next film once we reach the
+        // most recent watch.
+        const upNextFilm = isMostRecentlyWatched
+            ? allFilmsData.find(f => f.movieClubInfo?.selector && !parseWatchDate(f.movieClubInfo?.watchDate)) ?? null
+            : null;
 
         return {
             previousFilm: currentIndex > 0 ? watchedTimeline[currentIndex - 1] : null,
-            nextFilm: currentIndex < watchedTimeline.length - 1 ? watchedTimeline[currentIndex + 1] : null,
+            nextFilm: isMostRecentlyWatched ? upNextFilm : watchedTimeline[currentIndex + 1],
+            nextSelectorPlaceholder: null,
         };
     }, [film]);
 
@@ -180,6 +214,7 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         filmsBySameSelector,
         previousFilm,
         nextFilm,
+        nextSelectorPlaceholder,
         watchUrl,
         linkCheckStatus,
         creditsModalState,

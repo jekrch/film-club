@@ -54,6 +54,7 @@ const FilmDetailPage = () => {
         filmsBySameSelector,
         previousFilm,
         nextFilm,
+        nextSelectorPlaceholder,
         watchUrl,
         linkCheckStatus,
         creditsModalState,
@@ -468,6 +469,7 @@ const FilmDetailPage = () => {
                             <WatchTimelineNav
                                 previousFilm={previousFilm}
                                 nextFilm={nextFilm}
+                                nextSelectorPlaceholder={nextSelectorPlaceholder}
                                 sincePreviousGap={sincePreviousGap}
                                 untilNextGap={untilNextGap}
                             />
