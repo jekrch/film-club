@@ -64,6 +64,56 @@ const AboutPage: React.FC = () => {
               </div>
             </div>
           </BaseCard>
+
+          {/* Data & Attribution Section - Dark Card */}
+          <div className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden mt-6 border border-slate-700 shadow-lg shadow-slate-950/30">
+            <div className="p-6 md:p-8">
+              <h2 className="!text-xl sm:text-2xl font-semibold text-slate-300 mb-4">
+                Data &amp; Attribution
+              </h2>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+                <a
+                  href="https://www.themoviedb.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0"
+                  aria-label="The Movie Database (TMDB)"
+                >
+                  <img
+                    src="/tmdb-logo.svg"
+                    alt="The Movie Database (TMDB) logo"
+                    className="h-16 w-auto"
+                  />
+                </a>
+                <div className="text-slate-400 text-sm leading-relaxed space-y-2">
+                  <p>
+                    Cast, crew, and biographical details on this site are sourced from{' '}
+                    <a
+                      href="https://www.themoviedb.org"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 transition"
+                    >
+                      The Movie Database (TMDB)
+                    </a>
+                    , with additional film data from{' '}
+                    <a
+                      href="https://www.omdbapi.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 transition"
+                    >
+                      OMDb
+                    </a>
+                    . We're grateful to these communities for making their data available.
+                  </p>
+                  <p className="text-slate-500">
+                    This product uses the TMDB API but is not endorsed or certified by TMDB.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
     </PageLayout>
   );

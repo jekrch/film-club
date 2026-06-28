@@ -6,10 +6,11 @@ import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
 import TrailerModal from '../components/common/TrailerModal';
-import { countValidRatings, formatCurrency, formatDayGap, formatRuntime, getFilmBackdrop, parseGenres, parseWatchDate } from '../utils/filmUtils';
+import { countValidRatings, formatCurrency, formatDayGap, formatRuntime, getFilmBackdrop, getFilmBackdrops, parseGenres, parseWatchDate } from '../utils/filmUtils';
 import { getPersonProfileByName } from '../utils/personUtils';
 import { Film } from '../types/film';
 import FilmCastStrip from '../components/films/FilmCastStrip';
+import FilmStills from '../components/films/FilmStills';
 import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
@@ -131,6 +132,15 @@ const FilmDetailPage = () => {
         : formatCurrency(film.revenue);
     const budgetDisplay = formatCurrency(film.budget);
     const awardsDisplay = film.awards && film.awards.toLowerCase() !== 'n/a' ? film.awards : null;
+    // Backdrop for the details strip (genres/budget/awards). Prefer a second
+    // image so it differs from the right-anchored header backdrop; fall back to
+    // the primary backdrop when only one is available.
+    const filmBackdrops = getFilmBackdrops(film);
+    const detailsBackdrop = filmBackdrops[1] ?? filmBackdrops[0];
+    // Gallery of "stills": every backdrop plus the cover/poster, de-duplicated.
+    const stillImages = [...filmBackdrops, film.poster].filter(
+        (url, i, arr): url is string => !!url && arr.indexOf(url) === i,
+    );
     const MAX_RATING = 9;
     const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
 
@@ -246,6 +256,12 @@ const FilmDetailPage = () => {
                                 )}
                             </div>
 
+                            {stillImages.length > 0 && (
+                                <div className="mb-5">
+                                    <FilmStills images={stillImages} title={film.title} />
+                                </div>
+                            )}
+
                             {externalRatings.length > 0 && (
                                 <div className="flex flex-wrap gap-2 mb-5">
                                     {externalRatings.map((rating) => {
@@ -307,55 +323,70 @@ const FilmDetailPage = () => {
                         </div>
                     </div>
 
-                    {(filmGenres.length > 0 || budgetDisplay || boxOfficeDisplay || awardsDisplay) && (
-                        <div className="px-6 md:px-8 py-5 border-t border-slate-700/60 flex flex-col sm:flex-row sm:flex-wrap gap-6 sm:gap-x-10 sm:gap-y-6">
-                            {filmGenres.length > 0 && (
-                                <div className="flex-shrink-0">
-                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Genres</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {filmGenres.map((genre) => (
-                                            <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full">{genre}</span>
-                                        ))}
+                    {(filmGenres.length > 0 || budgetDisplay || boxOfficeDisplay || awardsDisplay || crewPeople.length > 0 || (film.cast && film.cast.length > 0)) && (
+                        <div className="relative overflow-hidden">
+                            {detailsBackdrop && (
+                                <SelectionCommitteeBackground
+                                    imageUrl={detailsBackdrop}
+                                    className="!rounded-none"
+                                    scale={1}
+                                    opacity={0.14}
+                                    align="left"
+                                />
+                            )}
+                            <div className="relative z-10">
+                                {(filmGenres.length > 0 || budgetDisplay || boxOfficeDisplay || awardsDisplay) && (
+                                    <div className="px-6 md:px-8 py-5 border-t border-slate-700/60 flex flex-col sm:flex-row sm:flex-wrap gap-6 sm:gap-x-10 sm:gap-y-6">
+                                        {filmGenres.length > 0 && (
+                                            <div className="flex-shrink-0">
+                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Genres</h3>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {filmGenres.map((genre) => (
+                                                        <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full">{genre}</span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {budgetDisplay && (
+                                            <div className="flex-shrink-0">
+                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Budget</h3>
+                                                <p className="text-slate-300">{budgetDisplay}</p>
+                                            </div>
+                                        )}
+                                        {boxOfficeDisplay && (
+                                            <div className="flex-shrink-0">
+                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Box Office</h3>
+                                                <p className="text-slate-300">{boxOfficeDisplay}</p>
+                                            </div>
+                                        )}
+                                        {awardsDisplay && (
+                                            <div className="sm:flex-1 sm:basis-80">
+                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Awards</h3>
+                                                <p className="text-slate-300 leading-relaxed">{awardsDisplay}</p>
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
-                            )}
-                            {budgetDisplay && (
-                                <div className="flex-shrink-0">
-                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Budget</h3>
-                                    <p className="text-slate-300">{budgetDisplay}</p>
-                                </div>
-                            )}
-                            {boxOfficeDisplay && (
-                                <div className="flex-shrink-0">
-                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Box Office</h3>
-                                    <p className="text-slate-300">{boxOfficeDisplay}</p>
-                                </div>
-                            )}
-                            {awardsDisplay && (
-                                <div className="sm:flex-1 sm:basis-80">
-                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Awards</h3>
-                                    <p className="text-slate-300 leading-relaxed">{awardsDisplay}</p>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                                )}
 
-                    {(crewPeople.length > 0 || (film.cast && film.cast.length > 0)) && (
-                        <div className="px-6 md:px-8 pb-6 md:pb-8">
-                            {crewPeople.length > 0 && (
-                                <PersonStrip
-                                    title="Crew"
-                                    people={crewPeople}
-                                    onPersonClick={handleCreditPersonClick}
-                                />
-                            )}
-                            {film.cast && film.cast.length > 0 && (
-                                <FilmCastStrip
-                                    cast={film.cast}
-                                    personAllFilmographies={personAllFilmographies}
-                                    onPersonClick={handleCreditPersonClick}
-                                />
-                            )}
+                                {(crewPeople.length > 0 || (film.cast && film.cast.length > 0)) && (
+                                    <div className="px-6 md:px-8 pb-6 md:pb-8">
+                                        {crewPeople.length > 0 && (
+                                            <PersonStrip
+                                                title="Crew"
+                                                people={crewPeople}
+                                                onPersonClick={handleCreditPersonClick}
+                                            />
+                                        )}
+                                        {film.cast && film.cast.length > 0 && (
+                                            <FilmCastStrip
+                                                cast={film.cast}
+                                                personAllFilmographies={personAllFilmographies}
+                                                onPersonClick={handleCreditPersonClick}
+                                            />
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
 
