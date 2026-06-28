@@ -48,6 +48,33 @@ export const formatCurrency = (amount: number | undefined | null): string | null
     }).format(amount);
 };
 
+/**
+ * Returns the ordered pool of wide background/scene images for a film, used for
+ * the faded page backgrounds. The hand-curated `backdropImage` (if any) always
+ * comes first, followed by the TMDb scene stills in `backdropImages`. Duplicates
+ * and falsy entries are removed.
+ */
+export const getFilmBackdrops = (film: Film): string[] => {
+    const pool: string[] = [];
+    const add = (url: string | undefined | null) => {
+        if (url && !pool.includes(url)) pool.push(url);
+    };
+    add(film.backdropImage);
+    if (Array.isArray(film.backdropImages)) {
+        film.backdropImages.forEach(add);
+    }
+    return pool;
+};
+
+/**
+ * Picks the single best faded-background image for a film: the curated
+ * `backdropImage` when present, otherwise the top TMDb scene still. Returns
+ * undefined when the film has no backdrop imagery at all.
+ */
+export const getFilmBackdrop = (film: Film): string | undefined => {
+    return getFilmBackdrops(film)[0];
+};
+
 export const countValidRatings = (clubRatings: ClubRating[] | undefined): number => {
     if (!clubRatings || !Array.isArray(clubRatings)) return 0;
     return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score)).length;

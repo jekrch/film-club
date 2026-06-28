@@ -1,4 +1,5 @@
-import { parseWatchDate, formatRuntime, getImdbRatingDisplay, parseGenres } from './filmUtils';
+import { parseWatchDate, formatRuntime, getImdbRatingDisplay, parseGenres, getFilmBackdrops, getFilmBackdrop } from './filmUtils';
+import { makeFilm } from '../test-utils/factories';
 
 describe('filmUtils', () => {
   describe('parseWatchDate', () => {
@@ -79,6 +80,51 @@ describe('filmUtils', () => {
 
     it('should trim whitespace from genres', () => {
       expect(parseGenres(' Action , Sci-Fi ')).toEqual(['Action', 'Sci-Fi']);
+    });
+  });
+
+  describe('getFilmBackdrops', () => {
+    it('puts the curated backdropImage first, then the TMDb stills', () => {
+      const film = makeFilm({
+        backdropImage: 'curated.jpg',
+        backdropImages: ['still1.jpg', 'still2.jpg'],
+      });
+      expect(getFilmBackdrops(film)).toEqual(['curated.jpg', 'still1.jpg', 'still2.jpg']);
+    });
+
+    it('falls back to the TMDb stills when there is no curated image', () => {
+      const film = makeFilm({ backdropImage: undefined, backdropImages: ['still1.jpg'] });
+      expect(getFilmBackdrops(film)).toEqual(['still1.jpg']);
+    });
+
+    it('removes duplicate and falsy entries', () => {
+      const film = makeFilm({
+        backdropImage: 'dup.jpg',
+        backdropImages: ['dup.jpg', '', 'unique.jpg'],
+      });
+      expect(getFilmBackdrops(film)).toEqual(['dup.jpg', 'unique.jpg']);
+    });
+
+    it('returns an empty array when the film has no backdrops', () => {
+      const film = makeFilm({ backdropImage: undefined, backdropImages: undefined });
+      expect(getFilmBackdrops(film)).toEqual([]);
+    });
+  });
+
+  describe('getFilmBackdrop', () => {
+    it('prefers the curated image over TMDb stills', () => {
+      const film = makeFilm({ backdropImage: 'curated.jpg', backdropImages: ['still1.jpg'] });
+      expect(getFilmBackdrop(film)).toBe('curated.jpg');
+    });
+
+    it('uses the top TMDb still when no curated image exists', () => {
+      const film = makeFilm({ backdropImage: undefined, backdropImages: ['still1.jpg', 'still2.jpg'] });
+      expect(getFilmBackdrop(film)).toBe('still1.jpg');
+    });
+
+    it('returns undefined when there is no backdrop imagery', () => {
+      const film = makeFilm({ backdropImage: undefined, backdropImages: undefined });
+      expect(getFilmBackdrop(film)).toBeUndefined();
     });
   });
 });

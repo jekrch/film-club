@@ -6,7 +6,7 @@ import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
 import TrailerModal from '../components/common/TrailerModal';
-import { countValidRatings, formatCurrency, formatDayGap, formatRuntime, parseGenres, parseWatchDate } from '../utils/filmUtils';
+import { countValidRatings, formatCurrency, formatDayGap, formatRuntime, getFilmBackdrop, parseGenres, parseWatchDate } from '../utils/filmUtils';
 import { getPersonProfileByName } from '../utils/personUtils';
 import { Film } from '../types/film';
 import FilmCastStrip from '../components/films/FilmCastStrip';
@@ -206,9 +206,9 @@ const FilmDetailPage = () => {
                         </div>
 
                         <div className="relative p-6 md:p-8 flex-grow overflow-hidden">
-                            {film.backdropImage && (
+                            {getFilmBackdrop(film) && (
                                 <SelectionCommitteeBackground
-                                    imageUrl={film.backdropImage}
+                                    imageUrl={getFilmBackdrop(film)}
                                     className="!rounded-none"
                                     scale={1}
                                     opacity={0.14}

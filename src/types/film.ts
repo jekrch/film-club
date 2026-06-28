@@ -142,7 +142,8 @@ export interface Film {
     country: string;
     awards?: string; 
     poster: string; // URL
-    backdropImage?: string; // Optional: URL for a wide background/banner image shown behind the selection committee (home) and film details
+    backdropImage?: string; // Optional: hand-curated wide background/banner image shown behind the selection committee (home) and film details
+    backdropImages?: string[]; // Optional: TMDb scene stills (populated by the sync script) used as faded backgrounds; fallback pool when no curated backdropImage exists
     ratings: Rating[]; // Array of ratings from different sources
     metascore?: string; // Optional: Removed if "N/A"
     imdbRating?: string; // Optional: Removed if "N/A"

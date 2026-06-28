@@ -7,7 +7,7 @@ import { calculateClubAverage } from '../utils/ratingUtils';
 import CircularImage from '../components/common/CircularImage';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import { parseWatchDate } from '../utils/filmUtils';
+import { getFilmBackdrop, parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
 import PageLayout from '../components/layout/PageLayout';
 import CorinthianPillar from '../components/layout/CorinthianPillar';
@@ -155,7 +155,7 @@ const HomePage = () => {
 
         {/* Background poster image */}
         <SelectionCommitteeBackground
-            imageUrl={upNextFilm?.backdropImage ?? upNextFilm?.poster}
+            imageUrl={(upNextFilm && getFilmBackdrop(upNextFilm)) ?? upNextFilm?.poster}
             scale={1}
             opacity={0.35}
         />

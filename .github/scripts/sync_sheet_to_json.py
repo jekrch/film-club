@@ -64,14 +64,19 @@ TMDB_FETCH_FLAG = "tmdbCrewDataFetched"
 # Bump this whenever get_tmdb_film_details starts collecting new fields, so that
 # already-synced films are re-fetched once to backfill the additions.
 # v3: added the per-film `personProfiles` map (name -> {tmdbId, profileUrl}).
-TMDB_FETCH_VERSION = 3
+# v4: added `backdropImages` (TMDb scene stills used as faded backgrounds).
+TMDB_FETCH_VERSION = 4
 TMDB_VERSION_FIELD = "tmdbDataVersion"
 
 # Base URL for TMDb cast profile images. w185 is a good balance of size/quality
 # for the headshot strip rendered on the film detail page.
 TMDB_PROFILE_IMAGE_BASE = "https://image.tmdb.org/t/p/w185"
+# Base URL for wide backdrop/scene stills rendered as faded page backgrounds.
+TMDB_BACKDROP_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 # Number of top-billed cast members to retain per film.
 TMDB_CAST_LIMIT = 12
+# Number of TMDb backdrop stills to retain per film for the faded-background pool.
+TMDB_BACKDROP_LIMIT = 6
 
 # Crew jobs we resolve a TMDb person id for, so their names become clickable in
 # the UI and link to a normalized person record. Director/Writer/Story are
@@ -141,7 +146,10 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
 
     details_url = (
         f"https://api.themoviedb.org/3/{media_type}/{tmdb_movie_id}"
-        "?append_to_response=credits,keywords,videos"
+        "?append_to_response=credits,keywords,videos,images"
+        # Restrict backdrops to textless (no language) and English stills so the
+        # faded backgrounds are clean scene imagery, not foreign title cards.
+        "&include_image_language=en,null"
     )
     extracted = {}
     try:
@@ -240,6 +248,22 @@ def get_tmdb_film_details(imdb_id, tmdb_bearer_token):
         if youtube_trailers:
             official = next((v for v in youtube_trailers if v.get("official")), None)
             extracted["trailerKey"] = (official or youtube_trailers[0])["key"]
+
+        # --- Backdrops (wide scene stills used as faded page backgrounds) ---
+        # Prefer textless stills (iso_639_1 is null), then highest community
+        # rating. These supplement the hand-curated `backdropImage` for the many
+        # films that have none.
+        backdrops = (data.get("images") or {}).get("backdrops") or []
+        backdrops.sort(
+            key=lambda b: (b.get("iso_639_1") is not None, -(b.get("vote_average") or 0))
+        )
+        backdrop_urls = [
+            f"{TMDB_BACKDROP_IMAGE_BASE}{b['file_path']}"
+            for b in backdrops[:TMDB_BACKDROP_LIMIT]
+            if b.get("file_path")
+        ]
+        if backdrop_urls:
+            extracted["backdropImages"] = backdrop_urls
 
         return extracted
 
