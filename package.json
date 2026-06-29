@@ -22,6 +22,7 @@
     "@fontsource/inter": "^5.2.5",
     "@fontsource/merriweather": "^5.2.6",
     "@heroicons/react": "^2.2.0",
+    "@jekrch/react-viewport-lightbox": "^0.1.0",
     "@tailwindcss/postcss": "^4.1.4",
     "@tailwindcss/vite": "^4.1.4",
     "@types/jest": "^29.5.14",
