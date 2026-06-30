@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ImageViewer, type ViewerItem } from '@jekrch/react-viewport-lightbox';
+import { ImageViewer, type ViewerItem, type ViewerRect } from '@jekrch/react-viewport-lightbox';
 
 interface FilmStillsProps {
   /** Ordered list of still image URLs (backdrops + cover). */
@@ -21,6 +21,19 @@ const THUMB_OVERLAP = 22; // px each successive thumb is shifted right
 const FilmStills: React.FC<FilmStillsProps> = ({ images, title }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [index, setIndex] = useState(0);
+
+  // Source thumbnails for the shared-element open/close transition. The viewer
+  // expands from / collapses into these via `getOriginRect`.
+  const thumbRefs = useRef<(HTMLImageElement | null)[]>([]);
+
+  // Return the on-screen rect of the thumbnail backing `i`, or null when there's
+  // no visible source (only the first few stills are previewed; failed loads are
+  // hidden) so the viewer falls back to its default fade for that index.
+  const getOriginRect = (i: number): ViewerRect | null => {
+    const el = thumbRefs.current[i];
+    if (!el || el.style.display === 'none') return null;
+    return el.getBoundingClientRect();
+  };
 
   // Final, ready-to-load urls — the consumer (this component) resolves them, so
   // they're passed to the viewer verbatim.
@@ -58,11 +71,12 @@ const FilmStills: React.FC<FilmStillsProps> = ({ images, title }) => {
           {previewThumbs.map((src, i) => (
             <img
               key={src}
+              ref={(el) => { thumbRefs.current[i] = el; }}
               src={src}
               alt=""
               aria-hidden="true"
               className="absolute top-0 h-9 w-14 rounded object-cover ring-1 ring-slate-600/80 shadow-md shadow-black/40 transition-transform duration-200 group-hover:-translate-y-0.5"
-              style={{ left: i * THUMB_OVERLAP, zIndex: i }}
+              style={{ left: i * THUMB_OVERLAP, zIndex: previewThumbs.length - i }}
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
           ))}
@@ -82,6 +96,9 @@ const FilmStills: React.FC<FilmStillsProps> = ({ images, title }) => {
           <ImageViewer
             items={items}
             index={index}
+            loop={true}
+            getOriginRect={getOriginRect}
+            closeOnBackdropClick={true}
             onIndexChange={setIndex}
             onClose={() => setIsOpen(false)}
             ariaLabel={`${title} — stills`}
