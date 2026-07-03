@@ -16263,8 +16263,34 @@
     "editor": "Susan Korda",
     "movieClubInfo": {
       "selector": "Gabe",
-      "watchDate": null,
-      "clubRatings": [],
+      "watchDate": "7/2/26",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 5.5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "joey",
+          "score": 7.5,
+          "blurb": null
+        },
+        {
+          "user": "greg",
+          "score": 8,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     },
