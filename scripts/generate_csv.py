@@ -69,6 +69,11 @@ def convert_json_to_csv(json_file, csv_file):
                     for rating in movie["movieClubInfo"]["clubRatings"]:
                         user = rating.get("user", "").lower()
                         score = rating.get("score", "")
+                        # Re-append a score qualifier (e.g. "d") so the sheet-facing
+                        # CSV round-trips to the same "7.5d" form the member entered.
+                        qualifier = rating.get("scoreQualifier")
+                        if qualifier and score not in (None, ""):
+                            score = f"{score}{qualifier}"
                         blurb = rating.get("blurb", "")
                         club_ratings[user] = (score, blurb)
                 

@@ -11,6 +11,7 @@ import { getPersonProfileByName } from '../utils/personUtils';
 import { Film } from '../types/film';
 import FilmCastStrip from '../components/films/FilmCastStrip';
 import FilmStills from '../components/films/FilmStills';
+import ScoreQualifierNote from '../components/films/ScoreQualifierNote';
 import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
@@ -431,14 +432,36 @@ const FilmDetailPage = () => {
                                                 {film.movieClubInfo.clubRatings
                                                     .filter(rating => rating.score !== null && typeof rating.score === 'number')
                                                     .sort((a, b) => a.user.localeCompare(b.user))
-                                                    .map(rating => (
+                                                    .map(rating => {
+                                                        // When any member on this film used a score qualifier (e.g. Joey's
+                                                        // documentary "d"), reserve a wider fixed-width score cell for every
+                                                        // row so the qualifier + info icon don't shove that row's popcorn
+                                                        // out of alignment with the others.
+                                                        const filmHasQualifier = film.movieClubInfo!.clubRatings.some(r => r.scoreQualifier);
+                                                        return (
                                                         <div key={rating.user} className="space-y-2">
                                                             <div className="flex items-center space-x-2">
                                                                 <Link to={`/profile/${encodeURIComponent(capitalizeFirstLetter(rating.user))}`} className="text-slate-300 hover:text-white transition font-medium capitalize w-16 truncate" title={`View ${capitalizeFirstLetter(rating.user)}'s profile`}>
                                                                     {capitalizeFirstLetter(rating.user)}:
                                                                 </Link>
-                                                                <span className="font-semibold text-slate-200 w-8 text-right">{rating.score}</span>
-                                                                <PopcornRating rating={rating.score as number} maxRating={MAX_RATING} size="small" title={`${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`} />
+                                                                <span className={`font-semibold text-slate-200 whitespace-nowrap ${filmHasQualifier ? 'w-14' : 'w-8 text-right'}`}>
+                                                                    {rating.score}
+                                                                    {rating.scoreQualifier && (
+                                                                        <ScoreQualifierNote user={rating.user} qualifier={rating.scoreQualifier} />
+                                                                    )}
+                                                                </span>
+                                                                <PopcornRating
+                                                                    rating={rating.score as number}
+                                                                    maxRating={MAX_RATING}
+                                                                    size="small"
+                                                                    // Qualified scores get a distinctly deep-gold popcorn (matching
+                                                                    // the amber "d") to signal that they come from a different,
+                                                                    // medium-specific scoring rubric.
+                                                                    className={rating.scoreQualifier ? '[filter:sepia(1)_saturate(3.5)_hue-rotate(-18deg)_brightness(1.1)]' : undefined}
+                                                                    title={rating.scoreQualifier
+                                                                        ? `${capitalizeFirstLetter(rating.user)}'s ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} rating: ${rating.score} out of ${MAX_RATING}`
+                                                                        : `${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`}
+                                                                />
                                                             </div>
                                                             {rating.blurb && (
                                                                 <div className="group/blurb relative ml-2 mt-4 overflow-hidden rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-800/80 via-slate-850/80 to-slate-900/90 shadow-lg shadow-black/20 transition-colors duration-300 hover:border-emerald-400/30">
@@ -466,7 +489,8 @@ const FilmDetailPage = () => {
                                                                 </div>
                                                             )}
                                                         </div>
-                                                    ))}
+                                                    );
+                                                    })}
                                             </div>
                                         </div>
                                     ) : (<div> <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">Club Rating</h3> <p className="text-slate-400 italic">No ratings submitted yet.</p> </div>)}

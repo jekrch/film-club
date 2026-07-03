@@ -292,7 +292,9 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                                     return (
                                                         <div
                                                             key={rating.user}
-                                                            title={`${rating.user}: ${rating.score}/9`}
+                                                            title={rating.scoreQualifier
+                                                                ? `${rating.user}: ${rating.score}/9 (${rating.scoreQualifier} — a ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} score; see the film page)`
+                                                                : `${rating.user}: ${rating.score}/9`}
                                                             className={`
                                                                 flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-10
                                                                 text-center bg-white/5 rounded-sm shadow-inner shadow-black/20
@@ -307,6 +309,9 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                                             {/* Member Rating */}
                                                             <div className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[11px]' : 'text-sm'}`}>
                                                                 {rating.score}
+                                                                {rating.scoreQualifier && (
+                                                                    <span className="align-super text-[0.6em] text-amber-400/90 lowercase">{rating.scoreQualifier}</span>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     );

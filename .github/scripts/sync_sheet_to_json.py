@@ -23,6 +23,32 @@ def to_camel_case(text):
     text = re.sub(r"_([a-z])", lambda x: x.group(1).upper(), text)
     return text[0].lower() + text[1:]
 
+def parse_score_and_qualifier(raw_value):
+    """Parses a sheet rating cell into a (score, qualifier) pair.
+
+    Ratings are normally numeric (e.g. "7.5"), but a member may append a single
+    trailing letter as a qualifier (e.g. "7.5d" -- Joey's marker for a score he
+    considers only comprehensible within the documentary medium). The numeric
+    part is returned as an int/float and the letter as a lowercase string so the
+    stored `score` stays numeric for averaging while the qualifier is preserved.
+
+    Returns (None, None) for blank cells and (raw_value, None) for values that
+    are neither numeric nor numeric-plus-letter (preserving prior behavior of
+    keeping unparseable values as-is).
+    """
+    if pd.isna(raw_value):
+        return None, None
+    text = str(raw_value).strip()
+    if text == "":
+        return None, None
+    match = re.fullmatch(r"(-?\d+(?:\.\d+)?)\s*([A-Za-z])?", text)
+    if not match:
+        return raw_value, None
+    number = float(match.group(1))
+    score = int(number) if number.is_integer() else number
+    qualifier = match.group(2).lower() if match.group(2) else None
+    return score, qualifier
+
 def transform_keys_to_camel_case(data):
     """Converts keys in API responses from PascalCase/snake_case to camelCase."""
     if isinstance(data, dict):
@@ -458,24 +484,28 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
                 # Skip if both rating and blurb are NaN (no data in sheet for this user for this film)
                 if pd.isna(rating_val_sheet) and pd.isna(blurb_val_sheet): continue
 
-                new_score = None
-                if not pd.isna(rating_val_sheet):
-                    try:
-                        float_val = float(rating_val_sheet)
-                        new_score = int(float_val) if float_val.is_integer() else float_val
-                    except (ValueError, TypeError): new_score = rating_val_sheet # Keep as string if not convertible
+                new_score, new_qualifier = parse_score_and_qualifier(rating_val_sheet)
                 new_blurb = None if pd.isna(blurb_val_sheet) else blurb_val_sheet
 
                 user_rating_obj = current_ratings_dict.get(user.lower())
 
-                if user_rating_obj: 
-                    if user_rating_obj.get('score') != new_score or user_rating_obj.get('blurb') != new_blurb:
+                if user_rating_obj:
+                    if (user_rating_obj.get('score') != new_score
+                            or user_rating_obj.get('blurb') != new_blurb
+                            or user_rating_obj.get('scoreQualifier') != new_qualifier):
                         user_rating_obj['score'] = new_score
                         user_rating_obj['blurb'] = new_blurb
+                        # Only store the qualifier when present, so ratings without
+                        # one stay clean (no `scoreQualifier: null` noise in the diff).
+                        if new_qualifier:
+                            user_rating_obj['scoreQualifier'] = new_qualifier
+                        else:
+                            user_rating_obj.pop('scoreQualifier', None)
                 else: # New rating for this user for this film
-                    movie_to_update['movieClubInfo']['clubRatings'].append({
-                        'user': user, 'score': new_score, 'blurb': new_blurb
-                    })
+                    new_rating = {'user': user, 'score': new_score, 'blurb': new_blurb}
+                    if new_qualifier:
+                        new_rating['scoreQualifier'] = new_qualifier
+                    movie_to_update['movieClubInfo']['clubRatings'].append(new_rating)
             
             # Conditional TMDb data fetch. Re-fetch when the stored data version is
             # behind TMDB_FETCH_VERSION so new fields are backfilled exactly once.
@@ -529,14 +559,13 @@ def update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token)
                     rating_col, blurb_col = f'{user}_rating', f'{user}_blurb'
                     rating, blurb = row.get(rating_col), row.get(blurb_col)
                     if not pd.isna(rating) or not pd.isna(blurb):
-                        try:
-                            rating_val_typed = float(rating) if not pd.isna(rating) else None
-                            if rating_val_typed is not None and rating_val_typed.is_integer(): rating_val_typed = int(rating_val_typed)
-                        except (ValueError, TypeError): 
-                            rating_val_typed = rating 
-                        new_film_entry['movieClubInfo']['clubRatings'].append({
+                        rating_val_typed, qualifier = parse_score_and_qualifier(rating)
+                        new_rating = {
                             'user': user, 'score': rating_val_typed, 'blurb': None if pd.isna(blurb) else blurb
-                        })
+                        }
+                        if qualifier:
+                            new_rating['scoreQualifier'] = qualifier
+                        new_film_entry['movieClubInfo']['clubRatings'].append(new_rating)
                 
                 new_films_to_append.append(new_film_entry) # Add to temporary list
                 changes_made = True

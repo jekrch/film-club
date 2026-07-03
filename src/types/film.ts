@@ -109,6 +109,10 @@ export interface ClubRating {
     user: string;       // The name of the club member (e.g., 'andy', 'gabe')
     score: number | null; // The score given (e.g., 8.5), or null if not rated
     blurb: string | null; // An optional short review or comment, null if not provided
+    // Optional single-letter qualifier appended to the score in the sheet (e.g.
+    // Joey's "d" on a documentary score in "7.5d"). Extracted by the sync script
+    // so `score` stays numeric; the UI restores it with an explanatory note.
+    scoreQualifier?: string | null;
 }
 
 /**
