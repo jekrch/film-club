@@ -9,7 +9,7 @@
         "@fontsource/inter": "^5.2.5",
         "@fontsource/merriweather": "^5.2.6",
         "@heroicons/react": "^2.2.0",
-        "@jekrch/react-viewport-lightbox": "^0.4.0",
+        "@jekrch/react-viewport-lightbox": "^0.8.0",
         "@tailwindcss/postcss": "^4.1.4",
         "@tailwindcss/vite": "^4.1.4",
         "@types/jest": "^29.5.14",
@@ -369,7 +369,7 @@
 
     "@istanbuljs/schema": ["@istanbuljs/schema@0.1.3", "", {}, "sha512-ZXRY4jNvVgSVQ8DL3LTcakaAtXwTVUxE81hslsyD2AtoXW/wVob10HkOJ1X/pAlcI7D+2YoZKg5do8G/w6RYgA=="],
 
-    "@jekrch/react-viewport-lightbox": ["@jekrch/react-viewport-lightbox@0.4.0", "", { "peerDependencies": { "react": ">=18", "react-dom": ">=18" } }, "sha512-kf639jtI3eSnq3H3+6DWd8gW04xo4i/rFThE1jdPnWUhKbwyLgGZcHpJRp2W1FQp1JK8UW36FCllMscH+5oTPQ=="],
+    "@jekrch/react-viewport-lightbox": ["@jekrch/react-viewport-lightbox@0.8.0", "", { "peerDependencies": { "react": ">=18", "react-dom": ">=18" } }, "sha512-HkBRAEnXCaMr4VNKwrCjo+wrBIxgxlmEA3485p//YHEVpiIfdxr6GWxCvvEfLeSJJvx/Gba2ywnXPtMhW01pEQ=="],
 
     "@jest/console": ["@jest/console@29.7.0", "", { "dependencies": { "@jest/types": "^29.6.3", "@types/node": "*", "chalk": "^4.0.0", "jest-message-util": "^29.7.0", "jest-util": "^29.7.0", "slash": "^3.0.0" } }, "sha512-5Ni4CU7XHQi32IJ398EEP4RrB8eV09sXP2ROqD4bksHrnTree52PsxvX8tpL8LvTZ3pFzXyPbNQReSN41CAhOg=="],
 
