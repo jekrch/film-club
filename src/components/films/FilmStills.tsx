@@ -97,7 +97,7 @@ const FilmStills: React.FC<FilmStillsProps> = ({ images, title }) => {
             items={items}
             index={index}
             loop={true}
-            getOriginRect={getOriginRect}
+            getOrigin={getOriginRect}
             closeOnBackdropClick={true}
             onIndexChange={setIndex}
             onClose={() => setIsOpen(false)}
