@@ -16437,5 +16437,163 @@
       "https://image.tmdb.org/t/p/w1280/5ni7VGCaoXKz5zGEc40WXkVI30B.jpg",
       "https://image.tmdb.org/t/p/w1280/6E90AM6MOk0BqdnuqiCfFxIMX6k.jpg"
     ]
+  },
+  {
+    "title": "Black God, White Devil",
+    "year": "1964",
+    "rated": "Not Rated",
+    "released": "10 Jul 1964",
+    "runtime": "120 min",
+    "genre": "Adventure, Crime, Drama",
+    "director": "Glauber Rocha",
+    "writer": "Walter Lima Jr., Glauber Rocha, Paulo Gil Soares",
+    "actors": "Geraldo Del Rey, Yoná Magalhães, Othon Bastos",
+    "plot": "Fictionalized account of the adventures of hired gunman Antonio das Mortes, set against the real life last days of rural banditism. The movie follows Antonio as he witnesses the descent of common rural worker Manuel into a life of crime, joining the gang of Antonio's sworn enemy, Corisco the Blond Devil (Othon Bastos), and the Pedra Bonita Massacre.",
+    "language": "Portuguese",
+    "country": "Brazil",
+    "awards": "1 nomination",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZDJiNGIyNDItNzlmMi00YTZlLTk4MTQtMzY4NWM2ZDZmMGRhXkEyXkFqcGc@._V1_SX300.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.2/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.2",
+    "imdbVotes": "5,676",
+    "imdbID": "tt0058006",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$7,826",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "tmdbDataVersion": 4,
+    "costumeDesigner": "Paulo Gil Soares",
+    "editor": "Rafael Justo Valverde",
+    "cinematographer": "Waldemar Lima",
+    "cast": [
+      {
+        "name": "Geraldo del Rey",
+        "character": "Manoel",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/38S76KX1rrBrdrynJnHdeeek0Ge.jpg"
+      },
+      {
+        "name": "Yoná Magalhães",
+        "character": "Rosa",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rEjx4YUg7QYpwQCVY0zlXXWEbDj.jpg"
+      },
+      {
+        "name": "Othon Bastos",
+        "character": "Corisco",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/flG2sJc2wWb8Km9pQkxI4Lk5Bnq.jpg"
+      },
+      {
+        "name": "Sonia dos Humildes",
+        "character": "Dadá",
+        "profileUrl": null
+      },
+      {
+        "name": "Maurício do Valle",
+        "character": "Antônio das Mortes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rhE8wqTCs3SxTNAwn2NXrwDYu7R.jpg"
+      },
+      {
+        "name": "Lídio Silva",
+        "character": "Sebastião",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/a0AsNveyLmmQUYxgZrUbvWnZyxC.jpg"
+      },
+      {
+        "name": "João Gama",
+        "character": "Priest",
+        "profileUrl": null
+      },
+      {
+        "name": "Antônio Pinto",
+        "character": "Colonel",
+        "profileUrl": null
+      }
+    ],
+    "personProfiles": {
+      "glauber rocha": {
+        "tmdbId": 544845,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nrejW00WEPBNGrYU5GwpX5ef5hg.jpg"
+      },
+      "paulo gil soares": {
+        "tmdbId": 931718,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2UwMsrprScGFNO7qcou3lJbsuOV.jpg"
+      },
+      "walter lima jr.": {
+        "tmdbId": 150495,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yh7gZfYYfhiTbHwz0Ee2cjkuYWm.jpg"
+      },
+      "rafael justo valverde": {
+        "tmdbId": 12393,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7f8cSheSXYe6YbIkbW3zLllek69.jpg"
+      },
+      "waldemar lima": {
+        "tmdbId": 1664392,
+        "profileUrl": null
+      },
+      "geraldo del rey": {
+        "tmdbId": 230266,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/38S76KX1rrBrdrynJnHdeeek0Ge.jpg"
+      },
+      "yoná magalhães": {
+        "tmdbId": 931719,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rEjx4YUg7QYpwQCVY0zlXXWEbDj.jpg"
+      },
+      "othon bastos": {
+        "tmdbId": 10061,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/flG2sJc2wWb8Km9pQkxI4Lk5Bnq.jpg"
+      },
+      "sonia dos humildes": {
+        "tmdbId": 931722,
+        "profileUrl": null
+      },
+      "maurício do valle": {
+        "tmdbId": 936090,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rhE8wqTCs3SxTNAwn2NXrwDYu7R.jpg"
+      },
+      "lídio silva": {
+        "tmdbId": 931721,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/a0AsNveyLmmQUYxgZrUbvWnZyxC.jpg"
+      },
+      "joão gama": {
+        "tmdbId": 931723,
+        "profileUrl": null
+      },
+      "antônio pinto": {
+        "tmdbId": 931724,
+        "profileUrl": null
+      }
+    },
+    "tagline": "Here’s my gun to stop the poor from starving",
+    "revenue": 3200,
+    "keywords": [
+      "cinema novo"
+    ],
+    "trailerKey": "06lr4b9vA60",
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/sDKHdt84JGzfxAJp2vqLdVzPj0Y.jpg",
+      "https://image.tmdb.org/t/p/w1280/rLVlLegxfZWPXIPE9eYjdkP1Nun.jpg",
+      "https://image.tmdb.org/t/p/w1280/3MBk6gbBDHIqsidK8ET4uiVgime.jpg",
+      "https://image.tmdb.org/t/p/w1280/5QiuktBnA1zEPNFF7E3wczo8hjR.jpg",
+      "https://image.tmdb.org/t/p/w1280/v13FmH54QD2AhkHrsaYCLuvj2xc.jpg",
+      "https://image.tmdb.org/t/p/w1280/6sDkum86KvXaT5GY4RdA2GQ2yQx.jpg"
+    ],
+    "movieClubInfo": {
+      "selector": "Joey",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
