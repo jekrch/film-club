@@ -16595,5 +16595,249 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "The Odyssey",
+    "year": "2026",
+    "rated": "R",
+    "released": "17 Jul 2026",
+    "runtime": "173 min",
+    "genre": "Action, Adventure, Fantasy",
+    "director": "Christopher Nolan",
+    "writer": "Christopher Nolan, Homer",
+    "actors": "Matt Damon, Tom Holland, Anne Hathaway",
+    "plot": "After the Trojan War, Odysseus faces a dangerous voyage back to Ithaca, meeting creatures like the Cyclops Polyphemus, Sirens, and Calypso along the way.",
+    "language": "English, Greek",
+    "country": "United Kingdom, United States",
+    "awards": "2 wins total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNTcyNmJlZmQtNDUwYy00NDBjLTg1NGQtYTY2Y2UxMWM3NmI1XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.5/10"
+      },
+      {
+        "source": "Metacritic",
+        "value": "88/100"
+      }
+    ],
+    "metascore": "88",
+    "imdbRating": "8.5",
+    "imdbVotes": "318,348",
+    "imdbID": "tt33764258",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$359,025,415",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "tmdbDataVersion": 4,
+    "musicComposer": "Ludwig Göransson",
+    "costumeDesigner": "Ellen Mirojnick",
+    "cinematographer": "Hoyte van Hoytema",
+    "productionDesigner": "Ruth De Jong",
+    "editor": "Jennifer Lame",
+    "cast": [
+      {
+        "name": "Matt Damon",
+        "character": "Odysseus",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aCvBXTAR9B1qRjIRzMBYhhbm1fR.jpg"
+      },
+      {
+        "name": "Tom Holland",
+        "character": "Telemachus",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xKBAaPIa1c7tzZD3Y0MhBLv4hPE.jpg"
+      },
+      {
+        "name": "Anne Hathaway",
+        "character": "Penelope",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nbccV2pMoyLTCeg5DQip24Eq0Jp.jpg"
+      },
+      {
+        "name": "Robert Pattinson",
+        "character": "Antinous",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3qZ09UE7lN6AtorfXFRYpEtSY93.jpg"
+      },
+      {
+        "name": "Himesh Patel",
+        "character": "Eurylochus",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4mfOQgnwmewNURfQApyyHxt1qUF.jpg"
+      },
+      {
+        "name": "Charlize Theron",
+        "character": "Calypso",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9coVbqj35Fa5dWxlX5K9pDCqKfa.jpg"
+      },
+      {
+        "name": "John Leguizamo",
+        "character": "Eumaeus",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kwYCdxTlDh9zauUCg4mp2XTCQTw.jpg"
+      },
+      {
+        "name": "Travis Scott",
+        "character": "Bard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eBdm7HQS6lLGg4BocgfoJ5qB9yp.jpg"
+      },
+      {
+        "name": "Corey Hawkins",
+        "character": "Polybus",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wRt0Bc0chN5BSjvYzmg2evgqNzp.jpg"
+      },
+      {
+        "name": "Jarreth J. Merz",
+        "character": "Leodes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ze8WDEujZmTXdCLcUy0IaymwlcS.jpg"
+      },
+      {
+        "name": "Niko Nicotera",
+        "character": "Peisander",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ffSAiwXMmvQP1vJuPguLznNpPOI.jpg"
+      },
+      {
+        "name": "Elliot Page",
+        "character": "Sinon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nXO8DE4biVXY4UDYP0NdIY1zvXS.jpg"
+      }
+    ],
+    "personProfiles": {
+      "christopher nolan": {
+        "tmdbId": 525,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xuAIuYSmsUzKlUMBFGVZaWsY3DZ.jpg"
+      },
+      "ludwig göransson": {
+        "tmdbId": 928158,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3phYwmonUBcDXZ1DY5kHYjYYoor.jpg"
+      },
+      "ellen mirojnick": {
+        "tmdbId": 7735,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fVldZUbyEG0fHTTzmGp5CeqadCc.jpg"
+      },
+      "hoyte van hoytema": {
+        "tmdbId": 74401,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y2HXvac1oPzciwxfdyWc5syThRk.jpg"
+      },
+      "ruth de jong": {
+        "tmdbId": 1299194,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ln89JmuNbSp9FSqRU9rkDyqH5ez.jpg"
+      },
+      "jennifer lame": {
+        "tmdbId": 1113553,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1Jl596RMknK3XgGidLbeFOleLns.jpg"
+      },
+      "matt damon": {
+        "tmdbId": 1892,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aCvBXTAR9B1qRjIRzMBYhhbm1fR.jpg"
+      },
+      "tom holland": {
+        "tmdbId": 1136406,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xKBAaPIa1c7tzZD3Y0MhBLv4hPE.jpg"
+      },
+      "anne hathaway": {
+        "tmdbId": 1813,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nbccV2pMoyLTCeg5DQip24Eq0Jp.jpg"
+      },
+      "robert pattinson": {
+        "tmdbId": 11288,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3qZ09UE7lN6AtorfXFRYpEtSY93.jpg"
+      },
+      "himesh patel": {
+        "tmdbId": 1227717,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4mfOQgnwmewNURfQApyyHxt1qUF.jpg"
+      },
+      "charlize theron": {
+        "tmdbId": 6885,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9coVbqj35Fa5dWxlX5K9pDCqKfa.jpg"
+      },
+      "john leguizamo": {
+        "tmdbId": 5723,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kwYCdxTlDh9zauUCg4mp2XTCQTw.jpg"
+      },
+      "travis scott": {
+        "tmdbId": 1978406,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eBdm7HQS6lLGg4BocgfoJ5qB9yp.jpg"
+      },
+      "corey hawkins": {
+        "tmdbId": 1154054,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wRt0Bc0chN5BSjvYzmg2evgqNzp.jpg"
+      },
+      "jarreth j. merz": {
+        "tmdbId": 84706,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ze8WDEujZmTXdCLcUy0IaymwlcS.jpg"
+      },
+      "niko nicotera": {
+        "tmdbId": 1008750,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ffSAiwXMmvQP1vJuPguLznNpPOI.jpg"
+      },
+      "elliot page": {
+        "tmdbId": 27578,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nXO8DE4biVXY4UDYP0NdIY1zvXS.jpg"
+      }
+    },
+    "tagline": "Defy the gods.",
+    "budget": 250000000,
+    "revenue": 930896155,
+    "keywords": [
+      "ship",
+      "trojan war",
+      "greek mythology",
+      "historical fiction",
+      "ancient world",
+      "period drama",
+      "based on song, poem or rhyme",
+      "greek history",
+      "voyage",
+      "peplum",
+      "ancient",
+      "trojan horse",
+      "mediterranean sea",
+      "bronze age",
+      "mythical",
+      "odyssey",
+      "sword and sandal",
+      "epic fantasy"
+    ],
+    "trailerKey": "AyIZ9tiiN8I",
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/sSIzzVhhLfgLKVBcAUv0X6cLYz9.jpg",
+      "https://image.tmdb.org/t/p/w1280/RMXG8myu1aGlNUsRjtxzmpdMK0.jpg",
+      "https://image.tmdb.org/t/p/w1280/r57L2UBLPKcHdZQYg8tagv9XqK2.jpg",
+      "https://image.tmdb.org/t/p/w1280/tYuC9kUwqhpDQ3pv1kLMqyMF1Jw.jpg",
+      "https://image.tmdb.org/t/p/w1280/m3Pom6pbD51bBv3syz8NMHda3fz.jpg",
+      "https://image.tmdb.org/t/p/w1280/twiVn9oFXOVR0uoYgawyEBlnFu8.jpg"
+    ],
+    "movieClubInfo": {
+      "selector": null,
+      "watchDate": "8/6/26",
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 6,
+          "blurb": null
+        },
+        {
+          "user": "gabe",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 3,
+          "blurb": "clink clank, clink clank clink "
+        },
+        {
+          "user": "joey",
+          "score": 6.5,
+          "blurb": null
+        },
+        {
+          "user": "greg",
+          "score": 6.8,
+          "blurb": null
+        }
+      ],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
