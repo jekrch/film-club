@@ -20,7 +20,7 @@ import MemberStatCard from '../components/almanac/MemberStatCard';
 import CreditsModal from '../components/common/CreditsModal';
 import PageLayout from '../components/layout/PageLayout';
 import SectionHeader from '../components/common/SectionHeader';
-import BaseCard from '../components/common/BaseCard';
+import AccentCard from '../components/common/AccentCard';
 
 import { useUnanimousScores } from '../hooks/useUnanimousScores';
 import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
@@ -129,19 +129,18 @@ const AlmanacPage: React.FC = () => {
 
     return (
         <PageLayout>
-            {creditsModalState.isOpen && (
-                <CreditsModal
-                    isOpen={creditsModalState.isOpen}
-                    onClose={closeCreditsModal}
-                    personName={creditsModalState.personName}
-                    filmography={creditsModalState.filmography}
-                />
-            )}
+            {/* Always mounted so the modal can run its own close animation. */}
+            <CreditsModal
+                isOpen={creditsModalState.isOpen}
+                onClose={closeCreditsModal}
+                personName={creditsModalState.personName}
+                filmography={creditsModalState.filmography}
+            />
 
             <SectionHeader title="Almanac" className="text-center" />
 
             {foundingDate && daysActive !== null && (
-                <div className="text-center mb-6 mt-3 text-slate-400 border-b border-slate-700 pb-3">
+                <div className="text-center mb-6 mt-3 text-slate-400 border-b border-slate-700/60 pb-3">
                     <div className="text-sm sm:text-base pb-4">
                         Founded on <span className="font-semibold text-slate-300">{foundingDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>.
                         <div className="text-xs mt-1">Active <span className="text-slate-200">{daysActive.toLocaleString()}</span> days</div>
@@ -162,7 +161,7 @@ const AlmanacPage: React.FC = () => {
                 />
             </div>
 
-            <ChartContainer className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-700/50 rounded-lg p-3 sm:p-4 md:p-5 shadow-xl border border-slate-600 mb-4">
+            <ChartContainer className="mb-4">
                 <CategorySelector
                     categories={['country', 'language', 'decade']}
                     selectedCategory={selectedCategory}
@@ -187,7 +186,7 @@ const AlmanacPage: React.FC = () => {
                 />
             )}
 
-            <ChartContainer className="bg-slate-800 bg-gradient-to-br from-slate-800 to-slate-700/50 rounded-lg p-3 sm:p-4 md:p-5 shadow-xl border border-slate-600 mb-8 sm:mb-10">
+            <ChartContainer className="mb-8 sm:mb-10">
                 <p className="mb-2 text-center text-xs text-slate-400 italic">
                     Click on a point to see which film was watched at the end of that interval.
                 </p>
@@ -226,8 +225,9 @@ const AlmanacPage: React.FC = () => {
                 {frequentPersons.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
                         {frequentPersons.map((person) => (
-                            <BaseCard key={person.name}>
-                                <div className="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
+                            // No rail: one card per artist, repeating in a grid
+                            <AccentCard key={person.name} rail={false} className="p-4">
+                                <div className="flex justify-between items-center mb-3 border-b border-slate-700/60 pb-2">
                                     <h4
                                         className="text-lg font-semibold text-blue-400 hover:text-blue-300 cursor-pointer truncate"
                                         onClick={() => handleFrequentPersonClick(person.name, person.filmography || [])}
@@ -257,7 +257,7 @@ const AlmanacPage: React.FC = () => {
                                         </li>
                                     )}
                                 </ul>
-                            </BaseCard>
+                            </AccentCard>
                         ))}
                     </div>
                 ) : (

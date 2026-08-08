@@ -8,7 +8,9 @@ interface BaseCardProps {
 
 const BaseCard: React.FC<BaseCardProps> = (props: BaseCardProps) => {
   return (
-    <div className={classNames("bg-slate-800 rounded-lg shadow-slate-900 shadow-md border border-slate-700 p-4", props.className)}>
+    // Shares the flat `card` surface with AccentCard so the two never read as
+    // different shades when they sit side by side.
+    <div className={classNames("bg-slate-825 rounded-lg shadow-sm shadow-black/30 border border-slate-700/60 p-4", props.className)}>
       {props.children}
     </div>
   );

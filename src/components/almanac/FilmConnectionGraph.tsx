@@ -689,10 +689,12 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
             style={{
                 width: '100%',
                 height: 500,
-                borderRadius: 10,
+                // Matches AccentCard: rounded-xl (12px) and a slate-700 border.
+                // Inline because React Flow needs concrete values here.
+                borderRadius: 12,
                 overflow: 'hidden',
                 position: 'relative',
-                border: '1px solid #475569',
+                border: '1px solid #334155',
                 ...style,
             }}
         >
@@ -715,8 +717,8 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                 <Controls
                     className="react-flow__controls--dark"
                     style={{
-                        background: '#1e293b',
-                        border: '1px solid #475569',
+                        background: '#222d41', // slate-825, the card surface
+                        border: '1px solid #334155',
                         borderRadius: 8,
                     }}
                 />
@@ -739,14 +741,13 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                 />
             )}
 
-            {creditsPerson && (
-                <CreditsModal
-                    isOpen
-                    onClose={() => setCreditsPerson(null)}
-                    personName={creditsPerson.name}
-                    filmography={creditsPerson.filmography}
-                />
-            )}
+            {/* Always mounted so the modal can run its own close animation. */}
+            <CreditsModal
+                isOpen={!!creditsPerson}
+                onClose={() => setCreditsPerson(null)}
+                personName={creditsPerson?.name ?? null}
+                filmography={creditsPerson?.filmography ?? null}
+            />
         </div>
         </>
     );

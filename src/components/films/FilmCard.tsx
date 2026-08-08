@@ -4,6 +4,7 @@ import { Film } from '../../types/film';
 import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils';
 import { CardSize } from '../../contexts/ViewSettingsContext';
 import PopcornRating from '../common/PopcornRating';
+import { PopcornPodStamp, POPCORN_POD_POSTER_FILTER, RIBBON_FOLD_CLIP_LEFT, RIBBON_FOLD_CLIP_RIGHT } from './PopcornPod';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
 
@@ -120,6 +121,10 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     // True if there's no watch date BUT there is a selector assigned
     const showUpNext = !watchDateFormatted && selectorName;
 
+    // A "Hollywood Popcorn Pod" outing rather than a club selection: the poster
+    // gets the cheapened treatment and a sash across it.
+    const isPopcornPod = !!film.popcornPod;
+
     return (
         // Outermost container: Handles visibility transition and relative positioning for the banner
         <div
@@ -130,29 +135,64 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                 relative group rounded-md overflow-hidden  /* group allows hover states for children */
             `}
         >
-            {/* --- UP NEXT BANNER (Corner ribbon: clip-wrapper keeps it flush to the corner across all sizes) --- */}
+            {/* --- UP NEXT BANNER ---
+                A folded corner ribbon cut from the same cloth as the Popcorn Pod
+                sash: same band construction, same tucked-under tails, same swell
+                on hover — in the club's emerald rather than concession amber.
+
+                Every dimension below is in `em` against the wrapper's font size,
+                so the whole ribbon holds its proportions and only one number
+                (that font size) changes between card sizes. The geometry is
+                symmetric about the corner's diagonal: the band's centre sits at
+                2.6em along both axes, and the band is wide enough (10.4em) that
+                both ends — tails included — fall outside the card's top and left
+                edges, where the wrapper's overflow clips them flush. */}
             {showUpNext && (
                 <div
                     className={`
-                        absolute -top-px -left-px z-30 overflow-hidden pointer-events-none /* Square clip-wrapper anchored to top-left corner */
-                        ${isCompact || isPosterOnly ? 'w-[74px] h-[74px]' : 'w-[104px] h-[104px]'}
+                        absolute -top-px -left-px z-30 overflow-hidden pointer-events-none /* Clip-wrapper anchored to the top-left corner */
+                        w-[8em] h-[8em] /* Room for the band plus the tails hanging below it */
+                        ${isCompact || isPosterOnly ? 'text-[13px]' : 'text-[20px]'}
                     `}
                 >
-                    <div
-                        className={`
-                            absolute text-center text-white font-bold uppercase tracking-wider /* Text styling */
-                            bg-gradient-to-r from-emerald-600 to-emerald-700 /* Emerald gradient */
-                            shadow-lg
-                            transform -rotate-45 /* Diagonal; endpoints overshoot the wrapper and get clipped flush */
-                            transition-all duration-300 ease-out /* Smooth transitions */
-                            group-hover:scale-105 group-hover:shadow-xl /* Hover effects */
-                            group-hover:from-emerald-500 group-hover:to-emerald-600 /* Hover colors */
-                            ${isCompact || isPosterOnly
-                                ? 'w-[112px] -left-[28px] top-[15px] py-1 text-xs'
-                                : 'w-[160px] -left-[40px] top-[24px] py-1.5 text-lg'}
-                        `}
-                    >
-                        UP NEXT
+                    {/* Band + tails. Only `scale` is transitioned: Tailwind v4 keeps
+                        rotate as its own property, so animating `transform` wholesale
+                        would fight the -45deg rake. */}
+                    <div className="
+                        absolute w-[10.4em] left-[-2.6em] top-[1.7em] -rotate-45
+                        transition-[scale] duration-300 ease-out group-hover:scale-105
+                    ">
+                        {/* Tails, tucked under each end of the band and running off
+                            past the card's edges — only the tapering inner tip of
+                            each stays visible, so the ribbon reads as folding around
+                            the corner rather than being painted on it. */}
+                        <div
+                            className="absolute top-full left-0 w-[34%] h-[0.75em] bg-emerald-700/90"
+                            style={{ clipPath: RIBBON_FOLD_CLIP_LEFT }}
+                        />
+                        <div
+                            className="absolute top-full right-0 w-[34%] h-[0.75em] bg-emerald-700/90"
+                            style={{ clipPath: RIBBON_FOLD_CLIP_RIGHT }}
+                        />
+
+                        {/* Semi-transparent so the poster still reads through the
+                            ribbon, with a blur behind it to keep the lettering legible
+                            over busy art. Padding is in `em`, so the band's depth
+                            tracks the lettering instead of being set independently. */}
+                        <div className="
+                            relative text-center whitespace-nowrap leading-none
+                            py-[0.34em] tracking-[0.08em]
+                            font-black uppercase text-white
+                            [text-shadow:0_0.04em_0.1em_rgba(6,78,59,0.7)]
+                            bg-gradient-to-r from-emerald-600/90 via-emerald-500/90 to-emerald-600/90
+                            backdrop-blur-[2px]
+                            border-y border-emerald-800/40 shadow-lg shadow-black/40
+                            transition-all duration-300 ease-out
+                            group-hover:from-emerald-500/90 group-hover:via-emerald-400/90 group-hover:to-emerald-500/90
+                            group-hover:shadow-xl
+                        ">
+                            Up Next
+                        </div>
                     </div>
                 </div>
             )}
@@ -166,6 +206,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     shadow-xl hover:shadow-2xl shadow-black/50
                     transition-all duration-300 ease-in-out
                     ${isPosterOnly ? 'border-slate-800' : ''}
+                    ${isPopcornPod ? '!border-amber-400/40' : ''}
                 `}>
                     {/* Poster Container: Fixed aspect ratio, clips image. The slate
                         placeholder background means an in-flight image fades from a
@@ -189,12 +230,17 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     group-hover:scale-105 group-hover:duration-300 /* Hover zoom (desktop only) */
                                     ${isVisible ? 'scale-100' : 'scale-[0.97]'} /* Entrance scale state for transition */
                                     ${loaded ? 'opacity-100' : 'opacity-0'} /* Fade in from placeholder once decoded */
+                                    ${isPopcornPod ? POPCORN_POD_POSTER_FILTER : ''} /* Cheapened treatment for a non-selection */
                                 `}
                                 onLoad={() => setLoaded(true)}
                                 onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; setLoaded(true); }} // Fallback image
                             />
                         )}
-                        
+
+                        {/* Popcorn Pod sash — struck across the middle of the poster,
+                            clear of the year/selector/date badges at the edges. */}
+                        {isPopcornPod && <PopcornPodStamp />}
+
                         {/* Gradient overlay at the bottom of the poster - enhanced for text readability */}
                         <div className={`absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none ${!isPosterOnly ? 'bg-gradient-to-t from-black/70 via-black/30 to-transparent' : ''}`}></div>
                         

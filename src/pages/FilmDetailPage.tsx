@@ -12,9 +12,12 @@ import { Film } from '../types/film';
 import FilmCastStrip from '../components/films/FilmCastStrip';
 import FilmStills from '../components/films/FilmStills';
 import ScoreQualifierNote from '../components/films/ScoreQualifierNote';
+import { PopcornPodStamp, PopcornPodDisclaimer, POPCORN_POD_POSTER_FILTER } from '../components/films/PopcornPod';
 import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
+import AccentCard from '../components/common/AccentCard';
+import QuoteMarkIcon from '../components/common/QuoteMarkIcon';
 import CollapsibleContent from '../components/common/CollapsableContent';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';  
@@ -159,15 +162,14 @@ const FilmDetailPage = () => {
 
     return (
         <PageLayout>
-            {creditsModalState.isOpen && film && (
-                <CreditsModal
-                    isOpen={creditsModalState.isOpen}
-                    onClose={closeCreditsModal}
-                    personName={creditsModalState.personName}
-                    filmography={creditsModalState.filmography}
-                    currentFilmId={film.imdbID}
-                />
-            )}
+            {/* Always mounted so the modal can run its own close animation. */}
+            <CreditsModal
+                isOpen={creditsModalState.isOpen}
+                onClose={closeCreditsModal}
+                personName={creditsModalState.personName}
+                filmography={creditsModalState.filmography}
+                currentFilmId={film.imdbID}
+            />
 
             {film.trailerKey && (
                 <TrailerModal
@@ -191,9 +193,11 @@ const FilmDetailPage = () => {
                             <img
                                 src={film.poster}
                                 alt={`${film.title} poster`}
-                                className="h-full w-full object-cover"
+                                className={`h-full w-full object-cover ${film.popcornPod ? POPCORN_POD_POSTER_FILTER : ''}`}
                                 onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/placeholder-poster.png'; target.onerror = null; }}
                             />
+                            {/* Not a selection: deface the poster instead of offering a Watch link. */}
+                            {film.popcornPod && <PopcornPodStamp />}
                             {canWatch && (
                                 <a
                                     href={watchUrl!}
@@ -234,6 +238,7 @@ const FilmDetailPage = () => {
                             {film.tagline && (
                                 <p className="text-slate-400 italic mb-4 -mt-1">{film.tagline}</p>
                             )}
+                            {film.popcornPod && <PopcornPodDisclaimer />}
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-400 mb-5">
                                 {clubAverageDisplay && (
                                     <div className="flex items-center font-medium text-base" title={`Average Club Rating (${numberOfValidRatings} ratings)`}>
@@ -392,7 +397,7 @@ const FilmDetailPage = () => {
                     )}
 
                     {film.movieClubInfo && (
-                        <div className="relative bg-gradient-to-b from-slate-850/80 to-slate-900/40 border-t-2 border-slate-700 p-6 md:p-8 overflow-hidden">
+                        <div className="relative bg-slate-900/30 border-t-2 border-slate-700/60 p-6 md:p-8 overflow-hidden">
                             {/* Subtle ambient glow anchoring the club section */}
                             <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-16 h-64 w-64 rounded-full bg-blue-500/[0.07] blur-3xl" />
                             <div className="relative z-10">
@@ -464,29 +469,14 @@ const FilmDetailPage = () => {
                                                                 />
                                                             </div>
                                                             {rating.blurb && (
-                                                                <div className="group/blurb relative ml-2 mt-4 overflow-hidden rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-800/80 via-slate-850/80 to-slate-900/90 shadow-lg shadow-black/20 transition-colors duration-300 hover:border-emerald-400/30">
-                                                                    {/* Faded reviewer portrait washing in from the right, fading toward the text */}
-                                                                    <img
-                                                                        src={`/images/${rating.user.toLowerCase()}.jpg`}
-                                                                        alt=""
-                                                                        aria-hidden="true"
-                                                                        className="pointer-events-none absolute inset-y-0 right-0 h-full w-2/5 object-cover object-top opacity-[0.16] grayscale transition-opacity duration-300 group-hover/blurb:opacity-25"
-                                                                        style={{
-                                                                            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
-                                                                            maskImage: 'linear-gradient(to right, transparent, black)',
-                                                                        }}
-                                                                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                                                    />
-                                                                    {/* Emerald accent rail */}
-                                                                    <span className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-emerald-400/70 via-emerald-400/30 to-transparent" />
-                                                                    <div className="relative z-10 px-4 pb-3 pt-3.5">
-                                                                        <svg className="mb-1.5 h-5 w-5 text-emerald-400/50" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
-                                                                        <CollapsibleContent buttonSize="sm" lineClamp={3} className="text-sm italic leading-relaxed text-slate-300">
-                                                                            {rating.blurb}
-                                                                            <span className="capitalize">&nbsp;&mdash;&nbsp;{capitalizeFirstLetter(rating.user)}</span>
-                                                                        </CollapsibleContent>
-                                                                    </div>
-                                                                </div>
+                                                                // Watermarked with the reviewer's portrait — the varying subject here is the member
+                                                                <AccentCard accent="emerald" surface="inset" watermarkSrc={`/images/${rating.user.toLowerCase()}.jpg`} className="ml-2 mt-4 px-4 pb-3 pt-3.5">
+                                                                    <QuoteMarkIcon className="mb-1.5 h-5 w-5 text-emerald-400/50" />
+                                                                    <CollapsibleContent buttonSize="sm" lineClamp={3} className="text-sm italic leading-relaxed text-slate-300">
+                                                                        {rating.blurb}
+                                                                        <span className="capitalize">&nbsp;&mdash;&nbsp;{capitalizeFirstLetter(rating.user)}</span>
+                                                                    </CollapsibleContent>
+                                                                </AccentCard>
                                                             )}
                                                         </div>
                                                     );

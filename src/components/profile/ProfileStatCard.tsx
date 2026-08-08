@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashtagIcon } from '@heroicons/react/24/outline';
-import BaseCard from '../common/BaseCard';
+import AccentCard from '../common/AccentCard';
 
 /**
  * Props for the ProfileStatCard component.
@@ -59,7 +59,13 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
   }
 
   return (
-    <BaseCard className="!bg-slate-700/30 border flex flex-col justify-between hover:shadow-lg hover:border-slate-600 transition-all duration-200 min-h-[120px]">
+    // No rail: these repeat in a grid, where a wall of rails reads as noise
+    <AccentCard
+      rail={false}
+      surface="inset"
+      className="min-h-[120px]"
+      contentClassName="flex h-full flex-col justify-between p-4"
+    >
       <div>
         <div className="flex items-center text-sm font-medium text-blue-300/80 mb-2">
           {/* Render icon if provided */}
@@ -71,7 +77,7 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
         {id === 'topGenres' && Array.isArray(value) ? (
           <div className="flex flex-wrap gap-1.5 mt-1">
             {value.map(({ genre, count }) => (
-               <span key={genre} className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full shadow-sm whitespace-nowrap">
+               <span key={genre} className="px-3 py-1 bg-slate-700/50 text-blue-300 text-xs font-medium rounded-full whitespace-nowrap">
                    {genre} <span className="text-slate-400 text-[11px]">({count})</span>
                </span>
              ))}
@@ -90,7 +96,7 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
           {description}
         </p>
       )}
-    </BaseCard>
+    </AccentCard>
   );
 };
 

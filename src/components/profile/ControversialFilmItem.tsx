@@ -38,7 +38,7 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
 
     return (
         <div
-            className="flex items-center space-x-4 p-3 bg-slate-700/30 hover:bg-slate-700/60 rounded-md transition-colors duration-150 cursor-pointer"
+            className="flex items-center space-x-4 p-3 bg-slate-700/25 hover:bg-slate-700/45 rounded-lg transition-colors duration-150 cursor-pointer"
             onClick={handleNavigate}
             title={`View ${film.title}`} // Tooltip for accessibility
             role="button" // Semantics for interaction
@@ -49,7 +49,7 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
             {film.posterUrl && film.posterUrl !== 'N/A' ? (
                 <img src={film.posterUrl} alt={`${film.title} poster`} className="w-10 h-14 object-cover rounded flex-shrink-0" />
             ) : (
-                <div className="w-10 h-14 bg-slate-700 rounded flex-shrink-0 flex items-center justify-center" aria-hidden="true">
+                <div className="w-10 h-14 bg-slate-700/50 rounded flex-shrink-0 flex items-center justify-center" aria-hidden="true">
                     <FilmIcon className="h-6 w-6 text-slate-500" />
                 </div>
             )}

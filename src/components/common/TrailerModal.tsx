@@ -1,5 +1,6 @@
 import React from 'react';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { useModalPresence } from '../../hooks/useModalPresence';
 
 interface TrailerModalProps {
   isOpen: boolean;
@@ -10,22 +11,30 @@ interface TrailerModalProps {
 
 /**
  * Modal that lazily mounts a YouTube trailer iframe only while open, so the
- * embed (and any playback) starts on open and stops on close. Uses the
- * privacy-friendly youtube-nocookie host and autoplays on open.
+ * embed (and any playback) starts on open and stops on close — the iframe stays
+ * mounted through the brief close animation rather than cutting to black. Uses
+ * the privacy-friendly youtube-nocookie host and autoplays on open.
  */
 const TrailerModal: React.FC<TrailerModalProps> = ({ isOpen, onClose, trailerKey, title }) => {
-  // Prevent scrolling the page behind the modal while it's open.
-  useBodyScrollLock(isOpen);
+  const { isRendered, isClosing } = useModalPresence(isOpen);
 
-  if (!isOpen) return null;
+  // Prevent scrolling the page behind the modal while it's open (and while it
+  // animates out, so the page doesn't jump before the modal is gone).
+  useBodyScrollLock(isRendered);
+
+  if (!isRendered) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 animate-fadeIn"
+      className={`fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 ${
+        isClosing ? 'animate-fadeOut pointer-events-none' : 'animate-fadeIn'
+      }`}
       onClick={onClose}
     >
       <div
-        className="bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-3xl w-full flex flex-col animate-scaleIn overflow-hidden"
+        className={`bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-3xl w-full flex flex-col overflow-hidden ${
+          isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center p-4 md:p-5 border-b border-slate-700 flex-shrink-0">

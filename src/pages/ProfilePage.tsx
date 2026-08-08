@@ -13,6 +13,7 @@ import ControversialFilmItem from '../components/profile/ControversialFilmItem';
 import PageLayout from '../components/layout/PageLayout';
 import ProfileBlurbItem from '../components/profile/ProfileBlurbItem';
 import BaseCard from '../components/common/BaseCard';
+import AccentCard from '../components/common/AccentCard';
 import ProfileHeroBackground from '../components/profile/ProfileHeroBackground';
 import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
 
@@ -68,7 +69,7 @@ const ProfilePage: React.FC = () => {
                 Back
             </button>
 
-            <BaseCard className="bg-gradient-to-br from-slate-800 to-slate-800 rounded-lg overflow-hidden mb-8 border relative">
+            <BaseCard className="overflow-hidden mb-8 relative">
                 {/* Film poster collage background */}
                 <ProfileHeroBackground films={topRatedFilms} />
                 
@@ -95,17 +96,17 @@ const ProfilePage: React.FC = () => {
             </BaseCard>
 
             {member.interview && member.interview.length > 0 && (
-                <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-                    <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700 pb-3"> Interview </h3>
+                <AccentCard accent="blue" className="p-6 md:p-10 mb-8">
+                    <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700/60 pb-3"> Interview </h3>
                     <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}>
                         <div className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}>
-                            <div className="divide-y divide-slate-700 -mt-4">
+                            <div className="divide-y divide-slate-700/60-mt-4">
                                 {member.interview.map((item, index) => <InterviewItem key={index} question={item.question} answer={item.answer} />)}
                             </div>
                         </div>
                     </div>
                     {needsInterviewExpansion && (
-                        <div className="mt-4 text-center border-t border-slate-700 pt-4">
+                        <div className="mt-4 text-center border-t border-slate-700/60 pt-4">
                             <button
                                 onClick={toggleInterviewExpanded}
                                 className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
@@ -115,7 +116,7 @@ const ProfilePage: React.FC = () => {
                             </button>
                         </div>
                     )}
-                </div>
+                </AccentCard>
             )}
 
             {(hasStats || hasEnoughControversialFilms) && (
@@ -129,8 +130,8 @@ const ProfilePage: React.FC = () => {
                     </div>
                     {hasEnoughControversialFilms && (
                         <div className="lg:col-span-1">
-                            <BaseCard className="p-6 bg-slate-700 h-full">
-                                <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-600/50">
+                            <AccentCard accent="rose" className="p-6 h-full">
+                                <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-700/60">
                                     Most Divergent Scores
                                 </h4>
                                 <div className="space-y-3">
@@ -141,7 +142,7 @@ const ProfilePage: React.FC = () => {
                                 <p className="text-xs text-slate-500 mt-4 text-center italic">
                                     Films where {member.name} had the largest score difference (magnitude) from the club average.
                                 </p>
-                            </BaseCard>
+                            </AccentCard>
                         </div>
                     )}
                      {!hasEnoughControversialFilms && hasStats && (
@@ -151,17 +152,17 @@ const ProfilePage: React.FC = () => {
             )}
 
             {reviewBlurbs.length > 0 && (
-                <BaseCard className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
-                    <h4 className="text-xl font-bold text-slate-100 mb-6 border-b border-slate-700 pb-3">In Their Own Words</h4>
+                <AccentCard accent="emerald" className="p-6 md:p-10 mb-8">
+                    <h4 className="text-xl font-bold text-slate-100 mb-6 border-b border-slate-700/60 pb-3">In Their Own Words</h4>
                     <div className="space-y-5">
                         {displayedBlurbs.map((blurbItem) => (
-                            <div key={blurbItem.filmId} className="pt-5 border-t border-slate-700/50 first:pt-0 first:border-t-0">
+                            <div key={blurbItem.filmId} className="pt-5 border-t border-slate-700/60 first:pt-0 first:border-t-0">
                                 <ProfileBlurbItem blurbItem={blurbItem} maxRating={MAX_RATING_DISPLAY} />
                             </div>
                         ))}
                     </div>
                     {needsBlurbsSectionExpansion && (
-                        <div className="mt-6 text-center border-t border-slate-700 pt-4">
+                        <div className="mt-6 text-center border-t border-slate-700/60 pt-4">
                             <button
                                 onClick={toggleBlurbsSectionExpanded}
                                 className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
@@ -171,7 +172,7 @@ const ProfilePage: React.FC = () => {
                             </button>
                         </div>
                     )}
-                </BaseCard>
+                </AccentCard>
             )}
 
             {/* Trophy Case Section */}

@@ -160,6 +160,11 @@ export interface Film {
     website?: string; // Optional: Removed if "N/A"
     streamUrl?: string; // Optional: URL for streaming the film
     noStreaming?: boolean; // Optional: Flag to indicate if the film is not available for streaming
+    // Optional: marks a film the club saw outside its usual remit — a theatrical
+    // outing rather than a Criterion Channel selection. Such a film has no
+    // Criterion page to link to, and the UI brands it as a "Hollywood Popcorn
+    // Pod" presentation so it can't be mistaken for a proper selection.
+    popcornPod?: boolean;
     editor?: string;
     productionDesigner?: string;
     cinematographer?: string;

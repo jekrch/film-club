@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FilmIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
-import BaseCard from '../common/BaseCard';
+import AccentCard from '../common/AccentCard';
 import { UnanimousScoresData } from '../../hooks/useUnanimousScores';
 
 interface UnanimousScoresCardProps {
@@ -45,7 +45,9 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
     const { score, films, namesakeFilm } = data;
 
     return (
-        <div className={`p-3 ${getScoreBgClass(score)} rounded-lg transition-colors `}>
+        // Keeps its semantic score tint, but sits at the inset level: same
+        // radius and border as every other card nested inside a card.
+        <div className={`p-3 ${getScoreBgClass(score)} rounded-xl border border-slate-600/30 transition-colors`}>
             {/* Main namesake row */}
             <div
                 className="flex items-center space-x-3 cursor-pointer group"
@@ -63,7 +65,7 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                         className="w-10 h-14 object-cover rounded flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow"
                     />
                 ) : (
-                    <div className="w-10 h-14 bg-slate-700 rounded flex-shrink-0 flex items-center justify-center">
+                    <div className="w-10 h-14 bg-slate-700/50 rounded flex-shrink-0 flex items-center justify-center">
                         <FilmIcon className="h-5 w-5 text-slate-500" />
                     </div>
                 )}
@@ -101,11 +103,11 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
 
             {/* Expanded list */}
             {isExpanded && films.length > 1 && (
-                <div className="mt-3 pt-3 border-t border-slate-600/30 space-y-2">
+                <div className="mt-3 pt-3 border-t border-slate-700/60 space-y-2">
                     {films.map(({ film, watchDate }) => (
                         <div
                             key={film.imdbID}
-                            className="flex items-center space-x-2 p-2 rounded hover:bg-slate-700/40 cursor-pointer transition-colors ml-1"
+                            className="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-700/45 cursor-pointer transition-colors ml-1"
                             onClick={() => onFilmClick(film.imdbID)}
                             role="button"
                             tabIndex={0}
@@ -118,7 +120,7 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                                     className="w-7 h-10 object-cover rounded flex-shrink-0"
                                 />
                             ) : (
-                                <div className="w-7 h-10 bg-slate-700 rounded flex-shrink-0 flex items-center justify-center">
+                                <div className="w-7 h-10 bg-slate-700/50 rounded flex-shrink-0 flex items-center justify-center">
                                     <FilmIcon className="h-3 w-3 text-slate-500" />
                                 </div>
                             )}
@@ -155,20 +157,20 @@ const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({
 
     if (unanimousScores.length === 0) {
         return (
-            <BaseCard className="p-6 bg-slate-800">
-                <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-600/50">
+            <AccentCard accent="emerald" className="p-6">
+                <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-700/60">
                     Unanimous Scores
                 </h4>
                 <p className="text-sm text-slate-400 italic text-center py-4">
                     No unanimous scores found yet. Keep watching!
                 </p>
-            </BaseCard>
+            </AccentCard>
         );
     }
 
     return (
-        <BaseCard className="p-6 bg-slate-800/80">
-            <h4 className="text-lg font-semibold text-slate-200 mb-1 pb-2 border-b border-slate-600/50">
+        <AccentCard accent="emerald" className="p-6">
+            <h4 className="text-lg font-semibold text-slate-200 mb-1 pb-2 border-b border-slate-700/60">
                 Unanimous Scores
             </h4>
             {/* <p className="text-xs text-slate-500 mb-2">
@@ -190,7 +192,7 @@ const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({
                     />
                 ))}
             </div>
-        </BaseCard>
+        </AccentCard>
     );
 };
 

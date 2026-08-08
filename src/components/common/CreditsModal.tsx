@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Film } from '../../types/film';
 import { Link } from 'react-router-dom';
 import { getPersonInfoByName, getPersonProfileByName, tmdbPersonUrl } from '../../utils/personUtils';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { useModalPresence } from '../../hooks/useModalPresence';
 
 // Formats a TMDb date string (YYYY-MM-DD) for display, e.g. "May 14, 1944".
 const formatPersonDate = (value: string | null | undefined): string | null => {
@@ -29,29 +30,42 @@ const getCharacterForPerson = (film: Film, personNameLower: string): string | nu
 };
 
 const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName, filmography, currentFilmId }) => {
-  const personNameLower = (personName ?? '').trim().toLowerCase();
+  const { isRendered, isClosing } = useModalPresence(isOpen);
 
-  // Prevent scrolling the page behind the modal while it's open.
-  useBodyScrollLock(isOpen);
+  // Callers clear their person/filmography state as soon as `onClose` fires, so
+  // hold on to the last credit we were given and keep rendering it while the
+  // modal animates out — otherwise the panel would empty mid-fade.
+  const contentRef = useRef<{ personName: string; filmography: Array<{ film: Film; roles: string[] }> } | null>(null);
+  if (personName && filmography) {
+    contentRef.current = { personName, filmography };
+  }
+  const content = contentRef.current;
+  const activePersonName = content?.personName ?? null;
+  const activeFilmography = content?.filmography ?? null;
+  const personNameLower = (activePersonName ?? '').trim().toLowerCase();
+
+  // Prevent scrolling the page behind the modal while it's open (and while it
+  // animates out, so the page doesn't jump before the modal is gone).
+  useBodyScrollLock(isRendered);
 
   // Normalized TMDb record (bio, birth/death, known-for, canonical headshot)
   // resolved from the person's name, if we have one for them.
-  const personInfo = useMemo(() => getPersonInfoByName(personName), [personName]);
-  const tmdbId = useMemo(() => getPersonProfileByName(personName)?.tmdbId, [personName]);
+  const personInfo = useMemo(() => getPersonInfoByName(activePersonName), [activePersonName]);
+  const tmdbId = useMemo(() => getPersonProfileByName(activePersonName)?.tmdbId, [activePersonName]);
 
   // Prefer a per-film cast headshot (closest to the credit shown); fall back to
   // the canonical TMDb portrait so crew members with no cast entry still get a photo.
   const profileUrl = useMemo(() => {
-    if (filmography) {
-      for (const { film } of filmography) {
+    if (activeFilmography) {
+      for (const { film } of activeFilmography) {
         const match = film.cast?.find(member => member?.name?.trim().toLowerCase() === personNameLower);
         if (match?.profileUrl) return match.profileUrl;
       }
     }
     return personInfo?.profileUrl ?? null;
-  }, [filmography, personNameLower, personInfo]);
+  }, [activeFilmography, personNameLower, personInfo]);
 
-  if (!isOpen || !personName || !filmography) return null;
+  if (!isRendered || !activePersonName || !activeFilmography) return null;
 
   const bornDate = formatPersonDate(personInfo?.birthday);
   const diedDate = formatPersonDate(personInfo?.deathday);
@@ -61,7 +75,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
   );
 
   // Sort filmography: by year descending, then by title ascending
-  const sortedFilmography = [...filmography].sort((a, b) => {
+  const sortedFilmography = [...activeFilmography].sort((a, b) => {
     const yearComparison = (b.film.year || '0').localeCompare(a.film.year || '0');
     if (yearComparison !== 0) return yearComparison;
     return (a.film.title || '').localeCompare(b.film.title || '');
@@ -70,14 +84,18 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
   return (
     // Dialog Overlay: Semi-transparent backdrop
     <div
-      className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fadeIn"
+      className={`fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 ${
+        isClosing ? 'animate-fadeOut pointer-events-none' : 'animate-fadeIn'
+      }`}
       onClick={onClose} // Allow closing by clicking overlay
     >
       {/* Dialog Content: Modal panel. A very faint full-height headshot sits in
           the background, while a sharper copy floats at the top-left of the bio
           so the text wraps around it. */}
       <div
-        className="relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[88vh] flex flex-col animate-scaleIn overflow-hidden"
+        className={`relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden ${
+          isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
+        }`}
         onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
       >
         {profileUrl && (
@@ -98,7 +116,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
         <div className="relative z-10 flex justify-between items-start p-4 md:p-5 border-b border-slate-700/60 flex-shrink-0">
           <div className="min-w-0 pr-4">
             <h2 className="text-lg md:text-xl font-semibold text-slate-100 truncate">
-              {personName}
+              {activePersonName}
             </h2>
             {personInfo?.knownForDepartment && (
               <p className="text-xs text-slate-400 mt-0.5">{personInfo.knownForDepartment}</p>
@@ -123,7 +141,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
               {profileUrl && (
                 <img
                   src={profileUrl}
-                  alt={personName ?? ''}
+                  alt={activePersonName}
                   className="float-left w-1/2 max-w-[12em] mr-3 mb-2 rounded shadow-sm border border-slate-600/50"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
@@ -159,7 +177,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
 
         {/* Scrollable Content Area */}
         {sortedFilmography.length === 0 ? (
-          <p className="relative z-10 p-4 md:p-6 text-slate-400 flex-grow">No film credits found for {personName}.</p>
+          <p className="relative z-10 p-4 md:p-6 text-slate-400 flex-grow">No film credits found for {activePersonName}.</p>
         ) : (
           <div className="relative z-10 overflow-y-auto min-h-0 max-h-[29vh] flex-shrink-0 p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 themed-scrollbar">
             {sortedFilmography.map(({ film: creditFilm, roles }) => {

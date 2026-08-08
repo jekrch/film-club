@@ -2,6 +2,8 @@ import PopcornRating from '../common/PopcornRating';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import CollapsibleContent from '../common/CollapsableContent';
+import AccentCard from '../common/AccentCard';
+import QuoteMarkIcon from '../common/QuoteMarkIcon';
 
 
 export interface ProfileReviewBlurb {
@@ -57,24 +59,22 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                     )}
                 </div>
 
-                <div className="bg-slate-700/60 p-3.5 rounded-md relative border-l-2 border-emerald-500/70 shadow-inner mt-2 text-sm">
-                    <svg
-                        className="absolute text-emerald-500/70 h-5 w-5 top-1.5 left-1.5 opacity-90"
-                        style={{ transform: 'translateY(0px)' }}
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                    </svg>
-                    <CollapsibleContent 
-                        buttonSize="sm" 
-                        lineClamp={3} 
-                        className="mt-0 ml-6"
+                {/* Watermarked with the film poster — on a profile the film is the varying subject */}
+                <AccentCard
+                    accent="emerald"
+                    surface="inset"
+                    watermarkSrc={blurbItem.filmPoster}
+                    className="mt-2 px-4 pb-3 pt-3.5"
+                >
+                    <QuoteMarkIcon className="mb-1.5 h-5 w-5 text-emerald-400/50" />
+                    <CollapsibleContent
+                        buttonSize="sm"
+                        lineClamp={3}
+                        className="text-sm italic leading-relaxed text-slate-300"
                     >
                         {blurbItem.blurb}
                     </CollapsibleContent>
-                </div>
+                </AccentCard>
             </div>
         </div>
     );

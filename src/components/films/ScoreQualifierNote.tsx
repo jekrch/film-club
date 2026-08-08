@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { useModalPresence } from '../../hooks/useModalPresence';
 
 /**
  * Known meanings for a score qualifier letter. A qualifier marks a score that a
@@ -32,7 +33,10 @@ const ScoreQualifierNote: React.FC<ScoreQualifierNoteProps> = ({ user, qualifier
   const medium = QUALIFIER_MEANINGS[letter] ?? 'the relevant';
   const name = capitalize(user);
 
-  useBodyScrollLock(isOpen);
+  const { isRendered, isClosing } = useModalPresence(isOpen);
+
+  // Stays locked through the close animation so the page doesn't jump early.
+  useBodyScrollLock(isRendered);
 
   // Close on Escape while the note is open.
   useEffect(() => {
@@ -57,16 +61,20 @@ const ScoreQualifierNote: React.FC<ScoreQualifierNoteProps> = ({ user, qualifier
         className="inline-block ml-px h-[0.75em] w-[0.75em] align-super cursor-pointer text-slate-300 hover:text-amber-300 transition-colors focus:outline-none focus:text-amber-300"
       />
 
-      {isOpen && (
+      {isRendered && (
         // `whitespace-normal` / `text-left` reset the inherited `whitespace-nowrap`
         // and any right-alignment from the score cell this note renders inside, so
         // the modal copy wraps normally.
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 animate-fadeIn whitespace-normal text-left"
+          className={`fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 whitespace-normal text-left ${
+            isClosing ? 'animate-fadeOut pointer-events-none' : 'animate-fadeIn'
+          }`}
           onClick={(e) => { e.stopPropagation(); setIsOpen(false); }}
         >
           <div
-            className="relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-md w-full animate-scaleIn overflow-hidden border border-slate-700/60"
+            className={`relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-md w-full overflow-hidden border border-slate-700/60 ${
+              isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
+            }`}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"

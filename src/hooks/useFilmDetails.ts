@@ -88,7 +88,9 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         setFilm(foundFilm);
 
         // Watch URL logic (simplified, no async check in this basic hook version)
-        if (foundFilm.noStreaming) {
+        // A popcorn-pod film was never a Criterion selection, so guessing a
+        // criterionchannel.com slug for it would only produce a dead link.
+        if (foundFilm.noStreaming || (foundFilm.popcornPod && !foundFilm.streamUrl?.length)) {
             setWatchUrl(null);
             setLinkCheckStatus('not_found');
         } else if (foundFilm.streamUrl?.length) {

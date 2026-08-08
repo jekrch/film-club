@@ -18,7 +18,8 @@ interface IntervalDetailDisplayProps {
 
 const IntervalDetailDisplay: React.FC<IntervalDetailDisplayProps> = ({ detail, onClose }) => {
     return (
-        <div className="mt-4 p-3 bg-transparent rounded-md border border-slate-600 animate-fade-in">
+        // Inset level: this sits inside the chart's card
+        <div className="mt-4 p-3 bg-slate-700/25 rounded-xl border border-slate-600/30 animate-fade-in">
             <div className="flex justify-between items-center mb-2">
                 <h4 className="text-sm font-semibold text-slate-400">
                     Interval of {detail.days} day{detail.days === 1 ? '' : 's'} ending {detail.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}

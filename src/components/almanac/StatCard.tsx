@@ -1,5 +1,5 @@
 import React from 'react';
-import BaseCard from '../common/BaseCard';
+import AccentCard from '../common/AccentCard';
 
 interface StatCardProps {
     label: string;
@@ -16,13 +16,14 @@ const StatCard: React.FC<StatCardProps> = ({
     valueClassName = "font-mono text-slate-100 tracking-tight text-lg sm:text-xl md:text-2xl",
 }) => {
     return (
-        <BaseCard key={`card-${label}`} className="bg-gradient-to-br from-slate-800 to-slate-800">
+        // No rail: these repeat in a grid
+        <AccentCard key={`card-${label}`} rail={false} className="p-4">
             <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">{label}</p>
             <p className={valueClassName}>{value}</p>
             {description && (
                 <p className="text-xs text-slate-400 mt-0.5">{description}</p>
             )}
-        </BaseCard>
+        </AccentCard>
     );
 };
 

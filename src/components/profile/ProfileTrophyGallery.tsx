@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { TrophyIcon } from '@heroicons/react/24/outline';
 import { Film } from '../../types/film';
 import { resolveTrophyIcon, TrophyWatermark } from '../common/trophyIcons';
+import AccentCard from '../common/AccentCard';
 
 interface TrophyAward {
     filmId: string;
@@ -117,7 +118,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
     groupedTrophies.sort((a, b) => b.films.length - a.films.length);
 
     return (
-        <div className="bg-slate-800 rounded-lg p-6 md:p-10 mb-8 border border-slate-700 shadow-xl shadow-slate-950/30">
+        <AccentCard accent="amber" className="p-6 md:p-10 mb-8">
             <div className="flex items-center gap-3 mb-6">
                 <TrophyIcon className="h-5 w-5 text-amber-400/80" />
                 <h4 className="text-xl font-bold text-slate-100">Trophy Shelf</h4>
@@ -133,7 +134,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                     return (
                         <div
                             key={groupIndex}
-                            className="group relative overflow-hidden flex items-start gap-3.5 rounded-xl border border-slate-700/40 bg-slate-800/30 px-4 py-3.5 transition-all duration-200 hover:border-amber-500/25 hover:bg-slate-800/60"
+                            className="group relative overflow-hidden flex items-start gap-3.5 rounded-xl border border-slate-600/30 bg-slate-700/25 px-4 py-3.5 transition-all duration-200 hover:border-amber-500/25 hover:bg-slate-700/45"
                         >
                             <TrophyWatermark className="-right-6 -bottom-10 h-40 w-40 transition-colors duration-200 group-hover:text-amber-400/[0.1]" />
                             <span className="relative flex-shrink-0 mt-0.5 text-amber-400/80 transition-transform duration-200 group-hover:scale-110 group-hover:text-amber-300">
@@ -178,7 +179,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                     );
                 })}
             </div>
-        </div>
+        </AccentCard>
     );
 };
 

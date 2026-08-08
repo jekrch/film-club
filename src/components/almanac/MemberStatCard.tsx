@@ -5,7 +5,7 @@ import CircularImage from '../common/CircularImage';
 import StatItem from './StatItem';
 import { MemberStatsData, TeamMember } from '../../types/team';
 import { ComprehensiveMemberStats } from '../../utils/statUtils';
-import BaseCard from '../common/BaseCard';
+import AccentCard from '../common/AccentCard';
 
 interface MemberStatCardProps {
     member: TeamMember;
@@ -32,9 +32,10 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
     getHighlightClass
 }) => {
     return (
-        <BaseCard className="flex flex-col !bg-slate-800">
+        // No rail: one card per member, repeating in a grid
+        <AccentCard rail={false} contentClassName="flex h-full flex-col p-4">
             {/* Member Header */}
-            <div className="flex items-center mb-4 border-b border-slate-700 pb-3">
+            <div className="flex items-center mb-4 border-b border-slate-700/60 pb-3">
                 <Link
                     to={`/profile/${encodeURIComponent(member.name)}`}
                     className="group transition-all duration-200 ease-in-out relative flex items-center"
@@ -81,7 +82,7 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
                     valueClassName={getHighlightClass(highlights.avgSelectionYear)}
                 />
             </div>
-        </BaseCard>
+        </AccentCard>
     );
 };
 

@@ -1,18 +1,22 @@
 import React from 'react';
+import AccentCard, { CardAccent } from '../common/AccentCard';
 
 interface ChartContainerProps {
     children: React.ReactNode;
+    /** Spacing/layout classes only — the surface comes from AccentCard. */
     className?: string;
+    accent?: CardAccent;
 }
 
 const ChartContainer: React.FC<ChartContainerProps> = ({
     children,
-    className = "bg-slate-800 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg p-3 sm:p-4 md:p-5 shadow-xl border border-slate-600 mb-4"
+    className = "mb-4",
+    accent = "blue",
 }) => {
     return (
-        <div className={className}>
+        <AccentCard accent={accent} className={`p-3 sm:p-4 md:p-5 ${className}`}>
             {children}
-        </div>
+        </AccentCard>
     );
 };
 

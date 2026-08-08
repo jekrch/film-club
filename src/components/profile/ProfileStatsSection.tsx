@@ -4,6 +4,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { UserProfileStats, UserRankings, formatTotalRuntime, formatAverage } from '../../utils/statUtils';
 import ProfileStatCard from './ProfileStatCard';
+import AccentCard from '../common/AccentCard';
 
 /**
  * Props for the ProfileStatsSection component.
@@ -138,8 +139,8 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
   const expandedMaxHeight = 'max-h-[3000px]'; // Effectively unlimited height
 
   return (
-    <div className="bg-slate-800 rounded-lg p-6 md:p-8 border border-slate-700 shadow-xl shadow-slate-950/30 h-full">
-      <h3 className="text-2xl font-bold text-slate-100 mb-5 border-b border-slate-700 pb-3">
+    <AccentCard accent="blue" className="h-full p-6 md:p-8">
+      <h3 className="text-2xl font-bold text-slate-100 mb-5 border-b border-slate-700/60 pb-3">
         Member Stats
       </h3>
       {/* Container managing the expand/collapse animation */}
@@ -166,7 +167,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
       </div>
       {/* Render the expand/collapse button if needed */}
       {needsExpansion && (
-        <div className="mt-4 text-center border-t border-slate-700 pt-4">
+        <div className="mt-4 text-center border-t border-slate-700/60 pt-4">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center"
@@ -180,7 +181,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
           </button>
         </div>
       )}
-    </div>
+    </AccentCard>
   );
 };
 

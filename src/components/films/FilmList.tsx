@@ -34,7 +34,7 @@ const FilmList: React.FC<FilmListProps> = ({
   const isCompact = actualCardSize === 'compact';
   const isPosterOnly = actualCardSize === 'poster';
 
-  const buttonBaseClasses = "p-1.5 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-800";
+  const buttonBaseClasses = "p-1.5 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900";
   const iconClasses = "w-5 h-5";
 
   // Adjust grid classes based on view mode

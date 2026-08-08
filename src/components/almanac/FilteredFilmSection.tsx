@@ -1,6 +1,7 @@
 import React from 'react';
 import FilmList from '../films/FilmList';
 import { Film } from '../../types/film';
+import AccentCard from '../common/AccentCard';
 
 interface FilteredFilmListSectionProps {
     listRef: React.RefObject<HTMLDivElement>;
@@ -19,15 +20,16 @@ const FilteredFilmListSection: React.FC<FilteredFilmListSectionProps> = ({
     onClose,
     layoutMode = 'horizontal',
     hideSizeButtons = true,
-    containerClassName = "bg-slate-800 rounded-lg p-4 shadow-lg border border-slate-600 mb-8 sm:mb-10 mt-4 animate-fade-in"
+    containerClassName = "p-4 mb-8 sm:mb-10 mt-4 animate-fade-in"
 }) => {
     return (
-        <div ref={listRef} className={containerClassName}>
-            <div className="flex justify-between items-center mb-3 border-b border-slate-700 pb-2">
+        <div ref={listRef}>
+        <AccentCard accent="blue" className={containerClassName}>
+            <div className="flex justify-between items-center mb-3 border-b border-slate-700/60 pb-2">
                 {/* Title is passed to FilmList now */}
                 <button
                     onClick={onClose}
-                    className="text-xs text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 rounded !px-2 !py-1 transition-colors ml-auto"
+                    className="text-xs text-slate-400 hover:text-white bg-slate-700/50 hover:bg-slate-700/80 rounded !px-2 !py-1 transition-colors ml-auto"
                     aria-label="Close film list"
                 >
                     &times;
@@ -45,6 +47,7 @@ const FilteredFilmListSection: React.FC<FilteredFilmListSectionProps> = ({
             ) : (
                 <p className="text-sm text-slate-400 italic text-center py-4">No films found for this selection.</p>
             )}
+        </AccentCard>
         </div>
     );
 };

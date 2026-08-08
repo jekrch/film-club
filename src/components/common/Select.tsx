@@ -155,9 +155,11 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                     onClick={() => setOpen((o) => !o)}
                     onKeyDown={onKeyDown}
                     className={classNames(
-                        'group flex w-full items-center justify-between gap-2 rounded-md border bg-slate-800/70 px-4 py-2 text-left text-sm transition-colors duration-200',
+                        // Matches the search field: form controls recess below the
+                        // card surface rather than sitting above it like an inset card.
+                        'group flex w-full items-center justify-between gap-2 rounded-md border bg-slate-900/40 px-4 py-2 text-left text-sm transition-colors duration-200',
                         'focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50',
-                        open ? 'border-slate-400 text-slate-100' : 'border-slate-600/80 hover:border-slate-500',
+                        open ? 'border-slate-400 text-slate-100' : 'border-slate-600/40 hover:border-slate-500/60',
                         hasSelection ? 'text-slate-100' : 'text-slate-400'
                     )}
                 >
@@ -183,7 +185,7 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                         tabIndex={-1}
                         aria-activedescendant={`${controlId}-opt-${highlighted}`}
                         className={classNames(
-                            'themed-scrollbar absolute z-30 max-h-60 w-full overflow-y-auto rounded-md border border-slate-700 bg-slate-900/95 py-1 shadow-xl shadow-black/40 backdrop-blur-sm origin-top animate-fadeIn',
+                            'themed-scrollbar absolute z-30 max-h-60 w-full overflow-y-auto rounded-md border border-slate-700/60 bg-slate-900/95 py-1 shadow-lg shadow-black/40 backdrop-blur-sm origin-top animate-fadeIn',
                             dropUp ? 'bottom-full mb-1.5 origin-bottom' : 'top-full mt-1.5'
                         )}
                     >
@@ -200,7 +202,7 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                                     onClick={() => commit(index)}
                                     className={classNames(
                                         'flex cursor-pointer items-center gap-2 px-4 py-2 text-sm transition-colors duration-150',
-                                        isActive ? 'bg-slate-700/60 text-slate-100' : 'text-slate-300',
+                                        isActive ? 'bg-slate-700/45 text-slate-100' : 'text-slate-300',
                                         !option.value && 'text-slate-400'
                                     )}
                                 >

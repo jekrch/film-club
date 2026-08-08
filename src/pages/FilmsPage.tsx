@@ -2,7 +2,7 @@ import FilmList from '../components/films/FilmList';
 import { filmData as initialFilmData } from '../types/film'; 
 import { teamMembers } from '../types/team'; 
 import PageLayout from '../components/layout/PageLayout';
-import BaseCard from '../components/common/BaseCard';
+import AccentCard from '../components/common/AccentCard';
 import Select from '../components/common/Select';
 import { useFilmFiltering, SortOption, getSortOptionDisplayName } from '../hooks/useFilmFilter';
 
@@ -40,7 +40,7 @@ const FilmsPage = () => {
         <PageLayout className="pt-4">
             <div className="text-3xl text-slate-300 mb-8">Film Collection</div>
 
-            <BaseCard key={'search-card'} className="bg-slate-700 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg shadow-lg p-6 mb-8 text-sm">
+            <AccentCard key={'search-card'} accent="blue" className="p-6 mb-8 text-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
                         <label htmlFor="search" className="block mb-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">
@@ -62,7 +62,7 @@ const FilmsPage = () => {
                                 placeholder="Search title or director..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full rounded-md border border-slate-600/80 bg-slate-800/70 pl-10 pr-9 py-2 text-sm text-slate-100 transition-colors duration-200 placeholder-slate-500 hover:border-slate-500 focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50"
+                                className="w-full rounded-md border border-slate-600/40 bg-slate-900/40 pl-10 pr-9 py-2 text-sm text-slate-100 transition-colors duration-200 placeholder-slate-500 hover:border-slate-500/60 focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50"
                             />
                             {searchTerm && (
                                 <button
@@ -98,7 +98,7 @@ const FilmsPage = () => {
                     />
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-5 pt-4 border-t border-slate-600/50">
+                <div className="flex flex-col sm:flex-row sm:items-baseline gap-3 sm:gap-5 pt-4 border-t border-slate-700/60">
                     <label className="block flex-shrink-0 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400 sm:mb-0">
                         Sort
                     </label>
@@ -108,8 +108,8 @@ const FilmsPage = () => {
                                 key={option}
                                 onClick={() => handleSortChange(option)}
                                 className={`group inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border text-[9px] uppercase tracking-[0.12em] transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-slate-400/60 ${sortBy === option
-                                    ? 'border-slate-400! bg-slate-900/50! text-slate-100 font-medium'
-                                    : 'border-slate-600/60! bg-transparent! text-slate-400 hover:border-slate-400! hover:text-slate-100'
+                                    ? 'border-slate-400! bg-slate-900/40! text-slate-100 font-medium'
+                                    : 'border-slate-600/40! bg-transparent! text-slate-400 hover:border-slate-400! hover:text-slate-100'
                                     }`}
                             >
                                 {getSortOptionDisplayName(option)}
@@ -123,7 +123,7 @@ const FilmsPage = () => {
                         ))}
                     </div>
                 </div>
-            </BaseCard>
+            </AccentCard>
 
             <div className="mb-4 text-sm text-slate-300">
                 {resultsText}
