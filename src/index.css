@@ -70,26 +70,36 @@ h1 {
   line-height: 1.1;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #242323;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #5e5f72;
-}
-button:focus {
-  outline: none;
-}
-button:focus-visible {
-  outline: 1px solid #64748b; /* slate-500 — muted, keyboard-only */
-  outline-offset: 2px;
+/* Neutral button reset. This deliberately imposes no background, padding, or
+   border: those belong to the Button component's variants, not to every
+   <button> on the page. (The previous rule was the Vite starter's, which
+   painted every button #242323 with a #5e5f72 hover border — off-palette
+   colors that call sites had to fight with `!` overrides.)
+
+   MUST stay inside `@layer base`. Unlayered CSS outranks every cascade layer,
+   so an unlayered `button { ... }` rule silently beats all Tailwind utilities
+   and no `bg-*`/`border-*`/`p-*` class on a <button> would apply. */
+@layer base {
+  button {
+    border: 0;
+    padding: 0;
+    background-color: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    cursor: pointer;
+  }
+  button:focus {
+    outline: none;
+  }
+  /* Keyboard-only focus, as an outline rather than a ring: an outline needs no
+     offset color, so one rule works on the page background and on any card. */
+  button:focus-visible {
+    outline: 2px solid var(--color-slate-400);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '../common/Button';
 import FilmList from '../films/FilmList';
 import { Film } from '../../types/film';
 import AccentCard from '../common/AccentCard';
@@ -27,13 +28,15 @@ const FilteredFilmListSection: React.FC<FilteredFilmListSectionProps> = ({
         <AccentCard accent="blue" className={containerClassName}>
             <div className="flex justify-between items-center mb-3 border-b border-slate-700/60 pb-2">
                 {/* Title is passed to FilmList now */}
-                <button
+                <Button
                     onClick={onClose}
-                    className="text-xs text-slate-400 hover:text-white bg-slate-700/50 hover:bg-slate-700/80 rounded !px-2 !py-1 transition-colors ml-auto"
+                    variant="ghost"
+                    size="xs"
+                    className="ml-auto text-xs leading-none"
                     aria-label="Close film list"
                 >
                     &times;
-                </button>
+                </Button>
             </div>
             {films.length > 0 ? (
                 <div>

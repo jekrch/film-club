@@ -717,7 +717,9 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                 <Controls
                     className="react-flow__controls--dark"
                     style={{
-                        background: '#222d41', // slate-825, the card surface
+                        // Opaque on purpose: these controls float over the graph
+                        // and need a solid backing to stay legible.
+                        background: '#1e293b',
                         border: '1px solid #334155',
                         borderRadius: 8,
                     }}

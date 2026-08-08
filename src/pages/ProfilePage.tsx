@@ -14,6 +14,7 @@ import PageLayout from '../components/layout/PageLayout';
 import ProfileBlurbItem from '../components/profile/ProfileBlurbItem';
 import BaseCard from '../components/common/BaseCard';
 import AccentCard from '../components/common/AccentCard';
+import Button from '../components/common/Button';
 import ProfileHeroBackground from '../components/profile/ProfileHeroBackground';
 import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
 
@@ -61,13 +62,15 @@ const ProfilePage: React.FC = () => {
 
     return (
         <PageLayout>
-            <button
+            <Button
                 onClick={() => navigate(-1)}
-                className="mb-8 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded"
+                variant="link"
+                size="md"
+                className="mb-8 group"
             >
-                <ChevronLeftIcon className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" aria-hidden="true" />
+                <ChevronLeftIcon className="h-5 w-5 transition-transform group-hover:-translate-x-1" aria-hidden="true" />
                 Back
-            </button>
+            </Button>
 
             <BaseCard className="overflow-hidden mb-8 relative">
                 {/* Film poster collage background */}
@@ -107,13 +110,13 @@ const ProfilePage: React.FC = () => {
                     </div>
                     {needsInterviewExpansion && (
                         <div className="mt-4 text-center border-t border-slate-700/60 pt-4">
-                            <button
+                            <Button
                                 onClick={toggleInterviewExpanded}
-                                className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
+                                variant="link"
                                 aria-expanded={isInterviewExpanded}
                             >
-                                {isInterviewExpanded ? (<> Show Less <ChevronUpIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>) : (<> Show Full Interview <ChevronDownIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>)}
-                            </button>
+                                {isInterviewExpanded ? (<> Show Less <ChevronUpIcon className="h-4 w-4" aria-hidden="true" /> </>) : (<> Show Full Interview <ChevronDownIcon className="h-4 w-4" aria-hidden="true" /> </>)}
+                            </Button>
                         </div>
                     )}
                 </AccentCard>
@@ -163,13 +166,13 @@ const ProfilePage: React.FC = () => {
                     </div>
                     {needsBlurbsSectionExpansion && (
                         <div className="mt-6 text-center border-t border-slate-700/60 pt-4">
-                            <button
+                            <Button
                                 onClick={toggleBlurbsSectionExpanded}
-                                className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800 rounded"
+                                variant="link"
                                 aria-expanded={isBlurbsSectionExpanded}
                             >
-                                {isBlurbsSectionExpanded ? (<> Show Fewer Reviews <ChevronUpIcon className="h-4 w-4 ml-1" /> </>) : (<> Show More Reviews <ChevronDownIcon className="h-4 w-4 ml-1" /> </>)}
-                            </button>
+                                {isBlurbsSectionExpanded ? (<> Show Fewer Reviews <ChevronUpIcon className="h-4 w-4" /> </>) : (<> Show More Reviews <ChevronDownIcon className="h-4 w-4" /> </>)}
+                            </Button>
                         </div>
                     )}
                 </AccentCard>

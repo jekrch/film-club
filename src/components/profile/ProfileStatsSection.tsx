@@ -5,6 +5,7 @@ import {
 import { UserProfileStats, UserRankings, formatTotalRuntime, formatAverage } from '../../utils/statUtils';
 import ProfileStatCard from './ProfileStatCard';
 import AccentCard from '../common/AccentCard';
+import Button from '../common/Button';
 
 /**
  * Props for the ProfileStatsSection component.
@@ -168,17 +169,17 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
       {/* Render the expand/collapse button if needed */}
       {needsExpansion && (
         <div className="mt-4 text-center border-t border-slate-700/60 pt-4">
-          <button
+          <Button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-blue-400 hover:text-blue-300 text-sm font-medium inline-flex items-center"
+            variant="link"
             aria-expanded={isExpanded} // Accessibility attribute
           >
             {isExpanded ? (
-              <> Show Less Stats <ChevronUpIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>
+              <> Show Less Stats <ChevronUpIcon className="h-4 w-4" aria-hidden="true" /> </>
             ) : (
-              <> Show All Stats ({visibleStatCards.length} total) <ChevronDownIcon className="h-4 w-4 ml-1" aria-hidden="true" /> </>
+              <> Show All Stats ({visibleStatCards.length} total) <ChevronDownIcon className="h-4 w-4" aria-hidden="true" /> </>
             )}
-          </button>
+          </Button>
         </div>
       )}
     </AccentCard>

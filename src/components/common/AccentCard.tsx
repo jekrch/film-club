@@ -34,7 +34,10 @@ const HOVER_BORDER: Record<CardAccent, string> = {
 export type CardSurface = 'card' | 'inset';
 
 const SURFACE: Record<CardSurface, string> = {
-  card: 'bg-slate-825 border-slate-700/60 shadow-sm shadow-black/30',
+  // No fill: the page background reads straight through, so a card is defined
+  // by its border and rail rather than by a panel of color. This is deliberate
+  // — do not add a background here.
+  card: 'border-slate-700/60 shadow-sm shadow-black/30',
   inset: 'bg-slate-700/25 border-slate-600/30',
 };
 

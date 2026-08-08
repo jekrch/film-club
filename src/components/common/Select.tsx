@@ -155,11 +155,12 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                     onClick={() => setOpen((o) => !o)}
                     onKeyDown={onKeyDown}
                     className={classNames(
-                        // Matches the search field: form controls recess below the
-                        // card surface rather than sitting above it like an inset card.
-                        'group flex w-full items-center justify-between gap-2 rounded-md border bg-slate-900/40 px-4 py-2 text-left text-sm transition-colors duration-200',
+                        // Matches the search field. Cards are transparent, so a
+                        // control has to sit *lighter* than the slate-900 page to
+                        // read as an control at all — a darker fill disappears.
+                        'group flex w-full items-center justify-between gap-2 rounded-md border bg-slate-800/60 px-4 py-2 text-left text-sm transition-colors duration-200',
                         'focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50',
-                        open ? 'border-slate-400 text-slate-100' : 'border-slate-600/40 hover:border-slate-500/60',
+                        open ? 'border-slate-400 text-slate-100' : 'border-slate-600/70 hover:border-slate-500 hover:bg-slate-800/80',
                         hasSelection ? 'text-slate-100' : 'text-slate-400'
                     )}
                 >
@@ -169,7 +170,7 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                         fill="none"
                         aria-hidden="true"
                         className={classNames(
-                            'h-4 w-4 flex-shrink-0 text-slate-400 transition-transform duration-200',
+                            'h-4 w-4 flex-shrink-0 text-slate-300 transition-transform duration-200',
                             open && 'rotate-180'
                         )}
                     >

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useModalPresence } from '../../hooks/useModalPresence';
+import Button from '../common/Button';
 
 /**
  * Known meanings for a score qualifier letter. A qualifier marks a score that a
@@ -94,15 +95,16 @@ const ScoreQualifierNote: React.FC<ScoreQualifierNoteProps> = ({ user, qualifier
               <h2 className="text-base md:text-lg font-semibold text-slate-100 pr-4">
                 What the heck is that <span className="text-amber-400">{letter}</span> doing there?
               </h2>
-              <button
+              <Button
                 onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-slate-100 transition-colors rounded-full p-1.5 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 flex-shrink-0"
+                variant="ghost"
+                className="flex-shrink-0"
                 aria-label="Close"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
 
             <div className="relative z-10 p-4 md:p-5 space-y-3 text-sm leading-relaxed text-slate-300">

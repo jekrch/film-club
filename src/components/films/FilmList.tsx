@@ -1,6 +1,7 @@
 import React from 'react'; 
 import { Film } from '../../types/film';
 import FilmCard from './FilmCard';
+import Button from '../common/Button';
 import AllFilmsCard from './AllFilmsCard';
 import { useViewSettings } from '../../contexts/ViewSettingsContext';
 import { Squares2X2Icon, RectangleGroupIcon, PhotoIcon } from '@heroicons/react/24/outline';
@@ -34,7 +35,6 @@ const FilmList: React.FC<FilmListProps> = ({
   const isCompact = actualCardSize === 'compact';
   const isPosterOnly = actualCardSize === 'poster';
 
-  const buttonBaseClasses = "p-1.5 rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900";
   const iconClasses = "w-5 h-5";
 
   // Adjust grid classes based on view mode
@@ -57,30 +57,33 @@ const FilmList: React.FC<FilmListProps> = ({
          {!hideSizeButtons && (
            <div className="flex items-center space-x-2">
 
-             <button 
-               onClick={() => setCardSize('compact')} 
-               title="Compact View" 
-               aria-pressed={isCompact && !isPosterOnly} 
-               className={`${buttonBaseClasses} ${isCompact && !isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
+             <Button
+               onClick={() => setCardSize('compact')}
+               variant="ghost"
+               title="Compact View"
+               aria-pressed={isCompact && !isPosterOnly}
+               className={isCompact && !isPosterOnly ? 'text-white' : undefined}
              >
                <RectangleGroupIcon className={iconClasses} /><span className="sr-only">Compact View</span>
-             </button>
-             <button 
-               onClick={() => setCardSize('standard')} 
-               title="Standard View" 
-               aria-pressed={!isCompact && !isPosterOnly} 
-               className={`${buttonBaseClasses} ${!isCompact && !isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
+             </Button>
+             <Button
+               onClick={() => setCardSize('standard')}
+               variant="ghost"
+               title="Standard View"
+               aria-pressed={!isCompact && !isPosterOnly}
+               className={!isCompact && !isPosterOnly ? 'text-white' : undefined}
              >
                <Squares2X2Icon className={iconClasses} /><span className="sr-only">Standard View</span>
-             </button>
-                          <button 
-               onClick={() => setCardSize('poster')} 
-               title="Poster View" 
-               aria-pressed={isPosterOnly} 
-               className={`${buttonBaseClasses} ${isPosterOnly ? 'text-white' : 'text-slate-400 hover:text-slate-100'}`}
+             </Button>
+             <Button
+               onClick={() => setCardSize('poster')}
+               variant="ghost"
+               title="Poster View"
+               aria-pressed={isPosterOnly}
+               className={isPosterOnly ? 'text-white' : undefined}
              >
                <PhotoIcon className={iconClasses} /><span className="sr-only">Poster View</span>
-             </button>
+             </Button>
            </div>
          )}
       </div>

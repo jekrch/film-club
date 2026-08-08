@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from '../common/Button';
 import { useNavigate } from 'react-router-dom';
 import { FilmIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import AccentCard from '../common/AccentCard';
@@ -87,9 +88,11 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
 
                 {/* Expand button (if more than 1 film) */}
                 {films.length > 1 && (
-                    <button
+                    <Button
                         onClick={(e) => onToggleExpand(score, e)}
-                        className="p-1 text-slate-400 hover:text-slate-200 transition-colors flex-shrink-0"
+                        variant="ghost"
+                        size="xs"
+                        className="flex-shrink-0"
                         title={isExpanded ? 'Collapse' : 'Show all films'}
                     >
                         {isExpanded ? (
@@ -97,7 +100,7 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                         ) : (
                             <ChevronDownIcon className="w-4 h-4" />
                         )}
-                    </button>
+                    </Button>
                 )}
             </div>
 

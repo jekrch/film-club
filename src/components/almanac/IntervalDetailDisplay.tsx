@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '../common/Button';
 import { Film } from '../../types/film'; 
 
 // Define a more specific type if FilmWithDate is commonly used
@@ -24,13 +25,15 @@ const IntervalDetailDisplay: React.FC<IntervalDetailDisplayProps> = ({ detail, o
                 <h4 className="text-sm font-semibold text-slate-400">
                     Interval of {detail.days} day{detail.days === 1 ? '' : 's'} ending {detail.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </h4>
-                <button
+                <Button
                     onClick={onClose}
-                    className="text-lg leading-none font-bold text-slate-400 hover:text-white transition-colors !px-2 !py-1"
+                    variant="ghost"
+                    size="xs"
+                    className="text-lg leading-none font-bold"
                     aria-label="Close interval details"
                 >
                     &times;
-                </button>
+                </Button>
             </div>
             {detail.films.length > 0 ? (
                 <ul className="list-none text-xs space-y-1 text-slate-300">

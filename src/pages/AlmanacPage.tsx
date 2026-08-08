@@ -21,6 +21,7 @@ import CreditsModal from '../components/common/CreditsModal';
 import PageLayout from '../components/layout/PageLayout';
 import SectionHeader from '../components/common/SectionHeader';
 import AccentCard from '../components/common/AccentCard';
+import Button from '../components/common/Button';
 
 import { useUnanimousScores } from '../hooks/useUnanimousScores';
 import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
@@ -248,12 +249,13 @@ const AlmanacPage: React.FC = () => {
                                     ))}
                                     {(person.filmography || []).length > 5 && (
                                         <li className="text-center mt-2">
-                                            <button
+                                            <Button
                                                 onClick={() => handleFrequentPersonClick(person.name, person.filmography || [])}
-                                                className="text-xs text-blue-400 hover:text-blue-300 font-medium"
+                                                variant="link"
+                                                size="xs"
                                             >
                                                 View all {(person.filmography || []).length} credits...
-                                            </button>
+                                            </Button>
                                         </li>
                                     )}
                                 </ul>

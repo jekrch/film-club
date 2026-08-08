@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { getPersonInfoByName, getPersonProfileByName, tmdbPersonUrl } from '../../utils/personUtils';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useModalPresence } from '../../hooks/useModalPresence';
+import Button from './Button';
 
 // Formats a TMDb date string (YYYY-MM-DD) for display, e.g. "May 14, 1944".
 const formatPersonDate = (value: string | null | undefined): string | null => {
@@ -122,15 +123,16 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
               <p className="text-xs text-slate-400 mt-0.5">{personInfo.knownForDepartment}</p>
             )}
           </div>
-          <button
+          <Button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-100 transition-colors rounded-full p-1.5 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 flex-shrink-0"
+            variant="ghost"
+            className="flex-shrink-0"
             aria-label="Close modal"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 md:w-6 md:h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Person details: bio, birth/death, and a link to the full TMDb profile. */}

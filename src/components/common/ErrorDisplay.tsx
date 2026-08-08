@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button';
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -41,12 +42,13 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
             </div>
             {/* Back button (conditionally rendered based on backPath or default behavior) */}
             <div>
-                <button
+                <Button
                     onClick={handleBackClick}
-                    className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900 transition-colors font-medium"
+                    variant="solid"
+                    size="md"
                 >
                     {backButtonLabel}
-                </button>
+                </Button>
             </div>
         </div>
     );

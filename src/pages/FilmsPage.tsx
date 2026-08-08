@@ -3,6 +3,7 @@ import { filmData as initialFilmData } from '../types/film';
 import { teamMembers } from '../types/team'; 
 import PageLayout from '../components/layout/PageLayout';
 import AccentCard from '../components/common/AccentCard';
+import Button from '../components/common/Button';
 import Select from '../components/common/Select';
 import { useFilmFiltering, SortOption, getSortOptionDisplayName } from '../hooks/useFilmFilter';
 
@@ -62,19 +63,21 @@ const FilmsPage = () => {
                                 placeholder="Search title or director..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full rounded-md border border-slate-600/40 bg-slate-900/40 pl-10 pr-9 py-2 text-sm text-slate-100 transition-colors duration-200 placeholder-slate-500 hover:border-slate-500/60 focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50"
+                                className="w-full rounded-md border border-slate-600/70 bg-slate-800/60 pl-10 pr-9 py-2 text-sm text-slate-100 transition-colors duration-200 placeholder-slate-500 hover:border-slate-500 hover:bg-slate-800/80 focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50"
                             />
                             {searchTerm && (
-                                <button
+                                <Button
                                     type="button"
                                     onClick={() => setSearchTerm('')}
                                     aria-label="Clear search"
-                                    className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-sm border-none! bg-transparent! p-0! text-slate-400 transition-colors duration-150 hover:text-slate-100"
+                                    variant="ghost"
+                                    size="xs"
+                                    className="absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2"
                                 >
                                     <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="h-3.5 w-3.5">
                                         <path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                     </svg>
-                                </button>
+                                </Button>
                             )}
                         </div>
                     </div>
@@ -102,24 +105,26 @@ const FilmsPage = () => {
                     <label className="block flex-shrink-0 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400 sm:mb-0">
                         Sort
                     </label>
-                    <div className="flex flex-wrap gap-x-1 gap-y-2">
+                    <div className="flex flex-wrap gap-2">
                         {allSortOptions.map((option) => (
-                            <button
+                            <Button
                                 key={option}
                                 onClick={() => handleSortChange(option)}
-                                className={`group inline-flex items-center gap-1 px-2 py-0.5 rounded-sm border text-[9px] uppercase tracking-[0.12em] transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-slate-400/60 ${sortBy === option
-                                    ? 'border-slate-400! bg-slate-900/40! text-slate-100 font-medium'
-                                    : 'border-slate-600/40! bg-transparent! text-slate-400 hover:border-slate-400! hover:text-slate-100'
-                                    }`}
+                                variant="chip"
+                                size="xs"
+                                active={sortBy === option}
+                                aria-pressed={sortBy === option}
                             >
                                 {getSortOptionDisplayName(option)}
+                                {/* Fixed-width slot: the glyph is always in flow so
+                                    toggling sort never re-flows the row. */}
                                 <span
-                                    className={`text-[10px] leading-none transition-opacity duration-200 ${sortBy === option ? 'opacity-100' : 'opacity-0'}`}
+                                    className={`inline-block w-2 text-center text-[10px] leading-none transition-opacity duration-200 ${sortBy === option ? 'opacity-100' : 'opacity-0'}`}
                                     aria-hidden={sortBy !== option}
                                 >
                                     {sortDirection === 'asc' ? '↑' : '↓'}
                                 </span>
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>

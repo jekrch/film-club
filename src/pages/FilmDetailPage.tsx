@@ -17,6 +17,7 @@ import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
 import AccentCard from '../components/common/AccentCard';
+import Button from '../components/common/Button';
 import QuoteMarkIcon from '../components/common/QuoteMarkIcon';
 import CollapsibleContent from '../components/common/CollapsableContent';
 import LoadingSpinner from '../components/common/LoadingSpinner';
@@ -181,11 +182,11 @@ const FilmDetailPage = () => {
             )}
 
             <div className="">
-                <button onClick={() => navigate(-1)} className="mb-6 inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors group">
+                <Button onClick={() => navigate(-1)} variant="link" size="md" className="mb-6 group">
                     {/* ... back button svg ... */}
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1 transition-transform group-hover:-translate-x-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transition-transform group-hover:-translate-x-1" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" /></svg>
                     Back
-                </button>
+                </Button>
 
                 <BaseCard key={`film-card-${film.imdbID}`} className="!p-0 overflow-hidden mb-12 ">
                     <div className="md:flex">
@@ -249,16 +250,18 @@ const FilmDetailPage = () => {
                                 {runtimeDisplay && <span className={clubAverageDisplay ? "border-l border-slate-600 pl-4" : ""}>{runtimeDisplay}</span>}
                                 {film.rated !== 'N/A' && <span className={(clubAverageDisplay || runtimeDisplay) ? "border-l border-slate-600 pl-4" : ""}>{film.rated}</span>}
                                 {film.trailerKey && (
-                                    <button
+                                    <Button
                                         type="button"
                                         onClick={() => setIsTrailerOpen(true)}
-                                        className={`inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition-colors focus:outline-none focus:ring-1 focus:ring-blue-400/50 rounded-sm ${(clubAverageDisplay || runtimeDisplay || film.rated !== 'N/A') ? "border-l border-slate-600 pl-4" : ""}`}
+                                        variant="link"
+                                        size="xs"
+                                        className={(clubAverageDisplay || runtimeDisplay || film.rated !== 'N/A') ? "border-l border-slate-700/60 pl-4 rounded-none" : ""}
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                                         </svg>
                                         Trailer
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
 
