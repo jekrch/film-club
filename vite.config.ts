@@ -11,7 +11,11 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({ 
       registerType: 'autoUpdate', // Automatically update the SW when new content is available
-      injectRegister: 'auto', 
+      // `null`, not 'auto': src/main.tsx registers via `virtual:pwa-register`,
+      // which is the only path that reloads the page on update. Leaving this on
+      // 'auto' risks falling back to the inject-a-script behavior, which registers
+      // the SW but leaves the stale page rendered.
+      injectRegister: null,
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2,ttf,eot,otf}'], // Files to precache
         // The bundled data (films.json + persons.json) makes individual chunks

@@ -42,10 +42,10 @@ const AboutPage: React.FC = () => {
         <p className="text-[11px] uppercase tracking-[0.25em] text-blue-300/70 font-semibold mb-4">
           Our Mission
         </p>
-        <p className="text-base sm:text-lg font-medium text-slate-300 leading-relaxed mb-2">
+        <p className="text-base sm:text-lg font-medium text-slate-300 leading-relaxed mb-4 text-center">
           The leading unrecorded podcast on cinema.
         </p>
-        <p className="text-base sm:text-lg font-normal text-slate-300 leading-relaxed">
+        <p className="text-base sm:text-lg font-light text-slate-300 leading-relaxed text-left">
           We watch movies from the criterion channel, we discuss them, we give them a score out of 9.
           Our opinions are entirely our own and do not represent the larger film industry, but perhaps
           they should be listening.

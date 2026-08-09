@@ -4,14 +4,12 @@ on:
   # Runs on manual trigger
   workflow_dispatch:
   
-  # Deploy when specific files are changed
+  # Deploy on every push to main. This deliberately has no `paths` filter:
+  # source-only commits (components, CSS) are just as deployable as data
+  # changes, and filtering them out silently left production a commit behind.
   push:
     branches:
       - main
-    paths:
-      - 'src/assets/club.json'
-      - 'src/assets/films.json'
-      - 'public/images/**'
 
 # Fix for permission issue - changed to write
 permissions:
