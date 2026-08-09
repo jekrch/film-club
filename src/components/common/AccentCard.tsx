@@ -51,6 +51,13 @@ interface AccentCardProps {
    */
   watermarkSrc?: string;
   /**
+   * Background art rendered in the card's decoration layer — spanning the whole
+   * card and clipped to its corners, rather than sitting inside the padding box
+   * the way a child would. The layer is inert, so anything interactive in here
+   * has to opt back in with `pointer-events-auto` (see FilmFrameWash).
+   */
+  decoration?: React.ReactNode;
+  /**
    * The accent rail down the left edge. Disable for repeating grid items — a
    * wall of rails reads as noise rather than emphasis.
    */
@@ -79,6 +86,7 @@ const AccentCard: React.FC<AccentCardProps> = ({
   children,
   accent = 'blue',
   watermarkSrc,
+  decoration,
   rail = true,
   surface = 'card',
   className,
@@ -92,14 +100,16 @@ const AccentCard: React.FC<AccentCardProps> = ({
       className,
     )}
   >
-    {/* Decoration layer: clips the watermark and squares-off the rail against
-        the card's rounded corners, without clipping the card's own children.
-        `rounded-[inherit]` tracks any radius a caller overrides. */}
-    {(watermarkSrc || rail) && (
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
-      >
+    {/* Decoration layer: clips the watermark, the `decoration` slot, and the
+        rail against the card's rounded corners, without clipping the card's own
+        children. `rounded-[inherit]` tracks any radius a caller overrides.
+
+        Not `aria-hidden`: the decoration slot can hold real content (a credit
+        link naming the art). Everything else in here is already ignored — the
+        watermark is `alt=""` and the rail is an empty span. */}
+    {(watermarkSrc || decoration || rail) && (
+      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
+        {decoration}
         {watermarkSrc && (
           <img
             src={watermarkSrc}

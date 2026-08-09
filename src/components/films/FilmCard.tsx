@@ -122,7 +122,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     const showUpNext = !watchDateFormatted && selectorName;
 
     // A "Hollywood Popcorn Pod" outing rather than a club selection: the poster
-    // gets the cheapened treatment and a sash across it.
+    // gets the cheapened treatment and a sash folded over its corner.
     const isPopcornPod = !!film.popcornPod;
 
     return (
@@ -237,8 +237,9 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             />
                         )}
 
-                        {/* Popcorn Pod sash — struck across the middle of the poster,
-                            clear of the year/selector/date badges at the edges. */}
+                        {/* Popcorn Pod sash — folded around the poster's top-left
+                            corner, clear of the year/selector/date badges at the
+                            other edges. */}
                         {isPopcornPod && <PopcornPodStamp />}
 
                         {/* Gradient overlay at the bottom of the poster - enhanced for text readability */}

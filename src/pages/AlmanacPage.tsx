@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
 import { Film, filmData } from '../types/film';
 import { TeamMember, teamMembers as teamMembersData } from '../types/team';
-import { parseWatchDate as parseWatchDateUtil } from '../utils/filmUtils'; // Renamed to avoid conflict
+import { parseWatchDate as parseWatchDateUtil, countValidRatings } from '../utils/filmUtils'; // Renamed to avoid conflict
+import { calculateClubAverage } from '../utils/ratingUtils';
 
 import { useAlmanacCharts, ChartCategory } from '../hooks/useAlmanacCharts';
 import { useMemberStatistics } from '../hooks/useMemberStatistics';
@@ -22,6 +23,8 @@ import PageLayout from '../components/layout/PageLayout';
 import SectionHeader from '../components/common/SectionHeader';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
+import HeroBanner from '../components/common/HeroBanner';
+import FilmFrameWash from '../components/common/FilmFrameWash';
 
 import { useUnanimousScores } from '../hooks/useUnanimousScores';
 import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
@@ -118,6 +121,19 @@ const AlmanacPage: React.FC = () => {
         setTotalRuntimeString(formatTotalMinutes(totalMinutes));
     }, []); // Runs once on mount as filmData is static
 
+    // The club's highest-scoring films, used as the collage behind the founding
+    // banner. Requires 2+ scores so a single outlier rating can't top the list.
+    const topRatedFilms = useMemo(() => (
+        filmData
+            .map(film => ({ film, avg: calculateClubAverage(film.movieClubInfo?.clubRatings) }))
+            .filter((entry): entry is { film: Film; avg: number } => (
+                entry.avg !== null && countValidRatings(entry.film.movieClubInfo?.clubRatings) >= 2
+            ))
+            .sort((a, b) => b.avg - a.avg)
+            .slice(0, 12)
+            .map(({ film }) => film)
+    ), []);
+
     const handleCategorySelected = useCallback((category: ChartCategory) => {
         setSelectedCategory(category);
     }, [setSelectedCategory]);
@@ -141,12 +157,19 @@ const AlmanacPage: React.FC = () => {
             <SectionHeader title="Almanac" className="text-center" />
 
             {foundingDate && daysActive !== null && (
-                <div className="text-center mb-6 mt-3 text-slate-400 border-b border-slate-700/60 pb-3">
-                    <div className="text-sm sm:text-base pb-4">
-                        Founded on <span className="font-semibold text-slate-300">{foundingDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>.
-                        <div className="text-xs mt-1">Active <span className="text-slate-200">{daysActive.toLocaleString()}</span> days</div>
-                    </div>
-                </div>
+                // Founding banner, given the profile page's hero treatment: a
+                // collage of the club's best-scored films washed behind the date.
+                <HeroBanner films={topRatedFilms} className="mb-4 sm:mb-6">
+                    <p className="text-[11px] uppercase tracking-[0.25em] text-blue-300/70 font-semibold mb-4">
+                        Founded
+                    </p>
+                    <p className="text-xl sm:text-2xl font-light text-slate-100">
+                        {foundingDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    </p>
+                    <p className="mt-3 text-sm text-slate-400">
+                        Active <span className="font-mono text-slate-200">{daysActive.toLocaleString()}</span> days
+                    </p>
+                </HeroBanner>
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-4">
@@ -226,8 +249,16 @@ const AlmanacPage: React.FC = () => {
                 {frequentPersons.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
                         {frequentPersons.map((person) => (
-                            // No rail: one card per artist, repeating in a grid
-                            <AccentCard key={person.name} rail={false} className="p-4">
+                            // No rail: one card per artist, repeating in a grid.
+                            // The wash is drawn from the artist's own films.
+                            <AccentCard
+                                key={person.name}
+                                rail={false}
+                                className="p-4"
+                                decoration={
+                                    <FilmFrameWash films={(person.filmography || []).map(credit => credit.film)} />
+                                }
+                            >
                                 <div className="flex justify-between items-center mb-3 border-b border-slate-700/60 pb-2">
                                     <h4
                                         className="text-lg font-semibold text-blue-400 hover:text-blue-300 cursor-pointer truncate"

@@ -12,10 +12,9 @@ import ProfileStatsSection from '../components/profile/ProfileStatsSection';
 import ControversialFilmItem from '../components/profile/ControversialFilmItem';
 import PageLayout from '../components/layout/PageLayout';
 import ProfileBlurbItem from '../components/profile/ProfileBlurbItem';
-import BaseCard from '../components/common/BaseCard';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
-import ProfileHeroBackground from '../components/profile/ProfileHeroBackground';
+import HeroBanner from '../components/common/HeroBanner';
 import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
 
 import { useProfileData } from '../hooks/useProfileData'; 
@@ -72,31 +71,33 @@ const ProfilePage: React.FC = () => {
                 Back
             </Button>
 
-            <BaseCard className="overflow-hidden mb-8 relative">
-                {/* Film poster collage background */}
-                <ProfileHeroBackground films={topRatedFilms} />
-                
-                <div className="relative z-30 py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16">
-                    <CircularImage
-                        src={member.image}
-                        alt={member.name}
-                        size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48"
-                        className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
-                    />
-                    <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 mt-3 sm:mt-2">
-                        <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>
-                        <p className="text-lg text-blue-400/90 mb-1">{member.title}</p>
-                        <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
-                            <ReactMarkdown>{member.bio}</ReactMarkdown>
-                         </div>
-                          {member.url && (
-                           <div className="mt-4">
-                           <a className="!text-blue-400" href={member.url}>{member.url.replace('https://', '')}</a>
-                           </div>
-                         )}
+            {/* Content is capped at the un-bled width and centered, so when the
+                card bleeds wider on large screens the extra width is banner art
+                only — the avatar and bio stay where they were. */}
+            <HeroBanner
+                films={topRatedFilms}
+                className="mb-8"
+                contentClassName="mx-auto w-full max-w-[74rem] py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16"
+            >
+                <CircularImage
+                    src={member.image}
+                    alt={member.name}
+                    size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48"
+                    className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
+                />
+                <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 mt-3 sm:mt-2">
+                    <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>
+                    <p className="text-lg text-blue-400/90 mb-1">{member.title}</p>
+                    <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
+                        <ReactMarkdown>{member.bio}</ReactMarkdown>
                     </div>
+                    {member.url && (
+                        <div className="mt-4">
+                            <a className="!text-blue-400" href={member.url}>{member.url.replace('https://', '')}</a>
+                        </div>
+                    )}
                 </div>
-            </BaseCard>
+            </HeroBanner>
 
             {member.interview && member.interview.length > 0 && (
                 <AccentCard accent="blue" className="p-6 md:p-10 mb-8">

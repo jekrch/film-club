@@ -57,6 +57,23 @@ a:hover {
   color: var(--color-blue-400);
 }
 
+/* Credit line under a hero collage frame: quiet enough to read as a caption on
+   the artwork rather than as a link, brightening on hover.
+
+   A rule rather than utility classes because the unlayered `a` above beats
+   every layered Tailwind utility, so `text-slate-*` on the link would lose to
+   it and the credits would come out blue. The shadow keeps them legible where
+   a frame runs bright behind them. */
+a.hero-credit {
+  font-weight: 400;
+  color: var(--color-slate-500);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.55);
+}
+
+a.hero-credit:hover {
+  color: var(--color-slate-200);
+}
+
 body {
   margin: 0;
   display: flex;
@@ -111,6 +128,25 @@ h1 {
    0% { opacity: 0; }
     100% { opacity: 1; }
    }
+
+  /* Hero banners widen past the page container on very wide screens, so they
+     read as banners rather than as one more card in the column. Below 1536px
+     they sit flush with the rest of the page.
+
+     Assumes the element is a direct child of PageLayout's
+     `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8` container. The pulls are fixed
+     rather than viewport-derived on purpose: `100vw` includes the scrollbar
+     and would overflow, while fixed steps are chosen to leave a real gutter at
+     each breakpoint (64px at 1536, 128px at 1920, 224px at 2560). */
+  @media (min-width: 1536px) {
+    .banner-bleed { margin-inline: -6rem; }
+  }
+  @media (min-width: 1920px) {
+    .banner-bleed { margin-inline: -14rem; }
+  }
+  @media (min-width: 2560px) {
+    .banner-bleed { margin-inline: -28rem; }
+  }
 }
 
 /* Thin, dark-themed scrollbar matching the site's slate palette.
