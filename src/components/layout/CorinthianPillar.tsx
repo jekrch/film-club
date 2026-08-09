@@ -1,9 +1,10 @@
-const CorinthianPillar: React.FC<{ 
-  side: 'left' | 'right'; 
+const CorinthianPillar: React.FC<{
+  side: 'left' | 'right';
   className?: string;
   flipped?: boolean;
   width?: number; // pixel width for the pillar
-}> = ({ side, className = '', flipped = false, width = 40 }) => {
+  opacity?: number; // 0-1; lets callers compensate for the backdrop behind the pillar
+}> = ({ side, className = '', flipped = false, width = 40, opacity = 0.15 }) => {
   const positionClass = side === 'left' 
     ? 'left-0 sm:left-2 lg:left-8' 
     : '-right-2 sm:right-0 lg:right-8';
@@ -29,7 +30,8 @@ const CorinthianPillar: React.FC<{
         viewBox={`0 0 ${width} ${totalHeight}`}
         width={width}
         height={totalHeight}
-        className={`absolute top-2 ${positionClass} opacity-15 transition-opacity duration-500 ${className}`}
+        className={`absolute top-2 ${positionClass} transition-opacity duration-500 ${className}`}
+        style={{ opacity }}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
@@ -58,8 +60,8 @@ const CorinthianPillar: React.FC<{
   // Flipped: capital at top (fixed size), shaft stretches down
   return (
     <div 
-      className={`absolute top-0 ${positionClass} h-full flex flex-col opacity-15 transition-opacity duration-500 ${className}`}
-      style={{ width: `${width}px` }}
+      className={`absolute top-0 ${positionClass} h-full flex flex-col transition-opacity duration-500 ${className}`}
+      style={{ width: `${width}px`, opacity }}
       aria-hidden="true"
     >
       {/* Capital - fixed height, crisp rendering */}

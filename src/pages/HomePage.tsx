@@ -11,6 +11,7 @@ import { getFilmBackdrop, parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
 import PageLayout from '../components/layout/PageLayout';
 import CorinthianPillar from '../components/layout/CorinthianPillar';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 
 // --- Helper function to format total minutes ---
@@ -34,6 +35,27 @@ const inactiveStripeGradients = [
 ];
 
 
+// Fades the trailing pillars as they run down the page: full strength through the
+// hero (where they're hidden behind its background anyway), dimmer below it, and
+// only fading out over the last stretch so they carry past the bottom section.
+const PILLAR_TRAIL_MASK =
+    'linear-gradient(to bottom, rgba(0,0,0,1) 0px, rgba(0,0,0,1) 280px, rgba(0,0,0,0.6) 440px, rgba(0,0,0,0.5) 90%, rgba(0,0,0,0.35) 97%, rgba(0,0,0,0) 100%)';
+
+// The hero fades from slate-700 on the left to gray-900 on the right, so an identical
+// pillar reads brighter on the dark side. The right pillar is dialled back to match.
+const PILLAR_OPACITY_LEFT = 0.15;
+const PILLAR_OPACITY_RIGHT = 0.1;
+
+// The pillars scale up with the viewport. The SVG geometry is derived from a pixel
+// width, so this has to be a JS value rather than responsive classes - and the hero
+// and trailing pillars must share it to stay aligned across the hero's bottom edge.
+const usePillarWidth = (): number => {
+    const isXl = useMediaQuery('(min-width: 1280px)');
+    const isLg = useMediaQuery('(min-width: 1024px)');
+    return isXl ? 130 : isLg ? 100 : 75;
+};
+
+
 // --- HomePage Component ---
 const HomePage = () => {
   const [topClubRatedFilms, setTopClubRatedFilms] = useState<Film[]>([]);
@@ -44,6 +66,7 @@ const HomePage = () => {
   const [currentSelectorName, setCurrentSelectorName] = useState<string | null>(null);
   const [activeCycleMembersList, setActiveCycleMembersList] = useState<TeamMember[]>([]);
   const [upNextFilm, setUpNextFilm] = useState<Film | undefined>(undefined);
+  const pillarWidth = usePillarWidth();
 
   // --- Data Fetching and Processing Effect ---
   useEffect(() => {
@@ -150,8 +173,24 @@ const HomePage = () => {
   // --- Render Logic ---
   return (
     <PageLayout className="">
+     <div className="relative mt-2">
+
+      {/* Background pillars - aligned with the hero pillars, continuing down the page.
+          Sits behind the page content and is hidden behind the hero's own background. */}
+      <div
+        className="absolute inset-x-0 top-0 -bottom-8 -z-10 pointer-events-none"
+        style={{
+          maskImage: PILLAR_TRAIL_MASK,
+          WebkitMaskImage: PILLAR_TRAIL_MASK,
+        }}
+        aria-hidden="true"
+      >
+        <CorinthianPillar side="left" flipped width={pillarWidth} opacity={PILLAR_OPACITY_LEFT} />
+        <CorinthianPillar side="right" flipped width={pillarWidth} opacity={PILLAR_OPACITY_RIGHT} />
+      </div>
+
       {/* Hero section */}
-      <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg mb-8 mt-2 text-center px-4 sm:px-6 lg:px-10">
+      <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg mb-8 text-center px-4 sm:px-6 lg:px-10">
 
         {/* Background poster image */}
         <SelectionCommitteeBackground
@@ -161,8 +200,8 @@ const HomePage = () => {
         />
 
         {/* Corinthian Pillars */}
-        <CorinthianPillar side="left"  flipped width={75}/>
-        <CorinthianPillar side="right" flipped width={75} />
+        <CorinthianPillar side="left"  flipped width={pillarWidth} opacity={PILLAR_OPACITY_LEFT} />
+        <CorinthianPillar side="right" flipped width={pillarWidth} opacity={PILLAR_OPACITY_RIGHT} />
 
         {/* --- Display Cycle Order with Profile Pics and Responsive Arrows --- */}
         {activeCycleMembersList.length > 0 && (
@@ -260,7 +299,8 @@ const HomePage = () => {
       {topClubRatedFilms.length > 0 && <FilmList films={topClubRatedFilms} title="Top Club Rated Films" />}
       {/* End Film Lists Section */}
 
-    </PageLayout> 
+     </div>
+    </PageLayout>
   );
 };
 
