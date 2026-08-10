@@ -47,7 +47,7 @@ const AboutPage: React.FC = () => {
         </p>
         <p className="text-base sm:text-lg font-light text-slate-300 leading-relaxed text-left">
           We watch movies from the criterion channel, we discuss them, we give them a score out of 9.
-          Our opinions are entirely our own and do not represent the larger film industry, but perhaps
+          Our opinions are entirely our own and do not represent the broader film industry, but perhaps
           they should be listening.
         </p>
       </HeroBanner>
