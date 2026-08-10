@@ -10,6 +10,6 @@ describe('AboutPage', () => {
             </MemoryRouter>
         );
         // Heading text appears (SectionHeader + visible copy both use this string).
-        expect(screen.getAllByText(/about our film club/i).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/Committee/i).length).toBeGreaterThan(0);
     });
 });
