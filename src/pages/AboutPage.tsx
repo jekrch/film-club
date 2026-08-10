@@ -5,16 +5,16 @@ import { teamMembers } from '../types/team';
 import { Film, filmData } from '../types/film';
 import { parseWatchDate } from '../utils/filmUtils';
 import PageLayout from '../components/layout/PageLayout';
-import SectionHeader from '../components/common/SectionHeader';
+//import SectionHeader from '../components/common/SectionHeader';
 import AccentCard from '../components/common/AccentCard';
-import StatCard from '../components/almanac/StatCard';
+//import StatCard from '../components/almanac/StatCard';
 import HeroBanner from '../components/common/HeroBanner';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 const AboutPage: React.FC = () => {
 
-  const { heroFilms, watchedCount, foundingDate, daysActive } = useMemo(() => {
+  const { heroFilms, } = useMemo(() => {
     const watched = filmData
       .map(film => ({ film, date: parseWatchDate(film.movieClubInfo?.watchDate) }))
       .filter((entry): entry is { film: Film; date: Date } => entry.date !== null)
@@ -34,7 +34,7 @@ const AboutPage: React.FC = () => {
 
   return (
     <PageLayout>
-      <SectionHeader title="About Our Film Club" className="text-center" />
+      {/* <SectionHeader title="About Our Film Club" className="text-center" /> */}
 
       {/* Mission — the profile page's hero treatment: a still collage washed
           behind the club's own words. */}
@@ -52,7 +52,7 @@ const AboutPage: React.FC = () => {
         </p>
       </HeroBanner>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10">
         <StatCard
           label="Members"
           value={teamMembers.length}
@@ -70,11 +70,11 @@ const AboutPage: React.FC = () => {
             : '—'}
           description={daysActive !== null ? `Active ${daysActive.toLocaleString()} days.` : undefined}
         />
-      </div>
+      </div> */}
 
       <div className="mb-8 sm:mb-10">
         <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
-          Meet the Club
+          Committee
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {teamMembers.map((member) => (
