@@ -39,9 +39,9 @@ const AboutPage: React.FC = () => {
       {/* Mission — the profile page's hero treatment: a still collage washed
           behind the club's own words. */}
       <HeroBanner films={heroFilms} className="mb-4 sm:mb-6">
-        <p className="text-[11px] uppercase tracking-[0.25em] text-blue-300/70 font-semibold mb-4">
+        {/* <p className="text-[11px] uppercase tracking-[0.25em] text-blue-300/70 font-semibold mb-4">
           Our Mission
-        </p>
+        </p> */}
         <p className="text-base sm:text-lg font-medium text-slate-300 leading-relaxed mb-4 text-center">
           The leading unrecorded podcast on cinema.
         </p>
