@@ -49,8 +49,8 @@ const AllFilmsCard: React.FC<AllFilmsCardProps> = ({ cardSize }) => {
             ref={cardRef}
             className={`
                 transition-opacity duration-500 ease-out
-                ${isVisible ? 'opacity-100' : 'opacity-30'}
-                relative group rounded-md overflow-hidden
+                ${isVisible ? 'opacity-100' : 'opacity-60'}
+                relative group rounded-lg overflow-hidden
             `}
         >
             <Link
@@ -59,25 +59,26 @@ const AllFilmsCard: React.FC<AllFilmsCardProps> = ({ cardSize }) => {
                 title="View all films"
                 className="block h-full"
             >
-                <div className={`
-                    bg-slate-700/50 overflow-hidden h-full flex flex-col
-                    border border-slate-700 rounded-md
-                    shadow-xl hover:shadow-2xl shadow-black/50
-                    transition-all duration-300 ease-in-out
-                    ${isPosterOnly ? 'border-slate-800' : ''}
-                `}>
+                {/* Shell kept in step with FilmCard: flat surface, hairline border
+                    that warms on hover, no drop shadow. */}
+                <div className="
+                    overflow-hidden h-full flex flex-col
+                    border border-slate-700/60 hover:border-blue-400/30 rounded-lg
+                    shadow-sm shadow-black/30
+                    transition-colors duration-300
+                ">
                     {/* Icon area matching poster aspect ratio */}
-                    <div 
-                        className={`relative w-full overflow-hidden ${isPosterOnly ? 'rounded-md' : 'rounded-t-md'}`} 
+                    <div
+                        className="relative w-full overflow-hidden"
                         style={{ paddingBottom: '140%' }} // Match FilmCard poster aspect ratio
                     >
-                        <div className="absolute inset-0 bg-slate-800/50 hover:bg-slate-700/50 transition-colors duration-300 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-slate-800/40 group-hover:bg-slate-800/60 transition-colors duration-300 flex items-center justify-center">
                             {/* Arrow icon */}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className={`
                                     transition-all duration-300 ease-in-out
-                                    text-slate-400 group-hover:text-blue-400
+                                    text-slate-500 group-hover:text-slate-300
                                     group-hover:scale-110
                                     ${isPosterOnly ? 'h-16 w-16' : isCompact ? 'h-12 w-12' : 'h-16 w-16'}
                                 `}
@@ -96,10 +97,10 @@ const AllFilmsCard: React.FC<AllFilmsCardProps> = ({ cardSize }) => {
                         <div className={`
                             flex flex-col flex-grow items-center justify-center text-center
                             ${isCompact ? 'p-2 pt-3 pb-3' : 'p-4 pt-5 pb-5'}
-                            bg-gradient-to-b from-slate-800 to-[#27364f] rounded-b-md
+                            bg-slate-800/40 border-t border-white/[0.06]
                         `}>
                             <h3 className={`
-                                font-normal text-slate-200 group-hover:text-blue-400
+                                font-normal text-slate-300 group-hover:text-slate-100
                                 transition-colors duration-200
                                 ${isCompact ? 'text-sm leading-tight' : 'text-base'}
                             `}>

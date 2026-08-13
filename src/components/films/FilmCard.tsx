@@ -131,8 +131,8 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
             ref={cardRef}
             className={`
                 transition-opacity duration-500 ease-out
-                ${isVisible ? 'opacity-100' : 'opacity-30'}
-                relative group rounded-md overflow-hidden  /* group allows hover states for children */
+                ${isVisible ? 'opacity-100' : 'opacity-60'}
+                relative group rounded-lg overflow-hidden  /* group allows hover states for children */
             `}
         >
             {/* --- UP NEXT BANNER ---
@@ -199,19 +199,22 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
 
             {/* --- Link wraps the actual card content --- */}
             <Link to={`/films/${film.imdbID}`} className="block h-full">
-                {/* Inner container: Defines card background, border, shadow, layout, and clips content */}
+                {/* Inner container: Defines card surface, border, layout, and clips content.
+                    Same shell as BaseCard/AccentCard's `card` surface — no fill, a
+                    hairline border that warms to the accent on hover, and only the
+                    faintest shadow. The card is defined by its edge, not by a panel
+                    of color or a drop shadow. */}
                 <div className={`
-                    bg-[#0a0a0a] overflow-hidden h-full flex flex-col
-                    border border-slate-700 rounded-md
-                    shadow-xl hover:shadow-2xl shadow-black/50
-                    transition-all duration-300 ease-in-out
-                    ${isPosterOnly ? 'border-slate-800' : ''}
+                    overflow-hidden h-full flex flex-col
+                    border border-slate-700/60 hover:border-blue-400/30 rounded-lg
+                    shadow-sm shadow-black/30
+                    transition-colors duration-300
                     ${isPopcornPod ? '!border-amber-400/40' : ''}
                 `}>
                     {/* Poster Container: Fixed aspect ratio, clips image. The slate
                         placeholder background means an in-flight image fades from a
                         neutral tone instead of flashing black on iOS. */}
-                    <div className={`relative w-full overflow-hidden bg-slate-800 ${isPosterOnly ? 'rounded-md' : 'rounded-t-md'}`} style={{ paddingBottom: '140%' /* Shorter aspect ratio */ }}>
+                    <div className="relative w-full overflow-hidden bg-slate-800" style={{ paddingBottom: '140%' /* Shorter aspect ratio */ }}>
                         {/* Poster Image: Covers container, aligned top.
                             No transform-gpu: forcing a GPU layer on every poster
                             thrashes iOS Safari's limited compositing-tile budget
@@ -238,73 +241,59 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                         )}
 
                         {/* Popcorn Pod sash — folded around the poster's top-left
-                            corner, clear of the year/selector/date badges at the
-                            other edges. */}
+                            corner. Along with the Up Next ribbon it is the only thing
+                            allowed to sit on the artwork: the year, selector and watch
+                            date read as text in the meta strip below, the way the
+                            detail page sets them, rather than as blurred badges over a
+                            scrim laid down purely to make them legible. That also
+                            keeps three backdrop-blur layers per card out of iOS's
+                            compositing budget during scroll. */}
                         {isPopcornPod && <PopcornPodStamp />}
-
-                        {/* Gradient overlay at the bottom of the poster - enhanced for text readability */}
-                        <div className={`absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none ${!isPosterOnly ? 'bg-gradient-to-t from-black/70 via-black/30 to-transparent' : ''}`}></div>
-                        
-                        {/* Year badge positioned on the poster */}
-                        {!isPosterOnly && film.year && (
-                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white/90 text-[11px] font-medium px-1.5 py-0.5 rounded z-20">
-                                {film.year}
-                            </div>
-                        )}
-
-                        {/* Selector and Date overlay at bottom of poster */}
-                        {!isPosterOnly && (selectorName || watchDateFormatted) && (
-                            <div className={`
-                                absolute bottom-0 left-0 right-0 z-20
-                                flex items-end justify-between
-                                ${isCompact ? 'px-1.5 pb-1.5' : 'px-2 pb-2'}
-                            `}>
-                                {/* Selector badge - left side */}
-                                {selectorName && (
-                                    <div className={`
-                                        flex items-center gap-1.5
-                                        bg-black/60 backdrop-blur-sm
-                                        text-white/95 font-semibold uppercase tracking-wider
-                                        rounded shadow-lg
-                                        ${isCompact ? 'text-[8px] px-1.5 py-0.5 gap-1' : 'text-[10px] px-2 py-1'}
-                                    `}>
-                                        <span className={`
-                                            rounded-full flex-shrink-0 bg-emerald-400
-                                            ${isCompact ? 'w-1 h-1' : 'w-1.5 h-1.5'}
-                                        `}></span>
-                                        <span>{selectorName}</span>
-                                    </div>
-                                )}
-                                
-                                {/* Watch date - right side */}
-                                {watchDateFormatted && (
-                                    <div className={`
-                                        bg-black/60 backdrop-blur-sm
-                                        text-white/80 font-monox tracking-wide rounded shadow-lg
-                                        ${isCompact ? 'text-[9px] px-1.5 py-0.5' : 'text-[11px] px-2 py-1'}
-                                        ${!selectorName ? 'ml-auto' : ''}
-                                    `}>
-                                        {watchDateFormatted}
-                                    </div>
-                                )}
-                            </div>
-                        )}
                     </div>
 
                     {/* Card Content Section: Below poster, contains text info - NOT shown in poster-only mode */}
                     {!isPosterOnly && (
-                        <div className={`flex flex-col flex-grow ${isCompact ? 'p-1.5' : 'p-2'} bg-gradient-to-b from-slate-800 to-[#27364f] to-slate-700x rounded-b-md`}>
-                            {/* Film Title */}
+                        <div className={`flex flex-col flex-grow ${isCompact ? 'p-1.5' : 'p-2'} bg-slate-800/40 border-t border-white/[0.06]`}>
+                            {/* Film Title. Hover brightens rather than turning blue:
+                                saturated blue is reserved for data (club average,
+                                genre chips), not for hover feedback — the card's
+                                border carries the accent instead. */}
                             <h3 className={`
-                                font-normal text-slate-200 truncate leading-tight tracking-wide
-                                group-hover:text-blue-400 transition-colors duration-200
-                                ${isCompact ? 'text-xs mb-1' : 'text-sm mb-1.5'}
+                                font-normal text-slate-300 truncate leading-tight tracking-wide
+                                group-hover:text-slate-100 transition-colors duration-200
+                                ${isCompact ? 'text-xs' : 'text-sm'}
                             `}>
                                 {film.title}
+                                {film.year && (
+                                    <span className="ml-1.5 text-slate-500">{film.year}</span>
+                                )}
                             </h3>
 
+                            {/* Who picked it, and when the club watched it — one quiet
+                                typographic line in the same micro-label idiom the
+                                detail page uses for its field headings. */}
+                            {(selectorName || watchDateFormatted) && (
+                                <div className={`
+                                    mt-1 flex items-center gap-1.5 uppercase tracking-widest text-slate-500
+                                    ${isCompact ? 'text-[9px]' : 'text-[10px]'}
+                                `}>
+                                    {selectorName && (
+                                        <>
+                                            <span className="w-1 h-1 rounded-full flex-shrink-0 bg-emerald-400/80"></span>
+                                            <span className="truncate">{selectorName}</span>
+                                        </>
+                                    )}
+                                    {selectorName && watchDateFormatted && (
+                                        <span className="text-slate-700" aria-hidden="true">/</span>
+                                    )}
+                                    {watchDateFormatted && (
+                                        <span className="font-mono tracking-normal">{watchDateFormatted}</span>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Conditional Content Area: Ratings OR Film Info */}
-                            <div className={`mt-auto ${isCompact ? '' : ''}`}>
+                            <div className={`mt-auto ${isCompact ? 'pt-1.5' : 'pt-2'}`}>
                                 {showUpNext ? (
                                     // --- RENDER IF "UP NEXT" ---
                                     <div className={`grid grid-cols-2 gap-x-2 gap-y-0.5 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
@@ -344,13 +333,13 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                                                 : `${rating.user}: ${rating.score}/9`}
                                                             className={`
                                                                 flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-10
-                                                                text-center bg-white/5 rounded-sm shadow-inner shadow-black/20
-                                                                transition-all duration-150 ease-out hover:bg-slate-600 hover:shadow-md
+                                                                text-center bg-white/[0.04] rounded-md ring-1 ring-inset ring-white/[0.06]
+                                                                transition-colors duration-150 ease-out hover:bg-white/[0.08]
                                                                 ${isCompact ? 'py-0.5' : 'py-1'}
                                                             `}
                                                         >
                                                             {/* Member Initials */}
-                                                            <div className={`uppercase font-mono text-slate-400 leading-none tracking-wide whitespace-nowrap ${isCompact ? 'text-[8px]' : 'text-[9px]'}`}>
+                                                            <div className={`uppercase font-mono text-slate-400 leading-none tracking-widest whitespace-nowrap ${isCompact ? 'text-[8px]' : 'text-[9px]'}`}>
                                                                 {rating.user.substring(0, 2)}
                                                             </div>
                                                             {/* Member Rating */}
