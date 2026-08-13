@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { getPersonInfoByName, getPersonProfileByName, tmdbPersonUrl } from '../../utils/personUtils';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useModalPresence } from '../../hooks/useModalPresence';
+import { useFilmFrames } from '../../hooks/useFilmFrames';
+import { FilmFrameImage } from './filmFrames';
 import Button from './Button';
 
 // Formats a TMDb date string (YYYY-MM-DD) for display, e.g. "May 14, 1944".
@@ -66,6 +68,14 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
     return personInfo?.profileUrl ?? null;
   }, [activeFilmography, personNameLower, personInfo]);
 
+  // A still from one of their films for the background wash — the headshot is
+  // already shown sharp in the bio, so repeating it there added nothing.
+  const creditFilms = useMemo(
+    () => (activeFilmography ?? []).map(({ film }) => film),
+    [activeFilmography]
+  );
+  const [backdropFrame] = useFilmFrames(creditFilms, 1);
+
   if (!isRendered || !activePersonName || !activeFilmography) return null;
 
   const bornDate = formatPersonDate(personInfo?.birthday);
@@ -90,24 +100,33 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName
       }`}
       onClick={onClose} // Allow closing by clicking overlay
     >
-      {/* Dialog Content: Modal panel. A very faint full-height headshot sits in
-          the background, while a sharper copy floats at the top-left of the bio
-          so the text wraps around it. */}
+      {/* Dialog Content: Modal panel. A very faint still from one of their
+          films sits in the background (their headshot when none of the credits
+          have imagery), while the sharp headshot floats at the top-left of the
+          bio so the text wraps around it. */}
       <div
         className={`relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden ${
           isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
         }`}
         onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
       >
-        {profileUrl && (
+        {(backdropFrame || profileUrl) && (
           <>
-            <img
-              src={profileUrl}
-              alt=""
-              aria-hidden="true"
-              className="absolute right-0 top-0 h-full w-2/3 object-cover object-top pointer-events-none opacity-10"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
+            {backdropFrame ? (
+              // Stills are landscape, so they get the full panel width rather
+              // than the right-hand column a portrait headshot needs.
+              <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.13]">
+                <FilmFrameImage frame={backdropFrame} />
+              </div>
+            ) : (
+              <img
+                src={profileUrl!}
+                alt=""
+                aria-hidden="true"
+                className="absolute right-0 top-0 h-full w-2/3 object-cover object-top pointer-events-none opacity-10"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+            )}
             {/* Gradient fades the photo out aggressively toward the left, keeping text legible */}
             <div className="absolute inset-0 bg-gradient-to-r from-slate-800 from-40% via-slate-800/95 to-slate-800/10 pointer-events-none" />
           </>
