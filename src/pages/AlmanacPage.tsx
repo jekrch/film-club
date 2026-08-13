@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -20,7 +20,6 @@ import IntervalDetailDisplay from '../components/almanac/IntervalDetailDisplay';
 import MemberStatCard from '../components/almanac/MemberStatCard';
 import CreditsModal from '../components/common/CreditsModal';
 import PageLayout from '../components/layout/PageLayout';
-import SectionHeader from '../components/common/SectionHeader';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
 import HeroBanner from '../components/common/HeroBanner';
@@ -81,34 +80,28 @@ const AlmanacPage: React.FC = () => {
         closeCreditsModal,
     } = useFrequentPersons(filmData);
 
-    // General Stats State
-    const [totalRuntimeString, setTotalRuntimeString] = useState<string>('');
-    const [totalFilmsCount, setTotalFilmsCount] = useState<number>(0);
-    const [watchedFilmsCount, setWatchedFilmsCount] = useState<number>(0);
-    const [foundingDate, setFoundingDate] = useState<Date | null>(null);
-    const [daysActive, setDaysActive] = useState<number | null>(null);
-
-    useEffect(() => {
-        const films = filmData;
-        setTotalFilmsCount(films.length);
-
-        const watchedWithDates = films
+    // General stats, derived during render rather than in an effect.
+    //
+    // `filmData` is a static import, so there is nothing here to wait for — and
+    // computing it in a passive effect cost the page its first frame: the
+    // founding banner is gated on `foundingDate`, so the initial paint had no
+    // banner at all and the stat cards sat where it belongs. A frame later the
+    // state landed, the banner mounted, and everything below it dropped by the
+    // banner's full height. Deriving it during render means the first painted
+    // frame is already the finished page, at its final height.
+    const {
+        totalRuntimeString,
+        totalFilmsCount,
+        watchedFilmsCount,
+        foundingDate,
+        daysActive,
+    } = useMemo(() => {
+        const watchedWithDates = filmData
             .map(f => ({ ...f, pDate: parseWatchDateUtil(f.movieClubInfo?.watchDate) }))
             .filter(f => f.pDate) as (Film & { pDate: Date })[];
         // Sort ascending by date to find the first (founding) date
         const sortedWatchedForFounding = [...watchedWithDates].sort((a, b) => a.pDate.getTime() - b.pDate.getTime());
-
-        setWatchedFilmsCount(watchedWithDates.length);
-
-        if (sortedWatchedForFounding.length > 0) {
-            const firstDate = sortedWatchedForFounding[0].pDate;
-            setFoundingDate(firstDate);
-            const today = new Date();
-            setDaysActive(daysBetween(firstDate, today));
-        } else {
-            setFoundingDate(null);
-            setDaysActive(null);
-        }
+        const firstDate = sortedWatchedForFounding[0]?.pDate ?? null;
 
         const totalMinutes = watchedWithDates.reduce((sum, film) => {
             const runtimeStr = film.runtime;
@@ -118,8 +111,15 @@ const AlmanacPage: React.FC = () => {
             }
             return sum;
         }, 0);
-        setTotalRuntimeString(formatTotalMinutes(totalMinutes));
-    }, []); // Runs once on mount as filmData is static
+
+        return {
+            totalRuntimeString: formatTotalMinutes(totalMinutes),
+            totalFilmsCount: filmData.length,
+            watchedFilmsCount: watchedWithDates.length,
+            foundingDate: firstDate,
+            daysActive: firstDate ? daysBetween(firstDate, new Date()) : null,
+        };
+    }, []); // filmData is static; the only live input is today's date
 
     // The club's highest-scoring films, used as the collage behind the founding
     // banner. Requires 2+ scores so a single outlier rating can't top the list.
@@ -153,9 +153,9 @@ const AlmanacPage: React.FC = () => {
                 personName={creditsModalState.personName}
                 filmography={creditsModalState.filmography}
             />
-
+            {/*
             <SectionHeader title="Almanac" className="text-center" />
-
+            */}
             {foundingDate && daysActive !== null && (
                 // Founding banner, given the profile page's hero treatment: a
                 // collage of the club's best-scored films washed behind the date.
@@ -175,7 +175,7 @@ const AlmanacPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-4">
                 <StatCard
                     label="Total Watch Time"
-                    value={totalRuntimeString || "..."}
+                    value={totalRuntimeString}
                     description={`Across ${watchedFilmsCount} watched films.`}
                 />
                 <StatCard

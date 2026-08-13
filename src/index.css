@@ -213,6 +213,38 @@ h1 {
 }
 
 @layer utilities {
+  /* Route enter transition, applied by PageTransition to the incoming page.
+
+     The opacity is front-loaded (full by 65%) while the lift keeps easing out
+     past it, so the page reads as already there and settling rather than as
+     still fading in — the difference between "sliding content" and a page
+     arriving.
+
+     `backwards` fill, NOT `forwards`, is load-bearing: a filled `transform`
+     stays on the element after the animation ends, and any transform other
+     than `none` makes the element the containing block for its
+     `position: fixed` descendants. The modals (CreditsModal, TrailerModal,
+     ScoreQualifierNote) are `fixed inset-0` and render inside the page, so a
+     forwards fill would pin them to the page box instead of the viewport.
+     Backwards fill applies only before the animation starts, leaving
+     `transform: none` behind — which is exactly where the last keyframe lands,
+     so there's no jump at the end either. */
+  @keyframes page-enter {
+    0%   { opacity: 0; transform: translate3d(0, 14px, 0); }
+    65%  { opacity: 1; }
+    100% { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  .page-enter {
+    animation: page-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-enter {
+      animation: none;
+    }
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }

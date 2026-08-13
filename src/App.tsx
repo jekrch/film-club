@@ -12,6 +12,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 import "./index.css";
 import ScrollToTop from './components/layout/ScrollToTop';
+import PageTransition from './components/layout/PageTransition';
 import ErrorBoundary from './components/common/ErrorBoundary';
 
 function AppContent() {
@@ -36,15 +37,17 @@ function AppContent() {
       <Navbar />
 
       <main className="flex-grow w-full relative z-10">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/films" element={<FilmsPage />} />
-          <Route path="/films/:imdbId" element={<FilmDetailPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/almanac" element={<AlmanacPage />} />
-          <Route path="/profile/:memberName" element={<ProfilePage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/films" element={<FilmsPage />} />
+            <Route path="/films/:imdbId" element={<FilmDetailPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/almanac" element={<AlmanacPage />} />
+            <Route path="/profile/:memberName" element={<ProfilePage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </PageTransition>
       </main>
 
       <Footer />
