@@ -13,6 +13,11 @@ body {
 @layer base {
   html {
     font-family: 'Inter', system-ui, sans-serif;
+    /* Reserve the scrollbar's width even on pages short enough not to need one.
+       Without this, navigating between a long page (the films grid) and a short
+       one (a 404, a sparse profile) adds or removes the scrollbar, and every
+       centered container on the page shifts sideways as it does. */
+    scrollbar-gutter: stable;
   }
 }
 
@@ -47,23 +52,31 @@ body,
   box-sizing: inherit; /* Ensure all elements inherit box-sizing */
 }
 
-a {
-  font-weight: 500;
-  color: var(--color-blue-300);
-  text-decoration: inherit;
-}
+/* Default link color, for links that don't state one of their own.
 
-a:hover {
-  color: var(--color-blue-400);
+   MUST stay inside `@layer base`, for the same reason as the `button` reset
+   below: unlayered CSS outranks every cascade layer, so an unlayered `a` rule
+   silently beats `text-slate-*` on any link and every such link comes out blue
+   no matter what its className says. Inside the layer, a link that names a
+   color gets it, and one that doesn't still gets this. */
+@layer base {
+  a {
+    font-weight: 500;
+    color: var(--color-blue-300);
+    text-decoration: inherit;
+  }
+
+  a:hover {
+    color: var(--color-blue-400);
+  }
 }
 
 /* Credit line under a hero collage frame: quiet enough to read as a caption on
-   the artwork rather than as a link, brightening on hover.
+   the artwork rather than as a link, brightening on hover. The shadow keeps it
+   legible where a frame runs bright behind it.
 
-   A rule rather than utility classes because the unlayered `a` above beats
-   every layered Tailwind utility, so `text-slate-*` on the link would lose to
-   it and the credits would come out blue. The shadow keeps them legible where
-   a frame runs bright behind them. */
+   Kept as a rule (rather than utilities at the call site) because it bundles
+   colour, weight and shadow into one named treatment reused by every frame. */
 a.hero-credit {
   font-weight: 400;
   color: var(--color-slate-500);

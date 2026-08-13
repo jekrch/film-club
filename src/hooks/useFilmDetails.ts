@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useLayoutEffect, useMemo } from 'react';
 import { Film, filmData as allFilmsData } from '../types/film'; // Ensure filmData is imported as allFilmsData or similar
 import { teamMembers } from '../types/team';
 import { getAllFilmCreditsForPerson, parseWatchDate, PersonCredit } from '../utils/filmUtils'; // Assuming this util exists
@@ -60,7 +60,15 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         filmography: null,
     });
 
-    useEffect(() => {
+    // `useLayoutEffect`, not `useEffect`: every lookup below is synchronous work
+    // over an imported JSON array, so there is nothing to wait for. A passive
+    // effect would let the browser paint the `loading` state — a full-height
+    // solid panel with a spinner — for one frame before the real content
+    // replaced it, which is the flash you see on every navigation. Running
+    // before paint means the page's first frame is already the film.
+    //
+    // Scroll is not reset here: ScrollToTop owns that for every route.
+    useLayoutEffect(() => {
         // Reset states on imdbId change
         setFilm(null);
         setFilmsBySameSelector([]);
@@ -69,7 +77,6 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         setLoading(true);
         setError(null);
         setCreditsModalState({ isOpen: false, personName: null, filmography: null });
-        window.scrollTo(0, 0);
 
         if (!imdbId) {
             setError("Film ID is missing.");

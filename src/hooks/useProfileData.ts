@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useLayoutEffect, useMemo, useCallback } from 'react';
 import { Film, filmData as allFilmsData, filmData, getClubRating } from '../types/film';
 import { teamMembers as allTeamMembersData, TeamMember } from '../types/team';
 import {
@@ -78,8 +78,11 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
         });
     }, [allFilmsData, allTeamMembersData]);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
+    // Before paint rather than after, for the same reason as useFilmDetails: the
+    // work here is synchronous filtering of imported data, so deferring it past
+    // paint only buys a visible frame of the loading spinner. Scroll reset is
+    // ScrollToTop's job, not this hook's.
+    useLayoutEffect(() => {
         setLoading(true);
         setError(null);
         // Reset all states

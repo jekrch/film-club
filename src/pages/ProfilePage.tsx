@@ -93,7 +93,7 @@ const ProfilePage: React.FC = () => {
                     </div>
                     {member.url && (
                         <div className="mt-4">
-                            <a className="!text-blue-400" href={member.url}>{member.url.replace('https://', '')}</a>
+                            <a className="text-blue-400" href={member.url}>{member.url.replace('https://', '')}</a>
                         </div>
                     )}
                 </div>
