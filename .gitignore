@@ -28,3 +28,4 @@ coverage/
 # local docs 
 /docs/
 *.pyc
+*.pyc

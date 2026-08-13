@@ -3,13 +3,21 @@ name: Deploy to GitHub Pages
 on:
   # Runs on manual trigger
   workflow_dispatch:
-  
+
   # Deploy on every push to main. This deliberately has no `paths` filter:
   # source-only commits (components, CSS) are just as deployable as data
   # changes, and filtering them out silently left production a commit behind.
   push:
     branches:
       - main
+
+# Members editing scores and lists on the site produce one commit per save, and
+# a burst of saves would otherwise queue a full build each. Only the newest one
+# matters: the derived-data steps below are idempotent, so a cancelled run
+# leaves nothing half-applied.
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
 
 # Fix for permission issue - changed to write
 permissions:
@@ -20,50 +28,96 @@ permissions:
 jobs:
   validate-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       # Step 1: Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       # Step 2: Validate JSON files
       - name: Validate JSON files
         run: |
-          # Check if club.json is valid
-          if [ -f "src/assets/club.json" ]; then
-            echo "Validating club.json..."
-            if ! jq empty src/assets/club.json; then
-              echo "ERROR: club.json is not valid JSON"
-              exit 1
+          # Everything the app imports at build time, plus overrides.json, which
+          # the derived-data steps below read. Validating first means a bad file
+          # fails here with its own name rather than deep inside a Python step.
+          for file in club.json films.json lists.json listFilms.json overrides.json; do
+            path="src/assets/$file"
+            if [ -f "$path" ]; then
+              echo "Validating $file..."
+              if ! jq empty "$path"; then
+                echo "ERROR: $file is not valid JSON"
+                exit 1
+              fi
+              echo "$file is valid"
             fi
-            echo "club.json is valid"
+          done
+
+      # Step 3: Set up Python for the derived-data steps
+      #
+      # These run here rather than in their own workflow because a commit made
+      # with the default GITHUB_TOKEN does not trigger further workflow runs — a
+      # standalone workflow would need its own build-and-deploy job. They can't
+      # live in sync-google-sheet.yml either: that runs twice a day, so a
+      # member's edit would sit invisible for up to twelve hours.
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      # Step 4: Fold member edits into films.json (deterministic; no network)
+      - name: Apply member overrides
+        run: python .github/scripts/apply_overrides.py
+        env:
+          JSON_PATH: "src/assets/films.json"
+          OVERRIDES_PATH: "src/assets/overrides.json"
+
+      # Step 5: Fill the poster/title cache for list films the club never watched
+      - name: Enrich list films
+        run: python .github/scripts/enrich_list_films.py
+        env:
+          LISTS_PATH: "src/assets/lists.json"
+          JSON_PATH: "src/assets/films.json"
+          LIST_FILMS_PATH: "src/assets/listFilms.json"
+          OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+
+      # Step 6: Commit whatever those two steps derived, before the build, so
+      # the deployed site never shows a half-applied state. Both steps are
+      # no-ops on the source-only pushes that make up most deploys.
+      - name: Commit derived data
+        run: |
+          git add src/assets/films.json src/assets/listFilms.json
+          if git diff --staged --quiet; then
+            echo "No derived data changes to commit."
+            exit 0
           fi
-          
-          # Check if films.json is valid
-          if [ -f "src/assets/films.json" ]; then
-            echo "Validating films.json..."
-            if ! jq empty src/assets/films.json; then
-              echo "ERROR: films.json is not valid JSON"
-              exit 1
-            fi
-            echo "films.json is valid"
-          fi
-      
-      # Step 3: Setup Bun
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Apply member overrides and enrich list films"
+          # The worker commits to main while this runs, so rebase onto whatever
+          # landed in the meantime rather than failing the deploy on a stale ref.
+          git pull --rebase --autostash
+          git push
+
+      # Step 7: Setup Bun
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      
-      # Step 4: Install dependencies
+
+      # Step 8: Install dependencies
       - name: Install dependencies
         run: bun install
-      
-      # Step 5: Build the project
+
+      # Step 9: Build the project
       - name: Build the project
         run: bun run build
-      
-      # Step 6: Verify build output
+
+      # Step 10: Verify build output
       - name: Verify build output
         run: |
           echo "Checking build output directory..."
@@ -75,8 +129,8 @@ jobs:
             echo "ERROR: dist directory does not exist"
             exit 1
           fi
-      
-      # Step 7: Deploy to GitHub Pages
+
+      # Step 11: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

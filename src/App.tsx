@@ -8,6 +8,7 @@ import FilmDetailPage from './pages/FilmDetailPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
 import AlmanacPage from './pages/AlmanacPage';
+import ListPage from './pages/ListPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 import "./index.css";
@@ -45,6 +46,7 @@ function AppContent() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/almanac" element={<AlmanacPage />} />
             <Route path="/profile/:memberName" element={<ProfilePage />} />
+            <Route path="/lists/:listId" element={<ListPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </PageTransition>

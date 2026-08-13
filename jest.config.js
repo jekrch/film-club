@@ -6,6 +6,10 @@ export default {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^@/(.*)$': '<rootDir>/src/$1',
+    // react-markdown is ESM-only and node_modules isn't transformed, so any
+    // test rendering a Markdown body would fail to parse it. The stub renders
+    // the source text, which is what those tests assert on.
+    '^react-markdown$': '<rootDir>/src/test-utils/ReactMarkdownStub.tsx',
   },
   transform: {
     '^.+\\.tsx?$': [

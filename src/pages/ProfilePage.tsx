@@ -16,6 +16,7 @@ import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
 import HeroBanner from '../components/common/HeroBanner';
 import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
+import ProfileListsSection from '../components/profile/ProfileListsSection';
 
 import { useProfileData } from '../hooks/useProfileData'; 
 
@@ -31,6 +32,7 @@ const ProfilePage: React.FC = () => {
         currentUserStats,
         rankings,
         reviewBlurbs,
+        lists,
         allFilms,
         loading,
         error,
@@ -183,6 +185,9 @@ const ProfilePage: React.FC = () => {
             {allFilms && member.name && (
                 <ProfileTrophyGallery memberName={member.name} films={allFilms} />
             )}
+
+            {/* Renders nothing when this member has no lists. */}
+            <ProfileListsSection lists={lists} />
 
             {topRatedFilms.length > 0 && (
                 <div className="mb-12 mt-8">
