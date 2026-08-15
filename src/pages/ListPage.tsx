@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { ChevronLeftIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 
 import PageLayout from '../components/layout/PageLayout';
 import HeroBanner from '../components/common/HeroBanner';
@@ -11,6 +11,7 @@ import ErrorDisplay from '../components/common/ErrorDisplay';
 import RankedListItem from '../components/films/RankedListItem';
 import { getListById, resolveListEntries } from '../utils/listUtils';
 import { getTeamMemberByName } from '../types/team';
+import { useClubAuth } from '../auth/GoogleAuth';
 
 /**
  * A single member-curated list, e.g. "Andy's Top 10 Horror Films".
@@ -22,6 +23,7 @@ import { getTeamMemberByName } from '../types/team';
 const ListPage: React.FC = () => {
     const { listId } = useParams<{ listId: string }>();
     const navigate = useNavigate();
+    const { configured, canEditAs } = useClubAuth();
 
     const list = getListById(listId);
     const entries = useMemo(() => (list ? resolveListEntries(list) : []), [list]);
@@ -79,9 +81,20 @@ const ListPage: React.FC = () => {
                         <ReactMarkdown>{list.description}</ReactMarkdown>
                     </div>
                 )}
+                {/* Only for the owner, and only once they have a session — which
+                    they get from their own profile or a film page. */}
+                {configured && canEditAs(list.owner) && (
+                    <Link
+                        to={`/lists/${list.id}/edit`}
+                        className="mt-4 inline-flex items-center gap-1 text-sm text-amber-400 transition-colors hover:text-amber-300"
+                    >
+                        <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
+                        Edit this list
+                    </Link>
+                )}
             </HeroBanner>
 
-            <AccentCard accent="amber" className="mb-12 p-4 sm:p-6 md:p-8">
+            <AccentCard accent="amber" className="mb-12 p-3 sm:p-6 md:p-8">
                 <div className="mb-6 flex items-center gap-3">
                     <h4 className="text-xl font-bold text-slate-100">
                         {entries.length} Film{entries.length !== 1 ? 's' : ''}

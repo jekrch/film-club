@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ProfileListsSection from './ProfileListsSection';
 import { FilmListDefinition } from '../../types/list';
+import { ClubAuthProvider } from '../../auth/GoogleAuth';
 
 const list: FilmListDefinition = {
     id: 'andy-top-horror',
@@ -14,11 +15,15 @@ const list: FilmListDefinition = {
     ],
 };
 
+// Signed out, since the test env configures no worker — so the editing links
+// stay hidden and the section behaves as it does for any visitor.
 const renderSection = (lists: FilmListDefinition[]) =>
     render(
-        <MemoryRouter>
-            <ProfileListsSection lists={lists} />
-        </MemoryRouter>
+        <ClubAuthProvider>
+            <MemoryRouter>
+                <ProfileListsSection lists={lists} owner="Andy" />
+            </MemoryRouter>
+        </ClubAuthProvider>
     );
 
 describe('ProfileListsSection', () => {

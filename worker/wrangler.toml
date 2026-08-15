@@ -1,0 +1,18 @@
+name = "film-club-editor"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# Public configuration. Everything sensitive is a secret instead — see the
+# README for the `wrangler secret put` list.
+[vars]
+# The OAuth *web client* ID from the Google Cloud console. Not a secret: it is
+# public by design in the GIS flow, and the browser needs the same value.
+GOOGLE_CLIENT_ID = "271645159836-1sefsue9sg0bonncpbtd8cucgdjj1gcv.apps.googleusercontent.com"
+
+# The only repo this worker writes to. Paths are constants in github.ts; the
+# worker never derives one from request input.
+GITHUB_REPO = "jekrch/film-club"
+
+# Comma-separated; the matching origin is echoed back, never `*`, because these
+# requests carry a bearer credential.
+ALLOWED_ORIGIN = "https://www.criterionclub.org,https://criterionclub.org,http://localhost:5173"

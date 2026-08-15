@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
-"""Build the poster/title cache for films that appear on member lists.
+"""Build the poster/title cache for films that appear in member-authored data.
 
-Member-curated lists are personal favorites, so most of the films on them are
-ones the club never watched and which therefore have no record in films.json.
-This script fetches a thin summary for each such film from OMDB and stores it in
-`src/assets/listFilms.json`, keyed by IMDb id.
+Two files reference films the club never watched: `lists.json` (personal
+rankings) and `watched.json` (what members watched on their own). Neither kind
+has a record in films.json. This script fetches a thin summary for each such
+film from OMDB and stores it in `src/assets/listFilms.json`, keyed by IMDb id;
+both sides of the frontend read that one cache.
 
-**List films must never become club films.** films.json drives the films page,
-the almanac, and every statistic on the site; a personal favorite appearing in
-it would corrupt all of them. Hence the separate cache, and hence the rule that
-ids already present in films.json are never fetched or stored here.
+**Neither kind may become a club film.** films.json drives the films page, the
+almanac, and every statistic on the site; a personal favorite or a solo watch
+appearing in it would corrupt all of them. Hence the separate cache, and hence
+the rule that ids already present in films.json are never fetched or stored
+here.
 
 The cache is deliberately thin -- title, year, poster, and a little context --
 with no cast, keywords, or backdrops. One OMDB call per id, once ever: ids
 already cached are left alone. Ids no list references any more are pruned, and
 keys are written sorted, so the diff stays readable.
 
-Runs in deploy.yml before the build, so a list saved on the site has its posters
-by the time the site is rebuilt. The worker makes no OMDB call of its own on
-save, which is what keeps a save cheap regardless of how long the list is.
+Runs in deploy.yml before the build, so a list or a watch logged on the site has
+its posters by the time the site is rebuilt. The worker makes no OMDB call of
+its own on save, which is what keeps a save cheap regardless of how long the
+list is.
 """
 
 import json
@@ -29,6 +32,7 @@ import sys
 import requests
 
 DEFAULT_LISTS_PATH = "src/assets/lists.json"
+DEFAULT_WATCHED_PATH = "src/assets/watched.json"
 DEFAULT_FILMS_PATH = "src/assets/films.json"
 DEFAULT_LIST_FILMS_PATH = "src/assets/listFilms.json"
 
@@ -121,39 +125,55 @@ def _load_json(path, expected_type):
     return data
 
 
-def collect_referenced_ids(lists_data):
-    """Every IMDb id referenced by any list, as a set.
+def _collect_ids(entries, source):
+    """The valid IMDb ids among a sequence of `{"imdbID": ...}` records."""
+    found = set()
+    for entry in entries or []:
+        imdb_id = entry.get("imdbID") if isinstance(entry, dict) else None
+        if not imdb_id:
+            continue
+        if not IMDB_ID_PATTERN.match(imdb_id):
+            print(f"Skipping malformed IMDb id in {source}: {imdb_id!r}")
+            continue
+        found.add(imdb_id)
+    return found
 
-    The union across *all* lists matters for pruning: dropping a film from one
-    list must not evict a summary another list still uses.
+
+def collect_referenced_ids(lists_data, watched_data):
+    """Every IMDb id referenced by any list or any member's watch log, as a set.
+
+    The union across *all* of them matters for pruning: dropping a film from one
+    list must not evict a summary another list — or somebody's watch log — still
+    uses.
     """
     referenced = set()
     for film_list in lists_data:
         if not isinstance(film_list, dict):
             continue
-        for entry in film_list.get("entries") or []:
-            imdb_id = entry.get("imdbID") if isinstance(entry, dict) else None
-            if not imdb_id:
-                continue
-            if not IMDB_ID_PATTERN.match(imdb_id):
-                print(f"Skipping malformed IMDb id in list {film_list.get('id')!r}: {imdb_id!r}")
-                continue
-            referenced.add(imdb_id)
+        referenced |= _collect_ids(film_list.get("entries"), f"list {film_list.get('id')!r}")
+
+    for owner, entries in watched_data.items():
+        if not isinstance(entries, list):
+            print(f"Skipping watch log for {owner!r}: expected a list of entries.")
+            continue
+        referenced |= _collect_ids(entries, f"{owner}'s watch log")
+
     return referenced
 
 
-def enrich_list_films(lists_path, films_path, list_films_path, api_key):
+def enrich_list_films(lists_path, watched_path, films_path, list_films_path, api_key):
     """Refresh the summary cache. Returns True on success (no-op included)."""
     lists_data = _load_json(lists_path, list)
+    watched_data = _load_json(watched_path, dict)
     films_data = _load_json(films_path, list)
     cache = _load_json(list_films_path, dict)
-    if LOAD_FAILED in (lists_data, films_data, cache):
+    if LOAD_FAILED in (lists_data, watched_data, films_data, cache):
         return False
 
     club_ids = {f["imdbID"] for f in films_data if isinstance(f, dict) and "imdbID" in f}
-    # A list may well contain a film the club watched; that entry resolves
-    # against films.json in the frontend and needs no summary of its own.
-    wanted = collect_referenced_ids(lists_data) - club_ids
+    # A list or a watch log may well contain a film the club watched; that entry
+    # resolves against films.json in the frontend and needs no summary of its own.
+    wanted = collect_referenced_ids(lists_data, watched_data) - club_ids
 
     pruned = sorted(set(cache) - wanted)
     updated = {imdb_id: cache[imdb_id] for imdb_id in cache if imdb_id in wanted}
@@ -192,6 +212,7 @@ def enrich_list_films(lists_path, films_path, list_films_path, api_key):
 def main():
     return enrich_list_films(
         os.environ.get("LISTS_PATH", DEFAULT_LISTS_PATH),
+        os.environ.get("WATCHED_PATH", DEFAULT_WATCHED_PATH),
         os.environ.get("JSON_PATH", DEFAULT_FILMS_PATH),
         os.environ.get("LIST_FILMS_PATH", DEFAULT_LIST_FILMS_PATH),
         os.environ.get("OMDB_API_KEY"),

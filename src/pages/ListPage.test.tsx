@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ListPage from './ListPage';
 import { filmData } from '../types/film';
+import { ClubAuthProvider } from '../auth/GoogleAuth';
 
 // The bundled lists.json is empty (lists are authored on the site), so the page
 // is exercised against a fixture. The first entry is a real club film so the
@@ -32,13 +33,18 @@ jest.mock('../types/list', () => {
     };
 });
 
+// The page reads the editing session to decide whether to offer an "Edit this
+// list" link. The provider mounts signed out and, with no worker configured in
+// the test env, stays that way — so these assertions see the read-only page.
 const renderAt = (listId: string) =>
     render(
-        <MemoryRouter initialEntries={[`/lists/${listId}`]}>
-            <Routes>
-                <Route path="/lists/:listId" element={<ListPage />} />
-            </Routes>
-        </MemoryRouter>
+        <ClubAuthProvider>
+            <MemoryRouter initialEntries={[`/lists/${listId}`]}>
+                <Routes>
+                    <Route path="/lists/:listId" element={<ListPage />} />
+                </Routes>
+            </MemoryRouter>
+        </ClubAuthProvider>
     );
 
 describe('ListPage', () => {

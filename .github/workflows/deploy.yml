@@ -76,11 +76,13 @@ jobs:
           JSON_PATH: "src/assets/films.json"
           OVERRIDES_PATH: "src/assets/overrides.json"
 
-      # Step 5: Fill the poster/title cache for list films the club never watched
+      # Step 5: Fill the poster/title cache for films the club never watched —
+      # both the ones on member lists and the ones in member watch logs.
       - name: Enrich list films
         run: python .github/scripts/enrich_list_films.py
         env:
           LISTS_PATH: "src/assets/lists.json"
+          WATCHED_PATH: "src/assets/watched.json"
           JSON_PATH: "src/assets/films.json"
           LIST_FILMS_PATH: "src/assets/listFilms.json"
           OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
@@ -114,8 +116,16 @@ jobs:
         run: bun install
 
       # Step 9: Build the project
+      #
+      # The two editing settings are repository *variables*, not secrets: both
+      # are public by design (the client ID is sent by the browser, the worker
+      # URL is the address it calls). Unset, they build a site with no editing
+      # surfaces at all rather than a broken one.
       - name: Build the project
         run: bun run build
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          VITE_EDITOR_API_URL: ${{ vars.EDITOR_API_URL }}
 
       # Step 10: Verify build output
       - name: Verify build output

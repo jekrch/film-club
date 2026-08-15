@@ -34,3 +34,13 @@ jobs:
 
       - name: Run tests
         run: bun run test
+
+      # The editing worker deploys on its own and isn't in the site's tsconfig
+      # project references, so the typecheck above doesn't see it. Its trust
+      # boundary (validate.ts) is pure and its tests run in the site suite; this
+      # step is what checks the half that touches the Workers runtime.
+      - name: Typecheck the editing worker
+        working-directory: worker
+        run: |
+          bun install
+          bun run typecheck
