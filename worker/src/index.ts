@@ -22,7 +22,6 @@ import {
     commitJson,
     fetchClubFilmIds,
     readJson,
-    type CommitAuthor,
     type CommitPlan,
 } from './github';
 import { searchFilms } from './omdb';
@@ -39,7 +38,6 @@ import {
     LIMITS,
     assignListId,
     resolveOwner,
-    slugify,
     validateImdbId,
     validateListInput,
     validateRatingPatch,
@@ -63,15 +61,6 @@ function timestamp(): string {
 /** Today in UTC, the default watch date for a film logged without one. */
 function today(): string {
     return new Date().toISOString().slice(0, 10);
-}
-
-/**
- * Attributes the commit to the member without publishing their address. The
- * `noreply` domain isn't tied to their GitHub account — it just puts a real
- * name in `git log` instead of the bot's.
- */
-function commitAuthor(member: Member): CommitAuthor {
-    return { name: member.name, email: `${slugify(member.name)}@users.noreply.github.com` };
 }
 
 // --- CORS ---------------------------------------------------------------
@@ -165,7 +154,6 @@ async function putRating(
         env,
         OVERRIDES_PATH,
         EMPTY_OVERRIDES,
-        commitAuthor(member),
         (current): CommitPlan<OverridesFile, unknown> => {
             const films = { ...(current.films ?? {}) };
             const film = films[imdbId] ?? { ratings: {} };
@@ -202,7 +190,6 @@ async function deleteRating(env: Env, member: Member, imdbId: string): Promise<u
         env,
         OVERRIDES_PATH,
         EMPTY_OVERRIDES,
-        commitAuthor(member),
         (current): CommitPlan<OverridesFile, unknown> => {
             const film = current.films?.[imdbId];
             if (!film?.ratings?.[user]) {
@@ -291,7 +278,6 @@ async function putWatched(
         env,
         WATCHED_PATH,
         EMPTY_WATCHED,
-        commitAuthor(member),
         (current): CommitPlan<WatchedLog, unknown> => {
             const entries = [...(current[owner] ?? [])];
             const index = entries.findIndex((entry) => entry.imdbID === imdbId);
@@ -346,7 +332,6 @@ async function deleteWatched(
         env,
         WATCHED_PATH,
         EMPTY_WATCHED,
-        commitAuthor(member),
         (current): CommitPlan<WatchedLog, unknown> => {
             const entries = current[owner] ?? [];
             if (!entries.some((entry) => entry.imdbID === imdbId)) {
@@ -392,7 +377,6 @@ async function putList(request: Request, env: Env, member: Member, pathId: strin
         env,
         LISTS_PATH,
         EMPTY_LISTS,
-        commitAuthor(member),
         (current): CommitPlan<FilmListDefinition[], unknown> => {
             const lists = [...current];
             const index = lists.findIndex((list) => list.id === pathId);
@@ -450,7 +434,6 @@ async function deleteList(env: Env, member: Member, listId: string): Promise<unk
         env,
         LISTS_PATH,
         EMPTY_LISTS,
-        commitAuthor(member),
         (current): CommitPlan<FilmListDefinition[], unknown> => {
             const index = current.findIndex((list) => list.id === listId);
             if (index === -1) throw notFound(`No list with id "${listId}".`);

@@ -92,29 +92,26 @@ export async function readJson<T>(
     return { data: JSON.parse(base64ToUtf8(meta.content.replace(/\n/g, ''))) as T, sha: meta.sha };
 }
 
-/** Commit author, so `git log` credits the member without publishing their email. */
-export interface CommitAuthor {
-    name: string;
-    email: string;
-}
-
 async function writeJson(
     env: Env,
     path: string,
     data: unknown,
     sha: string | null,
-    message: string,
-    author: CommitAuthor
+    message: string
 ): Promise<boolean> {
     // Trailing newline so the file matches what Prettier and the Python scripts
     // write; without it every worker commit shows a "\ No newline" diff.
     const content = `${JSON.stringify(data, null, 2)}\n`;
 
+    // No `author`: GitHub then credits the authenticated PAT owner, which is the
+    // only identity actually behind these writes. Naming the member here instead
+    // would need an address GitHub can't mistake for someone else's account —
+    // `<name>@users.noreply.github.com` resolves to whoever holds that username.
+    // Who edited what is in the commit message, which is enough.
     const body: Record<string, unknown> = {
         message,
         content: utf8ToBase64(content),
         branch: BRANCH,
-        author,
     };
     if (sha) body.sha = sha;
 
@@ -156,7 +153,6 @@ export async function commitJson<T, R>(
     env: Env,
     path: string,
     fallback: T,
-    author: CommitAuthor,
     apply: (current: T) => CommitPlan<T, R>
 ): Promise<R> {
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -164,7 +160,7 @@ export async function commitJson<T, R>(
         const plan = apply(data ?? fallback);
         if (!plan.commit) return plan.result;
 
-        if (await writeJson(env, path, plan.next, sha, plan.message, author)) {
+        if (await writeJson(env, path, plan.next, sha, plan.message)) {
             return plan.result;
         }
         // Brief backoff before re-reading; the conflicting write has landed by
