@@ -6,6 +6,14 @@ export default {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^@/(.*)$': '<rootDir>/src/$1',
+    // react-markdown is ESM-only and node_modules isn't transformed, so any
+    // test rendering a Markdown body would fail to parse it. The stub renders
+    // the source text, which is what those tests assert on.
+    '^react-markdown$': '<rootDir>/src/test-utils/ReactMarkdownStub.tsx',
+    // `import.meta.env` is Vite syntax and a parse error in the CommonJS output
+    // below. The stub reports "editing not configured", which is the state the
+    // read-only surfaces are asserted in.
+    '^.*config/editorEnv$': '<rootDir>/src/test-utils/editorEnvStub.ts',
   },
   transform: {
     '^.+\\.tsx?$': [

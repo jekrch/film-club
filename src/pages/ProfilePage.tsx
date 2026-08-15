@@ -16,6 +16,9 @@ import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
 import HeroBanner from '../components/common/HeroBanner';
 import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
+import ProfileListsSection from '../components/profile/ProfileListsSection';
+import ProfileWatchedSection from '../components/profile/ProfileWatchedSection';
+import SignInPrompt from '../auth/SignInPrompt';
 
 import { useProfileData } from '../hooks/useProfileData'; 
 
@@ -31,6 +34,7 @@ const ProfilePage: React.FC = () => {
         currentUserStats,
         rankings,
         reviewBlurbs,
+        lists,
         allFilms,
         loading,
         error,
@@ -183,6 +187,20 @@ const ProfilePage: React.FC = () => {
             {allFilms && member.name && (
                 <ProfileTrophyGallery memberName={member.name} films={allFilms} />
             )}
+
+            {/* Renders nothing when this member has no lists — unless the
+                signed-in member is looking at their own profile, where it is
+                the way into the list editor. */}
+            <ProfileListsSection lists={lists} owner={member.name} />
+
+            {/* Personal watches, kept below the club sections and out of every
+                statistic above them — see `types/watched.ts`. Renders nothing
+                for a member with an empty log, unless it's their own profile. */}
+            <ProfileWatchedSection owner={member.name} />
+
+            {/* The way in for a member arriving signed out: the editing links
+                above can't know who you are until you have a session. */}
+            <SignInPrompt className="mb-8 text-right" />
 
             {topRatedFilms.length > 0 && (
                 <div className="mb-12 mt-8">

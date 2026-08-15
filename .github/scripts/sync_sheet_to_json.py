@@ -15,6 +15,12 @@ import pandas as pd
 import requests
 import re
 
+# Sibling script (both live in .github/scripts, which is sys.path[0] when this
+# runs). Member edits made on the site are overlaid onto the sheet's output as
+# the last step of main() -- see that call site and apply_overrides.py's module
+# docstring for why the sync needs it even though deploy.yml runs it too.
+from apply_overrides import DEFAULT_OVERRIDES_PATH, apply_overrides_to_file
+
 # --- Helper Functions ---
 def to_camel_case(text):
     """Converts PascalCase or snake_case text to camelCase."""
@@ -633,10 +639,14 @@ def main():
     sheet_df = sheet_df.dropna(subset=['imdb_id'])
     if sheet_df.empty:
         print("No valid IMDb IDs found in the Google Sheet after filtering. Nothing to process.")
-        return True
+    elif not update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token_env):
+        return False
 
-    success = update_json_from_sheet(sheet_df, json_path, omdb_api_key, tmdb_bearer_token_env)
-    return success
+    # Last mutation, always: fields a member edited on the site win over the
+    # sheet. Running this here (as well as at deploy time) is what stops
+    # films.json flip-flopping between sheet and override values twice a day.
+    overrides_path = os.environ.get('OVERRIDES_PATH', DEFAULT_OVERRIDES_PATH)
+    return apply_overrides_to_file(json_path, overrides_path)
 
 if __name__ == "__main__":
     if main():

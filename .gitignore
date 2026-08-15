@@ -10,7 +10,14 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+# wrangler's local state for the editing worker
+.wrangler/
+# The worker's secrets for `wrangler dev` — the same four values that are
+# `wrangler secret put` in production. Never committed: this repo is public.
+.dev.vars
 *.local
+# Local editing config; the committed .env.example documents the two keys.
+.env
 dev-dist/
 coverage/
 
@@ -27,4 +34,5 @@ coverage/
 
 # local docs 
 /docs/
+__pycache__/
 *.pyc

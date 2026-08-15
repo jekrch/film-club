@@ -8,8 +8,12 @@ import FilmDetailPage from './pages/FilmDetailPage';
 import AboutPage from './pages/AboutPage';
 import ProfilePage from './pages/ProfilePage';
 import AlmanacPage from './pages/AlmanacPage';
+import ListPage from './pages/ListPage';
+import ListEditorPage from './pages/ListEditorPage';
+import WatchedPage from './pages/WatchedPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
+import { ClubAuthProvider } from './auth/GoogleAuth';
 import "./index.css";
 import ScrollToTop from './components/layout/ScrollToTop';
 import PageTransition from './components/layout/PageTransition';
@@ -45,6 +49,14 @@ function AppContent() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/almanac" element={<AlmanacPage />} />
             <Route path="/profile/:memberName" element={<ProfilePage />} />
+            {/* The static segments outrank `/lists/:listId`, so "new" is the
+                editor rather than a list whose id happens to be "new". */}
+            <Route path="/lists/new" element={<ListEditorPage />} />
+            <Route path="/lists/:listId/edit" element={<ListEditorPage />} />
+            <Route path="/lists/:listId" element={<ListPage />} />
+            {/* A member's personal watch log. Not under /films: nothing here is
+                a club film, and the two must never share a surface. */}
+            <Route path="/watched/:memberName" element={<WatchedPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </PageTransition>
@@ -62,12 +74,17 @@ function App() {
   
   return (
     <ViewSettingsProvider>
-      <Router>
-        <ScrollToTop />
-        <ErrorBoundary>
-          <AppContent />
-        </ErrorBoundary>
-      </Router>
+      {/* Holds an editing session in memory. Mounting it costs nothing on an
+          ordinary page view: no script loads and no request is made until a
+          member opens an editing surface and signs in. */}
+      <ClubAuthProvider>
+        <Router>
+          <ScrollToTop />
+          <ErrorBoundary>
+            <AppContent />
+          </ErrorBoundary>
+        </Router>
+      </ClubAuthProvider>
     </ViewSettingsProvider>
   );
 }

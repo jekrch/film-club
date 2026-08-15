@@ -10,6 +10,8 @@ import {
     MemberStatsCalculationData
 } from '../utils/statUtils';
 import { ProfileReviewBlurb } from '../components/profile/ProfileBlurbItem'; // Assuming this type is defined correctly
+import { FilmListDefinition } from '../types/list';
+import { getListsForMember } from '../utils/listUtils';
 
 export interface UseProfileDataReturn {
     member: TeamMember | null;
@@ -19,6 +21,8 @@ export interface UseProfileDataReturn {
     currentUserStats: UserProfileStats | null;
     rankings: UserRankings | null;
     reviewBlurbs: ProfileReviewBlurb[];
+    /** Lists this member curated. Empty for a member who has made none. */
+    lists: FilmListDefinition[];
     allFilms: Film[];
     loading: boolean;
     error: string | null;
@@ -36,6 +40,7 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
     const [currentUserStats, setCurrentUserStats] = useState<UserProfileStats | null>(null);
     const [rankings, setRankings] = useState<UserRankings | null>(null);
     const [reviewBlurbs, setReviewBlurbs] = useState<ProfileReviewBlurb[]>([]);
+    const [lists, setLists] = useState<FilmListDefinition[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isInterviewExpanded, setIsInterviewExpanded] = useState(false);
@@ -93,6 +98,7 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
         setCurrentUserStats(null);
         setRankings(null);
         setReviewBlurbs([]);
+        setLists([]);
         setIsInterviewExpanded(false);
         setIsBlurbsSectionExpanded(false);
 
@@ -147,6 +153,8 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
             .sort((a, b) => (new Date(b!.watchDate || 0).getTime() - new Date(a!.watchDate || 0).getTime()) || a!.filmTitle.localeCompare(b!.filmTitle)) as ProfileReviewBlurb[];
         setReviewBlurbs(blurbs);
 
+        // Member-curated lists (authored on the site, not in the sheet)
+        setLists(getListsForMember(foundMember.name));
 
         // Most Controversial Films for this member
         const controversial: ControversialFilm[] = [];
@@ -233,6 +241,7 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
         currentUserStats,
         rankings,
         reviewBlurbs,
+        lists,
         allFilms: filmData,
         loading,
         error,

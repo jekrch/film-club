@@ -23,6 +23,9 @@ import CollapsibleContent from '../components/common/CollapsableContent';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';  
 import { useFilmDetails } from '../hooks/useFilmDetails';
+import { useFilmOverrides } from '../hooks/useFilmOverrides';
+import MyRatingEditor from '../components/films/MyRatingEditor';
+import { useClubAuth } from '../auth/GoogleAuth';
 import TrophyGallery from '../components/common/TrophyGallery';
 import WatchTimelineNav from '../components/common/WatchTimelineNav';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
@@ -68,6 +71,12 @@ const FilmDetailPage = () => {
         closeCreditsModal,
         personAllFilmographies,
     } = useFilmDetails(imdbId);
+
+    // Member edits to this film's ratings, read live from `main` while signed
+    // in. Empty for everyone else, which is what keeps the markers below an
+    // editing affordance rather than something a visitor sees.
+    const overrides = useFilmOverrides(imdbId);
+    const { member: signedInMember } = useClubAuth();
 
     const capitalizeFirstLetter = (str: string): string => str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 
@@ -470,6 +479,18 @@ const FilmDetailPage = () => {
                                                                         ? `${capitalizeFirstLetter(rating.user)}'s ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} rating: ${rating.score} out of ${MAX_RATING}`
                                                                         : `${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`}
                                                                 />
+                                                                {/* Visible only to a signed-in member, since that's the
+                                                                    only time the overrides are loaded. It marks a row the
+                                                                    sheet no longer controls — editing that cell in the
+                                                                    spreadsheet now has no effect (§8.7). */}
+                                                                {overrides.ratings[rating.user.toLowerCase()] && (
+                                                                    <span
+                                                                        className="rounded bg-slate-700/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-slate-400"
+                                                                        title={`Edited on the site by ${overrides.ratings[rating.user.toLowerCase()].updatedBy}. The Google Sheet no longer sets this row.`}
+                                                                    >
+                                                                        edited
+                                                                    </span>
+                                                                )}
                                                             </div>
                                                             {rating.blurb && (
                                                                 // Watermarked with the reviewer's portrait — the varying subject here is the member
@@ -499,7 +520,17 @@ const FilmDetailPage = () => {
                                     </Link>
                                 )}
                             </div>
-                            
+
+                            {/* A member's own score and review, editable in place. Collapsed
+                                until asked for — opening it is what loads Google sign-in. */}
+                            <MyRatingEditor
+                                film={film}
+                                override={signedInMember ? overrides.ratings[signedInMember.toLowerCase()] : undefined}
+                                overridesLoading={overrides.loading}
+                                onSaved={(rating) => overrides.applyLocal(rating.updatedBy, rating)}
+                                onReverted={() => signedInMember && overrides.applyLocal(signedInMember, null)}
+                            />
+
                             {/* Trophy Gallery Section */}
                             {film.movieClubInfo.trophyNotes && (
                                 <TrophyGallery trophyNotes={film.movieClubInfo.trophyNotes} />
