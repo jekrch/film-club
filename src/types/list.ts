@@ -113,23 +113,38 @@ export const isRankedList = (list: Pick<FilmListDefinition, 'ranked'>): boolean 
     list.ranked !== false;
 
 /**
- * One credited actor on a cache film.
+ * One credited person on a cache film — an actor in {@link ListFilmSummary.cast},
+ * a filmmaker in {@link ListFilmSummary.crew}.
  *
  * Carries its own `tmdbId`, which is the difference between this and a club
  * film's `CastMember`: club films resolve a name to an id through their
  * `personProfiles` map, because the club's person modal is keyed by name and
- * shows a cross-club filmography. A cache film's actor has no club filmography
- * to show, so the name links straight out to TMDb instead and the id may as well
- * ride on the entry.
+ * shows a cross-club filmography. A cache film's cast and crew have no club
+ * filmography to show, so a name links straight out to TMDb instead and the id
+ * may as well ride on the entry.
  */
-export interface ListCastMember {
+interface ListPersonBase {
     name: string;
-    /** The role, when TMDb credits one. */
-    character?: string | null;
-    /** TMDb headshot. Null for the many actors who have none. */
+    /** TMDb headshot. Null for the many people who have none. */
     profileUrl?: string | null;
     /** What the name links to. Null when TMDb credited a person with no id. */
     tmdbId?: number | null;
+}
+
+/** An actor, with the part they played. */
+export interface ListCastMember extends ListPersonBase {
+    /** The role, when TMDb credits one. */
+    character?: string | null;
+}
+
+/** A filmmaker, with TMDb's own job string — `Director`, `Screenplay`, … */
+export interface ListCrewMember extends ListPersonBase {
+    /**
+     * Stored raw rather than as a display label: what a row calls
+     * "Cinematography" is a frontend decision, and changing it shouldn't mean
+     * refetching every film.
+     */
+    job?: string | null;
 }
 
 /**
@@ -154,14 +169,20 @@ export interface ListFilmSummary {
     runtime?: string | null;
     genre?: string | null;
     director?: string | null;
-    /** OMDB credits both, comma-separated when a film has several. */
+    /**
+     * OMDB credits both, comma-separated when a film has several.
+     *
+     * Kept as the fallback for a film CI hasn't enriched yet, or one TMDb
+     * credits nobody on: {@link crew} is what a row draws when it has it, since
+     * a bare name has no face and nowhere to link.
+     */
     writer?: string | null;
     /**
-     * From TMDb's crew, where OMDB has no equivalent field. The one crew credit
-     * stored here — the club films keep five, but each is another string on
-     * every cached film.
+     * Direction, writing and photography, each with the headshot and TMDb id
+     * that make it a card rather than a name. Ordered by job in CI, so a panel
+     * reads director-first without sorting.
      */
-    cinematographer?: string | null;
+    crew?: ListCrewMember[];
     /**
      * IMDb, Rotten Tomatoes and Metacritic as OMDB gave them, in the shape
      * `films.json` uses.

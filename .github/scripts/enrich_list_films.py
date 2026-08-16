@@ -30,9 +30,10 @@ so an outage costs a retry on the next deploy rather than a permanently empty
 record. Without TMDB_KEY the whole half is skipped: the posters still land, and
 the next deploy that has the key fills the rest in.
 
-**The cache stays deliberately thinner than a club film.** No keywords, no crew,
-no financials, no `personProfiles` index -- a cast member's TMDb id rides on the
-cast entry itself. This file is bundled and shipped to every visitor, and unlike
+**The cache stays deliberately thinner than a club film.** No keywords, no
+financials, no `personProfiles` index -- a person's TMDb id rides on their own
+cast or crew entry. The crew is the three credits a row shows rather than the
+club films' seven. This file is bundled and shipped to every visitor, and unlike
 films.json (one film per club meeting) it grows with whatever members add, so
 each field here is a per-visitor cost paid on the whole cache.
 
@@ -148,17 +149,28 @@ def get_omdb_summary(imdb_id, api_key):
 # v1: trailerKey.
 # v2: added tagline, plot, cast, and backdropImages.
 # v3: added cinematographer, and raised the backdrop count for the stills strip.
-TMDB_VERSION = 3
+# v4: replaced the cinematographer string with a `crew` list carrying headshots
+#     and TMDb ids, so the crew renders as person cards like the cast does.
+TMDB_VERSION = 4
 TMDB_VERSION_FIELD = "tmdbVersion"
 
 # What one TMDb lookup contributes, and therefore what a re-stamp overwrites.
-TMDB_FIELDS = ("trailerKey", "tagline", "plot", "cast", "backdropImages", "cinematographer")
+TMDB_FIELDS = ("trailerKey", "tagline", "plot", "cast", "backdropImages", "crew")
 
-# TMDb crew jobs -> the summary field they fill. The club films collect five;
-# this takes the one the frontend actually shows on a row, since each is another
-# string on every cached film. Director and writer come from OMDB, which already
-# credits both.
-TMDB_CREW_JOBS = {"Director of Photography": "cinematographer"}
+# Fields an older version wrote that the current one doesn't. Popped on re-stamp,
+# so a retired field leaves the cache instead of lingering on whichever records
+# happened to be written while it existed.
+TMDB_RETIRED_FIELDS = ("cinematographer",)
+
+# The crew jobs worth a card, in the order they should read. Taken from TMDb
+# rather than OMDB even for the director, whose name OMDB also gives: only TMDb
+# supplies the person id and the headshot that make a card a face and a link.
+# Editor, composer and the rest are a film page's detail, not a row's.
+TMDB_CREW_JOBS = ("Director", "Writer", "Screenplay", "Story", "Director of Photography")
+
+# A film with eleven credited writers gets the first few. Bounded because every
+# entry is ~120 bytes on a file the whole site downloads.
+TMDB_CREW_LIMIT = 6
 
 TMDB_PROFILE_IMAGE_BASE = "https://image.tmdb.org/t/p/w185"
 TMDB_BACKDROP_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
@@ -248,18 +260,34 @@ def _pick_backdrops(images):
 
 
 def _pick_crew(credits):
-    """The crew fields TMDB_CREW_JOBS names, joined when a job has several.
+    """The crew worth a card, each with the id and headshot that make it one.
 
-    Same shape the club films store: one comma-separated string per field, since
-    a film with two cinematographers credits both and the row just prints it.
+    Ordered by job rather than by TMDb's own crew order, so every film's panel
+    reads director-first. The raw job string is stored, not a display label: what
+    a row calls "Cinematography" is a frontend decision, and changing it should
+    not mean refetching every film.
     """
-    by_field = {}
+    people = []
+    seen = set()
     for member in credits.get("crew") or []:
-        field = TMDB_CREW_JOBS.get(member.get("job"))
-        name = member.get("name")
-        if field and name:
-            by_field.setdefault(field, []).append(name)
-    return {field: ", ".join(sorted(set(names))) for field, names in by_field.items()}
+        job, name = member.get("job"), member.get("name")
+        if job not in TMDB_CREW_JOBS or not name:
+            continue
+        # One card per person per job: TMDb credits some people twice.
+        key = (name.strip().lower(), job)
+        if key in seen:
+            continue
+        seen.add(key)
+        profile_path = member.get("profile_path")
+        people.append({
+            "name": name,
+            "job": job,
+            "profileUrl": f"{TMDB_PROFILE_IMAGE_BASE}{profile_path}" if profile_path else None,
+            "tmdbId": member.get("id"),
+        })
+
+    people.sort(key=lambda p: TMDB_CREW_JOBS.index(p["job"]))
+    return people[:TMDB_CREW_LIMIT]
 
 
 def get_tmdb_details(imdb_id, tmdb_bearer_token):
@@ -306,11 +334,10 @@ def get_tmdb_details(imdb_id, tmdb_bearer_token):
         return TMDB_FAILED
 
     credits = data.get("credits") or {}
-    crew = _pick_crew(credits)
 
     return {
         "trailerKey": _pick_trailer((data.get("videos") or {}).get("results") or []),
-        "cinematographer": crew.get("cinematographer"),
+        "crew": _pick_crew(credits) or None,
         "tagline": _clean(data.get("tagline")),
         # TMDb calls it the overview; the field is named for the club films' own
         # `plot` so one panel component can render either shape.
@@ -424,6 +451,8 @@ def add_tmdb_details(summaries, tmdb_bearer_token):
                 summary.pop(field, None)
             else:
                 summary[field] = value
+        for field in TMDB_RETIRED_FIELDS:
+            summary.pop(field, None)
         summary[TMDB_VERSION_FIELD] = TMDB_VERSION
         print(
             f"Enriched {imdb_id}: "

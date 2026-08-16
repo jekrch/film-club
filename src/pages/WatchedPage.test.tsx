@@ -63,10 +63,10 @@ jest.mock('../types/list', () => ({
 // and row editors. The provider mounts signed out and, with no worker
 // configured in the test env, stays that way — so these assertions see the
 // read-only page every visitor gets.
-const renderFor = (memberName: string) =>
+const renderFor = (memberName: string, hash = '') =>
     render(
         <ClubAuthProvider>
-            <MemoryRouter initialEntries={[`/watched/${memberName}`]}>
+            <MemoryRouter initialEntries={[`/watched/${memberName}${hash}`]}>
                 <Routes>
                     <Route path="/watched/:memberName" element={<WatchedPage />} />
                 </Routes>
@@ -156,6 +156,41 @@ describe('WatchedPage', () => {
         expect(
             screen.getByText(/hasn't logged anything watched outside the club/i)
         ).toBeInTheDocument();
+    });
+
+    // The profile's watch preview links to a row by name so the click lands on
+    // the film it was made on, rather than at the top of the log.
+    describe('arriving at a named row', () => {
+        let scrollIntoView: jest.SpyInstance;
+
+        beforeEach(() => {
+            scrollIntoView = jest
+                .spyOn(Element.prototype, 'scrollIntoView')
+                .mockImplementation(() => {});
+        });
+
+        afterEach(() => scrollIntoView.mockRestore());
+
+        it('scrolls that row into view and marks it', () => {
+            renderFor('Andy', '#log-tt9999999');
+
+            const row = document.getElementById('log-tt9999999');
+            expect(row).toHaveTextContent('A Cached Film');
+            expect(scrollIntoView).toHaveBeenCalledTimes(1);
+            expect(scrollIntoView.mock.instances[0]).toBe(row);
+            expect(row?.querySelector('.row-arrival')).toBeInTheDocument();
+        });
+
+        it('leaves a plain visit at the top of the log', () => {
+            renderFor('Andy');
+            expect(scrollIntoView).not.toHaveBeenCalled();
+            expect(document.querySelector('.row-arrival')).not.toBeInTheDocument();
+        });
+
+        it('ignores a hash naming a film the member never logged', () => {
+            renderFor('Andy', '#log-tt0000000');
+            expect(scrollIntoView).not.toHaveBeenCalled();
+        });
     });
 
     it('reports an unknown member rather than rendering an empty log', () => {

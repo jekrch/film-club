@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 
 import PageLayout from '../components/layout/PageLayout';
@@ -20,7 +20,13 @@ import { fetchWatched } from '../api/repoData';
 import { recordWrite, writeKeys } from '../api/writeCache';
 import { getTeamMemberByName } from '../types/team';
 import type { WatchedEntry } from '../types/watched';
-import { compareWatched, getWatchedForMember, resolveWatchedEntries } from '../utils/watchedUtils';
+import {
+    compareWatched,
+    getWatchedForMember,
+    resolveWatchedEntries,
+    watchedRowId,
+} from '../utils/watchedUtils';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { todayLocal } from '../utils/watchedEditUtils';
 import { entryFrameSource } from '../utils/frameSources';
 
@@ -40,6 +46,7 @@ import { entryFrameSource } from '../utils/frameSources';
  */
 const WatchedPage: React.FC = () => {
     const { memberName } = useParams<{ memberName: string }>();
+    const { hash } = useLocation();
     const navigate = useNavigate();
     const { configured, status, member: signedInAs, canEditAs, withToken } = useClubAuth();
 
@@ -84,6 +91,30 @@ const WatchedPage: React.FC = () => {
 
     const resolved = useMemo(() => resolveWatchedEntries(entries), [entries]);
     const logged = useMemo(() => new Set(entries.map((entry) => entry.imdbID)), [entries]);
+
+    /**
+     * The row a link asked for by name (`…/watched/Andy#log-tt0110912`), which
+     * is how a profile's watch preview says "the film they clicked is this
+     * one". Empty for a plain visit to the page.
+     */
+    const requestedRow = hash.replace(/^#/, '');
+    const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+    /** The row already scrolled to, so a later live refresh doesn't re-scroll. */
+    const scrolledTo = useRef<string | null>(null);
+
+    // A passive effect on purpose: ScrollToTop resets the window in a *layout*
+    // effect on the same navigation, so scrolling here before paint would only
+    // be undone. Depends on `resolved` as well as the hash because a row named
+    // by a link may not exist until the live log lands.
+    useEffect(() => {
+        if (!requestedRow || scrolledTo.current === requestedRow) return;
+
+        const row = document.getElementById(requestedRow);
+        if (!row) return;
+
+        scrolledTo.current = requestedRow;
+        row.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+    }, [requestedRow, resolved, reduceMotion]);
 
     // Art for the banner, drawn from the whole log rather than just the films
     // the club happens to have watched: the member's own image link first, then
@@ -231,12 +262,13 @@ const WatchedPage: React.FC = () => {
                 {resolved.length > 0 ? (
                     <ol className="space-y-2">
                         {resolved.map((entry) => (
-                            <li key={entry.imdbID}>
+                            <li key={entry.imdbID} id={watchedRowId(entry.imdbID)}>
                                 <WatchedFilmItem
                                     entry={entry}
                                     canEdit={canEdit}
                                     onSave={save}
                                     onRemove={remove}
+                                    highlighted={watchedRowId(entry.imdbID) === requestedRow}
                                 />
                             </li>
                         ))}

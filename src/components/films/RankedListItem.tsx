@@ -30,11 +30,18 @@ const SCORE_SOURCE_NOTE: Record<ScoreSource, string> = {
 };
 
 /**
- * Height of the poster thumb, shared with the rank numeral's band so the two
- * center on each other. Keep them defined here together — a poster resized on
- * its own would silently knock the numeral off center.
+ * Height of the poster, shared with the rank numeral's band so the two center
+ * on each other. Keep them defined here together — a poster resized on its own
+ * would silently knock the numeral off center.
+ *
+ * 96 tall on a phone, 120 from `sm` up: the poster is the only image the row
+ * has, and at the thumbnail size it used to be it read as a bullet beside the
+ * numeral rather than as the film. Width is its own constant only because the
+ * numeral's band doesn't share it, and the two must stay an exact 2:3 — a
+ * poster off its own ratio either letterboxes or crops the title off the top.
  */
-const POSTER_HEIGHT = 'h-[4.5rem]';
+const POSTER_HEIGHT = 'h-24 sm:h-30';
+const POSTER_WIDTH = 'w-16 sm:w-20';
 
 /**
  * The row's body is a grid rather than a flex row, for the note's sake alone.
@@ -155,12 +162,12 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                             // baseline, and the descender space under it would
                             // make the link box taller than the poster — enough
                             // to throw the rank numeral beside it off center.
-                            className={`block ${POSTER_HEIGHT} w-12 rounded-md object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 transition-opacity hover:opacity-80`}
+                            className={`block ${POSTER_HEIGHT} ${POSTER_WIDTH} rounded-md object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 transition-opacity hover:opacity-80`}
                             onError={() => setPosterFailed(true)}
                         />
                     ) : (
                         <span
-                            className={`flex ${POSTER_HEIGHT} w-12 items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}
+                            className={`flex ${POSTER_HEIGHT} ${POSTER_WIDTH} items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}
                         >
                             ?
                         </span>

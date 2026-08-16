@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
-import EntryCastStrip from './EntryCastStrip';
+import EntryPersonStrip from './EntryPersonStrip';
 import FilmStills from './FilmStills';
 import type { Rating } from '../../types/film';
 import type { EntryDetails } from '../../utils/entryDetails';
@@ -145,27 +145,14 @@ const EntryDetailsPanel: React.FC<EntryDetailsPanelProps> = ({
             <p className="max-w-prose text-sm leading-relaxed text-slate-300">{details.plot}</p>
         )}
 
-        {/* One wrapping line rather than a stack of rows: three credits with
-            short values would otherwise take a third of the panel's height to
-            say six words. */}
-        {details.credits.length > 0 && (
-            <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-400">
-                {details.credits.map((credit) => (
-                    <span key={credit.label}>
-                        <span className="text-xs uppercase tracking-wider text-slate-500">
-                            {credit.label}
-                        </span>{' '}
-                        <span className="text-slate-300">{credit.value}</span>
-                    </span>
-                ))}
-            </p>
-        )}
-
         {details.ratings.length > 0 && <EntryRatingChips ratings={details.ratings} imdbID={imdbID} />}
 
         {details.stills.length > 0 && <FilmStills images={details.stills} title={title} />}
 
-        <EntryCastStrip cast={details.cast} />
+        {/* Crew before cast, as the film pages have them: who made it, then who
+            is in it. */}
+        <EntryPersonStrip title="Crew" people={details.crew} />
+        <EntryPersonStrip title="Cast" people={details.cast} />
     </div>
 );
 

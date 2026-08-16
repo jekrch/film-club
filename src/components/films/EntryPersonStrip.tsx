@@ -1,20 +1,24 @@
 import React from 'react';
 
 import { tmdbPersonUrl } from '../../utils/personUtils';
-import type { ListCastMember } from '../../types/list';
+import type { EntryPerson } from '../../utils/entryDetails';
 
-interface EntryCastStripProps {
-    cast: ListCastMember[];
+interface EntryPersonStripProps {
+    /** The strip's heading — "Crew" or "Cast". */
+    title: string;
+    people: EntryPerson[];
 }
 
 /**
- * The cast of a film on a list or in a watch log: headshot, name, character.
+ * The people on a film in a list or a watch log: headshot, name, and what they
+ * did. Used twice per panel, for the crew and for the cast — the card is the
+ * same object either way, and only the subtitle differs (a job, or a part).
  *
  * Deliberately not `PersonStrip`, which is the club's. That one decides whether
  * a name is clickable from how many *club films* the person appears in, and a
  * click opens the person modal onto their club filmography. Most films here are
- * ones the club never watched, so their cast has no club filmography — the modal
- * would open on nothing. A name goes out to the actor's TMDb page instead, which
+ * ones the club never watched, so nobody on them has a club filmography — the
+ * modal would open on nothing. A name goes out to their TMDb page instead, which
  * is where the record actually is, and one with no id is plain text rather than
  * a dead link.
  *
@@ -24,19 +28,19 @@ interface EntryCastStripProps {
  * film's page, and a full-size portrait there weighs more than the row it is
  * expanding out of.
  */
-const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
-    if (cast.length === 0) return null;
+const EntryPersonStrip: React.FC<EntryPersonStripProps> = ({ title, people }) => {
+    if (people.length === 0) return null;
 
     return (
         <div>
             <h6 className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Cast
+                {title}
             </h6>
             {/* Negative margins with matching padding so a focus ring isn't
                 clipped by the scroll container — `overflow-x` clips the vertical
                 axis too. Same trick, same reason, as the club's strip. */}
             <div className="themed-scrollbar -mx-1 -mt-1 flex gap-4 overflow-x-auto px-1 pb-3 pt-1">
-                {cast.map((member, index) => {
+                {people.map((member, index) => {
                     const url = member.tmdbId ? tmdbPersonUrl(member.tmdbId) : null;
 
                     const portrait = member.profileUrl ? (
@@ -102,12 +106,12 @@ const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
                                 )}
                             </p>
 
-                            {member.character && (
+                            {member.role && (
                                 <p
                                     className="mt-0.5 line-clamp-2 text-xs leading-tight text-slate-500"
-                                    title={member.character}
+                                    title={member.role}
                                 >
-                                    {member.character}
+                                    {member.role}
                                 </p>
                             )}
                         </div>
@@ -118,4 +122,4 @@ const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
     );
 };
 
-export default EntryCastStrip;
+export default EntryPersonStrip;

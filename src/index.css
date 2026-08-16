@@ -263,6 +263,34 @@ h1 {
         }
     }
 
+    /* The row a link named on arrival — see WatchedPage's hash handling. The
+     page scrolls it into view, and this says which row that was: a ring blooms
+     and fades on its own, so nothing is left looking selected once the reader
+     has found it.
+
+     Not gated on prefers-reduced-motion, and deliberately so: nothing here
+     moves, it is a colour appearing and going again. The scroll that
+     accompanies it is what that preference governs, and WatchedPage makes that
+     one instant instead. */
+    @keyframes row-arrival {
+        0% {
+            box-shadow: 0 0 0 0 rgb(96 165 250 / 0);
+        }
+        15% {
+            box-shadow: 0 0 0 3px rgb(96 165 250 / 0.5);
+        }
+        60% {
+            box-shadow: 0 0 0 3px rgb(96 165 250 / 0.4);
+        }
+        100% {
+            box-shadow: 0 0 0 3px rgb(96 165 250 / 0);
+        }
+    }
+
+    .row-arrival {
+        animation: row-arrival 3s ease-out;
+    }
+
     @keyframes fadeIn {
         from {
             opacity: 0;

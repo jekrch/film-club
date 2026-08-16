@@ -83,6 +83,20 @@ export const compareWatched = (a: WatchedEntry, b: WatchedEntry): number =>
         ? a.imdbID.localeCompare(b.imdbID)
         : b.watchDate.localeCompare(a.watchDate);
 
+/** A member's log page. */
+export const watchedPathFor = (owner: string | undefined | null): string =>
+    `/watched/${encodeURIComponent(owner ?? '')}`;
+
+/**
+ * The DOM id of one row of the log, which doubles as the anchor another page
+ * links to when it wants that row in view on arrival — a profile's watch
+ * preview links to `/watched/Andy#log-tt0110912`, and the log page scrolls
+ * there rather than dropping the reader at the top of a hundred rows.
+ *
+ * Both sides go through here so the link and the target can't drift apart.
+ */
+export const watchedRowId = (imdbID: string): string => `log-${imdbID}`;
+
 /**
  * One member's log, most recent viewing first. Owner matching is
  * case-insensitive because `watched.json` is keyed by display name while

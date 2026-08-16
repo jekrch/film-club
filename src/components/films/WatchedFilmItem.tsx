@@ -36,8 +36,12 @@ const MAX_RATING = MAX_SCORE;
  * 3rem poster — which spent the row's most valuable space on its least
  * interesting field. The date is now a caption over the title, where the profile
  * preview has always put it, and the poster has the room that band was using.
+ *
+ * Sized to be read as artwork rather than as an icon: 72x108 on a phone,
+ * 88x132 from `sm` up. Both are exact 2:3, which is the one constraint here —
+ * a poster off its own ratio either letterboxes or crops the title off the top.
  */
-const POSTER_CLASS = 'h-24 w-16 sm:h-30 sm:w-20';
+const POSTER_CLASS = 'h-27 w-18 sm:h-33 sm:w-22';
 
 const FIELD_CLASS =
     'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
@@ -58,6 +62,12 @@ interface WatchedFilmItemProps {
     /** Saves a patch of the changed fields. Resolves when the write lands. */
     onSave: (imdbID: string, patch: WatchedPatch) => Promise<void>;
     onRemove: (imdbID: string) => Promise<void>;
+    /**
+     * True for the row a link arrived at by name, which blooms a ring and lets
+     * it fade — the arriving reader is scrolled here mid-log and needs to be
+     * told which row that was, but nothing should look selected afterwards.
+     */
+    highlighted?: boolean;
 }
 
 /**
@@ -74,7 +84,13 @@ interface WatchedFilmItemProps {
  * live), anything else goes out to IMDb, since a film with no club record has
  * no page on this site.
  */
-const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSave, onRemove }) => {
+const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
+    entry,
+    canEdit,
+    onSave,
+    onRemove,
+    highlighted = false,
+}) => {
     const { clubFilm, title, year, poster, imdbID, watchDate, blurb } = entry;
     // The resolved key — theirs if they set one, the film's otherwise, null if
     // they hid it — never the raw override this row's editor writes.
@@ -163,7 +179,11 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
         // over the row and has to be clipped to the rounded corners. The blocks
         // below are `relative` so they stack above the art — a positioned
         // element paints over static siblings regardless of source order.
-        <div className="group relative overflow-hidden rounded-xl border border-slate-600/30 bg-slate-700/25 p-3 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/45 sm:p-4">
+        <div
+            className={`group relative overflow-hidden rounded-xl border border-slate-600/30 bg-slate-700/25 p-3 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/45 sm:p-4${
+                highlighted ? ' row-arrival' : ''
+            }`}
+        >
             {/* Not while the editor is open: the form is the whole row then, and
                 art behind a date field and a textarea is just noise. */}
             {!editing && <RowFrameWash image={entryFrameImage(entry)} />}
@@ -262,7 +282,7 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                                                 {entry.scoreQualifier}
                                             </span>
                                         )}
-                                        <span className="text-slate-600">/{MAX_RATING}</span>
+                                        <span className="text-slate-500">/{MAX_RATING}</span>
                                     </span>
                                 )}
 

@@ -23,10 +23,17 @@ describe('summaryDetails', () => {
         ).toEqual({
             tagline: 'A love story of the highest order.',
             plot: 'A woman leaves her husband.',
-            credits: [],
+            crew: [],
             ratings: [],
             stills: [],
-            cast: [{ name: 'Isabelle Adjani', character: 'Anna', tmdbId: 5309 }],
+            cast: [
+                {
+                    name: 'Isabelle Adjani',
+                    role: 'Anna',
+                    profileUrl: null,
+                    tmdbId: 5309,
+                },
+            ],
         });
     });
 
@@ -42,22 +49,41 @@ describe('summaryDetails', () => {
         expect(summaryDetails(summary({ plot: 'Just a summary.' }))).not.toBeNull();
         expect(summaryDetails(summary({ cast: [{ name: 'Someone' }] }))).not.toBeNull();
         expect(summaryDetails(summary({ director: 'Someone' }))).not.toBeNull();
+        expect(summaryDetails(summary({ crew: [{ name: 'Someone', job: 'Director' }] }))).not.toBeNull();
         expect(
             summaryDetails(summary({ ratings: [{ source: 'Rotten Tomatoes', value: '96%' }] }))
         ).not.toBeNull();
         expect(summaryDetails(summary({ backdropImages: ['still.jpg'] }))).not.toBeNull();
     });
 
-    it('labels the credits it has and drops the ones it hasn’t', () => {
-        // Order is fixed here rather than at the panel, so every row reads the
-        // same way round however many of the three a film knows.
+    it('gives one card per person, however many jobs they held', () => {
+        // A writer-director is one face. TMDb credits them once per job, and
+        // CI stores it that way; the grouping is this module's business.
+        const details = summaryDetails(
+            summary({
+                crew: [
+                    { name: 'Andrzej Żuławski', job: 'Director', tmdbId: 40, profileUrl: 'z.jpg' },
+                    { name: 'Andrzej Żuławski', job: 'Story', tmdbId: 40 },
+                    { name: 'Bruno Nuytten', job: 'Director of Photography', tmdbId: 41 },
+                ],
+            })
+        );
+
+        expect(details?.crew).toEqual([
+            { name: 'Andrzej Żuławski', role: 'Director · Story', profileUrl: 'z.jpg', tmdbId: 40 },
+            { name: 'Bruno Nuytten', role: 'Cinematography', profileUrl: null, tmdbId: 41 },
+        ]);
+    });
+
+    it('falls back to OMDB’s bare names before CI has fetched a crew', () => {
+        // No face and nowhere to link, but the row still says who directed it.
         expect(
-            summaryDetails(
-                summary({ cinematographer: 'Bruno Nuytten', director: 'Andrzej Żuławski' })
-            )?.credits
+            summaryDetails(summary({ director: 'Andrzej Żuławski', writer: 'A Writer, B Writer' }))
+                ?.crew
         ).toEqual([
-            { label: 'Director', value: 'Andrzej Żuławski' },
-            { label: 'Cinematography', value: 'Bruno Nuytten' },
+            { name: 'Andrzej Żuławski', role: 'Director', profileUrl: null, tmdbId: null },
+            { name: 'A Writer', role: 'Writer', profileUrl: null, tmdbId: null },
+            { name: 'B Writer', role: 'Writer', profileUrl: null, tmdbId: null },
         ]);
 
         // Whitespace is not a credit, so it opens no panel of its own.
@@ -90,26 +116,31 @@ describe('clubFilmDetails', () => {
         const details = clubFilmDetails(film);
         expect(details?.tagline).toBe('In space no one can hear you scream.');
         expect(details?.cast).toEqual([
-            { name: 'Sigourney Weaver', character: 'Ripley', profileUrl: null, tmdbId: 10205 },
+            { name: 'Sigourney Weaver', role: 'Ripley', profileUrl: null, tmdbId: 10205 },
         ]);
     });
 
-    it('takes its credits, scores and stills from the club record', () => {
+    it('takes its crew, scores and stills from the club record', () => {
         const film = makeFilm({
             imdbID: 'tt0000001',
             director: 'Mike Leigh',
             writer: 'Mike Leigh',
-            cinematographer: 'Dick Pope',
             ratings: [{ source: 'Internet Movie Database', value: '7.7/10' }],
             backdropImage: 'curated.jpg',
             backdropImages: ['tmdb-1.jpg'],
+            personProfiles: { 'mike leigh': { tmdbId: 55366, profileUrl: 'leigh.jpg' } },
         });
 
         const details = clubFilmDetails(film);
-        expect(details?.credits).toEqual([
-            { label: 'Director', value: 'Mike Leigh' },
-            { label: 'Writer', value: 'Mike Leigh' },
-            { label: 'Cinematography', value: 'Dick Pope' },
+        // Directed and wrote it: one card, both roles, linked through the film's
+        // own personProfiles map.
+        expect(details?.crew).toEqual([
+            {
+                name: 'Mike Leigh',
+                role: 'Director · Writer',
+                profileUrl: 'leigh.jpg',
+                tmdbId: 55366,
+            },
         ]);
         expect(details?.ratings).toEqual([
             { source: 'Internet Movie Database', value: '7.7/10' },

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { EyeIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, EyeIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 import AccentCard from '../common/AccentCard';
 import RowFrameWash from '../common/RowFrameWash';
@@ -11,6 +11,8 @@ import {
     formatWatchedScore,
     getWatchedForMember,
     resolveWatchedEntries,
+    watchedPathFor,
+    watchedRowId,
 } from '../../utils/watchedUtils';
 
 interface ProfileWatchedSectionProps {
@@ -48,7 +50,7 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
 
     if (entries.length === 0 && !canEdit) return null;
 
-    const watchedPath = `/watched/${encodeURIComponent(owner ?? '')}`;
+    const watchedPath = watchedPathFor(owner);
 
     return (
         <AccentCard accent="blue" className="mb-8 p-4 sm:p-6 md:p-10">
@@ -91,7 +93,14 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
                                     element paints over static siblings whatever
                                     the source order. */}
                                 <Link
-                                    to={watchedPath}
+                                    to={{
+                                        pathname: watchedPath,
+                                        // Names the row it came from, so the log
+                                        // opens with this film in view instead of
+                                        // at the top with no sign of where the
+                                        // click went.
+                                        hash: `#${watchedRowId(entry.imdbID)}`,
+                                    }}
                                     className="group relative block overflow-hidden rounded-xl border border-slate-600/30 bg-slate-700/25 px-3 py-3 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/45 sm:px-4"
                                 >
                                     <RowFrameWash image={entryFrameImage(entry)} />
@@ -136,14 +145,24 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
                         ))}
                     </ul>
 
-                    {entries.length > preview.length && (
-                        <Link
-                            to={watchedPath}
-                            className="mt-3 inline-block text-sm text-blue-400 transition-colors hover:text-blue-300"
-                        >
-                            All {entries.length} films watched →
-                        </Link>
-                    )}
+                    {/* Unconditional, and shaped like the rows above it. The rows
+                        link to the log too, but nothing about a row says so —
+                        and a member with four entries or fewer used to have no
+                        visible way through to the page at all. A full-width
+                        footer reads as a way out of the card in a way an inline
+                        line of text under four cards does not. */}
+                    <Link
+                        to={watchedPath}
+                        className="group mt-2 flex items-center justify-center gap-1.5 rounded-xl border border-slate-600/30 bg-slate-700/20 px-3 py-2.5 text-sm text-blue-400 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/40 hover:text-blue-300"
+                    >
+                        {entries.length > preview.length
+                            ? `All ${entries.length} films watched`
+                            : 'Open the full log'}
+                        <ArrowRightIcon
+                            className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                            aria-hidden="true"
+                        />
+                    </Link>
                 </>
             )}
         </AccentCard>
