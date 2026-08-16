@@ -12,6 +12,8 @@
         "description": "I came up with this list with Jenny while we were walking to a screening of this demented body gore thriller",
         "image": null,
         "posterImage": null,
+        "trailerKey": null,
+        "hideTrailer": false,
         "score": null
       },
       {
@@ -20,6 +22,8 @@
         "description": "This was as surprisingly good as the analyst is very very bad",
         "image": null,
         "posterImage": null,
+        "trailerKey": null,
+        "hideTrailer": false,
         "score": 8
       },
       {
@@ -28,23 +32,29 @@
         "description": "The violation of trust here is just breathtaking",
         "image": null,
         "posterImage": null,
+        "trailerKey": null,
+        "hideTrailer": false,
         "score": 8
       },
       {
         "rank": 4,
-        "imdbID": "tt0063522",
-        "description": "OK, it's a doctor not a therapist, but the protagonist is so psychologically vulnerable that I'm counting it anyways.",
-        "image": null,
-        "posterImage": null,
-        "score": 7.5
-      },
-      {
-        "rank": 5,
         "imdbID": "tt5052448",
         "description": "The hypnotherapy flavor",
         "image": null,
         "posterImage": null,
+        "trailerKey": null,
+        "hideTrailer": false,
         "score": 7
+      },
+      {
+        "rank": 5,
+        "imdbID": "tt0063522",
+        "description": "OK, it's a doctor not a therapist, but the protagonist is so psychologically vulnerable that I'm counting it anyways.",
+        "image": null,
+        "posterImage": null,
+        "trailerKey": null,
+        "hideTrailer": false,
+        "score": 7.5
       }
     ]
   }
