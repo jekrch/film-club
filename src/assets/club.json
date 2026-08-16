@@ -1,57 +1,57 @@
 [
-    {
-      "name": "Andy",
-      "title": "Filmmaker & Director",
-      "bio": "Bio coming soon (?)",
-      "queue": 3,
-      "image": "/images/andy.jpg",
-      "color": "emerald-300"
-    },
-    {
-      "name": "Gabe",
-      "title": "Scientist & Professor",
-      "bio": "We're learning more every day",
-      "queue": 4,
-      "image": "/images/gabe.jpg",
-      "color": "indigo-300"
-    },
-    {
-      "name": "Jacob",
-      "title": "Technologist & Ex-Philosopher",
-      "bio": "This www is under construction",
-      "url": "https://jacobkrch.com",
-      "queue": 2,
-      "image": "/images/jacob.jpg",
-      "color": "sky-300",
-      "interview": [
+  {
+    "name": "Andy",
+    "title": "Filmmaker & Director",
+    "bio": "Bio coming soon (?)",
+    "queue": 3,
+    "image": "/images/andy.jpg",
+    "color": "emerald-300"
+  },
+  {
+    "name": "Gabe",
+    "title": "Scientist & Professor",
+    "bio": "We're learning more every day",
+    "queue": 4,
+    "image": "/images/gabe.jpg",
+    "color": "indigo-300"
+  },
+  {
+    "name": "Jacob",
+    "title": "Technologist & Ex-Philosopher",
+    "bio": "This www is under construction",
+    "url": "https://jacobkrch.com",
+    "queue": 2,
+    "image": "/images/jacob.jpg",
+    "color": "sky-300",
+    "interview": [
       {
-        "question": "What is your favorite film?",
-        "answer": "This is a question that I don't answer on principle ...unless that comes across as rude, in which case I give an answer and don't end up feeling great about it."
+        "question": "What kind of films get a high score from you?",
+        "answer": "I think a film has to change my life in some way for it to be a truly great film to me. It's kind of a nebulous standard, but I honestly have it in mind when I'm coming up with my scores."
       },
       {
         "question": "What do you think about the Criterion Collection?",
         "answer": "I think we're all still wondering what a Criterion Collection is."
       }
     ]
-    },
-    {
-      "name": "Joey",
-      "title": "Education Leader & Artist",
-      "bio": "Our researchers are on it",
-      "queue": 1,
-      "image": "/images/joey.jpg",
-      "color": "rose-300"
-    },
-    {
-      "name": "Mark",
-      "title": "Unionizer & Filmologist",
-      "bio": "Emeritus member",
-      "image": "/images/mark.jpg"
-    },
-    {
-      "name": "Greg",
-      "title": "Intern",
-      "bio": "You gotta start somewhere",
-      "image": "/images/greg.jpg"
-    }
-  ]
+  },
+  {
+    "name": "Joey",
+    "title": "Education Leader & Artist",
+    "bio": "Our researchers are on it",
+    "queue": 1,
+    "image": "/images/joey.jpg",
+    "color": "rose-300"
+  },
+  {
+    "name": "Mark",
+    "title": "Unionizer & Filmologist",
+    "bio": "Emeritus member",
+    "image": "/images/mark.jpg"
+  },
+  {
+    "name": "Greg",
+    "title": "Intern",
+    "bio": "You gotta start somewhere",
+    "image": "/images/greg.jpg"
+  }
+]
