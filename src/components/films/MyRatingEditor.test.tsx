@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import MyRatingEditor from './MyRatingEditor';
-import { makeFilm } from '../../test-utils/factories';
+import { makeClubInfo, makeFilm, makeRating } from '../../test-utils/factories';
 import type { RatingOverride } from '../../api/clubApi';
 import type { ClubAuthValue } from '../../auth/GoogleAuth';
 
@@ -28,9 +28,9 @@ jest.mock('../../auth/GoogleAuth', () => ({
 const film = makeFilm({
     title: 'Suspiria',
     imdbID: 'tt0076786',
-    movieClubInfo: {
-        clubRatings: [{ user: 'Andy', score: 7, blurb: 'From the sheet.' }],
-    },
+    movieClubInfo: makeClubInfo({
+        clubRatings: [makeRating({ user: 'Andy', score: 7, blurb: 'From the sheet.' })],
+    }),
 });
 
 const override: RatingOverride = {
