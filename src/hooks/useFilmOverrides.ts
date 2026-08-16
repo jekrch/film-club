@@ -1,19 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { getOverrides, type RatingOverride } from '../api/clubApi';
-import { useClubAuth } from '../auth/GoogleAuth';
+import type { RatingOverride } from '../api/clubApi';
+import { useOverrides } from '../contexts/OverridesContext';
 
 /**
- * The member-authored rating edits recorded for one film, read live from `main`.
+ * The member-authored rating edits recorded for one film.
  *
- * Two things need this. The editor needs it so a member who saved a minute ago
- * sees their own value rather than the one baked into the bundle at the last
- * build (§8.8), and the ratings list needs it to mark rows the sheet no longer
- * controls (§8.7).
+ * A slice of {@link useOverrides}, which holds the whole of `overrides.json`
+ * and fetches it once per session. This hook used to do the fetching itself,
+ * once per film-detail page view, for a file that is the same on every page.
  *
- * It fetches only while signed in — the endpoint is authenticated, and the
- * markers are for members editing, not for visitors. Signed out it settles at
- * an empty map, so callers can render it unconditionally.
+ * The interface is unchanged from that version, so callers still get an empty
+ * map when signed out and can render it unconditionally.
  */
 export interface FilmOverridesState {
     /** Keyed by lowercased member name, as `overrides.json` stores them. */
@@ -21,57 +19,23 @@ export interface FilmOverridesState {
     loading: boolean;
     error: string | null;
     /**
-     * Records the result of a write without a refetch. The worker returns the
-     * stored record, so re-reading `main` right after a save would cost a round
-     * trip to learn what the response already said. `null` removes the row.
+     * Records the result of a write without a refetch, and persists it so it
+     * survives a reload while the CDN catches up. `null` removes the row.
      */
     applyLocal: (user: string, rating: RatingOverride | null) => void;
 }
 
 export function useFilmOverrides(imdbId: string | undefined): FilmOverridesState {
-    const { status, withToken } = useClubAuth();
-    const [ratings, setRatings] = useState<Record<string, RatingOverride>>({});
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const { films, loading, error, applyRating } = useOverrides();
 
-    useEffect(() => {
-        if (status !== 'signed-in' || !imdbId) {
-            setRatings({});
-            setError(null);
-            return;
-        }
+    const ratings = useMemo(() => (imdbId ? (films[imdbId]?.ratings ?? {}) : {}), [films, imdbId]);
 
-        const controller = new AbortController();
-        setLoading(true);
-        setError(null);
-
-        withToken((token) => getOverrides(token, controller.signal))
-            .then((overrides) => {
-                if (controller.signal.aborted) return;
-                setRatings(overrides.films?.[imdbId]?.ratings ?? {});
-            })
-            .catch((err: unknown) => {
-                if (controller.signal.aborted) return;
-                // A failed read costs the markers and the live values, not the
-                // ability to save — so it reports itself and leaves the editor
-                // working off the bundled data.
-                setError(err instanceof Error ? err.message : "Couldn't load your saved edits.");
-            })
-            .finally(() => {
-                if (!controller.signal.aborted) setLoading(false);
-            });
-
-        return () => controller.abort();
-    }, [status, imdbId, withToken]);
-
-    const applyLocal = useCallback((user: string, rating: RatingOverride | null) => {
-        setRatings((current) => {
-            const next = { ...current };
-            if (rating) next[user.toLowerCase()] = rating;
-            else delete next[user.toLowerCase()];
-            return next;
-        });
-    }, []);
+    const applyLocal = useCallback(
+        (user: string, rating: RatingOverride | null) => {
+            if (imdbId) applyRating(imdbId, user, rating);
+        },
+        [applyRating, imdbId]
+    );
 
     return { ratings, loading, error, applyLocal };
 }

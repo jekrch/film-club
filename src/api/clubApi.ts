@@ -7,15 +7,18 @@
  * bearer header — the worker has no unauthenticated surface beyond the CORS
  * preflight.
  *
- * The read endpoints deliberately go to the worker rather than the bundle. The
- * worker reads `main` directly, so the editor shows a save that hasn't finished
- * deploying yet; the bundle is up to a Pages build behind (§8.8).
+ * Only the two endpoints that *need* the worker are here. Reading the editable
+ * files no longer does: the repository is public, so `repoData.ts` fetches them
+ * from `raw.githubusercontent.com` for free instead of spending a Workers
+ * request on each. What remains is `/api/session`, which checks a Google token
+ * against a secret, `/api/films/search`, which keeps the OMDB key server-side,
+ * and every write.
  */
 
 import { EDITOR_API_URL as API_BASE, GOOGLE_CLIENT_ID } from '../config/editorEnv';
 import type { FilmListDefinition, FilmListEntry } from '../types/list';
 import type { InterviewItem, TeamMember } from '../types/team';
-import type { WatchedEntry, WatchedLog } from '../types/watched';
+import type { WatchedEntry } from '../types/watched';
 
 export { GOOGLE_CLIENT_ID };
 
@@ -160,9 +163,6 @@ async function request<T>(path: string, token: string, options: RequestOptions =
 export const getSession = (token: string, signal?: AbortSignal): Promise<SessionInfo> =>
     request<SessionInfo>('/api/session', token, { signal });
 
-export const getOverrides = (token: string, signal?: AbortSignal): Promise<OverridesFile> =>
-    request<OverridesFile>('/api/overrides', token, { signal });
-
 /** The result of a rating write. `changed: false` means the save was a no-op. */
 export interface RatingWriteResult {
     imdbID: string;
@@ -185,16 +185,6 @@ export const deleteRating = (
     imdbId: string
 ): Promise<{ imdbID: string; reverted: boolean }> =>
     request(`/api/films/${encodeURIComponent(imdbId)}/rating`, token, { method: 'DELETE' });
-
-export const getLists = async (
-    token: string,
-    signal?: AbortSignal
-): Promise<FilmListDefinition[]> => {
-    const { lists } = await request<{ lists: FilmListDefinition[] }>('/api/lists', token, {
-        signal,
-    });
-    return lists;
-};
 
 /** The result of a list write; `list.id` is authoritative and may be worker-assigned. */
 export interface ListWriteResult {
@@ -256,12 +246,6 @@ export interface WatchedWriteResult {
     changed?: boolean;
 }
 
-/** Every member's log, read live from `main`. */
-export const getWatched = async (token: string, signal?: AbortSignal): Promise<WatchedLog> => {
-    const { watched } = await request<{ watched: WatchedLog }>('/api/watched', token, { signal });
-    return watched;
-};
-
 export const putWatched = (
     token: string,
     imdbId: string,
@@ -316,12 +300,6 @@ export interface ProfileWriteResult {
     member: TeamMember;
     changed: boolean;
 }
-
-/** Every member's profile, read live from `main`. */
-export const getClub = async (token: string, signal?: AbortSignal): Promise<TeamMember[]> => {
-    const { club } = await request<{ club: TeamMember[] }>('/api/club', token, { signal });
-    return club;
-};
 
 export const putProfile = (token: string, patch: ProfilePatch): Promise<ProfileWriteResult> =>
     request<ProfileWriteResult>('/api/profile', token, { method: 'PUT', body: patch });

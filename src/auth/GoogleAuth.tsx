@@ -10,6 +10,7 @@ import React, {
 } from 'react';
 
 import { ClubApiError, GOOGLE_CLIENT_ID, getSession, isEditorConfigured } from '../api/clubApi';
+import { clearWrites } from '../api/writeCache';
 import { initGoogleIdentity, readTokenExpiry } from './gis';
 import { clearToken, loadToken, saveToken } from './sessionStore';
 
@@ -135,6 +136,10 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
         // offers the chooser rather than silently re-picking the same account —
         // which is the whole point of signing out on a shared machine.
         window.google?.accounts?.id?.disableAutoSelect();
+        // Same reasoning for the cached write results: they are one member's
+        // unsettled saves, and the next person to sign in on this tab should
+        // not be shown them.
+        clearWrites();
         finishResume();
         endSession(null);
     }, [endSession, finishResume]);

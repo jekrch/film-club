@@ -19,11 +19,12 @@ import { useClubAuth } from '../auth/GoogleAuth';
 import {
     NEW_LIST_ID,
     deleteList,
-    getLists,
     putList,
     type FilmSearchResult,
     type ListInput,
 } from '../api/clubApi';
+import { fetchLists } from '../api/repoData';
+import { recordWrite, writeKeys } from '../api/writeCache';
 import { getListById, resolveListEntry, type ScoreSource } from '../utils/listUtils';
 import { IMAGE_URL_LIMIT, parseImageUrl } from '../utils/imageUrl';
 import { TRAILER_URL_LIMIT, parseTrailerLink } from '../utils/youtube';
@@ -459,13 +460,13 @@ const ListEditorPage: React.FC = () => {
         if (bundled && !touched.current) seed(bundled);
     }, [creating, listId, seed]);
 
-    // Then the live copy from `main`, which is what makes editing a list twice
-    // in a minute work (§8.8).
+    // Then the live copy from the repo, which is what makes editing a list
+    // twice in a minute work (§8.8).
     useEffect(() => {
         if (creating || status !== 'signed-in') return;
         const controller = new AbortController();
 
-        withToken((token) => getLists(token, controller.signal))
+        fetchLists(controller.signal)
             .then((lists) => {
                 if (controller.signal.aborted) return;
                 setLiveChecked(true);
@@ -480,7 +481,7 @@ const ListEditorPage: React.FC = () => {
             });
 
         return () => controller.abort();
-    }, [creating, listId, status, withToken, seed]);
+    }, [creating, listId, status, seed]);
 
     const chosen = useMemo(() => new Set(entries.map((entry) => entry.imdbID)), [entries]);
 
@@ -603,6 +604,10 @@ const ListEditorPage: React.FC = () => {
                 putList(token, listId ?? NEW_LIST_ID, input)
             );
             touched.current = false;
+            // Keyed by the worker's id rather than the one in the URL: on a
+            // create they differ, and the id it assigned is the one the list
+            // page is about to look for.
+            recordWrite('list', writeKeys.list(list.id), list);
             // The worker assigns the permanent id on create, so where to go next
             // is its answer, not ours.
             navigate(`/lists/${list.id}`, { replace: true });
@@ -642,6 +647,7 @@ const ListEditorPage: React.FC = () => {
         try {
             await withToken((token) => deleteList(token, listId));
             touched.current = false;
+            recordWrite('list', writeKeys.list(listId), null);
             navigate(owner ? `/profile/${encodeURIComponent(owner)}` : '/about', { replace: true });
         } catch (err) {
             setSaveError(err instanceof Error ? err.message : 'Delete failed.');

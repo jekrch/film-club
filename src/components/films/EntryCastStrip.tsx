@@ -55,7 +55,10 @@ const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
                     );
 
                     return (
-                        <div key={`${member.name}-${index}`} className="w-20 flex-shrink-0 text-center">
+                        <div
+                            key={`${member.name}-${index}`}
+                            className="w-20 flex-shrink-0 text-center"
+                        >
                             {url ? (
                                 <a
                                     href={url}
@@ -72,7 +75,10 @@ const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
                                 </span>
                             )}
 
-                            <p className="truncate text-xs font-medium leading-tight" title={member.name}>
+                            <p
+                                className="truncate text-xs font-medium leading-tight"
+                                title={member.name}
+                            >
                                 {url ? (
                                     <a
                                         href={url}

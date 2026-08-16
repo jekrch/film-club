@@ -13,6 +13,7 @@ import ListEditorPage from './pages/ListEditorPage';
 import WatchedPage from './pages/WatchedPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
+import { OverridesProvider } from './contexts/OverridesContext';
 import { ClubAuthProvider } from './auth/GoogleAuth';
 import './index.css';
 import ScrollToTop from './components/layout/ScrollToTop';
@@ -77,12 +78,16 @@ function App() {
           ordinary page view: no script loads and no request is made until a
           member opens an editing surface and signs in. */}
             <ClubAuthProvider>
-                <Router>
-                    <ScrollToTop />
-                    <ErrorBoundary>
-                        <AppContent />
-                    </ErrorBoundary>
-                </Router>
+                {/* One fetch of `overrides.json` for the whole session, rather than
+              one per film page. Inert until someone signs in. */}
+                <OverridesProvider>
+                    <Router>
+                        <ScrollToTop />
+                        <ErrorBoundary>
+                            <AppContent />
+                        </ErrorBoundary>
+                    </Router>
+                </OverridesProvider>
             </ClubAuthProvider>
         </ViewSettingsProvider>
     );

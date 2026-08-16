@@ -12,11 +12,12 @@ import WatchedFilmItem from '../components/films/WatchedFilmItem';
 import { useClubAuth } from '../auth/GoogleAuth';
 import {
     deleteWatched,
-    getWatched,
     putWatched,
     type FilmSearchResult,
     type WatchedPatch,
 } from '../api/clubApi';
+import { fetchWatched } from '../api/repoData';
+import { recordWrite, writeKeys } from '../api/writeCache';
 import { getTeamMemberByName } from '../types/team';
 import type { WatchedEntry } from '../types/watched';
 import { compareWatched, getWatchedForMember, resolveWatchedEntries } from '../utils/watchedUtils';
@@ -59,13 +60,13 @@ const WatchedPage: React.FC = () => {
     const actingFor = owner && signedInAs && owner !== signedInAs ? owner : undefined;
 
     // The bundle renders instantly and is right except for saves that haven't
-    // deployed yet; the live copy from `main` is what makes logging two films a
-    // minute apart behave (§8.8).
+    // deployed yet; the live copy from the repo is what makes logging two films
+    // a minute apart behave (§8.8).
     useEffect(() => {
         if (status !== 'signed-in' || !owner) return;
         const controller = new AbortController();
 
-        withToken((token) => getWatched(token, controller.signal))
+        fetchWatched(controller.signal)
             .then((log) => {
                 if (controller.signal.aborted || touched.current) return;
                 const key = Object.keys(log).find(
@@ -79,7 +80,7 @@ const WatchedPage: React.FC = () => {
             });
 
         return () => controller.abort();
-    }, [status, owner, withToken]);
+    }, [status, owner]);
 
     const resolved = useMemo(() => resolveWatchedEntries(entries), [entries]);
     const logged = useMemo(() => new Set(entries.map((entry) => entry.imdbID)), [entries]);
@@ -92,15 +93,23 @@ const WatchedPage: React.FC = () => {
     // what's logged here the club never watched.
     const collage = useMemo(() => resolved.map(entryFrameSource), [resolved]);
 
-    /** Folds a written entry into local state, keeping the log in watch order. */
-    const applyLocal = useCallback((entry: WatchedEntry) => {
-        touched.current = true;
-        setEntries((current) =>
-            [...current.filter((existing) => existing.imdbID !== entry.imdbID), entry].sort(
-                compareWatched
-            )
-        );
-    }, []);
+    /**
+     * Folds a written entry into local state, keeping the log in watch order,
+     * and persists it so a reload during GitHub's five-minute CDN window still
+     * shows the save rather than the row it replaced.
+     */
+    const applyLocal = useCallback(
+        (entry: WatchedEntry) => {
+            touched.current = true;
+            if (owner) recordWrite('watched', writeKeys.watched(owner, entry.imdbID), entry);
+            setEntries((current) =>
+                [...current.filter((existing) => existing.imdbID !== entry.imdbID), entry].sort(
+                    compareWatched
+                )
+            );
+        },
+        [owner]
+    );
 
     const save = useCallback(
         async (imdbID: string, patch: WatchedPatch) => {
@@ -116,8 +125,14 @@ const WatchedPage: React.FC = () => {
 
     const remove = useCallback(
         async (imdbID: string) => {
-            await withToken((token) => deleteWatched(token, imdbID, actingFor));
+            // The worker echoes the owner it resolved, which is the name the
+            // tombstone has to be keyed by when an admin removes someone
+            // else's row.
+            const { owner: removedFrom } = await withToken((token) =>
+                deleteWatched(token, imdbID, actingFor)
+            );
             touched.current = true;
+            recordWrite('watched', writeKeys.watched(removedFrom, imdbID), null);
             setEntries((current) => current.filter((entry) => entry.imdbID !== imdbID));
             setNotice('Removed — live on the site in about a minute.');
             setError(null);
@@ -166,7 +181,7 @@ const WatchedPage: React.FC = () => {
             <HeroBanner sources={collage} className="mb-8">
                 <p className="mb-3 text-xs uppercase tracking-[0.2em] text-blue-400/80">Watched</p>
                 <h1 className="mb-3 break-words text-3xl font-thin text-slate-100 sm:text-4xl">
-                    {owner}'s watch log
+                    {owner}'s log
                 </h1>
                 <p className="text-slate-400">
                     Films {isOwnLog ? 'you' : owner} watched outside the club, newest first.{' '}

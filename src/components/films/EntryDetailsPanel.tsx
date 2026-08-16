@@ -60,19 +60,12 @@ interface EntryDetailsPanelProps {
  * browser to work out it needn't fetch.
  */
 const EntryDetailsPanel: React.FC<EntryDetailsPanelProps> = ({ details, panelId }) => (
-    <div
-        id={panelId}
-        className="mt-3 space-y-3 border-t border-slate-600/30 pt-3 animate-fadeIn"
-    >
+    <div id={panelId} className="mt-3 space-y-3 border-t border-slate-600/30 pt-3 animate-fadeIn">
         {/* The tagline is the film's own marketing voice, so it is set apart
             from the summary rather than run into it. */}
-        {details.tagline && (
-            <p className="text-sm italic text-slate-400">{details.tagline}</p>
-        )}
+        {details.tagline && <p className="text-sm italic text-slate-400">{details.tagline}</p>}
 
-        {details.plot && (
-            <p className="text-sm leading-relaxed text-slate-300">{details.plot}</p>
-        )}
+        {details.plot && <p className="text-sm leading-relaxed text-slate-300">{details.plot}</p>}
 
         <EntryCastStrip cast={details.cast} />
     </div>

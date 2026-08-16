@@ -20,10 +20,7 @@ import {
     ClubApiError,
     NEW_LIST_ID,
     deleteWatched,
-    getClub,
-    getLists,
     getSession,
-    getWatched,
     isEditorConfigured,
     putList,
     putRating,
@@ -140,7 +137,11 @@ describe('request — failure handling', () => {
     it("surfaces the worker's own message and status", async () => {
         mockFetch.mockResolvedValue(respond(403, { error: "That's Andy's list" }));
 
-        const error = await getLists(TOKEN).catch((e: unknown) => e);
+        const error = await putList(TOKEN, 'andys-noir', {
+            name: 'Noir',
+            description: null,
+            entries: [],
+        }).catch((e: unknown) => e);
 
         expect(error).toBeInstanceOf(ClubApiError);
         expect(error).toMatchObject({ status: 403, message: "That's Andy's list" });
@@ -157,7 +158,7 @@ describe('request — failure handling', () => {
     it('falls back to a generic message when the body will not parse', async () => {
         mockFetch.mockResolvedValue(respond(522, NOT_JSON));
 
-        const error = await getLists(TOKEN).catch((e: unknown) => e);
+        const error = await getSession(TOKEN).catch((e: unknown) => e);
 
         expect(error).toBeInstanceOf(ClubApiError);
         expect(error).toMatchObject({ status: 522, message: 'Request failed (522).' });
@@ -165,7 +166,7 @@ describe('request — failure handling', () => {
 
     it('falls back when the JSON body carries no error field', async () => {
         mockFetch.mockResolvedValue(respond(500, { unexpected: true }));
-        await expect(getLists(TOKEN)).rejects.toMatchObject({
+        await expect(getSession(TOKEN)).rejects.toMatchObject({
             status: 500,
             message: 'Request failed (500).',
         });
@@ -202,25 +203,11 @@ describe('request — failure handling', () => {
     });
 });
 
-// Each read endpoint returns its payload under a named key. Unwrapping is the
-// only logic in these wrappers, and getting it wrong yields `undefined` rather
-// than an error — a silent empty page.
+// `searchFilms` is the last read left on the worker — the four that fetched
+// editable files moved to `repoData.ts`. Unwrapping the payload key is the only
+// logic in it, and getting that wrong yields `undefined` rather than an error:
+// a silently empty picker.
 describe('read wrappers unwrap their payload key', () => {
-    it('getLists returns the lists array', async () => {
-        mockFetch.mockResolvedValue(respond(200, { lists: [{ id: 'a' }, { id: 'b' }] }));
-        await expect(getLists(TOKEN)).resolves.toEqual([{ id: 'a' }, { id: 'b' }]);
-    });
-
-    it('getWatched returns the log', async () => {
-        mockFetch.mockResolvedValue(respond(200, { watched: { andy: [] } }));
-        await expect(getWatched(TOKEN)).resolves.toEqual({ andy: [] });
-    });
-
-    it('getClub returns the member array', async () => {
-        mockFetch.mockResolvedValue(respond(200, { club: [{ name: 'Andy' }] }));
-        await expect(getClub(TOKEN)).resolves.toEqual([{ name: 'Andy' }]);
-    });
-
     it('searchFilms returns the results array', async () => {
         const hit = { imdbID: 'tt1', title: 'Tokyo Story', year: '1953', poster: null };
         mockFetch.mockResolvedValue(respond(200, { results: [hit] }));

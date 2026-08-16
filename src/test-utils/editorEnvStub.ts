@@ -10,3 +10,9 @@
  */
 export const EDITOR_API_URL = '';
 export const GOOGLE_CLIENT_ID = '';
+
+// The data-source settings do have working defaults in the real module, and
+// `repoData`'s tests assert on the URLs built from them, so the stub carries
+// the same values rather than blanking them.
+export const DATA_REPO = 'jekrch/film-club';
+export const DATA_BRANCH = 'main';

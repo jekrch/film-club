@@ -77,7 +77,7 @@ const renderFor = (memberName: string) =>
 describe('WatchedPage', () => {
     it('renders the log under its owner, with a count', () => {
         renderFor('Andy');
-        expect(screen.getByRole('heading', { name: /Andy's watch log/i })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /Andy's log/i })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: '2 Films' })).toBeInTheDocument();
     });
 
