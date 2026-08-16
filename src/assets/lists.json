@@ -4,26 +4,39 @@
     "name": "Even Your Therapist",
     "owner": "Jacob",
     "description": "When they're all out to get you... even your dang therapist! (warning: spoilers)",
+    "ranked": false,
     "entries": [
       {
         "rank": 1,
         "imdbID": "tt0098354",
-        "description": "I came up with this list with Jenny while we were walking to a screening of this demented body gore thriller"
+        "description": "I came up with this list with Jenny while we were walking to a screening of this demented body gore thriller",
+        "image": null,
+        "posterImage": null,
+        "score": null
       },
       {
         "rank": 2,
         "imdbID": "tt0077745",
-        "description": "This was as surprisingly good as the analyst is bad"
+        "description": "This was as surprisingly good as the analyst is bad",
+        "image": null,
+        "posterImage": null,
+        "score": null
       },
       {
         "rank": 3,
         "imdbID": "tt13521006",
-        "description": "The violation of trust here is just breathtaking"
+        "description": "The violation of trust here is just breathtaking",
+        "image": null,
+        "posterImage": null,
+        "score": null
       },
       {
         "rank": 4,
         "imdbID": "tt0063522",
-        "description": "OK, it's a doctor not a therapist, but the protagonist is so psychologically vulnerable that I'm counting it."
+        "description": "OK, it's a doctor not a therapist, but the protagonist is so psychologically vulnerable that I'm counting it.",
+        "image": null,
+        "posterImage": null,
+        "score": null
       }
     ]
   }
