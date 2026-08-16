@@ -1,4 +1,72 @@
 {
+  "tt0055256": {
+    "imdbID": "tt0055256",
+    "title": "One, Two, Three",
+    "year": "1961",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYjVlOTAxZDctMmM1Ny00ZGIwLTgwYTItZjIwYjAxNDg5OWFlXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "104 min",
+    "genre": "Comedy",
+    "director": "Billy Wilder",
+    "trailerKey": "mqT_kN2t76U",
+    "tagline": "Billy Wilder's Explosive New Comedy",
+    "plot": "In Cold War-era West Berlin, American Coca-Cola executive C.R. 'Mac' MacNamara is tasked with playing babysitter to his boss' spoiled 17-year-old daughter Scarlett, who proves more difficult than anticipated when she reveals that she is pregnant by a Communist.",
+    "cast": [
+      {
+        "name": "James Cagney",
+        "character": "C.R. MacNamara",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/haDKecHGGb1qh8gAoR3ExiJlujn.jpg",
+        "tmdbId": 5788
+      },
+      {
+        "name": "Horst Buchholz",
+        "character": "Otto Ludwig Piffl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9V38Di9T0qsjKBl2dR7sZMN1N0i.jpg",
+        "tmdbId": 5789
+      },
+      {
+        "name": "Pamela Tiffin",
+        "character": "Scarlett Hazeltine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sIzbKORhYIe8bzBjkKRudoyt5EX.jpg",
+        "tmdbId": 5790
+      },
+      {
+        "name": "Arlene Francis",
+        "character": "Phyllis MacNamara",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u6dNWXP49lIf0Sn17tZ9DkcYFP9.jpg",
+        "tmdbId": 5791
+      },
+      {
+        "name": "Liselotte Pulver",
+        "character": "Fräulein Ingeborg",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yUTt9N7VwZQxhoAEegeWY2w2o4w.jpg",
+        "tmdbId": 5793
+      },
+      {
+        "name": "Hanns Lothar",
+        "character": "Schlemmer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hPCifGXy0uuml3KMebc53PUCfxK.jpg",
+        "tmdbId": 5794
+      },
+      {
+        "name": "Howard St. John",
+        "character": "Wendell P. Hazeltine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5HkEPH9C4JTzR0mQjDKzqbmrpQe.jpg",
+        "tmdbId": 5792
+      },
+      {
+        "name": "Leon Askin",
+        "character": "Peripetchikoff",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dL0IbSOA77EW4khTTnalpKb6hkG.jpg",
+        "tmdbId": 5795
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/4safDVSZx7a4I1TQoSyz6E1agzM.jpg",
+      "https://image.tmdb.org/t/p/w1280/1nUEGq1MdNuOL2QtRZzha8kiEfu.jpg",
+      "https://image.tmdb.org/t/p/w1280/73I0jw1aYNzwu9qK8p8cbYgVN6N.jpg"
+    ],
+    "tmdbVersion": 2
+  },
   "tt0063522": {
     "imdbID": "tt0063522",
     "title": "Rosemary's Baby",
