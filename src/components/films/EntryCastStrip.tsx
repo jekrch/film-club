@@ -18,8 +18,11 @@ interface EntryCastStripProps {
  * is where the record actually is, and one with no id is plain text rather than
  * a dead link.
  *
- * The card geometry matches `PersonStrip` so the two read as the same object in
- * different places.
+ * The cards are `PersonStrip`'s, so the two read as the same object in
+ * different places — same width, same labels — with the headshot one step down.
+ * This strip opens inside a row of a list rather than owning a section of a
+ * film's page, and a full-size portrait there weighs more than the row it is
+ * expanding out of.
  */
 const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
     if (cast.length === 0) return null;
@@ -57,7 +60,7 @@ const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
                     return (
                         <div
                             key={`${member.name}-${index}`}
-                            className="w-20 flex-shrink-0 text-center"
+                            className="w-24 flex-shrink-0 text-center"
                         >
                             {url ? (
                                 <a
@@ -75,8 +78,14 @@ const EntryCastStrip: React.FC<EntryCastStripProps> = ({ cast }) => {
                                 </span>
                             )}
 
+                            {/* Wraps rather than truncates. Actors have long
+                                names — most of a normal billing came out as
+                                "Sidney Blac…" — and the card is here to say who
+                                is in the film, which a cut name doesn't do. The
+                                character line under it already runs to two
+                                lines, so cards were never flush anyway. */}
                             <p
-                                className="truncate text-xs font-medium leading-tight"
+                                className="line-clamp-2 text-xs font-medium leading-tight"
                                 title={member.name}
                             >
                                 {url ? (

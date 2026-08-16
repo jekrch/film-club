@@ -2,6 +2,8 @@ import React from 'react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 import EntryCastStrip from './EntryCastStrip';
+import FilmStills from './FilmStills';
+import type { Rating } from '../../types/film';
 import type { EntryDetails } from '../../utils/entryDetails';
 
 interface EntryDetailsToggleProps {
@@ -41,13 +43,73 @@ export const EntryDetailsToggle: React.FC<EntryDetailsToggleProps> = ({
     </button>
 );
 
+/** What OMDB calls each source, and what a chip should say instead. */
+const RATING_SOURCE_LABELS: Record<string, string> = {
+    'Internet Movie Database': 'IMDb',
+    'Rotten Tomatoes': 'Rotten Tomatoes',
+    Metacritic: 'Metacritic',
+};
+
+/**
+ * The external scores as chips, matching the film page's.
+ *
+ * The IMDb one links to the title page — the same target the row's own title
+ * carries for a film the club never watched, which is where a reader goes next
+ * anyway. The other two don't: OMDB gives a score, not a URL, and a guessed
+ * Rotten Tomatoes slug is a 404 more often than it is a link.
+ *
+ * These are frozen at the moment CI fetched them; see the note on
+ * `ListFilmSummary.ratings`.
+ */
+const EntryRatingChips: React.FC<{ ratings: Rating[]; imdbID: string }> = ({ ratings, imdbID }) => (
+    <div className="flex flex-wrap gap-2">
+        {ratings.map((rating) => {
+            const label = RATING_SOURCE_LABELS[rating.source] ?? rating.source;
+            const body = (
+                <>
+                    <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        {label}
+                    </span>
+                    <span className="text-sm font-semibold text-slate-100">{rating.value}</span>
+                </>
+            );
+
+            return rating.source === 'Internet Movie Database' ? (
+                <a
+                    key={rating.source}
+                    href={`https://www.imdb.com/title/${imdbID}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-baseline gap-1.5 rounded-md bg-slate-700/60 px-2.5 py-1 ring-1 ring-yellow-500/30 transition hover:bg-slate-600/60 hover:ring-yellow-500/60"
+                    title="View on IMDb"
+                >
+                    {body}
+                </a>
+            ) : (
+                <span
+                    key={rating.source}
+                    className="inline-flex items-baseline gap-1.5 rounded-md bg-slate-700/60 px-2.5 py-1"
+                    title={rating.source}
+                >
+                    {body}
+                </span>
+            );
+        })}
+    </div>
+);
+
 interface EntryDetailsPanelProps {
     details: EntryDetails;
     panelId: string;
+    /** The film's title, for the stills lightbox heading. */
+    title: string;
+    /** Where the IMDb chip points. */
+    imdbID: string;
 }
 
 /**
- * What a row knows about the film, opened out under it: tagline, summary, cast.
+ * What a row knows about the film, opened out under it: tagline, summary,
+ * credits, scores, stills, cast.
  *
  * This exists because most films on a list or in a watch log are ones the club
  * never watched, and those have no page on this site — the row was the whole of
@@ -55,17 +117,53 @@ interface EntryDetailsPanelProps {
  * expand too, from its own record, so the rows behave the same rather than one
  * kind having a chevron and the other not.
  *
+ * Ordered the way someone deciding whether to watch something reads: what it
+ * claims to be, what it is about, who made it, what it scored, then what it
+ * looks like and who is in it.
+ *
  * Mounted only while open. It is cheap, but a hundred collapsed rows carrying a
- * hundred hidden cast strips is a hundred sets of headshot `<img>` tags for a
- * browser to work out it needn't fetch.
+ * hundred hidden cast strips and stills is a lot of `<img>` tags for a browser
+ * to work out it needn't fetch.
  */
-const EntryDetailsPanel: React.FC<EntryDetailsPanelProps> = ({ details, panelId }) => (
+const EntryDetailsPanel: React.FC<EntryDetailsPanelProps> = ({
+    details,
+    panelId,
+    title,
+    imdbID,
+}) => (
     <div id={panelId} className="mt-3 space-y-3 border-t border-slate-600/30 pt-3 animate-fadeIn">
         {/* The tagline is the film's own marketing voice, so it is set apart
             from the summary rather than run into it. */}
-        {details.tagline && <p className="text-sm italic text-slate-400">{details.tagline}</p>}
+        {details.tagline && (
+            <p className="max-w-prose text-sm italic text-slate-400">{details.tagline}</p>
+        )}
 
-        {details.plot && <p className="text-sm leading-relaxed text-slate-300">{details.plot}</p>}
+        {/* Held to a reading measure. A row is as wide as the page, and a
+            two-sentence synopsis set across the whole of it on a desktop is one
+            long line the eye has to travel end to end. */}
+        {details.plot && (
+            <p className="max-w-prose text-sm leading-relaxed text-slate-300">{details.plot}</p>
+        )}
+
+        {/* One wrapping line rather than a stack of rows: three credits with
+            short values would otherwise take a third of the panel's height to
+            say six words. */}
+        {details.credits.length > 0 && (
+            <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-400">
+                {details.credits.map((credit) => (
+                    <span key={credit.label}>
+                        <span className="text-xs uppercase tracking-wider text-slate-500">
+                            {credit.label}
+                        </span>{' '}
+                        <span className="text-slate-300">{credit.value}</span>
+                    </span>
+                ))}
+            </p>
+        )}
+
+        {details.ratings.length > 0 && <EntryRatingChips ratings={details.ratings} imdbID={imdbID} />}
+
+        {details.stills.length > 0 && <FilmStills images={details.stills} title={title} />}
 
         <EntryCastStrip cast={details.cast} />
     </div>

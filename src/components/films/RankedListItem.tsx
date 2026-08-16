@@ -263,10 +263,20 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
 
             {/* Outside the grid and across the whole row: the film's own
                 description, unlike the owner's note, isn't answering to the
-                title's column. */}
+                title's column.
+
+                It has to put back the left padding the row gave up for the rank
+                numeral's band, though — `pl-0` is for the numeral alone, and a
+                panel inheriting it sat flush against the border on one side
+                while its own right edge stayed inset by the row's `pr`. */}
             {details && detailsOpen && (
-                <div className="relative">
-                    <EntryDetailsPanel details={details} panelId={panelId} />
+                <div className="relative pl-3 sm:pl-4">
+                    <EntryDetailsPanel
+                        details={details}
+                        panelId={panelId}
+                        title={displayTitle}
+                        imdbID={imdbID}
+                    />
                 </div>
             )}
         </div>

@@ -154,6 +154,25 @@ export interface ListFilmSummary {
     runtime?: string | null;
     genre?: string | null;
     director?: string | null;
+    /** OMDB credits both, comma-separated when a film has several. */
+    writer?: string | null;
+    /**
+     * From TMDb's crew, where OMDB has no equivalent field. The one crew credit
+     * stored here — the club films keep five, but each is another string on
+     * every cached film.
+     */
+    cinematographer?: string | null;
+    /**
+     * IMDb, Rotten Tomatoes and Metacritic as OMDB gave them, in the shape
+     * `films.json` uses.
+     *
+     * Frozen at the moment the film was fetched, unlike a club film's, which the
+     * twice-daily sheet sync refreshes. Bumping `OMDB_VERSION` in
+     * `enrich_list_films.py` is what refreshes these.
+     */
+    ratings?: { source: string; value: string }[];
+    /** The IMDb score on its own, as OMDB reports it — e.g. `"7.7"`. */
+    imdbRating?: string | null;
     /**
      * The film's own trailer, as a YouTube video key — the same field club films
      * carry in `films.json`, so a row can play a trailer whichever cache it
@@ -174,9 +193,10 @@ export interface ListFilmSummary {
     /** Top-billed cast, TMDb's order, capped in CI. */
     cast?: ListCastMember[];
     /**
-     * Wide scene art, textless first — what a row washes behind itself when the
-     * member set no image of their own. The whole reason a cache film can look
-     * like anything but a poster.
+     * Wide scene art, textless first. The row washes the first behind itself
+     * when the member set no image of their own; the panel's stills strip opens
+     * the lot. The whole reason a cache film can look like anything but a
+     * poster.
      */
     backdropImages?: string[];
     /**
@@ -186,6 +206,9 @@ export interface ListFilmSummary {
      * backfill a field added after a film was cached.
      */
     tmdbVersion?: number;
+    /** The same, for the OMDB half. The two sources are stamped separately
+     *  because they are asked at different times and drift apart otherwise. */
+    omdbVersion?: number;
 }
 
 /**

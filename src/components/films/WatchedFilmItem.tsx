@@ -306,7 +306,12 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                 editor is open — the form is the row then. */}
             {details && detailsOpen && !editing && (
                 <div className="relative">
-                    <EntryDetailsPanel details={details} panelId={panelId} />
+                    <EntryDetailsPanel
+                        details={details}
+                        panelId={panelId}
+                        title={displayTitle}
+                        imdbID={imdbID}
+                    />
                 </div>
             )}
 

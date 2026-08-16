@@ -23,6 +23,9 @@ describe('summaryDetails', () => {
         ).toEqual({
             tagline: 'A love story of the highest order.',
             plot: 'A woman leaves her husband.',
+            credits: [],
+            ratings: [],
+            stills: [],
             cast: [{ name: 'Isabelle Adjani', character: 'Anna', tmdbId: 5309 }],
         });
     });
@@ -34,10 +37,42 @@ describe('summaryDetails', () => {
         expect(summaryDetails(summary({ tagline: '   ', plot: null, cast: [] }))).toBeNull();
     });
 
-    it('opens for any one of the three on its own', () => {
+    it('opens for any one field on its own', () => {
         expect(summaryDetails(summary({ tagline: 'Just a tagline.' }))).not.toBeNull();
         expect(summaryDetails(summary({ plot: 'Just a summary.' }))).not.toBeNull();
         expect(summaryDetails(summary({ cast: [{ name: 'Someone' }] }))).not.toBeNull();
+        expect(summaryDetails(summary({ director: 'Someone' }))).not.toBeNull();
+        expect(
+            summaryDetails(summary({ ratings: [{ source: 'Rotten Tomatoes', value: '96%' }] }))
+        ).not.toBeNull();
+        expect(summaryDetails(summary({ backdropImages: ['still.jpg'] }))).not.toBeNull();
+    });
+
+    it('labels the credits it has and drops the ones it hasn’t', () => {
+        // Order is fixed here rather than at the panel, so every row reads the
+        // same way round however many of the three a film knows.
+        expect(
+            summaryDetails(
+                summary({ cinematographer: 'Bruno Nuytten', director: 'Andrzej Żuławski' })
+            )?.credits
+        ).toEqual([
+            { label: 'Director', value: 'Andrzej Żuławski' },
+            { label: 'Cinematography', value: 'Bruno Nuytten' },
+        ]);
+
+        // Whitespace is not a credit, so it opens no panel of its own.
+        expect(summaryDetails(summary({ director: '   ' }))).toBeNull();
+    });
+
+    it('passes the external scores and stills straight through', () => {
+        const details = summaryDetails(
+            summary({
+                ratings: [{ source: 'Rotten Tomatoes', value: '96%' }],
+                backdropImages: ['a.jpg', 'b.jpg'],
+            })
+        );
+        expect(details?.ratings).toEqual([{ source: 'Rotten Tomatoes', value: '96%' }]);
+        expect(details?.stills).toEqual(['a.jpg', 'b.jpg']);
     });
 });
 
@@ -57,6 +92,30 @@ describe('clubFilmDetails', () => {
         expect(details?.cast).toEqual([
             { name: 'Sigourney Weaver', character: 'Ripley', profileUrl: null, tmdbId: 10205 },
         ]);
+    });
+
+    it('takes its credits, scores and stills from the club record', () => {
+        const film = makeFilm({
+            imdbID: 'tt0000001',
+            director: 'Mike Leigh',
+            writer: 'Mike Leigh',
+            cinematographer: 'Dick Pope',
+            ratings: [{ source: 'Internet Movie Database', value: '7.7/10' }],
+            backdropImage: 'curated.jpg',
+            backdropImages: ['tmdb-1.jpg'],
+        });
+
+        const details = clubFilmDetails(film);
+        expect(details?.credits).toEqual([
+            { label: 'Director', value: 'Mike Leigh' },
+            { label: 'Writer', value: 'Mike Leigh' },
+            { label: 'Cinematography', value: 'Dick Pope' },
+        ]);
+        expect(details?.ratings).toEqual([
+            { source: 'Internet Movie Database', value: '7.7/10' },
+        ]);
+        // The curated backdrop leads, as it does on the film's own page.
+        expect(details?.stills).toEqual(['curated.jpg', 'tmdb-1.jpg']);
     });
 
     it('leaves an unresolvable name without an id, rather than a dead link', () => {

@@ -56,8 +56,17 @@ DEFAULT_LIST_FILMS_PATH = "src/assets/listFilms.json"
 
 IMDB_ID_PATTERN = re.compile(r"^tt\d{7,9}$")
 
+# Bump when the OMDB fields below change, so films cached under an older stamp
+# are fetched again. The TMDb half has its own stamp for the same reason -- the
+# two sources are asked at different times and drift apart otherwise.
+# v1: title, year, poster, runtime, genre, director.
+# v2: added writer and the external ratings.
+OMDB_VERSION = 2
+OMDB_VERSION_FIELD = "omdbVersion"
+
 # OMDB response keys -> the summary fields we keep. Anything not listed here is
-# dropped: see the "deliberately thin" note above.
+# dropped: see the "deliberately thin" note above. Named for the club films'
+# own fields, so one panel component renders either shape.
 SUMMARY_FIELDS = {
     "Title": "title",
     "Year": "year",
@@ -65,6 +74,8 @@ SUMMARY_FIELDS = {
     "Runtime": "runtime",
     "Genre": "genre",
     "Director": "director",
+    "Writer": "writer",
+    "imdbRating": "imdbRating",
 }
 
 
@@ -107,6 +118,20 @@ def get_omdb_summary(imdb_id, api_key):
     for source_key, field in SUMMARY_FIELDS.items():
         summary[field] = _clean(data.get(source_key))
 
+    # IMDb, Rotten Tomatoes, Metacritic -- whichever OMDB has, lowercased to the
+    # keys films.json uses. A score frozen at the moment the film was added: this
+    # is fetched once per OMDB_VERSION, so bumping that constant is also how a
+    # stale Rotten Tomatoes percentage gets refreshed.
+    ratings = [
+        {"source": r["Source"], "value": r["Value"]}
+        for r in (data.get("Ratings") or [])
+        if isinstance(r, dict) and r.get("Source") and r.get("Value")
+    ]
+    if ratings:
+        summary["ratings"] = ratings
+
+    summary[OMDB_VERSION_FIELD] = OMDB_VERSION
+
     if not summary.get("title"):
         # The frontend keys its rows on a title; a summary without one is worse
         # than no summary, which renders as a placeholder row instead.
@@ -122,11 +147,18 @@ def get_omdb_summary(imdb_id, api_key):
 # have it.
 # v1: trailerKey.
 # v2: added tagline, plot, cast, and backdropImages.
-TMDB_VERSION = 2
+# v3: added cinematographer, and raised the backdrop count for the stills strip.
+TMDB_VERSION = 3
 TMDB_VERSION_FIELD = "tmdbVersion"
 
 # What one TMDb lookup contributes, and therefore what a re-stamp overwrites.
-TMDB_FIELDS = ("trailerKey", "tagline", "plot", "cast", "backdropImages")
+TMDB_FIELDS = ("trailerKey", "tagline", "plot", "cast", "backdropImages", "cinematographer")
+
+# TMDb crew jobs -> the summary field they fill. The club films collect five;
+# this takes the one the frontend actually shows on a row, since each is another
+# string on every cached film. Director and writer come from OMDB, which already
+# credits both.
+TMDB_CREW_JOBS = {"Director of Photography": "cinematographer"}
 
 TMDB_PROFILE_IMAGE_BASE = "https://image.tmdb.org/t/p/w185"
 TMDB_BACKDROP_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
@@ -136,9 +168,10 @@ TMDB_BACKDROP_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
 # bytes in the bundle for every visitor.
 TMDB_CAST_LIMIT = 8
 
-# Enough for the row wash to have variety across a list without paying for a
-# gallery -- nothing here renders more than one at a time.
-TMDB_BACKDROP_LIMIT = 3
+# The row wash takes the first; the panel's stills strip opens the lot in a
+# lightbox. Matches the club films' limit -- a still is one short URL, and this
+# is the only look at a film the site has for one the club never watched.
+TMDB_BACKDROP_LIMIT = 6
 
 # Distinguishes "TMDb answered and had nothing" from "the request failed", which
 # is the difference between stamping a summary done and retrying it next deploy.
@@ -214,6 +247,21 @@ def _pick_backdrops(images):
     ]
 
 
+def _pick_crew(credits):
+    """The crew fields TMDB_CREW_JOBS names, joined when a job has several.
+
+    Same shape the club films store: one comma-separated string per field, since
+    a film with two cinematographers credits both and the row just prints it.
+    """
+    by_field = {}
+    for member in credits.get("crew") or []:
+        field = TMDB_CREW_JOBS.get(member.get("job"))
+        name = member.get("name")
+        if field and name:
+            by_field.setdefault(field, []).append(name)
+    return {field: ", ".join(sorted(set(names))) for field, names in by_field.items()}
+
+
 def get_tmdb_details(imdb_id, tmdb_bearer_token):
     """Everything TMDb contributes to one summary, or TMDB_FAILED.
 
@@ -257,13 +305,17 @@ def get_tmdb_details(imdb_id, tmdb_bearer_token):
     if data is TMDB_FAILED:
         return TMDB_FAILED
 
+    credits = data.get("credits") or {}
+    crew = _pick_crew(credits)
+
     return {
         "trailerKey": _pick_trailer((data.get("videos") or {}).get("results") or []),
+        "cinematographer": crew.get("cinematographer"),
         "tagline": _clean(data.get("tagline")),
         # TMDb calls it the overview; the field is named for the club films' own
         # `plot` so one panel component can render either shape.
         "plot": _clean(data.get("overview")),
-        "cast": _pick_cast(data.get("credits") or {}) or None,
+        "cast": _pick_cast(credits) or None,
         "backdropImages": _pick_backdrops(data.get("images")) or None,
     }
 
@@ -394,23 +446,46 @@ def enrich_list_films(lists_path, watched_path, films_path, list_films_path, api
     wanted = collect_referenced_ids(lists_data, watched_data) - club_ids
 
     pruned = sorted(set(cache) - wanted)
-    # Copied rather than aliased: add_trailers fills a field in place, and a
-    # summary shared with `cache` would make the "already up to date" comparison
-    # below compare the file against itself and skip the write.
+    # Copied rather than aliased: the enrichment passes fill fields in place, and
+    # a summary shared with `cache` would make the "already up to date"
+    # comparison below compare the file against itself and skip the write.
     updated = {imdb_id: dict(cache[imdb_id]) for imdb_id in cache if imdb_id in wanted}
     for imdb_id in pruned:
         print(f"Pruning unreferenced summary: {imdb_id}")
 
     missing = sorted(wanted - set(updated))
-    if missing and not api_key:
-        print(f"Error: OMDB_API_KEY is not set; cannot fetch {len(missing)} new list film(s).")
-        return False
+    # Cached under an older OMDB_VERSION: the record is usable, it just predates
+    # a field. Refetched like the TMDb half, and merged rather than replaced so a
+    # film doesn't lose its TMDb enrichment to an OMDB refresh.
+    stale = sorted(
+        imdb_id
+        for imdb_id, summary in updated.items()
+        if summary.get(OMDB_VERSION_FIELD) != OMDB_VERSION
+    )
 
-    for imdb_id in missing:
-        print(f"Fetching OMDB summary for list film {imdb_id}...")
-        summary = get_omdb_summary(imdb_id, api_key)
-        if summary:
-            updated[imdb_id] = summary
+    if not api_key:
+        if missing:
+            # A film with no summary at all has no title, and renders as a
+            # placeholder row — worth failing the deploy over, unlike a refresh.
+            print(f"Error: OMDB_API_KEY is not set; cannot fetch {len(missing)} new list film(s).")
+            return False
+        if stale:
+            print(f"OMDB_API_KEY is not set; leaving {len(stale)} film(s) on an older record.")
+
+    if api_key:
+        for imdb_id in missing:
+            print(f"Fetching OMDB summary for list film {imdb_id}...")
+            summary = get_omdb_summary(imdb_id, api_key)
+            if summary:
+                updated[imdb_id] = summary
+
+        for imdb_id in stale:
+            print(f"Refreshing OMDB summary for {imdb_id}...")
+            summary = get_omdb_summary(imdb_id, api_key)
+            if summary:
+                # A failed refresh leaves the old record unstamped, so the next
+                # deploy tries again — the same rule the TMDb half follows.
+                updated[imdb_id].update(summary)
 
     add_tmdb_details(updated, tmdb_key)
 
