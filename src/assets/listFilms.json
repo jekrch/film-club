@@ -6,7 +6,66 @@
     "poster": "https://m.media-amazon.com/images/M/MV5BNDlhMDI3OTQtNTBkYy00NWQ5LWJmNWEtZGQwYzZlMTQ4MDI1XkEyXkFqcGc@._V1_SX300.jpg",
     "runtime": "137 min",
     "genre": "Drama, Horror",
-    "director": "Roman Polanski"
+    "director": "Roman Polanski",
+    "trailerKey": "pwLKIcB0zDw",
+    "tagline": "Pray for Rosemary's Baby.",
+    "plot": "A young couple, Rosemary and Guy, moves into an infamous New York apartment building, known by frightening legends and mysterious events, with the purpose of starting a family.",
+    "cast": [
+      {
+        "name": "Mia Farrow",
+        "character": "Rosemary Woodhouse",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kuLfS2jQOnfIOwCO7RHlwjDIERQ.jpg",
+        "tmdbId": 12021
+      },
+      {
+        "name": "John Cassavetes",
+        "character": "Guy Woodhouse",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2Bo1ipVthg8uKP26mNGykChukA8.jpg",
+        "tmdbId": 11147
+      },
+      {
+        "name": "Ruth Gordon",
+        "character": "Minnie Castevet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r65ejvFPkIhvvRaiqsblduYYTi1.jpg",
+        "tmdbId": 4970
+      },
+      {
+        "name": "Sidney Blackmer",
+        "character": "Roman Castevet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2JzR0u8yvrkp3e0GB5cajCqGDjp.jpg",
+        "tmdbId": 12022
+      },
+      {
+        "name": "Maurice Evans",
+        "character": "Hutch",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/l5IKeUtuLMMb2oMj7VMOGFRgYK3.jpg",
+        "tmdbId": 12023
+      },
+      {
+        "name": "Ralph Bellamy",
+        "character": "Dr. Sapirstein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vC6cdrUUewgurTlVXt36eRAtQKb.jpg",
+        "tmdbId": 1208
+      },
+      {
+        "name": "Victoria Vetri",
+        "character": "Terry",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yewmqEiiJ0veWY5hrTLbwtcjMWI.jpg",
+        "tmdbId": 12024
+      },
+      {
+        "name": "Patsy Kelly",
+        "character": "Laura-Louise",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sef7GYVzHFNUYz9E6SoR7A2Ygc6.jpg",
+        "tmdbId": 12025
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/qszuXKhzYR24oRpsmh7eZaPbvL8.jpg",
+      "https://image.tmdb.org/t/p/w1280/hE5KpQDUtT0uIJBeO4HUNKLpqeB.jpg",
+      "https://image.tmdb.org/t/p/w1280/4ILk2YBFRtwc7hj9eOH5pNystiU.jpg"
+    ],
+    "tmdbVersion": 2
   },
   "tt0077745": {
     "imdbID": "tt0077745",
@@ -15,7 +74,66 @@
     "poster": "https://m.media-amazon.com/images/M/MV5BMzUzNDdjOTAtOThlNS00OTc0LWIyZjEtMzA3YTA4Mjk2Yjc5XkEyXkFqcGc@._V1_SX300.jpg",
     "runtime": "115 min",
     "genre": "Horror, Sci-Fi",
-    "director": "Philip Kaufman"
+    "director": "Philip Kaufman",
+    "trailerKey": "e_brmjvATLc",
+    "tagline": "The seed is planted... terror grows.",
+    "plot": "The residents of San Francisco are becoming drone-like shadows of their former selves, and as the phenomenon spreads, two Department of Health workers uncover the horrifying truth.",
+    "cast": [
+      {
+        "name": "Donald Sutherland",
+        "character": "Matthew Bennell",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yM8WO2BYqFvgQXAvf4CIuCYnY4j.jpg",
+        "tmdbId": 55636
+      },
+      {
+        "name": "Brooke Adams",
+        "character": "Elizabeth Driscoll",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qF0ttWN6X44GIQIzOUFVYh3IOcX.jpg",
+        "tmdbId": 69054
+      },
+      {
+        "name": "Leonard Nimoy",
+        "character": "Dr. David Kibner",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eKhw3oK8ak5LDB29X9zQDLIqRhw.jpg",
+        "tmdbId": 1749
+      },
+      {
+        "name": "Jeff Goldblum",
+        "character": "Jack Bellicec",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kcyEPgYtBP5Pm6LLeLGfXKjYovL.jpg",
+        "tmdbId": 4785
+      },
+      {
+        "name": "Veronica Cartwright",
+        "character": "Nancy Bellicec",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1CiknHO8ssMM4bWPsIMMzCTVHeB.jpg",
+        "tmdbId": 5047
+      },
+      {
+        "name": "Art Hindle",
+        "character": "Dr. Geoffrey Howell",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lhoh2KGtDfSjiIJSKT9ymTypPCf.jpg",
+        "tmdbId": 41256
+      },
+      {
+        "name": "Lelia Goldoni",
+        "character": "Katherine Hendley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/v7ZtfdsB32uMoS67nDVDjZWLt7S.jpg",
+        "tmdbId": 41284
+      },
+      {
+        "name": "Kevin McCarthy",
+        "character": "Running Man (Cameo)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nKKwlz1tvDABTIrxK6oH4zdQPPB.jpg",
+        "tmdbId": 34597
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/lyHnFsWafILUlizalpCSikJT7Ui.jpg",
+      "https://image.tmdb.org/t/p/w1280/qBsQzHPQZIiSr57jQmc3T0QcD9j.jpg",
+      "https://image.tmdb.org/t/p/w1280/j0AZ67brlWze2Owv47z1E27LQQy.jpg"
+    ],
+    "tmdbVersion": 2
   },
   "tt0098354": {
     "imdbID": "tt0098354",
@@ -24,7 +142,66 @@
     "poster": "https://m.media-amazon.com/images/M/MV5BMGFiOTBmZmEtMWY4My00OGVmLTk5NjktNTk1Mjc1MDcxMzhiXkEyXkFqcGc@._V1_SX300.jpg",
     "runtime": "99 min",
     "genre": "Comedy, Horror",
-    "director": "Brian Yuzna"
+    "director": "Brian Yuzna",
+    "trailerKey": "2ZTwNbOzAac",
+    "tagline": "The rich have always fed off the poor. This time, it's for real.",
+    "plot": "Bill Whitney is worried that he is different to his sister and parents. They mix with other upper-class people while Bill is more down to earth. Even his girlfriend seems a bit odd. All is revealed when Bill returns home to find a party in full swing.",
+    "cast": [
+      {
+        "name": "Billy Warlock",
+        "character": "Bill Whitney",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wAxhqXiN52ZJlDSzjY2G7VZhuW7.jpg",
+        "tmdbId": 88516
+      },
+      {
+        "name": "Connie Danese",
+        "character": "Nan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8cmBq9w2WzrQ2dGo1stL6xpl9kL.jpg",
+        "tmdbId": 88517
+      },
+      {
+        "name": "Ben Slack",
+        "character": "Dr. Cleveland",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gJA5r56CRyt64ZfSD1KYwRQVM4c.jpg",
+        "tmdbId": 88518
+      },
+      {
+        "name": "Evan Richards",
+        "character": "Milo",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pAQUgQSKJafpZ628AdD8XnyWay6.jpg",
+        "tmdbId": 88519
+      },
+      {
+        "name": "Patrice Jennings",
+        "character": "Jenny Whitney",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/szbORN9NjiYBQIDS4EVy0TkSHFn.jpg",
+        "tmdbId": 88520
+      },
+      {
+        "name": "Tim Bartell",
+        "character": "David Blanchard",
+        "profileUrl": null,
+        "tmdbId": 88521
+      },
+      {
+        "name": "Charles Lucia",
+        "character": "Jim Whitney",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jwNxR4sVWzSkpQPRngXvW0CHJnv.jpg",
+        "tmdbId": 88522
+      },
+      {
+        "name": "Heidi Kozak",
+        "character": "Shauna",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y2DANrFIgZnMLwFVlkabhwr1Rx5.jpg",
+        "tmdbId": 88523
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/cIpD6PGtCRG3ynaaBWZmf5cw8C5.jpg",
+      "https://image.tmdb.org/t/p/w1280/fwOGk0QNDeDQj4nkqfCbzkyWx2.jpg",
+      "https://image.tmdb.org/t/p/w1280/hDWjocAmvCm5NB4Gxro3D3L6Kau.jpg"
+    ],
+    "tmdbVersion": 2
   },
   "tt13521006": {
     "imdbID": "tt13521006",
@@ -33,7 +210,66 @@
     "poster": "https://m.media-amazon.com/images/M/MV5BMTdmYmQ5MjctYzU3NS00N2I0LTkwYTYtZWMxNTVhOTRkODA1XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
     "runtime": "179 min",
     "genre": "Comedy, Drama, Horror",
-    "director": "Ari Aster"
+    "director": "Ari Aster",
+    "trailerKey": "XrCg9G_OHAA",
+    "tagline": "From his darkest fears comes the greatest adventure.",
+    "plot": "Following the sudden death of his mother, a mild-mannered but anxiety-ridden man confronts his darkest fears as he embarks on an epic odyssey back home.",
+    "cast": [
+      {
+        "name": "Joaquin Phoenix",
+        "character": "Beau Wassermann",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u38k3hQBDwNX0VA22aQceDp9Iyv.jpg",
+        "tmdbId": 73421
+      },
+      {
+        "name": "Patti LuPone",
+        "character": "Mona Wassermann",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mbNAKaSYSTGeigxeFwUQfvoUXW0.jpg",
+        "tmdbId": 5699
+      },
+      {
+        "name": "Amy Ryan",
+        "character": "Grace",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bItqd1QUNpdegjBXNaVuFFPEZU4.jpg",
+        "tmdbId": 39388
+      },
+      {
+        "name": "Nathan Lane",
+        "character": "Roger",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jLPp3RoDhwOpLimKj3NhhBofPfT.jpg",
+        "tmdbId": 78729
+      },
+      {
+        "name": "Kylie Rogers",
+        "character": "Toni",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9c9CPWTT8a2GXMab8vuSxCJ0CcW.jpg",
+        "tmdbId": 1164259
+      },
+      {
+        "name": "Denis Ménochet",
+        "character": "Jeeves",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qpCPmm12kbzMKniYF6iKmKLZCjY.jpg",
+        "tmdbId": 81125
+      },
+      {
+        "name": "Parker Posey",
+        "character": "Elaine Bray",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yoFt75JfGUqQ6EV8qN6fckQuElk.jpg",
+        "tmdbId": 7489
+      },
+      {
+        "name": "Zoe Lister-Jones",
+        "character": "Young Mona",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hiuMwG45QCg0eUzhO15jyAFzx1i.jpg",
+        "tmdbId": 82885
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/atvEgnjjXN5QvFDThXVz4nyU9yi.jpg",
+      "https://image.tmdb.org/t/p/w1280/2BwVFd1hdOvcEZKvXO8TGclfFtC.jpg",
+      "https://image.tmdb.org/t/p/w1280/pS4oSxn9g0PAzkWD5zrSOuRIgT6.jpg"
+    ],
+    "tmdbVersion": 2
   },
   "tt37287335": {
     "imdbID": "tt37287335",
@@ -42,7 +278,66 @@
     "poster": "https://m.media-amazon.com/images/M/MV5BYzc1NWUwMDgtNGZlMS00ZmYzLWIzMzktNmMxMmY1MTUzNWExXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
     "runtime": "109 min",
     "genre": "Horror, Romance, Thriller",
-    "director": "Curry Barker"
+    "director": "Curry Barker",
+    "trailerKey": "gMC8kkwbIQQ",
+    "tagline": "Be careful who you wish for…",
+    "plot": "After breaking the mysterious \"One Wish Willow\" to win his crush's heart, a hopeless romantic finds himself getting exactly what he asked for but soon discovers that some desires come at a dark, sinister price.",
+    "cast": [
+      {
+        "name": "Michael Johnston",
+        "character": "Bear",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fbpcCkBzu43kMdlXxEAMuLhseL8.jpg",
+        "tmdbId": 1561370
+      },
+      {
+        "name": "Inde Navarrette",
+        "character": "Nikki",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8mYBaOximzwBgXOYRzbS6eUnoMX.jpg",
+        "tmdbId": 2638587
+      },
+      {
+        "name": "Cooper Tomlinson",
+        "character": "Ian",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vBMQbYT1DyWPCUp11dIiqZR9zhd.jpg",
+        "tmdbId": 2823609
+      },
+      {
+        "name": "Megan Lawless",
+        "character": "Sarah",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6qW63YEgB1qro01sM7T2HvhtFkh.jpg",
+        "tmdbId": 1519711
+      },
+      {
+        "name": "Andy Richter",
+        "character": "Carter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5Qr7N6TzC8cI0ULxDm6EC5GpZ4C.jpg",
+        "tmdbId": 28637
+      },
+      {
+        "name": "Haley Fitzgerald",
+        "character": "Viola",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xbKqZ5Epz0IaSCPLXDnByDACw2X.jpg",
+        "tmdbId": 3095494
+      },
+      {
+        "name": "Darin Toonder",
+        "character": "Harry",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bD7Y9T7Y6XwDXjGJ8Suabyt1ZGo.jpg",
+        "tmdbId": 1352948
+      },
+      {
+        "name": "Anthony Pavone",
+        "character": "Reggie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hxiqY9gHgwXGYnXSD11Wacm5Nmi.jpg",
+        "tmdbId": 4030428
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/rZfmzpixLKLR3Hg2u0WgC7XLFl8.jpg",
+      "https://image.tmdb.org/t/p/w1280/r013C8Me2bZ0pUi0OWJRh0h7MzT.jpg",
+      "https://image.tmdb.org/t/p/w1280/5lTZyuBTNOfawsfPT8Q0cIg6qAF.jpg"
+    ],
+    "tmdbVersion": 2
   },
   "tt5052448": {
     "imdbID": "tt5052448",
@@ -51,7 +346,66 @@
     "poster": "https://m.media-amazon.com/images/M/MV5BMjUxMDQwNjcyNl5BMl5BanBnXkFtZTgwNzcwMzc0MTI@._V1_QL75_UX380_CR0,0,380,562_.jpg",
     "runtime": "104 min",
     "genre": "Horror, Mystery, Thriller",
-    "director": "Jordan Peele"
+    "director": "Jordan Peele",
+    "trailerKey": "gsB70ZRY-hI",
+    "tagline": "Just because you're invited, doesn't mean you're welcome.",
+    "plot": "Chris and his girlfriend Rose go upstate to visit her parents for the weekend. At first, Chris reads the family's overly accommodating behavior as nervous attempts to deal with their daughter's interracial relationship, but as the weekend progresses, a series of increasingly disturbing discoveries lead him to a truth that he never could have imagined.",
+    "cast": [
+      {
+        "name": "Daniel Kaluuya",
+        "character": "Chris Washington",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jj2kZqJobjom36wlhlYhc38nTwN.jpg",
+        "tmdbId": 206919
+      },
+      {
+        "name": "Allison Williams",
+        "character": "Rose Armitage",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5Jy9HELKS1OYg7moRl8870OSfJq.jpg",
+        "tmdbId": 1255540
+      },
+      {
+        "name": "Catherine Keener",
+        "character": "Missy Armitage",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/n4CTwGszs6cwS1wJRlDQ5Mlh7Ex.jpg",
+        "tmdbId": 2229
+      },
+      {
+        "name": "Bradley Whitford",
+        "character": "Dean Armitage",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oeDv2qZWTxELLaNtOIoeG72leNY.jpg",
+        "tmdbId": 11367
+      },
+      {
+        "name": "Caleb Landry Jones",
+        "character": "Jeremy Armitage",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8M5lPHrERwAIfWK56RkH30FOjhV.jpg",
+        "tmdbId": 572541
+      },
+      {
+        "name": "Marcus Henderson",
+        "character": "Walter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vTevIy7GKjhmpoAhoayifnwqgn2.jpg",
+        "tmdbId": 1291961
+      },
+      {
+        "name": "Betty Gabriel",
+        "character": "Georgina",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/n67i3H3VM5quDQfcS591EbotPby.jpg",
+        "tmdbId": 1660452
+      },
+      {
+        "name": "LaKeith Stanfield",
+        "character": "Andre Logan King",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/x3k0HCpMNqEtVf2VKQrSCol1ia2.jpg",
+        "tmdbId": 1200864
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/bBQHALHRAaaORlPNXv7fNcRXYdx.jpg",
+      "https://image.tmdb.org/t/p/w1280/o8dPH0ZSIyyViP6rjRX1djwCUwI.jpg",
+      "https://image.tmdb.org/t/p/w1280/vZ7EVk7FaNEWYqlVWbFLHP8Z0LU.jpg"
+    ],
+    "tmdbVersion": 2
   },
   "tt7858616": {
     "imdbID": "tt7858616",
@@ -60,6 +414,52 @@
     "poster": "https://m.media-amazon.com/images/M/MV5BY2RkNzdkMTItNzM2YS00YWI0LTkzZTQtZTMzZjJlMDhlZmY2XkEyXkFqcGc@._V1_SX300.jpg",
     "runtime": "70 min",
     "genre": "Horror, Mystery, Thriller",
-    "director": "Tilman Singer"
+    "director": "Tilman Singer",
+    "trailerKey": "bmzMgBlPZrk",
+    "plot": "Luz, a young cabdriver, drags herself into the brightly lit entrance of a run-down police station. A demonic entity follows her, determined to finally be close to the woman it loves.",
+    "cast": [
+      {
+        "name": "Luana Velis",
+        "character": "Luz Carrara",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4TpK7m4Ov6iDuzOwK5cR84FZI3A.jpg",
+        "tmdbId": 1979851
+      },
+      {
+        "name": "Jan Bluthardt",
+        "character": "Dr. Rossini",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/grUUQceuTTZawrlfXvJpDfGavr.jpg",
+        "tmdbId": 1503539
+      },
+      {
+        "name": "Julia Riedler",
+        "character": "Nora Vanderkurt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/glKl83ygqPGUUnvKkZpzYkvoybb.jpg",
+        "tmdbId": 1456388
+      },
+      {
+        "name": "Nadja Stübiger",
+        "character": "Bertillon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jzkPBAVb8MrsVD791oENTsXS6q4.jpg",
+        "tmdbId": 239278
+      },
+      {
+        "name": "Johannes Benecke",
+        "character": "Olarte",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u5ltnKS3qcCavqZHlaSd7Is5kj2.jpg",
+        "tmdbId": 1979852
+      },
+      {
+        "name": "Lilli Lorenz",
+        "character": "Margarita",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/f3JaEc6rUfX0IiT5RQDvirqr8IY.jpg",
+        "tmdbId": 1979853
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/yP1O24kB1GRKWlhXoIZcKbJP9IH.jpg",
+      "https://image.tmdb.org/t/p/w1280/iSK99Ylb0OwIA2D2xF3U9FzqHFa.jpg",
+      "https://image.tmdb.org/t/p/w1280/nYpCxThysC4xr7V5xJ0XcQXNKoq.jpg"
+    ],
+    "tmdbVersion": 2
   }
 }
