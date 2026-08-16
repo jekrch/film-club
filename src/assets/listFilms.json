@@ -68,7 +68,7 @@
       "https://image.tmdb.org/t/p/w1280/vo3cB6xkMswMz9gB2X517TmxmI2.jpg",
       "https://image.tmdb.org/t/p/w1280/GLEJSixWoZlQAGIHX5OGb0D1vC.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "Billy Wilder, I.A.L. Diamond, Ferenc Molnár",
     "imdbRating": "7.8",
     "ratings": [
@@ -86,7 +86,32 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "Daniel L. Fapp"
+    "crew": [
+      {
+        "name": "Billy Wilder",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nWV9BDDCbRegP7etiPjl3vYnJEq.jpg",
+        "tmdbId": 3146
+      },
+      {
+        "name": "Billy Wilder",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nWV9BDDCbRegP7etiPjl3vYnJEq.jpg",
+        "tmdbId": 3146
+      },
+      {
+        "name": "I. A. L. Diamond",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tm4mgbRqYYQMqbIps8F6iKmOBM9.jpg",
+        "tmdbId": 3147
+      },
+      {
+        "name": "Daniel L. Fapp",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/Ra8pBcmMDwPOoJRB17zfccp5Gx.jpg",
+        "tmdbId": 5806
+      }
+    ]
   },
   "tt0063522": {
     "imdbID": "tt0063522",
@@ -157,7 +182,7 @@
       "https://image.tmdb.org/t/p/w1280/7etAiEdOrq9rNwlxZgN2NbKiHTi.jpg",
       "https://image.tmdb.org/t/p/w1280/7kchtj4yoZIlEo8LaV6lKL4eyla.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "Ira Levin, Roman Polanski",
     "imdbRating": "8.0",
     "ratings": [
@@ -175,7 +200,26 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "William A. Fraker"
+    "crew": [
+      {
+        "name": "Roman Polanski",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/60UYC6apdoC8VBh62WCkZ2LPGPk.jpg",
+        "tmdbId": 3556
+      },
+      {
+        "name": "Roman Polanski",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/60UYC6apdoC8VBh62WCkZ2LPGPk.jpg",
+        "tmdbId": 3556
+      },
+      {
+        "name": "William A. Fraker",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3zKDy9IkeCmVmdyKI72a9TnRaOb.jpg",
+        "tmdbId": 12846
+      }
+    ]
   },
   "tt0077745": {
     "imdbID": "tt0077745",
@@ -246,7 +290,7 @@
       "https://image.tmdb.org/t/p/w1280/4P5fQ8EOEshYNaUd6loZ0okecAY.jpg",
       "https://image.tmdb.org/t/p/w1280/elJfyurIhgPaS1pRQbexsAXoDHF.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "W.D. Richter, Jack Finney",
     "imdbRating": "7.4",
     "ratings": [
@@ -264,7 +308,26 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "Michael Chapman"
+    "crew": [
+      {
+        "name": "Philip Kaufman",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dv62g0D5lkNAS0Db1jJ2Z81Aubz.jpg",
+        "tmdbId": 648
+      },
+      {
+        "name": "W.D. Richter",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aTY722RFijftIoDFtfyoxJtplQj.jpg",
+        "tmdbId": 18179
+      },
+      {
+        "name": "Michael Chapman",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vFFWHlwwIgWoi2NPoVq3uzikCnM.jpg",
+        "tmdbId": 1044
+      }
+    ]
   },
   "tt0098354": {
     "imdbID": "tt0098354",
@@ -335,7 +398,7 @@
       "https://image.tmdb.org/t/p/w1280/rDgqJpSShGgxOUmIB4iZZO1ztMe.jpg",
       "https://image.tmdb.org/t/p/w1280/hwLJetNWABp0fqYXJd3GcmiYBkN.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "Zeph E. Daniel, Rick Fry",
     "imdbRating": "6.5",
     "ratings": [
@@ -353,7 +416,32 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "Rick Fichter"
+    "crew": [
+      {
+        "name": "Brian Yuzna",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uu4cdH7rBYa9GMCor4qz6cWABka.jpg",
+        "tmdbId": 27992
+      },
+      {
+        "name": "Rick Fry",
+        "job": "Writer",
+        "profileUrl": null,
+        "tmdbId": 88514
+      },
+      {
+        "name": "Woody Keith",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5VxUwkXERFKneG5pAosMpFXzAny.jpg",
+        "tmdbId": 88515
+      },
+      {
+        "name": "Rick Fichter",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 1208332
+      }
+    ]
   },
   "tt13521006": {
     "imdbID": "tt13521006",
@@ -424,7 +512,7 @@
       "https://image.tmdb.org/t/p/w1280/lwq1xsKt0g2Aho1bBaOisG4xZyd.jpg",
       "https://image.tmdb.org/t/p/w1280/i1MlzRgWoM9E6raAf7mUx3HkIek.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "Ari Aster",
     "imdbRating": "6.6",
     "ratings": [
@@ -442,7 +530,26 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "Pawel Pogorzelski"
+    "crew": [
+      {
+        "name": "Ari Aster",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/45lOHyHwdMgyKm6u3jwLtyfwOjc.jpg",
+        "tmdbId": 1145520
+      },
+      {
+        "name": "Ari Aster",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/45lOHyHwdMgyKm6u3jwLtyfwOjc.jpg",
+        "tmdbId": 1145520
+      },
+      {
+        "name": "Pawel Pogorzelski",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mCUSXTkDMmJaX4FoQ7adjIcJaOu.jpg",
+        "tmdbId": 1650351
+      }
+    ]
   },
   "tt37287335": {
     "imdbID": "tt37287335",
@@ -513,7 +620,7 @@
       "https://image.tmdb.org/t/p/w1280/u5BkYDM5gfK4wINfoIFMAcEUKhx.jpg",
       "https://image.tmdb.org/t/p/w1280/4k99kV4R1bbbrsnjR205v91Xbin.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "Curry Barker",
     "imdbRating": "7.9",
     "ratings": [
@@ -531,7 +638,26 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "Taylor Clemons"
+    "crew": [
+      {
+        "name": "Curry Barker",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/A16CxGKlkQYryoxGpxzKj4Wxk83.jpg",
+        "tmdbId": 2381985
+      },
+      {
+        "name": "Curry Barker",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/A16CxGKlkQYryoxGpxzKj4Wxk83.jpg",
+        "tmdbId": 2381985
+      },
+      {
+        "name": "Taylor Clemons",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xsYNnTC6YkuuAlTnkJrgfi6enxU.jpg",
+        "tmdbId": 5650840
+      }
+    ]
   },
   "tt5052448": {
     "imdbID": "tt5052448",
@@ -602,7 +728,7 @@
       "https://image.tmdb.org/t/p/w1280/Ae58bf7Yj6OPzwKerPgXSnxCJdh.jpg",
       "https://image.tmdb.org/t/p/w1280/aVyJnGubW0OBvqmqVg2z2wCuEsn.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "Jordan Peele",
     "imdbRating": "7.8",
     "ratings": [
@@ -620,7 +746,32 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "Denson Baker, Toby Oliver"
+    "crew": [
+      {
+        "name": "Jordan Peele",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kFUKn5g3ebpyZ3CSZZZo2HFWRNQ.jpg",
+        "tmdbId": 291263
+      },
+      {
+        "name": "Jordan Peele",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kFUKn5g3ebpyZ3CSZZZo2HFWRNQ.jpg",
+        "tmdbId": 291263
+      },
+      {
+        "name": "Toby Oliver",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aJgo3OoLBwZ3glk3uz1KFZ9Rahh.jpg",
+        "tmdbId": 75553
+      },
+      {
+        "name": "Denson Baker",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 55905
+      }
+    ]
   },
   "tt7858616": {
     "imdbID": "tt7858616",
@@ -675,7 +826,7 @@
       "https://image.tmdb.org/t/p/w1280/iSK99Ylb0OwIA2D2xF3U9FzqHFa.jpg",
       "https://image.tmdb.org/t/p/w1280/nYpCxThysC4xr7V5xJ0XcQXNKoq.jpg"
     ],
-    "tmdbVersion": 3,
+    "tmdbVersion": 4,
     "writer": "Tilman Singer",
     "imdbRating": "5.4",
     "ratings": [
@@ -693,6 +844,25 @@
       }
     ],
     "omdbVersion": 2,
-    "cinematographer": "Paul Faltz"
+    "crew": [
+      {
+        "name": "Tilman Singer",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gnzVCOobjdiIcxfHqBSnpL5uRgO.jpg",
+        "tmdbId": 1503538
+      },
+      {
+        "name": "Tilman Singer",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gnzVCOobjdiIcxfHqBSnpL5uRgO.jpg",
+        "tmdbId": 1503538
+      },
+      {
+        "name": "Paul Faltz",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 1979849
+      }
+    ]
   }
 }
