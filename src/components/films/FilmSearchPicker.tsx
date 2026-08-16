@@ -3,6 +3,7 @@ import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 import { useClubAuth } from '../../auth/GoogleAuth';
 import { searchFilms, type FilmSearchResult } from '../../api/clubApi';
+import { rememberFilmSummary } from '../../utils/pendingFilmSummaries';
 
 /**
  * Title search over the worker's OMDB proxy, for the editors that add a film
@@ -15,6 +16,10 @@ import { searchFilms, type FilmSearchResult } from '../../api/clubApi';
  *
  * Debounced at 350ms and aborted on change, so a fast typist costs one request
  * per pause rather than one per letter.
+ *
+ * A pick also files the hit's title and poster with `pendingFilmSummaries`,
+ * which is what keeps the row it becomes from reading "Unknown film" for the
+ * minute or two before CI enriches the id.
  */
 
 interface FilmSearchPickerProps {
@@ -112,7 +117,16 @@ const FilmSearchPicker: React.FC<FilmSearchPickerProps> = ({
                         <li key={hit.imdbID}>
                             <button
                                 type="button"
-                                onClick={() => onPick(hit)}
+                                onClick={() => {
+                                    // Recorded here rather than in each caller:
+                                    // this hit is the only place the film's
+                                    // title and poster exist until CI enriches
+                                    // it, and the row it becomes is drawn
+                                    // immediately. Kept before `onPick` so the
+                                    // render that handler causes already sees it.
+                                    rememberFilmSummary(hit);
+                                    onPick(hit);
+                                }}
                                 disabled={chosen.has(hit.imdbID)}
                                 className="flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-slate-700/50 disabled:opacity-40"
                             >

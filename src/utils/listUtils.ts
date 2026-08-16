@@ -7,6 +7,7 @@ import {
     listFilmSummaries,
 } from '../types/list';
 import type { WatchedLog } from '../types/watched';
+import { pendingFilmSummary } from './pendingFilmSummaries';
 import { getWatchedEntryFor } from './watchedUtils';
 
 /**
@@ -184,7 +185,11 @@ export const resolveListEntry = (
         };
     }
 
-    const summary = (sources.summaries ?? listFilmSummaries)[entry.imdbID];
+    // The bundled cache first, then whatever the search hit that added this film
+    // knew — which is all there is between adding a film and the CI step that
+    // enriches it, and is why a row added a minute ago has a title at all.
+    const summary =
+        (sources.summaries ?? listFilmSummaries)[entry.imdbID] ?? pendingFilmSummary(entry.imdbID);
     if (summary) {
         return {
             ...base,
@@ -194,10 +199,9 @@ export const resolveListEntry = (
         };
     }
 
-    // Not yet enriched (a save that hasn't been through CI) or an id that OMDB
-    // doesn't know. The row still renders, with its rank and note intact — and
-    // with the member's poster, which is the one case where it is the only
-    // artwork the row has.
+    // An id OMDB doesn't know, or one added from another device. The row still
+    // renders, with its rank and note intact — and with the member's poster,
+    // which is the one case where it is the only artwork the row has.
     return { ...base, title: null, year: null, poster: posterOverride };
 };
 

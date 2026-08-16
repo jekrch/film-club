@@ -1,6 +1,7 @@
 import { Film, filmData } from '../types/film';
 import { ListFilmSummary, listFilmSummaries } from '../types/list';
 import { WatchedEntry, WatchedLog, watchedLog } from '../types/watched';
+import { pendingFilmSummary } from './pendingFilmSummaries';
 
 /**
  * A watch-log entry with its display metadata filled in.
@@ -99,10 +100,10 @@ export const getWatchedEntryFor = (
 /**
  * Fills in an entry's display metadata, preferring the full club record so a
  * film the club also watched can link to its detail page, then the summary
- * cache, and finally degrading to a title-less placeholder. It never throws on
- * an unknown id: an entry logged a minute ago has not been through the CI step
- * that fetches its poster, and that should cost the row its artwork, not the
- * whole page.
+ * cache, then what the search hit that logged it knew, and finally degrading to
+ * a title-less placeholder. It never throws on an unknown id: an entry logged
+ * from another device has not been through the CI step that fetches its poster,
+ * and that should cost the row its artwork, not the whole page.
  */
 export const resolveWatchedEntry = (
     entry: WatchedEntry,
@@ -125,7 +126,11 @@ export const resolveWatchedEntry = (
         };
     }
 
-    const summary = (sources.summaries ?? listFilmSummaries)[entry.imdbID];
+    // The bundled cache first, then whatever the search hit that logged this
+    // film knew — which is all there is between logging a film and the CI step
+    // that enriches it, and is why a row logged a minute ago has a title at all.
+    const summary =
+        (sources.summaries ?? listFilmSummaries)[entry.imdbID] ?? pendingFilmSummary(entry.imdbID);
     if (summary) {
         return {
             ...entry,
