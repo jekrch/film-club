@@ -22,19 +22,18 @@ import { initGoogleIdentity } from './gis';
  * The button's appearance, as far as Google's options reach: what is inside the
  * iframe is theirs, and no stylesheet of ours crosses that boundary.
  *
- * `outline` is the light treatment — white face, black label, the four-colour
- * mark. Its dark siblings (`filled_black` is #202124) are a warm neutral next to
- * the site's cool slate, and land a dark fill on a dark page, which is the thing
- * `Button.tsx` says fills here never do: they go lighter than the background, or
- * they read as a hole rather than as a control. Light also happens to be the
- * most recognizable of Google's three, which is the point of using theirs.
+ * `filled_black` is the dark treatment — #202124 face, white label, the
+ * four-colour mark. It is a warm neutral next to the site's cool slate rather
+ * than a match for it, and Google gives no way to close that gap: what is inside
+ * the iframe is theirs. The alternative, `outline`, is a white slab on a dark
+ * page, which is louder than a sign-in row wants to be.
  *
  * `large` is 40px in Google's stylesheet, matching the height reserved below and
  * the touch target of a nav row; `medium` is 32px and left an eight-pixel gap.
  */
 const APPEARANCE: GoogleButtonOptions = {
     type: 'standard',
-    theme: 'outline',
+    theme: 'filled_black',
     size: 'large',
     text: 'signin_with',
     shape: 'pill',

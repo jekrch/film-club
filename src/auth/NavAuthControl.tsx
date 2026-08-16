@@ -15,9 +15,9 @@ import { useClubAuth } from './GoogleAuth';
  * and picks up the nav's blue once someone is actually signed in, which is the
  * only state worth announcing.
  *
- * Google's button is mounted only after the panel opens. That indirection is the
- * same one `SignInPrompt` makes and for the same reason: mounting it loads a
- * third-party script, and a nav that's on every page must not (§8.9).
+ * Google's button is mounted only after the panel opens, and this is the only
+ * place in the app that mounts it: doing so loads a third-party script, and a
+ * nav that's on every page must not pay for a sign-in nobody asked for (§8.9).
  */
 
 interface NavAuthControlProps {

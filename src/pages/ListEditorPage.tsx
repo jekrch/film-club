@@ -15,7 +15,6 @@ import Button from '../components/common/Button';
 import ImageUrlPreview from '../components/common/ImageUrlPreview';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import FilmSearchPicker from '../components/films/FilmSearchPicker';
-import GoogleSignInButton from '../auth/GoogleSignInButton';
 import { useClubAuth } from '../auth/GoogleAuth';
 import {
     NEW_LIST_ID,
@@ -655,12 +654,10 @@ const ListEditorPage: React.FC = () => {
                 </div>
 
                 {status !== 'signed-in' ? (
-                    <div>
-                        <p className="mb-3 text-sm text-slate-400">
-                            Sign in with the Google account you gave the club to build your lists.
-                        </p>
-                        <GoogleSignInButton />
-                    </div>
+                    <p className="text-sm text-slate-400">
+                        Sign in from the menu, with the Google account you gave the club, to build
+                        your lists.
+                    </p>
                 ) : locked ? (
                     <p className="text-slate-400">
                         This list belongs to {owner}. Only its owner can edit it.

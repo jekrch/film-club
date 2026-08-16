@@ -3,7 +3,6 @@ import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import AccentCard from '../common/AccentCard';
 import Button from '../common/Button';
-import GoogleSignInButton from '../../auth/GoogleSignInButton';
 import { useClubAuth } from '../../auth/GoogleAuth';
 import { deleteRating, putRating, type RatingOverride } from '../../api/clubApi';
 import type { Film } from '../../types/film';
@@ -45,6 +44,13 @@ interface MyRatingEditorProps {
 const FIELD_CLASS =
     'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
     'placeholder:text-slate-500 focus:border-blue-400/60 focus:outline-none';
+
+/**
+ * The review is the one field here anyone writes a paragraph into — the limit
+ * is 4000 characters — so it opens tall enough to hold one and drags taller
+ * from there. A four-line box makes the field read like a caption.
+ */
+const REVIEW_CLASS = `${FIELD_CLASS} min-h-56 resize-y leading-relaxed`;
 
 const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
     film,
@@ -190,13 +196,10 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
             </div>
 
             {status !== 'signed-in' ? (
-                <div>
-                    <p className="mb-3 text-sm text-slate-400">
-                        Sign in with the Google account you gave the club to edit your score and
-                        review for {film.title}.
-                    </p>
-                    <GoogleSignInButton />
-                </div>
+                <p className="text-sm text-slate-400">
+                    Sign in from the menu, with the Google account you gave the club, to edit your
+                    score and review for {film.title}.
+                </p>
             ) : (
                 <div className="space-y-4">
                     <div className="flex flex-wrap gap-4">
@@ -242,13 +245,13 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
                             Review
                         </span>
                         <textarea
-                            rows={4}
+                            rows={10}
                             maxLength={BLURB_LIMIT}
                             value={form.blurb}
                             onChange={(e) => update('blurb', e.target.value)}
                             disabled={saving || overridesLoading}
                             placeholder="What did you make of it? Markdown works here."
-                            className={FIELD_CLASS}
+                            className={REVIEW_CLASS}
                         />
                     </label>
 

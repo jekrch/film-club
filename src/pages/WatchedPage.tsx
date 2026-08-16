@@ -9,7 +9,6 @@ import Button from '../components/common/Button';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import FilmSearchPicker from '../components/films/FilmSearchPicker';
 import WatchedFilmItem from '../components/films/WatchedFilmItem';
-import GoogleSignInButton from '../auth/GoogleSignInButton';
 import { useClubAuth } from '../auth/GoogleAuth';
 import {
     deleteWatched,
@@ -188,14 +187,14 @@ const WatchedPage: React.FC = () => {
                     <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
                 </div>
 
-                {/* Signing in is offered only to the member whose log this is —
-                    nobody else gains anything by it here. */}
+                {/* Signing in happens in the nav and nowhere else; this only
+                    points the owner of the log at it. */}
                 {configured && !canEdit && status !== 'signed-in' && (
                     <div className="mb-6 border-b border-slate-700/60 pb-6">
-                        <p className="mb-3 text-sm text-slate-400">
-                            Is this yours? Sign in to log a film, or to score and review one.
+                        <p className="text-sm text-slate-400">
+                            Is this yours? Sign in from the menu to log a film, or to score and
+                            review one.
                         </p>
-                        <GoogleSignInButton />
                     </div>
                 )}
 

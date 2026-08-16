@@ -22,10 +22,18 @@ interface MarkdownProps {
  * Every Markdown body on the site should come through here rather than reaching
  * for `react-markdown` directly, so that the rule holds everywhere prose is
  * written. Styling stays with the caller — these bodies sit in `prose` wrappers
- * sized to the surface they appear on.
+ * sized to the surface they appear on — with one exception: the gap between
+ * paragraphs is set here. Preflight strips the browser's `<p>` margin and the
+ * `prose` classes those wrappers carry are inert without the typography plugin,
+ * so a member who left a blank line between two paragraphs saw them butt up
+ * against each other with no seam. The margin is in `em` so it tracks whatever
+ * text size the surface sets, and it collapses between adjacent paragraphs; the
+ * first and last are flush so the body still sits where the caller put it.
  */
 const Markdown: React.FC<MarkdownProps> = ({ children }) => (
-    <ReactMarkdown remarkPlugins={[remarkBreaks]}>{children}</ReactMarkdown>
+    <div className="[&_p]:my-[1em] [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+        <ReactMarkdown remarkPlugins={[remarkBreaks]}>{children}</ReactMarkdown>
+    </div>
 );
 
 export default Markdown;

@@ -19,7 +19,6 @@ import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
 import ProfileListsSection from '../components/profile/ProfileListsSection';
 import ProfileWatchedSection from '../components/profile/ProfileWatchedSection';
 import ProfileEditor from '../components/profile/ProfileEditor';
-import SignInPrompt from '../auth/SignInPrompt';
 import { useClubAuth } from '../auth/GoogleAuth';
 
 import { useMemberProfile } from '../hooks/useMemberProfile';
@@ -47,7 +46,7 @@ const ProfilePage: React.FC = () => {
         toggleBlurbsSectionExpanded,
     } = useProfileData(memberName);
 
-    const { configured, status, canEditAs } = useClubAuth();
+    const { configured, canEditAs } = useClubAuth();
     // The live `club.json` record, for a member looking at a profile they may
     // edit: a bio saved a minute ago is not in the bundle yet (§8.8).
     const { profile, loading: profileLoading, applyLocal } = useMemberProfile(member?.name);
@@ -118,13 +117,10 @@ const ProfilePage: React.FC = () => {
 
             {/* The way into editing this profile, for the member it belongs to
                 (or an admin). Everyone else sees the page exactly as it was
-                before editing existed — and a signed-out visitor gets only the
-                quiet prompt below, which is what it was written for (§8.9). */}
+                before editing existed; signing in is offered in the nav and
+                nowhere else. */}
             {canEdit && (
                 <ProfileEditor member={shown} profileLoading={profileLoading} onSaved={applyLocal} />
-            )}
-            {configured && status !== 'signed-in' && (
-                <SignInPrompt className="-mt-4 mb-8 flex justify-end" />
             )}
 
             {/* Renders nothing when this member has no lists — unless the

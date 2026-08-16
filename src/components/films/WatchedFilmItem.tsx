@@ -40,6 +40,14 @@ const FIELD_CLASS =
     'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
     'placeholder:text-slate-500 focus:border-blue-400/60 focus:outline-none';
 
+/**
+ * The review is the only field in this editor anyone writes a paragraph into,
+ * so it opens tall enough to hold one and drags taller from there. It stays a
+ * little shorter than the same field on a film's page: this one sits inline in
+ * a log, and the row it belongs to should still be visible above it.
+ */
+const REVIEW_CLASS = `${FIELD_CLASS} min-h-48 resize-y leading-relaxed`;
+
 interface WatchedFilmItemProps {
     entry: ResolvedWatchedEntry;
     /** True for the log's owner (or an admin), who gets the edit affordance. */
@@ -308,13 +316,13 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                             Review
                         </span>
                         <textarea
-                            rows={3}
+                            rows={8}
                             maxLength={BLURB_LIMIT}
                             value={form.blurb}
                             onChange={(e) => setForm({ ...form, blurb: e.target.value })}
                             disabled={busy}
                             placeholder="What did you make of it? Markdown works here."
-                            className={FIELD_CLASS}
+                            className={REVIEW_CLASS}
                         />
                     </label>
 
