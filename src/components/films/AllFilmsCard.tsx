@@ -13,33 +13,29 @@ const AllFilmsCard: React.FC<AllFilmsCardProps> = ({ cardSize }) => {
     const isPosterOnly = cardSize === 'poster';
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => setIsVisible(entry.isIntersecting),
-            { 
-                threshold: 0.1,
-                rootMargin: '50px'
-            }
-        );
-        
+        const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
+            threshold: 0.1,
+            rootMargin: '50px',
+        });
+
         const currentRef = cardRef.current;
         if (currentRef) {
             observer.observe(currentRef);
-            
+
             // Check initial visibility
             const rect = currentRef.getBoundingClientRect();
-            const isInitiallyVisible = (
+            const isInitiallyVisible =
                 rect.top < window.innerHeight &&
                 rect.bottom > 0 &&
                 rect.left < window.innerWidth &&
-                rect.right > 0
-            );
-            
+                rect.right > 0;
+
             if (isInitiallyVisible) {
                 setIsVisible(true);
             }
         }
-        
-        return () => { 
+
+        return () => {
             if (currentRef) observer.unobserve(currentRef);
         };
     }, []);
@@ -61,12 +57,14 @@ const AllFilmsCard: React.FC<AllFilmsCardProps> = ({ cardSize }) => {
             >
                 {/* Shell kept in step with FilmCard: flat surface, hairline border
                     that warms on hover, no drop shadow. */}
-                <div className="
+                <div
+                    className="
                     overflow-hidden h-full flex flex-col
                     border border-slate-700/60 hover:border-blue-400/30 rounded-lg
                     shadow-sm shadow-black/30
                     transition-colors duration-300
-                ">
+                "
+                >
                     {/* Icon area matching poster aspect ratio */}
                     <div
                         className="relative w-full overflow-hidden"
@@ -87,23 +85,31 @@ const AllFilmsCard: React.FC<AllFilmsCardProps> = ({ cardSize }) => {
                                 stroke="currentColor"
                                 strokeWidth={1.5}
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+                                />
                             </svg>
                         </div>
                     </div>
 
                     {/* Content area - only show if NOT in poster mode */}
                     {!isPosterOnly && (
-                        <div className={`
+                        <div
+                            className={`
                             flex flex-col flex-grow items-center justify-center text-center
                             ${isCompact ? 'p-2 pt-3 pb-3' : 'p-4 pt-5 pb-5'}
                             bg-slate-800/40 border-t border-white/[0.06]
-                        `}>
-                            <h3 className={`
+                        `}
+                        >
+                            <h3
+                                className={`
                                 font-normal text-slate-300 group-hover:text-slate-100
                                 transition-colors duration-200
                                 ${isCompact ? 'text-sm leading-tight' : 'text-base'}
-                            `}>
+                            `}
+                            >
                                 View All Films
                             </h3>
                             {!isCompact && (

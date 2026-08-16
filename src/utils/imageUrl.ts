@@ -32,7 +32,9 @@ export function parseImageUrl(raw: string | null | undefined): ImageUrlResult {
     const trimmed = (raw ?? '').trim();
     if (trimmed === '') return { value: null };
     if (trimmed.length > IMAGE_URL_LIMIT) {
-        return { error: `That URL is ${trimmed.length} characters; the limit is ${IMAGE_URL_LIMIT}.` };
+        return {
+            error: `That URL is ${trimmed.length} characters; the limit is ${IMAGE_URL_LIMIT}.`,
+        };
     }
 
     let parsed: URL;
@@ -42,7 +44,9 @@ export function parseImageUrl(raw: string | null | undefined): ImageUrlResult {
         return { error: 'That image link needs to be a full URL, starting with https://.' };
     }
     if (parsed.protocol !== 'https:') {
-        return { error: 'Image links must start with https:// — anything else is blocked in the browser.' };
+        return {
+            error: 'Image links must start with https:// — anything else is blocked in the browser.',
+        };
     }
 
     return { value: trimmed };
@@ -65,7 +69,9 @@ export function parseProfileImageUrl(raw: string | null | undefined): ImageUrlRe
     const trimmed = (raw ?? '').trim();
     if (trimmed.startsWith('/')) {
         if (trimmed.length > IMAGE_URL_LIMIT) {
-            return { error: `That path is ${trimmed.length} characters; the limit is ${IMAGE_URL_LIMIT}.` };
+            return {
+                error: `That path is ${trimmed.length} characters; the limit is ${IMAGE_URL_LIMIT}.`,
+            };
         }
         if (trimmed.startsWith('//') || trimmed.includes('..')) {
             return { error: 'A site image path looks like /images/andy.jpg.' };

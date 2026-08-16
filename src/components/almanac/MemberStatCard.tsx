@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CircularImage from '../common/CircularImage';
@@ -29,7 +28,7 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
     highlights,
     formatAverage,
     formatYear,
-    getHighlightClass
+    getHighlightClass,
 }) => {
     return (
         // No rail: one card per member, repeating in a grid
@@ -41,16 +40,19 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
                     className="group transition-all duration-200 ease-in-out relative flex items-center"
                     title={''} // Title attribute intentionally left empty as per original code
                 >
-                    <CircularImage alt={member.name} size="w-10 h-10 sm:w-12 sm:h-12" className="border-2 border-slate-600 mr-3" />
-                    <h4 className="text-base sm:text-lg font-semibold text-slate-300 group-hover:text-blue-400">{member.name}</h4>
+                    <CircularImage
+                        alt={member.name}
+                        size="w-10 h-10 sm:w-12 sm:h-12"
+                        className="border-2 border-slate-600 mr-3"
+                    />
+                    <h4 className="text-base sm:text-lg font-semibold text-slate-300 group-hover:text-blue-400">
+                        {member.name}
+                    </h4>
                 </Link>
             </div>
             {/* Stats List */}
             <div className="space-y-2 text-sm flex-grow">
-                <StatItem
-                    label="Selections Made"
-                    value={stats.totalSelections}
-                />
+                <StatItem label="Selections Made" value={stats.totalSelections} />
                 <StatItem
                     label="Avg Runtime (Sel.)"
                     value={stats.avgRuntime ? `${Math.round(stats.avgRuntime)} min` : 'N/A'}
@@ -69,9 +71,10 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
                 />
                 <StatItem
                     label="Unique Countries (Sel.)"
-                    value={stats.totalSelections > 0 ?
-                        `${stats.selectionCountryCount} (${Math.round((stats.selectionCountryCount / stats.totalSelections) * 100)}%)` :
-                        'N/A'
+                    value={
+                        stats.totalSelections > 0
+                            ? `${stats.selectionCountryCount} (${Math.round((stats.selectionCountryCount / stats.totalSelections) * 100)}%)`
+                            : 'N/A'
                     }
                     tooltip="Unique countries selected from, with diversity percentage"
                     valueClassName={getHighlightClass(highlights.countryDiversityPercentage)}

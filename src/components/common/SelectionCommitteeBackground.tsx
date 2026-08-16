@@ -30,11 +30,11 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
 }) => {
     const segment = useMemo(() => {
         if (!imageUrl || imageUrl.includes('N/A')) return null;
-        
+
         return {
             poster: imageUrl,
-            clipX: objectPositionX ?? (20 + Math.random() * 40),
-            clipY: objectPositionY ?? (10 + Math.random() * 50),
+            clipX: objectPositionX ?? 20 + Math.random() * 40,
+            clipY: objectPositionY ?? 10 + Math.random() * 50,
         };
     }, [imageUrl, objectPositionX, objectPositionY]);
 
@@ -52,7 +52,9 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
     const maskGradient = `linear-gradient(${fadeDirection}, black 0%, black 20%, transparent 100%)`;
 
     return (
-        <div className={`absolute inset-0 overflow-hidden pointer-events-none rounded-lg ${className}`}>
+        <div
+            className={`absolute inset-0 overflow-hidden pointer-events-none rounded-lg ${className}`}
+        >
             <div
                 className={`absolute top-0 bottom-0 w-2/3 h-full ${isRight ? 'right-0' : 'left-0'}`}
                 style={{
@@ -72,7 +74,9 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
                     }}
                     loading="lazy"
                     onLoad={() => setLoaded(true)}
-                    ref={(node) => { if (node?.complete) setLoaded(true); }}
+                    ref={(node) => {
+                        if (node?.complete) setLoaded(true);
+                    }}
                 />
             </div>
         </div>

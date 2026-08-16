@@ -93,7 +93,12 @@ export const formatAverage = (avg: number | null | undefined, digits = 1): strin
 
 export const countValidRatings = (clubRatings: ClubRating[] | undefined): number => {
     if (!clubRatings || !Array.isArray(clubRatings)) return 0;
-    return clubRatings.filter(rating => rating.score !== null && typeof rating.score === 'number' && !isNaN(rating.score as number)).length;
+    return clubRatings.filter(
+        (rating) =>
+            rating.score !== null &&
+            typeof rating.score === 'number' &&
+            !isNaN(rating.score as number)
+    ).length;
 };
 
 export const getRankString = (
@@ -111,30 +116,33 @@ export const getRankString = (
 
     // Find the rank. Use findIndex for exact match.
     // For divergence (lower magnitude is better), the sorting is already ascending.
-    const rank = validValues.findIndex(v => v === value) + 1;
+    const rank = validValues.findIndex((v) => v === value) + 1;
 
-     if (rank === 0) {
-       // Handle potential floating point inaccuracies if needed, maybe check within a small epsilon
-       const epsilon = 1e-9;
-       const approxRank = validValues.findIndex(v => Math.abs(v - value) < epsilon) + 1;
-       if (approxRank === 0) return null;
-       return `${approxRank}/${validValues.length}`;
-     }
+    if (rank === 0) {
+        // Handle potential floating point inaccuracies if needed, maybe check within a small epsilon
+        const epsilon = 1e-9;
+        const approxRank = validValues.findIndex((v) => Math.abs(v - value) < epsilon) + 1;
+        if (approxRank === 0) return null;
+        return `${approxRank}/${validValues.length}`;
+    }
 
     return `${rank}/${validValues.length}`;
 };
 
 // --- Core Stat Calculation Logic ---
 
-export const calculateMemberStats = (memberName: string, films: Film[]): ComprehensiveMemberStats => {
+export const calculateMemberStats = (
+    memberName: string,
+    films: Film[]
+): ComprehensiveMemberStats => {
     const normalizedUserName = memberName.toLowerCase();
-    const userSelections = films.filter(film => film.movieClubInfo?.selector === memberName);
+    const userSelections = films.filter((film) => film.movieClubInfo?.selector === memberName);
     const totalSelections = userSelections.length;
 
     // Runtime calculations
     let totalRuntime = 0;
     let runtimeCount = 0;
-    userSelections.forEach(film => {
+    userSelections.forEach((film) => {
         const rt = parseRuntime(film.runtime);
         if (rt !== null) {
             totalRuntime += rt;
@@ -145,11 +153,11 @@ export const calculateMemberStats = (memberName: string, films: Film[]): Compreh
 
     // Genre calculations (ProfilePage)
     const genreCounts: { [key: string]: number } = {};
-    userSelections.forEach(film => {
+    userSelections.forEach((film) => {
         if (film.genre) {
-            film.genre.split(',').forEach(g => {
+            film.genre.split(',').forEach((g) => {
                 const trimmedGenre = g.trim();
-                if (trimmedGenre && trimmedGenre !== "N/A") {
+                if (trimmedGenre && trimmedGenre !== 'N/A') {
                     genreCounts[trimmedGenre] = (genreCounts[trimmedGenre] || 0) + 1;
                 }
             });
@@ -163,7 +171,7 @@ export const calculateMemberStats = (memberName: string, films: Film[]): Compreh
     // Avg Selection Score (Club Average for selected films with >= 2 ratings)
     let totalSelectedScore = 0;
     let selectedScoreCount = 0;
-    userSelections.forEach(film => {
+    userSelections.forEach((film) => {
         const validRatingCount = countValidRatings(film.movieClubInfo?.clubRatings);
         if (validRatingCount >= 2) {
             const avg = calculateClubAverage(film.movieClubInfo?.clubRatings);
@@ -173,7 +181,8 @@ export const calculateMemberStats = (memberName: string, films: Film[]): Compreh
             }
         }
     });
-    const avgSelectedScore = selectedScoreCount > 0 ? totalSelectedScore / selectedScoreCount : null;
+    const avgSelectedScore =
+        selectedScoreCount > 0 ? totalSelectedScore / selectedScoreCount : null;
 
     // Avg Given Score & Divergence calculations
     let totalGivenScore = 0;
@@ -182,27 +191,35 @@ export const calculateMemberStats = (memberName: string, films: Film[]): Compreh
     let totalAbsoluteDivergence = 0; // Sum of |userScore - othersAvg|
     let divergenceCount = 0;
 
-    films.forEach(film => {
+    films.forEach((film) => {
         const ratings = film.movieClubInfo?.clubRatings;
         if (ratings && Array.isArray(ratings)) {
-            const userRatingEntry = ratings.find(r => r.user.toLowerCase() === normalizedUserName);
-            const userScore = (userRatingEntry && userRatingEntry.score !== null && !isNaN(Number(userRatingEntry.score)))
-                ? Number(userRatingEntry.score)
-                : null;
+            const userRatingEntry = ratings.find(
+                (r) => r.user.toLowerCase() === normalizedUserName
+            );
+            const userScore =
+                userRatingEntry &&
+                userRatingEntry.score !== null &&
+                !isNaN(Number(userRatingEntry.score))
+                    ? Number(userRatingEntry.score)
+                    : null;
 
             if (userScore !== null) {
                 totalGivenScore += userScore;
                 givenScoreCount++;
             }
 
-            const otherRatings = ratings.filter(r =>
-                r.user.toLowerCase() !== normalizedUserName &&
-                r.score !== null && typeof r.score === 'number' && !isNaN(r.score)
+            const otherRatings = ratings.filter(
+                (r) =>
+                    r.user.toLowerCase() !== normalizedUserName &&
+                    r.score !== null &&
+                    typeof r.score === 'number' &&
+                    !isNaN(r.score)
             );
 
             if (userScore !== null && otherRatings.length > 0) {
                 let othersTotal = 0;
-                otherRatings.forEach(r => othersTotal += (r.score as number));
+                otherRatings.forEach((r) => (othersTotal += r.score as number));
                 const othersAvg = othersTotal / otherRatings.length;
                 const signedDivergence = userScore - othersAvg; // Calculate signed difference
                 const absoluteDivergence = Math.abs(signedDivergence); // Calculate absolute difference
@@ -216,29 +233,32 @@ export const calculateMemberStats = (memberName: string, films: Film[]): Compreh
 
     const avgGivenScore = givenScoreCount > 0 ? totalGivenScore / givenScoreCount : null;
     const avgDivergence = divergenceCount > 0 ? totalSignedDivergence / divergenceCount : null; // Signed avg
-    const avgAbsoluteDivergence = divergenceCount > 0 ? totalAbsoluteDivergence / divergenceCount : null; // Absolute avg
+    const avgAbsoluteDivergence =
+        divergenceCount > 0 ? totalAbsoluteDivergence / divergenceCount : null; // Absolute avg
 
     // Language count (ProfilePage)
     const languages = new Set<string>();
-    userSelections.forEach(film => {
-        if (film?.language?.trim() && film.language !== "N/A") languages.add(film.language.split(',')[0].trim());
+    userSelections.forEach((film) => {
+        if (film?.language?.trim() && film.language !== 'N/A')
+            languages.add(film.language.split(',')[0].trim());
     });
     const languageCount = languages.size;
 
     // Country count (ProfilePage & AlmanacPage - assuming same definition)
     const countries = new Set<string>();
-    userSelections.forEach(film => {
-        if (film?.country?.trim() && film.country !== "N/A") countries.add(film.country.split(',')[0].trim());
+    userSelections.forEach((film) => {
+        if (film?.country?.trim() && film.country !== 'N/A')
+            countries.add(film.country.split(',')[0].trim());
     });
     const countryCount = countries.size;
 
-    const countryDiversityPercentage = totalSelections > 0 
-        ? (countryCount / totalSelections) * 100 
-        : null;
+    const countryDiversityPercentage =
+        totalSelections > 0 ? (countryCount / totalSelections) * 100 : null;
 
     // Avg Selection Year (AlmanacPage)
-    let totalYear = 0; let yearCount = 0;
-    userSelections.forEach(film => {
+    let totalYear = 0;
+    let yearCount = 0;
+    userSelections.forEach((film) => {
         if (film?.year?.substring(0, 4)) {
             const yearNum = parseInt(film.year.substring(0, 4), 10);
             if (!isNaN(yearNum) && yearNum > 1000) {

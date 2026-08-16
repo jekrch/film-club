@@ -40,7 +40,7 @@ function assertFilmData(data: unknown): Film[] {
 
 export const filmData = assertFilmData(filmsData);
 
-// Interfaces related to component props 
+// Interfaces related to component props
 export interface FilmListProps {
     films: Film[];
     onFilmSelect?: (film: Film) => void;
@@ -54,7 +54,6 @@ export interface FilmCardProps {
 export interface FilmDetailProps {
     film: Film;
 }
-
 
 // --- Updated Film Data Interfaces ---
 
@@ -106,7 +105,7 @@ export interface PersonInfo {
  * Represents a single rating entry from a movie club member.
  */
 export interface ClubRating {
-    user: string;       // The name of the club member (e.g., 'andy', 'gabe')
+    user: string; // The name of the club member (e.g., 'andy', 'gabe')
     score: number | null; // The score given (e.g., 8.5), or null if not rated
     blurb: string | null; // An optional short review or comment, null if not provided
     // Optional single-letter qualifier appended to the score in the sheet (e.g.
@@ -119,11 +118,11 @@ export interface ClubRating {
  * Represents the specific details tracked by the movie club for a film.
  */
 export interface MovieClubDetails {
-    selector: string;         // Who chose the movie
+    selector: string; // Who chose the movie
     watchDate: string | null; // Date the movie was reviewed/discussed (e.g., "10/14/2020"), or null if not yet reviewed
-    clubRatings: ClubRating[];// Array of individual ratings from members
+    clubRatings: ClubRating[]; // Array of individual ratings from members
     trophyInfo?: string | null; // Optional: Main description or recipient of the togetherness trophy (can be null)
-    trophyNotes?: string | null;// Optional: Additional notes or recipients for trophies/awards (can be null)
+    trophyNotes?: string | null; // Optional: Additional notes or recipients for trophies/awards (can be null)
 }
 
 /**
@@ -144,7 +143,7 @@ export interface Film {
     plot: string;
     language: string;
     country: string;
-    awards?: string; 
+    awards?: string;
     poster: string; // URL
     backdropImage?: string; // Optional: hand-curated wide background/banner image shown behind the selection committee (home) and film details
     backdropImages?: string[]; // Optional: TMDb scene stills (populated by the sync script) used as faded backgrounds; fallback pool when no curated backdropImage exists
@@ -185,5 +184,5 @@ export interface Film {
 export function getClubRating(film: Film, user: string): ClubRating | undefined {
     if (!film.movieClubInfo) return undefined; // No movie club info available
 
-    return film.movieClubInfo.clubRatings.find(rating => rating.user === user);
+    return film.movieClubInfo.clubRatings.find((rating) => rating.user === user);
 }

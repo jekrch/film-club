@@ -82,7 +82,10 @@ function githubError(path: string, status: number, body: string): HttpError {
             `GitHub rejected the worker's credentials (${status}). The GITHUB_TOKEN secret is probably expired or under-scoped.`
         );
     }
-    return new HttpError(502, `GitHub request for ${path} failed (${status}): ${body.slice(0, 200)}`);
+    return new HttpError(
+        502,
+        `GitHub request for ${path} failed (${status}): ${body.slice(0, 200)}`
+    );
 }
 
 /** Reads a JSON file from `main`. A missing file is `{ data: null }`, not an error. */

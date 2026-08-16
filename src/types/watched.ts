@@ -49,6 +49,20 @@ export interface WatchedEntry {
      * behind the row. See the note on the list-entry field of the same name.
      */
     posterImage?: string | null;
+    /**
+     * A YouTube video key the member picked as this film's trailer, or null to
+     * play whatever trailer the film itself has. Absent on entries written
+     * before the field existed, like the two image fields above. See the note on
+     * the list-entry field of the same name for why a key is stored rather than
+     * the URL they pasted.
+     */
+    trailerKey?: string | null;
+    /**
+     * True when the member wants this row to offer no trailer at all. Separate
+     * from {@link trailerKey}, and wins over it — same reasoning as the
+     * list-entry field of the same name.
+     */
+    hideTrailer?: boolean;
     updatedAt: string;
 }
 
@@ -76,7 +90,9 @@ function assertWatchedData(data: unknown): WatchedLog {
         entries.forEach((entry, index) => {
             const e = entry as Partial<WatchedEntry> | null;
             if (typeof e !== 'object' || e === null || typeof e.imdbID !== 'string') {
-                throw new Error(`watched.json[${owner}]: entry ${index} missing or invalid "imdbID"`);
+                throw new Error(
+                    `watched.json[${owner}]: entry ${index} missing or invalid "imdbID"`
+                );
             }
             if (typeof e.watchDate !== 'string' || e.watchDate.length === 0) {
                 throw new Error(

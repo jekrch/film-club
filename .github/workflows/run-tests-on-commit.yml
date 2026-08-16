@@ -1,46 +1,52 @@
 name: Run Frontend Tests
 
 on:
-  push:
-    branches:
-      - main 
-  pull_request:
-    branches:
-      - main 
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 
 permissions:
-  contents: read 
+    contents: read
 
 jobs:
-  test-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    test-frontend:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest 
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
 
-      - name: Install dependencies
-        run: bun install
+            - name: Install dependencies
+              run: bun install
 
-      - name: Typecheck
-        run: bun run typecheck
+            # Runs before typecheck because a formatting failure is the cheapest
+            # one to diagnose, and because `.gitattributes` + this gate together
+            # are what keep line-ending churn from ever reappearing in a diff.
+            - name: Check formatting
+              run: bun run format:check
 
-      - name: Lint
-        run: bun run lint
+            - name: Typecheck
+              run: bun run typecheck
 
-      - name: Run tests
-        run: bun run test
+            - name: Lint
+              run: bun run lint
 
-      # The editing worker deploys on its own and isn't in the site's tsconfig
-      # project references, so the typecheck above doesn't see it. Its trust
-      # boundary (validate.ts) is pure and its tests run in the site suite; this
-      # step is what checks the half that touches the Workers runtime.
-      - name: Typecheck the editing worker
-        working-directory: worker
-        run: |
-          bun install
-          bun run typecheck
+            - name: Run tests
+              run: bun run test
+
+            # The editing worker deploys on its own and isn't in the site's tsconfig
+            # project references, so the typecheck above doesn't see it. Its trust
+            # boundary (validate.ts) is pure and its tests run in the site suite; this
+            # step is what checks the half that touches the Workers runtime.
+            - name: Typecheck the editing worker
+              working-directory: worker
+              run: |
+                  bun install
+                  bun run typecheck

@@ -33,7 +33,8 @@ const FRAMES = [
  * Holds the frames off the card's header row, which is text across the full
  * width. Below that the copy is short enough that the right edge is free.
  */
-const VERTICAL_FADE = 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 22%, rgba(0,0,0,1) 55%, rgba(0,0,0,1) 100%)';
+const VERTICAL_FADE =
+    'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 22%, rgba(0,0,0,1) 55%, rgba(0,0,0,1) 100%)';
 
 /**
  * Stills from a set of films washed into the right edge of a card, credited
@@ -49,7 +50,9 @@ const FilmFrameWash: React.FC<FilmFrameWashProps> = ({ films, className = '' }) 
     if (frames.length === 0) return null;
 
     return (
-        <div className={`pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] ${className}`}>
+        <div
+            className={`pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit] ${className}`}
+        >
             <div
                 className="absolute inset-0"
                 style={{ WebkitMaskImage: VERTICAL_FADE, maskImage: VERTICAL_FADE }}

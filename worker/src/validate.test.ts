@@ -19,6 +19,7 @@ import {
     validateProfileLink,
     validateProfilePatch,
     validateRatingPatch,
+    validateTrailerKey,
     validateWatchDate,
     validateWatchedPatch,
 } from './validate';
@@ -132,6 +133,36 @@ describe('validateWatchDate', () => {
     });
 });
 
+describe('validateTrailerKey', () => {
+    const KEY = 'dQw4w9WgXcQ';
+
+    it('reduces every accepted link to the video id it carries', () => {
+        expect(validateTrailerKey(`https://www.youtube.com/watch?v=${KEY}&t=9s`)).toBe(KEY);
+        expect(validateTrailerKey(`https://youtu.be/${KEY}`)).toBe(KEY);
+        expect(validateTrailerKey(`https://www.youtube.com/embed/${KEY}`)).toBe(KEY);
+        expect(validateTrailerKey(`youtube.com/watch?v=${KEY}`)).toBe(KEY);
+        expect(validateTrailerKey(KEY)).toBe(KEY);
+    });
+
+    it('reads blank and null alike as "use the film\'s own trailer"', () => {
+        expect(validateTrailerKey(null)).toBeNull();
+        expect(validateTrailerKey(undefined)).toBeNull();
+        expect(validateTrailerKey('   ')).toBeNull();
+    });
+
+    it('refuses anything that would reach the embed as more than an id', () => {
+        // The stored value is interpolated into an iframe src, so a link that
+        // isn't a YouTube video — or an id that isn't one — is a 400 rather
+        // than something stored verbatim.
+        expectStatus(() => validateTrailerKey('https://evil.example/watch?v=' + KEY), 400);
+        expectStatus(() => validateTrailerKey('https://www.youtube.com/results?q=trailer'), 400);
+        expectStatus(() => validateTrailerKey(`${KEY}" onload="alert(1)`), 400);
+        expectStatus(() => validateTrailerKey('javascript:alert(1)'), 400);
+        expectStatus(() => validateTrailerKey(42), 400);
+        expectStatus(() => validateTrailerKey('x'.repeat(LIMITS.trailerUrl + 1)), 400);
+    });
+});
+
 describe('validateWatchedPatch', () => {
     it('keeps only the fields the body carried', () => {
         expect(validateWatchedPatch({ blurb: 'Held up.' })).toEqual({ blurb: 'Held up.' });
@@ -142,6 +173,17 @@ describe('validateWatchedPatch', () => {
         expect(
             validateWatchedPatch({ score: 8, imdbID: 'tt0000001', owner: 'Andy', updatedAt: 'x' })
         ).toEqual({ score: 8 });
+    });
+
+    it('carries a trailer link as a key, and the hide flag beside it', () => {
+        expect(validateWatchedPatch({ trailerKey: 'https://youtu.be/dQw4w9WgXcQ' })).toEqual({
+            trailerKey: 'dQw4w9WgXcQ',
+        });
+        expect(validateWatchedPatch({ trailerKey: null })).toEqual({ trailerKey: null });
+        expect(validateWatchedPatch({ hideTrailer: true })).toEqual({ hideTrailer: true });
+        expect(validateWatchedPatch({ hideTrailer: null })).toEqual({ hideTrailer: false });
+        expectStatus(() => validateWatchedPatch({ hideTrailer: 'yes' }), 400);
+        expectStatus(() => validateWatchedPatch({ trailerKey: 'https://vimeo.com/76979871' }), 400);
     });
 
     it('applies the same score and qualifier rules as a club rating', () => {
@@ -212,8 +254,26 @@ describe('validateListInput', () => {
             ],
         });
         expect(list.entries).toEqual([
-            { rank: 1, imdbID: 'tt0091251', description: 'first', image: null, posterImage: null, score: null },
-            { rank: 2, imdbID: 'tt0107653', description: null, image: null, posterImage: null, score: null },
+            {
+                rank: 1,
+                imdbID: 'tt0091251',
+                description: 'first',
+                image: null,
+                posterImage: null,
+                trailerKey: null,
+                hideTrailer: false,
+                score: null,
+            },
+            {
+                rank: 2,
+                imdbID: 'tt0107653',
+                description: null,
+                image: null,
+                posterImage: null,
+                trailerKey: null,
+                hideTrailer: false,
+                score: null,
+            },
         ]);
     });
 
@@ -229,9 +289,41 @@ describe('validateListInput', () => {
             description: null,
             ranked: true,
             entries: [
-                { rank: 1, imdbID: 'tt0091251', description: null, image: null, posterImage: null, score: null },
+                {
+                    rank: 1,
+                    imdbID: 'tt0091251',
+                    description: null,
+                    image: null,
+                    posterImage: null,
+                    trailerKey: null,
+                    hideTrailer: false,
+                    score: null,
+                },
             ],
         });
+    });
+
+    it('stores a trailer link as a key, and the hide flag, per entry', () => {
+        const { entries } = validateListInput({
+            ...base,
+            entries: [
+                {
+                    imdbID: 'tt0091251',
+                    trailerKey: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                    hideTrailer: true,
+                },
+            ],
+        });
+        expect(entries[0]).toMatchObject({ trailerKey: 'dQw4w9WgXcQ', hideTrailer: true });
+
+        expectStatus(
+            () =>
+                validateListInput({
+                    ...base,
+                    entries: [{ imdbID: 'tt0091251', trailerKey: 'https://vimeo.com/76979871' }],
+                }),
+            400
+        );
     });
 
     it('defaults to a ranked list and takes false when told', () => {
@@ -257,7 +349,10 @@ describe('validateListInput', () => {
     it('takes a per-entry score on the same 0–9 scale', () => {
         const list = validateListInput({
             ...base,
-            entries: [{ imdbID: 'tt0091251', score: 8.5 }, { imdbID: 'tt0107653', score: null }],
+            entries: [
+                { imdbID: 'tt0091251', score: 8.5 },
+                { imdbID: 'tt0107653', score: null },
+            ],
         });
         expect(list.entries.map((e) => e.score)).toEqual([8.5, null]);
 
@@ -288,17 +383,25 @@ describe('validateListInput', () => {
 
         // Blank is the same as unset — a cleared field shouldn't store "".
         expect(
-            validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', image: '   ' }] }).entries[0]
-                .image
+            validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', image: '   ' }] })
+                .entries[0].image
         ).toBeNull();
 
         // http would commit cleanly and then be blocked as mixed content.
         expectStatus(
-            () => validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', image: 'http://img.example/x.jpg' }] }),
+            () =>
+                validateListInput({
+                    ...base,
+                    entries: [{ imdbID: 'tt0091251', image: 'http://img.example/x.jpg' }],
+                }),
             400
         );
         expectStatus(
-            () => validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', image: 'not a url' }] }),
+            () =>
+                validateListInput({
+                    ...base,
+                    entries: [{ imdbID: 'tt0091251', image: 'not a url' }],
+                }),
             400
         );
         expectStatus(
@@ -306,7 +409,10 @@ describe('validateListInput', () => {
                 validateListInput({
                     ...base,
                     entries: [
-                        { imdbID: 'tt0091251', image: `https://img.example/${'x'.repeat(LIMITS.imageUrl)}.jpg` },
+                        {
+                            imdbID: 'tt0091251',
+                            image: `https://img.example/${'x'.repeat(LIMITS.imageUrl)}.jpg`,
+                        },
                     ],
                 }),
             400
@@ -361,16 +467,25 @@ describe('validateListInput', () => {
     });
 
     it('enforces the length caps', () => {
-        expectStatus(() => validateListInput({ ...base, name: 'x'.repeat(LIMITS.listName + 1) }), 400);
         expectStatus(
-            () => validateListInput({ ...base, description: 'x'.repeat(LIMITS.listDescription + 1) }),
+            () => validateListInput({ ...base, name: 'x'.repeat(LIMITS.listName + 1) }),
+            400
+        );
+        expectStatus(
+            () =>
+                validateListInput({ ...base, description: 'x'.repeat(LIMITS.listDescription + 1) }),
             400
         );
         expectStatus(
             () =>
                 validateListInput({
                     ...base,
-                    entries: [{ imdbID: 'tt0091251', description: 'x'.repeat(LIMITS.entryDescription + 1) }],
+                    entries: [
+                        {
+                            imdbID: 'tt0091251',
+                            description: 'x'.repeat(LIMITS.entryDescription + 1),
+                        },
+                    ],
                 }),
             400
         );
@@ -393,7 +508,9 @@ describe('validateListInput', () => {
 
 describe('validateProfileImage', () => {
     it('accepts an https URL', () => {
-        expect(validateProfileImage('https://example.com/me.jpg')).toBe('https://example.com/me.jpg');
+        expect(validateProfileImage('https://example.com/me.jpg')).toBe(
+            'https://example.com/me.jpg'
+        );
     });
 
     it("accepts the site's own image paths", () => {
@@ -422,7 +539,9 @@ describe('validateProfileImage', () => {
 
 describe('validateProfileLink', () => {
     it('accepts an https URL', () => {
-        expect(validateProfileLink('https://letterboxd.com/andy')).toBe('https://letterboxd.com/andy');
+        expect(validateProfileLink('https://letterboxd.com/andy')).toBe(
+            'https://letterboxd.com/andy'
+        );
     });
 
     it('refuses a bare domain', () => {
@@ -451,7 +570,10 @@ describe('validateInterview', () => {
         // The editor keeps an empty pair at the end; saving shouldn't require
         // the member to tidy it away first.
         expect(
-            validateInterview([{ question: 'First film?', answer: 'Jaws.' }, { question: '', answer: '  ' }])
+            validateInterview([
+                { question: 'First film?', answer: 'Jaws.' },
+                { question: '', answer: '  ' },
+            ])
         ).toHaveLength(1);
     });
 
@@ -475,7 +597,10 @@ describe('validateInterview', () => {
 
     it('caps an answer', () => {
         expectStatus(
-            () => validateInterview([{ question: 'Q', answer: 'x'.repeat(LIMITS.interviewAnswer + 1) }]),
+            () =>
+                validateInterview([
+                    { question: 'Q', answer: 'x'.repeat(LIMITS.interviewAnswer + 1) },
+                ]),
             400
         );
     });

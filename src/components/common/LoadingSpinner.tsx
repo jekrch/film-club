@@ -14,7 +14,8 @@ const LoadingSpinner: React.FC = () => {
                 role="status" // Accessibility: indicates loading status
                 aria-live="polite" // Accessibility: announce changes politely
             >
-                <span className="sr-only">Loading...</span> {/* Accessibility: screen reader text */}
+                <span className="sr-only">Loading...</span>{' '}
+                {/* Accessibility: screen reader text */}
             </div>
         </div>
     );

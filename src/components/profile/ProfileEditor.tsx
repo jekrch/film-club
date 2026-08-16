@@ -110,7 +110,10 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
     };
 
     const addRow = () => {
-        setForm((current) => ({ ...current, interview: [...current.interview, newInterviewRow()] }));
+        setForm((current) => ({
+            ...current,
+            interview: [...current.interview, newInterviewRow()],
+        }));
         setNotice(null);
         setSaveError(null);
     };
@@ -302,7 +305,9 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
                                         type="text"
                                         maxLength={QUESTION_LIMIT}
                                         value={row.question}
-                                        onChange={(e) => updateRow(row.id, 'question', e.target.value)}
+                                        onChange={(e) =>
+                                            updateRow(row.id, 'question', e.target.value)
+                                        }
                                         disabled={busy}
                                         placeholder="The question"
                                         aria-label={`Question ${index + 1}`}

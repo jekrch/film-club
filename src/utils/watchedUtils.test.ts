@@ -20,7 +20,12 @@ const entry = (overrides: Partial<WatchedEntry> = {}): WatchedEntry => ({
     ...overrides,
 });
 
-const clubFilm = makeFilm({ imdbID: 'tt0107653', title: 'Naked', year: '1993', poster: 'club.jpg' });
+const clubFilm = makeFilm({
+    imdbID: 'tt0107653',
+    title: 'Naked',
+    year: '1993',
+    poster: 'club.jpg',
+});
 
 const sources = (watched: WatchedLog): WatchedDataSources => ({
     watched,
@@ -117,8 +122,10 @@ describe('resolveWatchedEntry', () => {
         expect(clubFilm.poster).toBe('club.jpg');
 
         expect(
-            resolveWatchedEntry(entry({ imdbID: 'tt2000000', posterImage: 'mine.jpg' }), sources({}))
-                .poster
+            resolveWatchedEntry(
+                entry({ imdbID: 'tt2000000', posterImage: 'mine.jpg' }),
+                sources({})
+            ).poster
         ).toBe('mine.jpg');
     });
 
@@ -168,5 +175,82 @@ describe('formatWatchedScore', () => {
         expect(formatWatchedScore({ score: 7.5, scoreQualifier: 'd' })).toBe('7.5d');
         expect(formatWatchedScore({ score: 8, scoreQualifier: null })).toBe('8');
         expect(formatWatchedScore({ score: null, scoreQualifier: null })).toBeNull();
+    });
+});
+
+describe('resolveWatchedEntry trailers', () => {
+    const trailerSources = (): WatchedDataSources => ({
+        watched: {},
+        films: [makeFilm({ imdbID: 'tt0107653', title: 'Naked', trailerKey: 'CLUBTRAILER' })],
+        summaries: {
+            tt2000000: {
+                imdbID: 'tt2000000',
+                title: 'A Cached Film',
+                year: '1985',
+                poster: 'cached.jpg',
+                trailerKey: 'CACHETRAILER',
+            },
+        },
+    });
+
+    it("plays the film's own trailer, from whichever source knew it", () => {
+        expect(
+            resolveWatchedEntry(entry({ imdbID: 'tt0107653' }), trailerSources()).resolvedTrailerKey
+        ).toBe('CLUBTRAILER');
+        expect(
+            resolveWatchedEntry(entry({ imdbID: 'tt2000000' }), trailerSources()).resolvedTrailerKey
+        ).toBe('CACHETRAILER');
+    });
+
+    it("plays the member's own link over it, and nothing when they hid it", () => {
+        const own = entry({ imdbID: 'tt0107653', trailerKey: 'dQw4w9WgXcQ' });
+        expect(resolveWatchedEntry(own, trailerSources()).resolvedTrailerKey).toBe('dQw4w9WgXcQ');
+        expect(
+            resolveWatchedEntry({ ...own, hideTrailer: true }, trailerSources()).resolvedTrailerKey
+        ).toBeNull();
+    });
+
+    it('leaves the stored override alone, so an editor seeded from it stays honest', () => {
+        // The row's editor writes `trailerKey`; a resolved entry that overwrote
+        // it with the film's key would turn "inherit" into an override on the
+        // next save.
+        const resolved = resolveWatchedEntry(entry({ imdbID: 'tt0107653' }), trailerSources());
+        expect(resolved.trailerKey).toBeUndefined();
+        expect(resolved.resolvedTrailerKey).toBe('CLUBTRAILER');
+    });
+});
+
+describe('resolveWatchedEntry details', () => {
+    const detailed = (): WatchedDataSources => ({
+        watched: {},
+        films: [clubFilm],
+        summaries: {
+            tt2000000: {
+                imdbID: 'tt2000000',
+                title: 'A Cached Film',
+                year: '1985',
+                poster: 'cached.jpg',
+                plot: 'A summary of it.',
+                backdropImages: ['still-1.jpg'],
+            },
+        },
+    });
+
+    it('carries the cache film’s panel content and scene art', () => {
+        const resolved = resolveWatchedEntry(entry({ imdbID: 'tt2000000' }), detailed());
+        expect(resolved.details?.plot).toBe('A summary of it.');
+        expect(resolved.backdropImages).toEqual(['still-1.jpg']);
+    });
+
+    it('leaves a club film’s art to its own record', () => {
+        // `clubFilm` is the crossover the frame source already reads backdrops
+        // from; duplicating them here would give the wash the same image twice.
+        const resolved = resolveWatchedEntry(entry({ imdbID: 'tt0107653' }), detailed());
+        expect(resolved.backdropImages).toEqual([]);
+        expect(resolved.clubFilm).toBe(clubFilm);
+    });
+
+    it('has no panel for a film nothing knows yet', () => {
+        expect(resolveWatchedEntry(entry({ imdbID: 'tt9999999' }), detailed()).details).toBeNull();
     });
 });

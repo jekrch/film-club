@@ -82,7 +82,9 @@ const GoogleSignInButton: React.FC<{ className?: string }> = ({ className }) => 
             if (!available) return;
             const next = Math.min(Math.max(available, MIN_WIDTH), MAX_WIDTH);
             setWidth((current) =>
-                current !== null && Math.abs(current - next) < WIDTH_STEP ? current : Math.round(next)
+                current !== null && Math.abs(current - next) < WIDTH_STEP
+                    ? current
+                    : Math.round(next)
             );
         };
 
@@ -116,7 +118,9 @@ const GoogleSignInButton: React.FC<{ className?: string }> = ({ className }) => 
             })
             .catch((err: unknown) => {
                 if (!cancelled) {
-                    setLoadError(err instanceof Error ? err.message : "Couldn't load Google sign-in.");
+                    setLoadError(
+                        err instanceof Error ? err.message : "Couldn't load Google sign-in."
+                    );
                 }
             });
 
@@ -140,7 +144,10 @@ const GoogleSignInButton: React.FC<{ className?: string }> = ({ className }) => 
                     unmounted while a sign-in is in flight: a failed attempt that
                     remounted it would come back to an empty div, since the effect
                     above runs only when the width changes. */}
-                <div ref={target} className={status === 'authenticating' ? 'invisible' : undefined} />
+                <div
+                    ref={target}
+                    className={status === 'authenticating' ? 'invisible' : undefined}
+                />
                 {status === 'authenticating' && (
                     <p className="absolute inset-0 flex items-center text-sm italic text-slate-400">
                         Signing in…
@@ -149,7 +156,9 @@ const GoogleSignInButton: React.FC<{ className?: string }> = ({ className }) => 
             </div>
             {/* Held to the button's own width so a long failure from the worker
                 doesn't set the line length for the panel around it. */}
-            {message && <p className="mt-2 max-w-xs text-sm leading-snug text-rose-300">{message}</p>}
+            {message && (
+                <p className="mt-2 max-w-xs text-sm leading-snug text-rose-300">{message}</p>
+            )}
         </div>
     );
 };

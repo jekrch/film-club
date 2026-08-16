@@ -8,7 +8,9 @@ beforeAll(() => {
 });
 
 describe('useProfileData', () => {
-    const activeMemberName = teamMembers.find((m) => typeof m.queue === 'number' && m.queue > 0)!.name;
+    const activeMemberName = teamMembers.find(
+        (m) => typeof m.queue === 'number' && m.queue > 0
+    )!.name;
 
     it('reports an error when no member name is provided', () => {
         const { result } = renderHook(() => useProfileData(undefined));

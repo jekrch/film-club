@@ -43,6 +43,8 @@ export const LIMITS = {
     blurb: 4000,
     /** A URL, not an image — nothing here fetches what it points at. */
     imageUrl: 500,
+    /** A watch URL with its tracking parameters still attached, and no more. */
+    trailerUrl: 300,
     /** Films in one member's watch log. A log grows for years; a list does not. */
     watched: 2000,
     /** A member's role line under their name, e.g. "Filmmaker & Director". */
@@ -135,6 +137,66 @@ export function validateImageUrl(value: unknown, field = 'image'): string | null
     return text;
 }
 
+/** The hosts a trailer link may come from, `www.`/`m.` prefixes stripped. */
+const YOUTUBE_HOSTS = new Set(['youtube.com', 'youtube-nocookie.com', 'youtu.be']);
+
+/** Path forms that carry the key as the last segment, e.g. `/embed/KEY`. */
+const KEY_IN_PATH = /^\/(?:embed|v|shorts|live)\/([^/?#]+)/;
+
+/** A YouTube video id: exactly eleven URL-safe characters. */
+const YOUTUBE_KEY_PATTERN = /^[A-Za-z0-9_-]{11}$/;
+
+/**
+ * A member-supplied trailer, stored as a YouTube video key, or `null` to fall
+ * back to whatever trailer the film itself has.
+ *
+ * **What comes out of here goes into an iframe `src`.** That is why the URL a
+ * member pastes is parsed down to a key and the key is then required to be
+ * exactly eleven URL-safe characters — the stored value can never carry a
+ * query, a path, a scheme, or a quote out to the embed address, whatever the
+ * body contained. Everything else on this site is stored verbatim; this one
+ * field is not, and deliberately.
+ *
+ * The site parses the same forms before saving (`parseTrailerLink` in
+ * `src/utils/youtube.ts`) so a bad link is caught in the form; this is the copy
+ * that is actually trusted.
+ */
+export function validateTrailerKey(value: unknown, field = 'trailerKey'): string | null {
+    const text = optionalText(value, LIMITS.trailerUrl, field);
+    if (text === null) return null;
+
+    // A bare key first: it parses as a relative URL, so the host check below
+    // would reject it with a message about YouTube links.
+    if (YOUTUBE_KEY_PATTERN.test(text)) return text;
+
+    let parsed: URL;
+    try {
+        parsed = new URL(/^https?:\/\//i.test(text) ? text : `https://${text}`);
+    } catch {
+        throw badRequest(`${field}: expected a YouTube link or video id`);
+    }
+
+    const host = parsed.hostname.toLowerCase().replace(/^(?:www\.|m\.)/, '');
+    if (!YOUTUBE_HOSTS.has(host)) throw badRequest(`${field}: must be a YouTube link`);
+
+    const candidate =
+        host === 'youtu.be'
+            ? parsed.pathname.slice(1).split('/')[0]
+            : (parsed.searchParams.get('v') ?? KEY_IN_PATH.exec(parsed.pathname)?.[1] ?? '');
+
+    if (!YOUTUBE_KEY_PATTERN.test(candidate)) {
+        throw badRequest(`${field}: that link carries no video id`);
+    }
+    return candidate;
+}
+
+/** A plain flag, with absent and null both meaning "not hidden". */
+function validateFlag(value: unknown, field: string): boolean {
+    if (value === null || value === undefined) return false;
+    if (typeof value !== 'boolean') throw badRequest(`${field}: expected true or false`);
+    return value;
+}
+
 /**
  * A member's own avatar, which unlike every other image field on the site may
  * also be a path into the repo's own `public/images`.
@@ -189,7 +251,9 @@ export function validateInterview(value: unknown, field = 'interview'): Intervie
     if (value === null || value === undefined) return [];
     if (!Array.isArray(value)) throw badRequest(`${field}: expected an array`);
     if (value.length > LIMITS.interviewItems) {
-        throw badRequest(`${field}: ${value.length} questions exceeds the ${LIMITS.interviewItems} limit`);
+        throw badRequest(
+            `${field}: ${value.length} questions exceeds the ${LIMITS.interviewItems} limit`
+        );
     }
 
     const items: InterviewItem[] = [];
@@ -200,11 +264,17 @@ export function validateInterview(value: unknown, field = 'interview'): Intervie
             LIMITS.interviewQuestion,
             `${field}[${index}].question`
         );
-        const answer = optionalText(item.answer, LIMITS.interviewAnswer, `${field}[${index}].answer`);
+        const answer = optionalText(
+            item.answer,
+            LIMITS.interviewAnswer,
+            `${field}[${index}].answer`
+        );
 
         if (question === null && answer === null) return;
-        if (question === null) throw badRequest(`${field}[${index}].question: an answer needs a question`);
-        if (answer === null) throw badRequest(`${field}[${index}].answer: a question needs an answer`);
+        if (question === null)
+            throw badRequest(`${field}[${index}].question: an answer needs a question`);
+        if (answer === null)
+            throw badRequest(`${field}[${index}].answer: a question needs an answer`);
 
         items.push({ question, answer });
     });
@@ -256,7 +326,9 @@ export function validateProfilePatch(body: unknown): ProfilePatch {
     if ('interview' in raw) patch.interview = validateInterview(raw.interview);
 
     if (Object.keys(patch).length === 0) {
-        throw badRequest(`profile: nothing to update (expected one of ${PROFILE_FIELDS.join(', ')})`);
+        throw badRequest(
+            `profile: nothing to update (expected one of ${PROFILE_FIELDS.join(', ')})`
+        );
     }
     return patch;
 }
@@ -336,6 +408,8 @@ const WATCHED_FIELDS = [
     'blurb',
     'image',
     'posterImage',
+    'trailerKey',
+    'hideTrailer',
 ] as const;
 
 /**
@@ -354,6 +428,8 @@ export interface WatchedPatch {
     blurb?: string | null;
     image?: string | null;
     posterImage?: string | null;
+    trailerKey?: string | null;
+    hideTrailer?: boolean;
 }
 
 /**
@@ -398,9 +474,13 @@ export function validateWatchedPatch(body: unknown): WatchedPatch {
     if ('blurb' in raw) patch.blurb = optionalText(raw.blurb, LIMITS.blurb, 'blurb');
     if ('image' in raw) patch.image = validateImageUrl(raw.image);
     if ('posterImage' in raw) patch.posterImage = validateImageUrl(raw.posterImage, 'posterImage');
+    if ('trailerKey' in raw) patch.trailerKey = validateTrailerKey(raw.trailerKey);
+    if ('hideTrailer' in raw) patch.hideTrailer = validateFlag(raw.hideTrailer, 'hideTrailer');
 
     if (Object.keys(patch).length === 0) {
-        throw badRequest(`watched: nothing to update (expected one of ${WATCHED_FIELDS.join(', ')})`);
+        throw badRequest(
+            `watched: nothing to update (expected one of ${WATCHED_FIELDS.join(', ')})`
+        );
     }
     return patch;
 }
@@ -435,7 +515,9 @@ export function validateListInput(body: unknown): ListInput {
     const rawEntries = raw.entries ?? [];
     if (!Array.isArray(rawEntries)) throw badRequest('entries: expected an array');
     if (rawEntries.length > LIMITS.entries) {
-        throw badRequest(`entries: ${rawEntries.length} entries exceeds the ${LIMITS.entries} limit`);
+        throw badRequest(
+            `entries: ${rawEntries.length} entries exceeds the ${LIMITS.entries} limit`
+        );
     }
 
     const entries: FilmListEntry[] = [];
@@ -456,6 +538,8 @@ export function validateListInput(body: unknown): ListInput {
             ),
             image: validateImageUrl(entry.image, `entries[${index}].image`),
             posterImage: validateImageUrl(entry.posterImage, `entries[${index}].posterImage`),
+            trailerKey: validateTrailerKey(entry.trailerKey, `entries[${index}].trailerKey`),
+            hideTrailer: validateFlag(entry.hideTrailer, `entries[${index}].hideTrailer`),
             // Absent and null are the same thing here — no score on this list —
             // because unlike a rating override there is no second writer to
             // defer to. The site fills the gap from the member's log or their
@@ -527,14 +611,16 @@ export function resolveListOwner(
 
 /** URL-safe slug: lowercase, non-alphanumerics collapsed to single hyphens. */
 export function slugify(value: string): string {
-    return value
-        .normalize('NFKD')
-        // Strip combining marks so "Amélie" slugs as "amelie" rather than losing
-        // the letter to the non-alphanumeric pass below.
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
+    return (
+        value
+            .normalize('NFKD')
+            // Strip combining marks so "Amélie" slugs as "amelie" rather than losing
+            // the letter to the non-alphanumeric pass below.
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+    );
 }
 
 /**

@@ -1,7 +1,11 @@
 import React, { useMemo, useRef } from 'react';
 import { Film } from '../../types/film';
 import { Link } from 'react-router-dom';
-import { getPersonInfoByName, getPersonProfileByName, tmdbPersonUrl } from '../../utils/personUtils';
+import {
+    getPersonInfoByName,
+    getPersonProfileByName,
+    tmdbPersonUrl,
+} from '../../utils/personUtils';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useModalPresence } from '../../hooks/useModalPresence';
 import { useFilmFrames } from '../../hooks/useFilmFrames';
@@ -10,239 +14,303 @@ import Button from './Button';
 
 // Formats a TMDb date string (YYYY-MM-DD) for display, e.g. "May 14, 1944".
 const formatPersonDate = (value: string | null | undefined): string | null => {
-  if (!value) return null;
-  const parsed = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(parsed.getTime())) return value;
-  return parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    if (!value) return null;
+    const parsed = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(parsed.getTime())) return value;
+    return parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 };
 
 interface CreditsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  personName: string | null;
-  filmography: Array<{ film: Film; roles: string[] }> | null;
-  currentFilmId?: string; // To highlight the current film in the list
+    isOpen: boolean;
+    onClose: () => void;
+    personName: string | null;
+    filmography: Array<{ film: Film; roles: string[] }> | null;
+    currentFilmId?: string; // To highlight the current film in the list
 }
 
 // Finds the character a person played in a given film, using the TMDb `cast`
 // list. Returns null when the person isn't in the cast or has no named role.
 const getCharacterForPerson = (film: Film, personNameLower: string): string | null => {
-  const match = film.cast?.find(member => member?.name?.trim().toLowerCase() === personNameLower);
-  const character = match?.character?.trim();
-  return character ? character : null;
+    const match = film.cast?.find(
+        (member) => member?.name?.trim().toLowerCase() === personNameLower
+    );
+    const character = match?.character?.trim();
+    return character ? character : null;
 };
 
-const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose, personName, filmography, currentFilmId }) => {
-  const { isRendered, isClosing } = useModalPresence(isOpen);
+const CreditsModal: React.FC<CreditsModalProps> = ({
+    isOpen,
+    onClose,
+    personName,
+    filmography,
+    currentFilmId,
+}) => {
+    const { isRendered, isClosing } = useModalPresence(isOpen);
 
-  // Callers clear their person/filmography state as soon as `onClose` fires, so
-  // hold on to the last credit we were given and keep rendering it while the
-  // modal animates out — otherwise the panel would empty mid-fade.
-  const contentRef = useRef<{ personName: string; filmography: Array<{ film: Film; roles: string[] }> } | null>(null);
-  if (personName && filmography) {
-    contentRef.current = { personName, filmography };
-  }
-  const content = contentRef.current;
-  const activePersonName = content?.personName ?? null;
-  const activeFilmography = content?.filmography ?? null;
-  const personNameLower = (activePersonName ?? '').trim().toLowerCase();
-
-  // Prevent scrolling the page behind the modal while it's open (and while it
-  // animates out, so the page doesn't jump before the modal is gone).
-  useBodyScrollLock(isRendered);
-
-  // Normalized TMDb record (bio, birth/death, known-for, canonical headshot)
-  // resolved from the person's name, if we have one for them.
-  const personInfo = useMemo(() => getPersonInfoByName(activePersonName), [activePersonName]);
-  const tmdbId = useMemo(() => getPersonProfileByName(activePersonName)?.tmdbId, [activePersonName]);
-
-  // Prefer a per-film cast headshot (closest to the credit shown); fall back to
-  // the canonical TMDb portrait so crew members with no cast entry still get a photo.
-  const profileUrl = useMemo(() => {
-    if (activeFilmography) {
-      for (const { film } of activeFilmography) {
-        const match = film.cast?.find(member => member?.name?.trim().toLowerCase() === personNameLower);
-        if (match?.profileUrl) return match.profileUrl;
-      }
+    // Callers clear their person/filmography state as soon as `onClose` fires, so
+    // hold on to the last credit we were given and keep rendering it while the
+    // modal animates out — otherwise the panel would empty mid-fade.
+    const contentRef = useRef<{
+        personName: string;
+        filmography: Array<{ film: Film; roles: string[] }>;
+    } | null>(null);
+    if (personName && filmography) {
+        contentRef.current = { personName, filmography };
     }
-    return personInfo?.profileUrl ?? null;
-  }, [activeFilmography, personNameLower, personInfo]);
+    const content = contentRef.current;
+    const activePersonName = content?.personName ?? null;
+    const activeFilmography = content?.filmography ?? null;
+    const personNameLower = (activePersonName ?? '').trim().toLowerCase();
 
-  // A still from one of their films for the background wash — the headshot is
-  // already shown sharp in the bio, so repeating it there added nothing.
-  const creditFilms = useMemo(
-    () => (activeFilmography ?? []).map(({ film }) => film),
-    [activeFilmography]
-  );
-  const [backdropFrame] = useFilmFrames(creditFilms, 1);
+    // Prevent scrolling the page behind the modal while it's open (and while it
+    // animates out, so the page doesn't jump before the modal is gone).
+    useBodyScrollLock(isRendered);
 
-  if (!isRendered || !activePersonName || !activeFilmography) return null;
+    // Normalized TMDb record (bio, birth/death, known-for, canonical headshot)
+    // resolved from the person's name, if we have one for them.
+    const personInfo = useMemo(() => getPersonInfoByName(activePersonName), [activePersonName]);
+    const tmdbId = useMemo(
+        () => getPersonProfileByName(activePersonName)?.tmdbId,
+        [activePersonName]
+    );
 
-  const bornDate = formatPersonDate(personInfo?.birthday);
-  const diedDate = formatPersonDate(personInfo?.deathday);
-  const birthLine = [bornDate, personInfo?.placeOfBirth].filter(Boolean).join(' · ');
-  const hasPersonDetails = !!(
-    personInfo?.biography || birthLine || diedDate || personInfo?.knownForDepartment || tmdbId
-  );
+    // Prefer a per-film cast headshot (closest to the credit shown); fall back to
+    // the canonical TMDb portrait so crew members with no cast entry still get a photo.
+    const profileUrl = useMemo(() => {
+        if (activeFilmography) {
+            for (const { film } of activeFilmography) {
+                const match = film.cast?.find(
+                    (member) => member?.name?.trim().toLowerCase() === personNameLower
+                );
+                if (match?.profileUrl) return match.profileUrl;
+            }
+        }
+        return personInfo?.profileUrl ?? null;
+    }, [activeFilmography, personNameLower, personInfo]);
 
-  // Sort filmography: by year descending, then by title ascending
-  const sortedFilmography = [...activeFilmography].sort((a, b) => {
-    const yearComparison = (b.film.year || '0').localeCompare(a.film.year || '0');
-    if (yearComparison !== 0) return yearComparison;
-    return (a.film.title || '').localeCompare(b.film.title || '');
-  });
+    // A still from one of their films for the background wash — the headshot is
+    // already shown sharp in the bio, so repeating it there added nothing.
+    const creditFilms = useMemo(
+        () => (activeFilmography ?? []).map(({ film }) => film),
+        [activeFilmography]
+    );
+    const [backdropFrame] = useFilmFrames(creditFilms, 1);
 
-  return (
-    // Dialog Overlay: Semi-transparent backdrop
-    <div
-      className={`fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 ${
-        isClosing ? 'animate-fadeOut pointer-events-none' : 'animate-fadeIn'
-      }`}
-      onClick={onClose} // Allow closing by clicking overlay
-    >
-      {/* Dialog Content: Modal panel. A very faint still from one of their
+    if (!isRendered || !activePersonName || !activeFilmography) return null;
+
+    const bornDate = formatPersonDate(personInfo?.birthday);
+    const diedDate = formatPersonDate(personInfo?.deathday);
+    const birthLine = [bornDate, personInfo?.placeOfBirth].filter(Boolean).join(' · ');
+    const hasPersonDetails = !!(
+        personInfo?.biography ||
+        birthLine ||
+        diedDate ||
+        personInfo?.knownForDepartment ||
+        tmdbId
+    );
+
+    // Sort filmography: by year descending, then by title ascending
+    const sortedFilmography = [...activeFilmography].sort((a, b) => {
+        const yearComparison = (b.film.year || '0').localeCompare(a.film.year || '0');
+        if (yearComparison !== 0) return yearComparison;
+        return (a.film.title || '').localeCompare(b.film.title || '');
+    });
+
+    return (
+        // Dialog Overlay: Semi-transparent backdrop
+        <div
+            className={`fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 ${
+                isClosing ? 'animate-fadeOut pointer-events-none' : 'animate-fadeIn'
+            }`}
+            onClick={onClose} // Allow closing by clicking overlay
+        >
+            {/* Dialog Content: Modal panel. A very faint still from one of their
           films sits in the background (their headshot when none of the credits
           have imagery), while the sharp headshot floats at the top-left of the
           bio so the text wraps around it. */}
-      <div
-        className={`relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden ${
-          isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
-        }`}
-        onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
-      >
-        {(backdropFrame || profileUrl) && (
-          <>
-            {backdropFrame ? (
-              // Stills are landscape, so they get the full panel width rather
-              // than the right-hand column a portrait headshot needs.
-              <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.13]">
-                <FilmFrameImage frame={backdropFrame} />
-              </div>
-            ) : (
-              <img
-                src={profileUrl!}
-                alt=""
-                aria-hidden="true"
-                className="absolute right-0 top-0 h-full w-2/3 object-cover object-top pointer-events-none opacity-10"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-            )}
-            {/* Gradient fades the photo out aggressively toward the left, keeping text legible */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-800 from-40% via-slate-800/95 to-slate-800/10 pointer-events-none" />
-          </>
-        )}
+            <div
+                className={`relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden ${
+                    isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
+                }`}
+                onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
+            >
+                {(backdropFrame || profileUrl) && (
+                    <>
+                        {backdropFrame ? (
+                            // Stills are landscape, so they get the full panel width rather
+                            // than the right-hand column a portrait headshot needs.
+                            <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.13]">
+                                <FilmFrameImage frame={backdropFrame} />
+                            </div>
+                        ) : (
+                            <img
+                                src={profileUrl!}
+                                alt=""
+                                aria-hidden="true"
+                                className="absolute right-0 top-0 h-full w-2/3 object-cover object-top pointer-events-none opacity-10"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                }}
+                            />
+                        )}
+                        {/* Gradient fades the photo out aggressively toward the left, keeping text legible */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-slate-800 from-40% via-slate-800/95 to-slate-800/10 pointer-events-none" />
+                    </>
+                )}
 
-        {/* Dialog Header */}
-        <div className="relative z-10 flex justify-between items-start p-4 md:p-5 border-b border-slate-700/60 flex-shrink-0">
-          <div className="min-w-0 pr-4">
-            <h2 className="text-lg md:text-xl font-semibold text-slate-100 truncate">
-              {activePersonName}
-            </h2>
-            {personInfo?.knownForDepartment && (
-              <p className="text-xs text-slate-400 mt-0.5">{personInfo.knownForDepartment}</p>
-            )}
-          </div>
-          <Button
-            onClick={onClose}
-            variant="ghost"
-            className="flex-shrink-0"
-            aria-label="Close modal"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 md:w-6 md:h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </Button>
-        </div>
+                {/* Dialog Header */}
+                <div className="relative z-10 flex justify-between items-start p-4 md:p-5 border-b border-slate-700/60 flex-shrink-0">
+                    <div className="min-w-0 pr-4">
+                        <h2 className="text-lg md:text-xl font-semibold text-slate-100 truncate">
+                            {activePersonName}
+                        </h2>
+                        {personInfo?.knownForDepartment && (
+                            <p className="text-xs text-slate-400 mt-0.5">
+                                {personInfo.knownForDepartment}
+                            </p>
+                        )}
+                    </div>
+                    <Button
+                        onClick={onClose}
+                        variant="ghost"
+                        className="flex-shrink-0"
+                        aria-label="Close modal"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={2}
+                            stroke="currentColor"
+                            className="w-5 h-5 md:w-6 md:h-6"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </Button>
+                </div>
 
-        {/* Person details: bio, birth/death, and a link to the full TMDb profile. */}
-        {(hasPersonDetails || profileUrl) && (
-          <div className="relative z-10 px-4 md:px-5 py-3 border-b border-slate-700/60 flex flex-col min-h-0 space-y-2">
-            {/* Scrolling text column; the headshot floats so the text wraps around it */}
-            <div className="min-h-0 overflow-y-auto themed-scrollbar pr-2">
-              {profileUrl && (
-                <img
-                  src={profileUrl}
-                  alt={activePersonName}
-                  className="float-left w-1/2 max-w-[12em] mr-3 mb-2 rounded shadow-sm border border-slate-600/50"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                />
-              )}
-              {(birthLine || diedDate) && (
-                <p className="text-xs text-slate-400 mb-2">
-                  {birthLine && <span>Born {birthLine}</span>}
-                  {birthLine && diedDate && <span className="mx-1">·</span>}
-                  {diedDate && <span>Died {diedDate}</span>}
-                </p>
-              )}
-              {personInfo?.biography && (
-                <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
-                  {personInfo.biography}
-                </p>
-              )}
-            </div>
-            {tmdbId && (
-              <a
-                href={tmdbPersonUrl(tmdbId)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300"
-              >
-                View on TMDb
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
-              </a>
-            )}
-          </div>
-        )}
+                {/* Person details: bio, birth/death, and a link to the full TMDb profile. */}
+                {(hasPersonDetails || profileUrl) && (
+                    <div className="relative z-10 px-4 md:px-5 py-3 border-b border-slate-700/60 flex flex-col min-h-0 space-y-2">
+                        {/* Scrolling text column; the headshot floats so the text wraps around it */}
+                        <div className="min-h-0 overflow-y-auto themed-scrollbar pr-2">
+                            {profileUrl && (
+                                <img
+                                    src={profileUrl}
+                                    alt={activePersonName}
+                                    className="float-left w-1/2 max-w-[12em] mr-3 mb-2 rounded shadow-sm border border-slate-600/50"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                />
+                            )}
+                            {(birthLine || diedDate) && (
+                                <p className="text-xs text-slate-400 mb-2">
+                                    {birthLine && <span>Born {birthLine}</span>}
+                                    {birthLine && diedDate && <span className="mx-1">·</span>}
+                                    {diedDate && <span>Died {diedDate}</span>}
+                                </p>
+                            )}
+                            {personInfo?.biography && (
+                                <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+                                    {personInfo.biography}
+                                </p>
+                            )}
+                        </div>
+                        {tmdbId && (
+                            <a
+                                href={tmdbPersonUrl(tmdbId)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300"
+                            >
+                                View on TMDb
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="w-3.5 h-3.5"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                                    />
+                                </svg>
+                            </a>
+                        )}
+                    </div>
+                )}
 
-        {/* Scrollable Content Area */}
-        {sortedFilmography.length === 0 ? (
-          <p className="relative z-10 p-4 md:p-6 text-slate-400 flex-grow">No film credits found for {activePersonName}.</p>
-        ) : (
-          <div className="relative z-10 overflow-y-auto min-h-0 max-h-[29vh] flex-shrink-0 p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 themed-scrollbar">
-            {sortedFilmography.map(({ film: creditFilm, roles }) => {
-              const character = getCharacterForPerson(creditFilm, personNameLower);
-              return (
-                <Link
-                  key={creditFilm.imdbID}
-                  to={`/films/${creditFilm.imdbID}`}
-                  onClick={onClose} // Close modal on navigation
-                  className={`group p-2 rounded-md flex items-start transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400
-                              ${creditFilm.imdbID === currentFilmId
-                                ? 'bg-slate-700/70 ring-1 ring-blue-500 shadow-md'
-                                : 'bg-slate-800/40 hover:bg-slate-700/60'}`}
-                >
-                  <img
-                    src={creditFilm.poster || '/placeholder-poster.png'}
-                    alt={`${creditFilm.title} poster`}
-                    className="flex-shrink-0 w-16 h-auto object-cover rounded shadow-sm border border-slate-600/50"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/placeholder-poster.png';
-                      target.onerror = null;
-                    }}
-                  />
-                  <div className="ml-2 md:ml-3 min-w-0 flex-grow">
-                    <h3 className="text-sm font-semibold text-slate-100 leading-tight group-hover:text-blue-300">{creditFilm.title}</h3>
-                    {creditFilm.year && <p className="text-xs text-slate-400 mt-0.5">({creditFilm.year})</p>}
-                    <p className="text-xs text-slate-300 mt-1.5">
-                      <span className="font-medium text-slate-400">Role(s):</span> {roles.join(', ')}
+                {/* Scrollable Content Area */}
+                {sortedFilmography.length === 0 ? (
+                    <p className="relative z-10 p-4 md:p-6 text-slate-400 flex-grow">
+                        No film credits found for {activePersonName}.
                     </p>
-                    {character && (
-                      <p className="text-xs text-slate-300 mt-0.5">
-                        <span className="font-medium text-slate-400">as</span> <span className="italic">{character}</span>
-                      </p>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+                ) : (
+                    <div className="relative z-10 overflow-y-auto min-h-0 max-h-[29vh] flex-shrink-0 p-3 md:p-4 grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 themed-scrollbar">
+                        {sortedFilmography.map(({ film: creditFilm, roles }) => {
+                            const character = getCharacterForPerson(creditFilm, personNameLower);
+                            return (
+                                <Link
+                                    key={creditFilm.imdbID}
+                                    to={`/films/${creditFilm.imdbID}`}
+                                    onClick={onClose} // Close modal on navigation
+                                    className={`group p-2 rounded-md flex items-start transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400
+                              ${
+                                  creditFilm.imdbID === currentFilmId
+                                      ? 'bg-slate-700/70 ring-1 ring-blue-500 shadow-md'
+                                      : 'bg-slate-800/40 hover:bg-slate-700/60'
+                              }`}
+                                >
+                                    <img
+                                        src={creditFilm.poster || '/placeholder-poster.png'}
+                                        alt={`${creditFilm.title} poster`}
+                                        className="flex-shrink-0 w-16 h-auto object-cover rounded shadow-sm border border-slate-600/50"
+                                        onError={(e) => {
+                                            const target = e.target as HTMLImageElement;
+                                            target.src = '/placeholder-poster.png';
+                                            target.onerror = null;
+                                        }}
+                                    />
+                                    <div className="ml-2 md:ml-3 min-w-0 flex-grow">
+                                        <h3 className="text-sm font-semibold text-slate-100 leading-tight group-hover:text-blue-300">
+                                            {creditFilm.title}
+                                        </h3>
+                                        {creditFilm.year && (
+                                            <p className="text-xs text-slate-400 mt-0.5">
+                                                ({creditFilm.year})
+                                            </p>
+                                        )}
+                                        <p className="text-xs text-slate-300 mt-1.5">
+                                            <span className="font-medium text-slate-400">
+                                                Role(s):
+                                            </span>{' '}
+                                            {roles.join(', ')}
+                                        </p>
+                                        {character && (
+                                            <p className="text-xs text-slate-300 mt-0.5">
+                                                <span className="font-medium text-slate-400">
+                                                    as
+                                                </span>{' '}
+                                                <span className="italic">{character}</span>
+                                            </p>
+                                        )}
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default CreditsModal;

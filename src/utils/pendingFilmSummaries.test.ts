@@ -59,7 +59,10 @@ describe('reading the store', () => {
 
     it('keeps a record inside it', () => {
         const recent = Date.now() - 24 * 60 * 60 * 1000;
-        localStorage.setItem(KEY, JSON.stringify({ [hit.imdbID]: { summary: hit, savedAt: recent } }));
+        localStorage.setItem(
+            KEY,
+            JSON.stringify({ [hit.imdbID]: { summary: hit, savedAt: recent } })
+        );
         expect(pendingFilmSummary(hit.imdbID)?.title).toBe(hit.title);
     });
 
@@ -101,16 +104,19 @@ describe('the resolvers', () => {
     it('still prefers the enriched cache once CI has caught up', () => {
         rememberFilmSummary(hit);
 
-        const resolved = resolveListEntry({ rank: 1, imdbID: hit.imdbID, description: null }, {
-            summaries: {
-                [hit.imdbID]: {
-                    imdbID: hit.imdbID,
-                    title: 'The Enriched Title',
-                    year: '2026',
-                    poster: 'enriched.jpg',
+        const resolved = resolveListEntry(
+            { rank: 1, imdbID: hit.imdbID, description: null },
+            {
+                summaries: {
+                    [hit.imdbID]: {
+                        imdbID: hit.imdbID,
+                        title: 'The Enriched Title',
+                        year: '2026',
+                        poster: 'enriched.jpg',
+                    },
                 },
-            },
-        });
+            }
+        );
         expect(resolved.title).toBe('The Enriched Title');
         expect(resolved.poster).toBe('enriched.jpg');
     });

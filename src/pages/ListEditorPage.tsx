@@ -26,6 +26,7 @@ import {
 } from '../api/clubApi';
 import { getListById, resolveListEntry, type ScoreSource } from '../utils/listUtils';
 import { IMAGE_URL_LIMIT, parseImageUrl } from '../utils/imageUrl';
+import { TRAILER_URL_LIMIT, parseTrailerLink } from '../utils/youtube';
 import { MAX_SCORE, SCORE_STEP, parseScoreField } from '../utils/ratingEditUtils';
 import { isRankedList, type FilmListDefinition } from '../types/list';
 
@@ -49,6 +50,10 @@ interface DraftEntry {
     image: string;
     /** The member's own poster for the film; empty means the one OMDB supplied. */
     posterImage: string;
+    /** The member's own trailer link as typed; empty means the film's own. */
+    trailer: string;
+    /** True when this row should offer no trailer at all; wins over {@link trailer}. */
+    hideTrailer: boolean;
     /** The owner's score for this pick, empty for "whatever I've scored it elsewhere". */
     score: string;
     /**
@@ -130,6 +135,8 @@ const toDraft = (list: FilmListDefinition): DraftEntry[] =>
                 description: entry.description ?? '',
                 image: entry.image ?? '',
                 posterImage: entry.posterImage ?? '',
+                trailer: entry.trailerKey ?? '',
+                hideTrailer: entry.hideTrailer ?? false,
                 score: entry.score === null || entry.score === undefined ? '' : String(entry.score),
                 ...inheritedScoreFor(entry.imdbID, list.owner),
                 title: resolved.title,
@@ -152,6 +159,8 @@ interface EntryRowProps {
     onNoteChange: (note: string) => void;
     onImageChange: (image: string) => void;
     onPosterImageChange: (posterImage: string) => void;
+    onTrailerChange: (trailer: string) => void;
+    onHideTrailerChange: (hideTrailer: boolean) => void;
     onScoreChange: (score: string) => void;
     onRemove: () => void;
 }
@@ -179,6 +188,8 @@ const EntryRow: React.FC<EntryRowProps> = ({
     onNoteChange,
     onImageChange,
     onPosterImageChange,
+    onTrailerChange,
+    onHideTrailerChange,
     onScoreChange,
     onRemove,
 }) => {
@@ -237,7 +248,11 @@ const EntryRow: React.FC<EntryRowProps> = ({
                 {/* The position is worth showing either way — it is what dragging
                     changes — but only a ranking states it as a number. */}
                 <span className="w-6 flex-shrink-0 select-none pt-1 text-center font-serif text-xl tabular-nums leading-none text-slate-500/70 sm:text-2xl">
-                    {ranked ? rank : <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-500/70 align-middle" />}
+                    {ranked ? (
+                        rank
+                    ) : (
+                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-500/70 align-middle" />
+                    )}
                 </span>
 
                 {rowPoster ? (
@@ -268,7 +283,9 @@ const EntryRow: React.FC<EntryRowProps> = ({
                         can't hold much of one. */}
                     <h5 className="break-words font-medium text-slate-200 sm:truncate">
                         {entry.title ?? entry.imdbID}
-                        {entry.year && <span className="ml-1.5 font-normal text-slate-500">{entry.year}</span>}
+                        {entry.year && (
+                            <span className="ml-1.5 font-normal text-slate-500">{entry.year}</span>
+                        )}
                     </h5>
                 </div>
 
@@ -300,7 +317,9 @@ const EntryRow: React.FC<EntryRowProps> = ({
                             step={SCORE_STEP}
                             value={entry.score}
                             onChange={(e) => onScoreChange(e.target.value)}
-                            placeholder={entry.inheritedScore === null ? '—' : String(entry.inheritedScore)}
+                            placeholder={
+                                entry.inheritedScore === null ? '—' : String(entry.inheritedScore)
+                            }
                             aria-label={`Your score for ${label}, out of ${MAX_SCORE}`}
                             className="w-16 rounded-md border border-slate-600/60 bg-slate-800/60 px-2 py-1 text-right text-base text-slate-100 placeholder:text-slate-500 focus:border-amber-400/60 focus:outline-none sm:text-sm"
                         />
@@ -360,6 +379,31 @@ const EntryRow: React.FC<EntryRowProps> = ({
                     aria-label={`Poster for ${label}`}
                     className={ROW_FIELD_CLASS}
                 />
+
+                {/* The trailer the row's play button opens. Blank means the
+                    film's own, which for most list films is whatever TMDb had;
+                    the checkbox is the separate answer "none at all", so hiding
+                    a trailer doesn't cost the member the link they found. */}
+                <input
+                    type="text"
+                    inputMode="url"
+                    maxLength={TRAILER_URL_LIMIT}
+                    value={entry.trailer}
+                    onChange={(e) => onTrailerChange(e.target.value)}
+                    disabled={entry.hideTrailer}
+                    placeholder="https://youtube.com/watch?v=… trailer (optional)"
+                    aria-label={`Trailer for ${label}`}
+                    className={`${ROW_FIELD_CLASS} disabled:opacity-50`}
+                />
+                <label className="flex items-center gap-2 text-xs text-slate-500">
+                    <input
+                        type="checkbox"
+                        checked={entry.hideTrailer}
+                        onChange={(e) => onHideTrailerChange(e.target.checked)}
+                        className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-800/60 accent-amber-500"
+                    />
+                    No trailer for {label}
+                </label>
             </div>
         </Reorder.Item>
     );
@@ -463,6 +507,8 @@ const ListEditorPage: React.FC = () => {
                 description: '',
                 image: '',
                 posterImage: '',
+                trailer: '',
+                hideTrailer: false,
                 score: '',
                 // A film just added may already be one the member has watched or
                 // scored with the club, and the row should say so from the
@@ -500,6 +546,7 @@ const ListEditorPage: React.FC = () => {
         // long list doesn't turn into a hunt.
         const images = new Map<string, string | null>();
         const posterImages = new Map<string, string | null>();
+        const trailerKeys = new Map<string, string | null>();
         const scores = new Map<string, number | null>();
         for (const entry of entries) {
             const label = entry.title ?? entry.imdbID;
@@ -518,6 +565,13 @@ const ListEditorPage: React.FC = () => {
             }
             posterImages.set(entry.imdbID, parsedPoster.value);
 
+            const parsedTrailer = parseTrailerLink(entry.trailer);
+            if ('error' in parsedTrailer) {
+                setSaveError(`${label}, trailer: ${parsedTrailer.error}`);
+                return;
+            }
+            trailerKeys.set(entry.imdbID, parsedTrailer.value);
+
             const score = parseScoreField(entry.score);
             if ('error' in score) {
                 setSaveError(`${label}: ${score.error}`);
@@ -535,6 +589,8 @@ const ListEditorPage: React.FC = () => {
                 description: entry.description.trim() === '' ? null : entry.description.trim(),
                 image: images.get(entry.imdbID) ?? null,
                 posterImage: posterImages.get(entry.imdbID) ?? null,
+                trailerKey: trailerKeys.get(entry.imdbID) ?? null,
+                hideTrailer: entry.hideTrailer,
                 score: scores.get(entry.imdbID) ?? null,
             })),
         };
@@ -727,8 +783,8 @@ const ListEditorPage: React.FC = () => {
                         <div>
                             <div className="mb-2 flex items-center gap-3">
                                 <span className="text-xs uppercase tracking-wider text-slate-500">
-                                    {entries.length} film{entries.length !== 1 ? 's' : ''} — drag or use
-                                    the arrows to reorder
+                                    {entries.length} film{entries.length !== 1 ? 's' : ''} — drag or
+                                    use the arrows to reorder
                                 </span>
                                 <span className="h-px flex-grow bg-slate-700/60" />
                             </div>
@@ -762,13 +818,20 @@ const ListEditorPage: React.FC = () => {
                                             onPosterImageChange={(posterImage) =>
                                                 patchEntry(entry.imdbID, { posterImage })
                                             }
+                                            onTrailerChange={(trailer) =>
+                                                patchEntry(entry.imdbID, { trailer })
+                                            }
+                                            onHideTrailerChange={(hideTrailer) =>
+                                                patchEntry(entry.imdbID, { hideTrailer })
+                                            }
                                             onScoreChange={(score) =>
                                                 patchEntry(entry.imdbID, { score })
                                             }
                                             onRemove={() =>
                                                 mutate(
                                                     entries.filter(
-                                                        (candidate) => candidate.imdbID !== entry.imdbID
+                                                        (candidate) =>
+                                                            candidate.imdbID !== entry.imdbID
                                                     )
                                                 )
                                             }

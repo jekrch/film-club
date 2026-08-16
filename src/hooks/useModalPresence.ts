@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 export const MODAL_ANIMATION_MS = 200;
 
 interface ModalPresence {
-  isRendered: boolean; // keep the modal in the tree (open, or animating out)
-  isClosing: boolean;  // the exit animation is currently running
+    isRendered: boolean; // keep the modal in the tree (open, or animating out)
+    isClosing: boolean; // the exit animation is currently running
 }
 
 /**
@@ -18,18 +18,18 @@ interface ModalPresence {
  * while `isClosing` is true.
  */
 export function useModalPresence(isOpen: boolean, durationMs = MODAL_ANIMATION_MS): ModalPresence {
-  const [isRendered, setIsRendered] = useState(isOpen);
+    const [isRendered, setIsRendered] = useState(isOpen);
 
-  useEffect(() => {
-    if (isOpen) {
-      setIsRendered(true);
-      return;
-    }
-    // Unmount only once the exit animation has had time to play. Reopening
-    // mid-close clears the timer, so the modal animates back in from where it is.
-    const timer = window.setTimeout(() => setIsRendered(false), durationMs);
-    return () => window.clearTimeout(timer);
-  }, [isOpen, durationMs]);
+    useEffect(() => {
+        if (isOpen) {
+            setIsRendered(true);
+            return;
+        }
+        // Unmount only once the exit animation has had time to play. Reopening
+        // mid-close clears the timer, so the modal animates back in from where it is.
+        const timer = window.setTimeout(() => setIsRendered(false), durationMs);
+        return () => window.clearTimeout(timer);
+    }, [isOpen, durationMs]);
 
-  return { isRendered, isClosing: isRendered && !isOpen };
+    return { isRendered, isClosing: isRendered && !isOpen };
 }

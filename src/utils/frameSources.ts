@@ -70,18 +70,30 @@ export interface FrameSubject {
     poster: string | null;
     /** The member's own image link, if they set one. */
     image?: string | null;
+    /**
+     * Scene art for a film the club never watched, from the summary cache.
+     * A club film's own stills come off {@link clubFilm} instead, so only one of
+     * the two is ever populated.
+     */
+    backdropImages?: string[];
     clubFilm?: Film;
 }
 
 /**
  * The art for one entry, in preference order: the member's own image, then the
- * club's stills if this is a film the club watched, then the poster.
+ * film's stills — the club's if it watched it, the cache's if it didn't — then
+ * the poster.
  *
  * The member's link wins outright — it is the whole point of the field, and the
  * one they'd have set precisely because they didn't like what was there. It is
  * treated as a still: someone picking a background image picks a wide one, and
  * over-zooming a frame they chose is worse than under-zooming a poster they
  * didn't.
+ *
+ * A cache film having stills at all is recent. Before that the only wide art on
+ * this site belonged to club films, so every list row fell through to washing a
+ * portrait poster across a wide frame — which is what the member's own image
+ * field was mostly being used to fix.
  */
 export const entryFrameSource = (entry: FrameSubject): FrameSource => {
     const images: FrameImage[] = [];
@@ -93,6 +105,7 @@ export const entryFrameSource = (entry: FrameSubject): FrameSource => {
 
     add(entry.image, 'still');
     if (entry.clubFilm) getFilmBackdrops(entry.clubFilm).forEach((url) => add(url, 'still'));
+    entry.backdropImages?.forEach((url) => add(url, 'still'));
     add(entry.poster, 'poster');
 
     return {

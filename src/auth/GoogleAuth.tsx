@@ -172,11 +172,7 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
                 // find a signed-out nav, not an error about something they
                 // didn't do. A renewal under a live session is the exception:
                 // that one explains why the next save would fail.
-                const reason = !wasSilent
-                    ? message
-                    : sessionRef.current
-                      ? SESSION_EXPIRED
-                      : null;
+                const reason = !wasSilent ? message : sessionRef.current ? SESSION_EXPIRED : null;
                 endSession(reason);
             }
         },

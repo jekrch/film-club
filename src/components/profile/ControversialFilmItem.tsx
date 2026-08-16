@@ -30,11 +30,13 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
     };
 
     const getDivergenceColorClass = (divergence: number): string => {
-        return (divergence > 1e-9 ? 'text-emerald-400' : 'text-rose-400');
+        return divergence > 1e-9 ? 'text-emerald-400' : 'text-rose-400';
     };
 
     const ratingColorClass = getRatingColorClass(film.userScore);
-    const othersRatingColorClass = film.othersAvgScore ? getRatingColorClass(film.othersAvgScore!) : '';
+    const othersRatingColorClass = film.othersAvgScore
+        ? getRatingColorClass(film.othersAvgScore!)
+        : '';
 
     return (
         <div
@@ -43,29 +45,50 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
             title={`View ${film.title}`} // Tooltip for accessibility
             role="button" // Semantics for interaction
             tabIndex={0} // Make it keyboard focusable
-            onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleNavigate(); }} // Keyboard interaction
+            onKeyPress={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') handleNavigate();
+            }} // Keyboard interaction
         >
             {/* Display film poster or a placeholder */}
             {film.posterUrl && film.posterUrl !== 'N/A' ? (
-                <img src={film.posterUrl} alt={`${film.title} poster`} className="w-10 h-14 object-cover rounded flex-shrink-0" />
+                <img
+                    src={film.posterUrl}
+                    alt={`${film.title} poster`}
+                    className="w-10 h-14 object-cover rounded flex-shrink-0"
+                />
             ) : (
-                <div className="w-10 h-14 bg-slate-700/50 rounded flex-shrink-0 flex items-center justify-center" aria-hidden="true">
+                <div
+                    className="w-10 h-14 bg-slate-700/50 rounded flex-shrink-0 flex items-center justify-center"
+                    aria-hidden="true"
+                >
                     <FilmIcon className="h-6 w-6 text-slate-500" />
                 </div>
             )}
             {/* Film title and score comparison */}
             <div className="flex-grow min-w-0">
-                <p className="text-sm font-medium text-slate-200 truncate" title={film.title}>{film.title}</p>
+                <p className="text-sm font-medium text-slate-200 truncate" title={film.title}>
+                    {film.title}
+                </p>
                 <div className="text-xs text-slate-400 pt-2">
-                    <div>{film.memberName}'s score: <span className={`font-semibold ${ratingColorClass}`}>{film.userScore.toFixed(1)}</span></div>
+                    <div>
+                        {film.memberName}'s score:{' '}
+                        <span className={`font-semibold ${ratingColorClass}`}>
+                            {film.userScore.toFixed(1)}
+                        </span>
+                    </div>
                     {'  '}
-                    Others' avg: <span className={`font-semibold ${othersRatingColorClass}`}>{film.othersAvgScore !== null ? film.othersAvgScore.toFixed(1) : 'N/A'}</span>
+                    Others' avg:{' '}
+                    <span className={`font-semibold ${othersRatingColorClass}`}>
+                        {film.othersAvgScore !== null ? film.othersAvgScore.toFixed(1) : 'N/A'}
+                    </span>
                 </div>
             </div>
             {/* Divergence value */}
             <div className="text-right flex-shrink-0 ml-auto pl-2">
                 <p className="text-xs text-slate-400">Divergence</p>
-                <p className={`text-lg font-semibold text-slate-100x ${getDivergenceColorClass(film.divergence)}`}>
+                <p
+                    className={`text-lg font-semibold text-slate-100x ${getDivergenceColorClass(film.divergence)}`}
+                >
                     {formatDivergence(film.divergence)}
                 </p>
             </div>

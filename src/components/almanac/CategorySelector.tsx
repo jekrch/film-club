@@ -12,11 +12,11 @@ interface CategorySelectorProps {
 const CategorySelector: React.FC<CategorySelectorProps> = ({
     categories,
     selectedCategory,
-    onSelectCategory
+    onSelectCategory,
 }) => {
     return (
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-4 border-b border-slate-700/60 pb-3">
-            {categories.map(category => (
+            {categories.map((category) => (
                 <Button
                     key={category}
                     onClick={() => onSelectCategory(category)}

@@ -4,7 +4,7 @@ import { isPersonClickable, personLinkClasses } from '../../utils/personUtils';
 export interface PersonStripEntry {
     name: string;
     profileUrl?: string | null; // TMDb headshot, if available
-    subtitle?: string | null;   // character (cast) or role(s) (crew)
+    subtitle?: string | null; // character (cast) or role(s) (crew)
     // Cross-film credits for this person, used to decide clickability and to
     // distinguish repeat club contributors. Empty/length<=1 => one-off.
     credits: PersonCredit[];
@@ -28,24 +28,36 @@ const PersonStrip = ({ title, people, onPersonClick }: PersonStripProps) => {
 
     return (
         <div className="mt-6">
-            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{title}</h2>
+            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                {title}
+            </h2>
             {/* Negative margins + matching padding give the focus/amber rings room
                 to render without being clipped by the scroll container (overflow-x
                 also clips the vertical axis). */}
             <div className="flex gap-4 overflow-x-auto pb-3 pt-1 -mx-1 -mt-1 px-1 themed-scrollbar">
                 {people.map((person, index) => {
                     const credits = person.credits;
-                    const isClickable = !!onPersonClick && isPersonClickable(person.name, credits.length);
+                    const isClickable =
+                        !!onPersonClick && isPersonClickable(person.name, credits.length);
                     const isRepeat = credits.length > 1;
 
                     return (
-                        <div key={`${person.name}-${index}`} className="flex-shrink-0 w-24 text-center">
+                        <div
+                            key={`${person.name}-${index}`}
+                            className="flex-shrink-0 w-24 text-center"
+                        >
                             <button
                                 type="button"
-                                onClick={isClickable ? () => onPersonClick!(person.name, credits) : undefined}
+                                onClick={
+                                    isClickable
+                                        ? () => onPersonClick!(person.name, credits)
+                                        : undefined
+                                }
                                 disabled={!isClickable}
                                 className={`w-24 h-24 mx-auto mb-2 rounded-full overflow-hidden bg-slate-700 flex items-center justify-center ${isClickable ? `cursor-pointer focus:outline-none transition ${isRepeat ? 'ring-2 ring-amber-400/60 focus:ring-2 focus:ring-amber-300 hover:ring-amber-300' : 'focus:ring-2 focus:ring-blue-400/50 hover:ring-2 hover:ring-blue-400/50'}` : 'cursor-default'}`}
-                                aria-label={isClickable ? `View ${person.name}'s credits` : undefined}
+                                aria-label={
+                                    isClickable ? `View ${person.name}'s credits` : undefined
+                                }
                             >
                                 {person.profileUrl ? (
                                     <img
@@ -65,7 +77,12 @@ const PersonStrip = ({ title, people, onPersonClick }: PersonStripProps) => {
                                 )}
                             </button>
                             {isClickable ? (
-                                <p className="text-xs font-medium leading-tight truncate" title={isRepeat ? `In ${credits.length} club films` : person.name}>
+                                <p
+                                    className="text-xs font-medium leading-tight truncate"
+                                    title={
+                                        isRepeat ? `In ${credits.length} club films` : person.name
+                                    }
+                                >
                                     <a
                                         onClick={() => onPersonClick!(person.name, credits)}
                                         className={`${personLinkClasses(isRepeat)} cursor-pointer transition-colors`}
@@ -74,12 +91,18 @@ const PersonStrip = ({ title, people, onPersonClick }: PersonStripProps) => {
                                     </a>
                                 </p>
                             ) : (
-                                <p className="text-xs font-medium text-slate-200 leading-tight truncate" title={person.name}>
+                                <p
+                                    className="text-xs font-medium text-slate-200 leading-tight truncate"
+                                    title={person.name}
+                                >
                                     {person.name}
                                 </p>
                             )}
                             {person.subtitle && (
-                                <p className="text-xs text-slate-500 leading-tight mt-0.5 line-clamp-2" title={person.subtitle}>
+                                <p
+                                    className="text-xs text-slate-500 leading-tight mt-0.5 line-clamp-2"
+                                    title={person.subtitle}
+                                >
                                     {person.subtitle}
                                 </p>
                             )}

@@ -110,7 +110,10 @@ const ProfileListsSection: React.FC<ProfileListsSectionProps> = ({ lists, owner 
                                 descends to keep the top-ranked poster on top of
                                 the stack. */}
                             {preview.length > 0 && (
-                                <div className="relative hidden flex-shrink-0 sm:flex" aria-hidden="true">
+                                <div
+                                    className="relative hidden flex-shrink-0 sm:flex"
+                                    aria-hidden="true"
+                                >
                                     {preview.map((entry, index) => (
                                         <img
                                             key={entry.imdbID}

@@ -11,7 +11,10 @@ const films = [
         movieClubInfo: makeClubInfo({
             selector: 'Andy',
             watchDate: '01/01/2020',
-            clubRatings: [makeRating({ user: 'andy', score: 5 }), makeRating({ user: 'gabe', score: 9 })],
+            clubRatings: [
+                makeRating({ user: 'andy', score: 5 }),
+                makeRating({ user: 'gabe', score: 9 }),
+            ],
         }),
     }),
     makeFilm({
@@ -22,7 +25,10 @@ const films = [
         movieClubInfo: makeClubInfo({
             selector: 'Gabe',
             watchDate: '01/01/2022',
-            clubRatings: [makeRating({ user: 'andy', score: 8 }), makeRating({ user: 'gabe', score: 8 })],
+            clubRatings: [
+                makeRating({ user: 'andy', score: 8 }),
+                makeRating({ user: 'gabe', score: 8 }),
+            ],
         }),
     }),
     makeFilm({
@@ -101,11 +107,19 @@ describe('useFilmFilter', () => {
         const { result } = renderHook(() => useFilmFiltering(films));
         act(() => result.current.handleSortChange('title')); // asc by default for title
         expect(result.current.sortDirection).toBe('asc');
-        expect(result.current.filteredFilms.map((f) => f.title)).toEqual(['Alpha', 'Beta', 'Gamma']);
+        expect(result.current.filteredFilms.map((f) => f.title)).toEqual([
+            'Alpha',
+            'Beta',
+            'Gamma',
+        ]);
 
         act(() => result.current.handleSortChange('title')); // toggle to desc
         expect(result.current.sortDirection).toBe('desc');
-        expect(result.current.filteredFilms.map((f) => f.title)).toEqual(['Gamma', 'Beta', 'Alpha']);
+        expect(result.current.filteredFilms.map((f) => f.title)).toEqual([
+            'Gamma',
+            'Beta',
+            'Alpha',
+        ]);
     });
 
     it('reports result counts in the results text', () => {

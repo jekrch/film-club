@@ -2,6 +2,8 @@ import { Film, filmData } from '../types/film';
 import { ListFilmSummary, listFilmSummaries } from '../types/list';
 import { WatchedEntry, WatchedLog, watchedLog } from '../types/watched';
 import { pendingFilmSummary } from './pendingFilmSummaries';
+import { resolveEntryDetails, type EntryDetails } from './entryDetails';
+import { resolveTrailerKey } from './youtube';
 
 /**
  * A watch-log entry with its display metadata filled in.
@@ -23,6 +25,26 @@ export interface ResolvedWatchedEntry extends WatchedEntry {
      * showing this entry draws the same poster. Null when there is neither.
      */
     poster: string | null;
+    /**
+     * The YouTube key this row's trailer button plays: the member's own
+     * {@link WatchedEntry.trailerKey} if they set one, otherwise the film's, and
+     * null when they hid it or nothing knows one.
+     *
+     * Named apart from the stored field it falls back from because this type
+     * *extends* {@link WatchedEntry}: an editor seeded from a resolved entry has
+     * to see the member's own override, not the film's trailer wearing its name.
+     */
+    resolvedTrailerKey: string | null;
+    /**
+     * What the row's expandable panel shows about the film — tagline, summary,
+     * cast — or null when nothing knows any of it.
+     */
+    details: EntryDetails | null;
+    /**
+     * Scene art for the wash behind the row, from the summary cache. A club
+     * film's own backdrops are reached through {@link clubFilm} instead.
+     */
+    backdropImages: string[];
     clubFilm?: Film;
 }
 
@@ -94,8 +116,7 @@ export const getWatchedEntryFor = (
     name: string | undefined | null,
     imdbID: string,
     sources: WatchedDataSources = {}
-): WatchedEntry | undefined =>
-    rawLogFor(name, sources).find((entry) => entry.imdbID === imdbID);
+): WatchedEntry | undefined => rawLogFor(name, sources).find((entry) => entry.imdbID === imdbID);
 
 /**
  * Fills in an entry's display metadata, preferring the full club record so a
@@ -122,6 +143,9 @@ export const resolveWatchedEntry = (
             title: clubFilm.title,
             year: clubFilm.year ?? null,
             poster: posterOverride ?? clubFilm.poster ?? null,
+            resolvedTrailerKey: resolveTrailerKey(entry, clubFilm),
+            details: resolveEntryDetails(clubFilm, undefined),
+            backdropImages: [],
             clubFilm,
         };
     }
@@ -137,10 +161,21 @@ export const resolveWatchedEntry = (
             title: summary.title,
             year: summary.year ?? null,
             poster: posterOverride ?? summary.poster ?? null,
+            resolvedTrailerKey: resolveTrailerKey(entry, summary),
+            details: resolveEntryDetails(undefined, summary),
+            backdropImages: summary.backdropImages ?? [],
         };
     }
 
-    return { ...entry, title: null, year: null, poster: posterOverride };
+    return {
+        ...entry,
+        title: null,
+        year: null,
+        poster: posterOverride,
+        resolvedTrailerKey: resolveTrailerKey(entry, null),
+        details: null,
+        backdropImages: [],
+    };
 };
 
 /** Resolves a whole log, in watch order. */

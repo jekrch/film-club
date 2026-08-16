@@ -10,8 +10,8 @@ interface StatItemProps {
 const StatItem: React.FC<StatItemProps> = ({
     label,
     value,
-    valueClassName = "text-slate-100 font-medium",
-    tooltip
+    valueClassName = 'text-slate-100 font-medium',
+    tooltip,
 }) => {
     return (
         <div className="flex justify-between items-center" title={tooltip}>

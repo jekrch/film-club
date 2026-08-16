@@ -5,7 +5,6 @@ import CollapsibleContent from '../common/CollapsableContent';
 import AccentCard from '../common/AccentCard';
 import QuoteMarkIcon from '../common/QuoteMarkIcon';
 
-
 export interface ProfileReviewBlurb {
     filmId: string;
     filmTitle: string;
@@ -22,14 +21,19 @@ interface ProfileBlurbItemProps {
 
 const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRating }) => {
     return (
-        <div className="flex items-stretch space-x-4"> 
-            <Link to={`/films/${blurbItem.filmId}`} className="flex-shrink-0 w-20 block"> {/* Ensure Link can take full height */}
+        <div className="flex items-stretch space-x-4">
+            <Link to={`/films/${blurbItem.filmId}`} className="flex-shrink-0 w-20 block">
+                {' '}
+                {/* Ensure Link can take full height */}
                 <img
                     key={`poster-${blurbItem.filmId}`}
                     src={blurbItem.filmPoster}
                     alt={blurbItem.filmTitle}
                     className="w-full h-full object-cover rounded-md shadow-lg hover:opacity-80 transition-opacity"
-                    onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; e.currentTarget.onerror = null; }}
+                    onError={(e) => {
+                        e.currentTarget.src = '/placeholder-poster.png';
+                        e.currentTarget.onerror = null;
+                    }}
                 />
             </Link>
 

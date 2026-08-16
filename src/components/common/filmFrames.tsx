@@ -24,7 +24,9 @@ export const FilmFrameImage: React.FC<{ frame: FilmFrame }> = ({ frame }) => {
             }}
             loading="lazy"
             onLoad={() => setLoaded(true)}
-            ref={(node) => { if (node?.complete) setLoaded(true); }}
+            ref={(node) => {
+                if (node?.complete) setLoaded(true);
+            }}
         />
     );
 };

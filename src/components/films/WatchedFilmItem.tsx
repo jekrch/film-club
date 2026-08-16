@@ -7,6 +7,8 @@ import Button from '../common/Button';
 import Markdown from '../common/Markdown';
 import ImageUrlPreview from '../common/ImageUrlPreview';
 import RowFrameWash from '../common/RowFrameWash';
+import TrailerButton from '../common/TrailerButton';
+import EntryDetailsPanel, { EntryDetailsToggle } from './EntryDetailsPanel';
 import { entryFrameImage } from '../../utils/frameSources';
 import { getRatingColorClass } from '../../utils/ratingUtils';
 import { formatWatchDate, type ResolvedWatchedEntry } from '../../utils/watchedUtils';
@@ -20,6 +22,7 @@ import {
 } from '../../utils/watchedEditUtils';
 import { BLURB_LIMIT, MAX_SCORE, SCORE_STEP } from '../../utils/ratingEditUtils';
 import { IMAGE_URL_LIMIT } from '../../utils/imageUrl';
+import { TRAILER_URL_LIMIT } from '../../utils/youtube';
 import type { WatchedPatch } from '../../api/clubApi';
 
 /** The scale the club scores on, which members use for their own watches too. */
@@ -73,12 +76,20 @@ interface WatchedFilmItemProps {
  */
 const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSave, onRemove }) => {
     const { clubFilm, title, year, poster, imdbID, watchDate, blurb } = entry;
+    // The resolved key — theirs if they set one, the film's otherwise, null if
+    // they hid it — never the raw override this row's editor writes.
+    const trailerKey = entry.resolvedTrailerKey;
+    const { details } = entry;
+    const [detailsOpen, setDetailsOpen] = useState(false);
+    const panelId = `log-details-${imdbID}`;
     // A dead poster URL falls back to the empty frame rather than swapping
     // `src`, which can re-fire the handler forever. Same reasoning as
     // `RankedListItem`: cache-only films are OMDB rows nobody vetted.
     const [posterFailed, setPosterFailed] = useState(false);
     const [editing, setEditing] = useState(false);
-    const [form, setForm] = useState<WatchedFormValues>(() => toWatchedForm(toWatchedValues(entry)));
+    const [form, setForm] = useState<WatchedFormValues>(() =>
+        toWatchedForm(toWatchedValues(entry))
+    );
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [confirmingRemove, setConfirmingRemove] = useState(false);
@@ -204,7 +215,11 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                             // poster leaves the reader guessing.
                             <h5 className="break-words font-medium text-slate-200 transition-colors group-hover:text-slate-100 sm:truncate">
                                 {displayTitle}
-                                {year && <span className="ml-1.5 font-normal text-slate-500">{year}</span>}
+                                {year && (
+                                    <span className="ml-1.5 font-normal text-slate-500">
+                                        {year}
+                                    </span>
+                                )}
                                 {!clubFilm && (
                                     <ArrowTopRightOnSquareIcon
                                         className="ml-1.5 inline h-3 w-3 align-baseline text-slate-600"
@@ -224,16 +239,43 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                             </span>
                         )}
 
-                        {entry.score !== null && (
-                            <span
-                                className="ml-auto flex-shrink-0 rounded-md bg-white/[0.04] px-2 py-0.5 font-mono text-xs ring-1 ring-inset ring-white/[0.06]"
-                                title={`Their own rating: ${entry.score}/${MAX_RATING}`}
-                            >
-                                <span className={getRatingColorClass(entry.score)}>{entry.score}</span>
-                                {entry.scoreQualifier && (
-                                    <span className="text-slate-400">{entry.scoreQualifier}</span>
+                        {/* Trailer and score travel together at the end of the
+                            line, so the pair moves as one when the title wraps
+                            — a badge carrying `ml-auto` on its own would jump to
+                            the far edge of whatever row it landed on. */}
+                        {(entry.score !== null || trailerKey !== null || details !== null) && (
+                            <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+                                {trailerKey && (
+                                    <TrailerButton trailerKey={trailerKey} title={displayTitle} />
                                 )}
-                                <span className="text-slate-600">/{MAX_RATING}</span>
+
+                                {entry.score !== null && (
+                                    <span
+                                        className="rounded-md bg-white/[0.04] px-2 py-0.5 font-mono text-xs ring-1 ring-inset ring-white/[0.06]"
+                                        title={`Their own rating: ${entry.score}/${MAX_RATING}`}
+                                    >
+                                        <span className={getRatingColorClass(entry.score)}>
+                                            {entry.score}
+                                        </span>
+                                        {entry.scoreQualifier && (
+                                            <span className="text-slate-400">
+                                                {entry.scoreQualifier}
+                                            </span>
+                                        )}
+                                        <span className="text-slate-600">/{MAX_RATING}</span>
+                                    </span>
+                                )}
+
+                                {/* Last in the cluster: the badges before it are
+                                    labels, this is the one that acts on the row. */}
+                                {details && (
+                                    <EntryDetailsToggle
+                                        isOpen={detailsOpen}
+                                        onToggle={() => setDetailsOpen((open) => !open)}
+                                        title={displayTitle}
+                                        panelId={panelId}
+                                    />
+                                )}
                             </span>
                         )}
                     </div>
@@ -258,6 +300,15 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                     </div>
                 )}
             </div>
+
+            {/* Across the whole row rather than in the title's column: this is
+                the film's own description, not the member's. Closed while the
+                editor is open — the form is the row then. */}
+            {details && detailsOpen && !editing && (
+                <div className="relative">
+                    <EntryDetailsPanel details={details} panelId={panelId} />
+                </div>
+            )}
 
             {editing && (
                 <div className="relative mt-4 space-y-4 border-t border-slate-700/60 pt-4">
@@ -371,12 +422,56 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                             {/* Shaped like the poster it replaces, so a wide
                                 still pasted in here shows what it would do to
                                 the row before it is saved. */}
-                            <ImageUrlPreview url={form.posterImage} className="h-16 w-11 object-top" />
+                            <ImageUrlPreview
+                                url={form.posterImage}
+                                className="h-16 w-11 object-top"
+                            />
                         </div>
                         <span className="mt-1 block text-xs text-slate-500">
                             Optional. Leave it blank to use the film's own poster.
                         </span>
                     </label>
+
+                    {/* The trailer the row's play button opens. Two controls
+                        rather than one field: a blank link means "whatever
+                        trailer the film has", which is not the same answer as
+                        "none" — and a member who has said none should keep the
+                        link they had for the day they change their mind, which
+                        is why hiding disables the field instead of clearing it. */}
+                    <div>
+                        <label className="block">
+                            <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
+                                Trailer
+                            </span>
+                            <input
+                                type="text"
+                                inputMode="url"
+                                maxLength={TRAILER_URL_LIMIT}
+                                value={form.trailer}
+                                onChange={(e) => setForm({ ...form, trailer: e.target.value })}
+                                disabled={busy || form.hideTrailer}
+                                placeholder="https://youtube.com/watch?v=… a trailer you'd rather play"
+                                className={`${FIELD_CLASS} disabled:opacity-50`}
+                            />
+                        </label>
+                        <label className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                            <input
+                                type="checkbox"
+                                checked={form.hideTrailer}
+                                onChange={(e) =>
+                                    setForm({ ...form, hideTrailer: e.target.checked })
+                                }
+                                disabled={busy}
+                                className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-800/60 accent-blue-500"
+                            />
+                            No trailer on this row
+                        </label>
+                        <span className="mt-1 block text-xs text-slate-500">
+                            {form.hideTrailer
+                                ? 'Hidden. Your link is kept for whenever you turn it back on.'
+                                : "Optional. Leave it blank to use the film's own trailer."}
+                        </span>
+                    </div>
 
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                         {/* Full width on a phone: at its natural width it shares

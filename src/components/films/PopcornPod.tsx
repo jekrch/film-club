@@ -16,7 +16,8 @@ import React from 'react';
  * concession-stand yellow, so the artwork reads as cheaper than its neighbours
  * on the films grid without becoming illegible.
  */
-export const POPCORN_POD_POSTER_FILTER = 'saturate-[0.45] sepia-[0.35] contrast-[0.95] brightness-[0.9]';
+export const POPCORN_POD_POSTER_FILTER =
+    'saturate-[0.45] sepia-[0.35] contrast-[0.95] brightness-[0.9]';
 
 /**
  * Folded-under tails at each end of a ribbon band. The wedge is thickest at the
@@ -39,8 +40,8 @@ export const PopcornPodDisclaimer: React.FC = () => (
     <div className="mb-4 rounded-md border-l-4 border-amber-500/80 bg-amber-500/10 px-4 py-3">
         <p className="text-sm leading-relaxed text-amber-100/90">
             <span className="font-bold uppercase tracking-wide text-amber-300">Disclaimer:</span>{' '}
-            this film is <em>not</em> criterion and we did not <em>select</em> it.
-            We happened to all see it in theaters, did a pod, and scored it out of 9.
+            this film is <em>not</em> criterion and we did not <em>select</em> it. We happened to
+            all see it in theaters, did a pod, and scored it out of 9.
         </p>
     </div>
 );
@@ -77,10 +78,12 @@ export const PopcornPodStamp: React.FC = () => (
             as a separate property, so animating `transform` wholesale would fight
             the -45deg rake. Requires a `group` on the poster container, which both
             the card and the detail page provide. */}
-        <div className="
+        <div
+            className="
             absolute w-[90cqw] left-[-22cqw] top-[17.8cqw] -rotate-45
             transition-[scale] duration-300 ease-out group-hover:scale-105
-        ">
+        "
+        >
             {/* Tails, tucked under each end of the band and running off past the
                 poster's edges — only the tapering inner tip of each stays visible,
                 so the ribbon reads as folding around the corner rather than being
@@ -97,7 +100,8 @@ export const PopcornPodStamp: React.FC = () => (
             {/* Semi-transparent so the poster underneath still reads through the
                 ribbon; the blur keeps the lettering legible over busy art. Padding
                 is in `em`, so the band's depth tracks the lettering. */}
-            <div className="
+            <div
+                className="
                 relative text-center whitespace-nowrap leading-none
                 text-[6.5cqw] tracking-[0.06em] py-[0.3em]
                 font-black uppercase text-white
@@ -108,7 +112,8 @@ export const PopcornPodStamp: React.FC = () => (
                 transition-all duration-300 ease-out
                 group-hover:from-amber-500/85 group-hover:via-amber-400/85 group-hover:to-amber-500/85
                 group-hover:shadow-xl
-            ">
+            "
+            >
                 Popcorn Pod
             </div>
         </div>

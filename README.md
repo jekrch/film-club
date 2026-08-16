@@ -30,14 +30,14 @@ bun install
 
 ### Scripts
 
-| Command | Description |
-| --- | --- |
-| `bun run dev` | Start the development server at `http://localhost:5173` |
-| `bun run build` | Build for production |
-| `bun run preview` | Preview the production build locally |
-| `bun run lint` | Run ESLint |
-| `bun run test` | Run the test suite |
-| `bun run deploy` | Deploy manually to GitHub Pages (normally handled by the Sync and Deploy workflow) |
+| Command           | Description                                                                        |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `bun run dev`     | Start the development server at `http://localhost:5173`                            |
+| `bun run build`   | Build for production                                                               |
+| `bun run preview` | Preview the production build locally                                               |
+| `bun run lint`    | Run ESLint                                                                         |
+| `bun run test`    | Run the test suite                                                                 |
+| `bun run deploy`  | Deploy manually to GitHub Pages (normally handled by the Sync and Deploy workflow) |
 
 ## Data Sources
 

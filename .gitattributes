@@ -1,0 +1,16 @@
+# Store every text file with LF in the repository, and check it out as LF.
+#
+# Without this, an editor or tool on Windows/WSL can rewrite a file as CRLF and
+# git reports every line as changed. That is exactly what happened here: 40
+# files once showed as 36,010 insertions and 36,010 deletions with no content
+# difference at all. History has always been LF; only working trees drifted.
+* text=auto eol=lf
+
+# Binaries must never be line-ending converted — doing so corrupts them.
+*.png binary
+*.PNG binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.webp binary
+*.pyc binary

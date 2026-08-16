@@ -39,8 +39,9 @@ const personIndexByName: Map<string, PersonProfile> = (() => {
 })();
 
 /** Resolve a displayed name to its TMDb profile (id + per-film headshot), if known. */
-export const getPersonProfileByName = (name: string | null | undefined): PersonProfile | undefined =>
-    personIndexByName.get(normalizePersonName(name));
+export const getPersonProfileByName = (
+    name: string | null | undefined
+): PersonProfile | undefined => personIndexByName.get(normalizePersonName(name));
 
 /** Look up the normalized biographical record for a TMDb person id. */
 export const getPersonInfo = (tmdbId: number | null | undefined): PersonInfo | undefined =>
@@ -61,7 +62,7 @@ export const tmdbPersonUrl = (tmdbId: number): string =>
  */
 export const isPersonClickable = (
     name: string | null | undefined,
-    filmographyLength: number,
+    filmographyLength: number
 ): boolean => filmographyLength > 1 || getPersonProfileByName(name) !== undefined;
 
 /**

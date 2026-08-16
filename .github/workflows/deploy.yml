@@ -1,149 +1,153 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Runs on manual trigger
-  workflow_dispatch:
+    # Runs on manual trigger
+    workflow_dispatch:
 
-  # Deploy on every push to main. This deliberately has no `paths` filter:
-  # source-only commits (components, CSS) are just as deployable as data
-  # changes, and filtering them out silently left production a commit behind.
-  push:
-    branches:
-      - main
+    # Deploy on every push to main. This deliberately has no `paths` filter:
+    # source-only commits (components, CSS) are just as deployable as data
+    # changes, and filtering them out silently left production a commit behind.
+    push:
+        branches:
+            - main
 
 # Members editing scores and lists on the site produce one commit per save, and
 # a burst of saves would otherwise queue a full build each. Only the newest one
 # matters: the derived-data steps below are idempotent, so a cancelled run
 # leaves nothing half-applied.
 concurrency:
-  group: pages-deploy
-  cancel-in-progress: true
+    group: pages-deploy
+    cancel-in-progress: true
 
 # Fix for permission issue - changed to write
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+    contents: write
+    pages: write
+    id-token: write
 
 jobs:
-  validate-and-deploy:
-    runs-on: ubuntu-latest
+    validate-and-deploy:
+        runs-on: ubuntu-latest
 
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        steps:
+            # Step 1: Checkout the repository
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-      # Step 2: Validate JSON files
-      - name: Validate JSON files
-        run: |
-          # Everything the app imports at build time, plus overrides.json, which
-          # the derived-data steps below read. Validating first means a bad file
-          # fails here with its own name rather than deep inside a Python step.
-          for file in club.json films.json lists.json listFilms.json overrides.json; do
-            path="src/assets/$file"
-            if [ -f "$path" ]; then
-              echo "Validating $file..."
-              if ! jq empty "$path"; then
-                echo "ERROR: $file is not valid JSON"
-                exit 1
-              fi
-              echo "$file is valid"
-            fi
-          done
+            # Step 2: Validate JSON files
+            - name: Validate JSON files
+              run: |
+                  # Everything the app imports at build time, plus overrides.json, which
+                  # the derived-data steps below read. Validating first means a bad file
+                  # fails here with its own name rather than deep inside a Python step.
+                  for file in club.json films.json lists.json listFilms.json overrides.json; do
+                    path="src/assets/$file"
+                    if [ -f "$path" ]; then
+                      echo "Validating $file..."
+                      if ! jq empty "$path"; then
+                        echo "ERROR: $file is not valid JSON"
+                        exit 1
+                      fi
+                      echo "$file is valid"
+                    fi
+                  done
 
-      # Step 3: Set up Python for the derived-data steps
-      #
-      # These run here rather than in their own workflow because a commit made
-      # with the default GITHUB_TOKEN does not trigger further workflow runs — a
-      # standalone workflow would need its own build-and-deploy job. They can't
-      # live in sync-google-sheet.yml either: that runs twice a day, so a
-      # member's edit would sit invisible for up to twelve hours.
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+            # Step 3: Set up Python for the derived-data steps
+            #
+            # These run here rather than in their own workflow because a commit made
+            # with the default GITHUB_TOKEN does not trigger further workflow runs — a
+            # standalone workflow would need its own build-and-deploy job. They can't
+            # live in sync-google-sheet.yml either: that runs twice a day, so a
+            # member's edit would sit invisible for up to twelve hours.
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: '3.10'
 
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests
+            - name: Install Python dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install requests
 
-      # Step 4: Fold member edits into films.json (deterministic; no network)
-      - name: Apply member overrides
-        run: python .github/scripts/apply_overrides.py
-        env:
-          JSON_PATH: "src/assets/films.json"
-          OVERRIDES_PATH: "src/assets/overrides.json"
+            # Step 4: Fold member edits into films.json (deterministic; no network)
+            - name: Apply member overrides
+              run: python .github/scripts/apply_overrides.py
+              env:
+                  JSON_PATH: 'src/assets/films.json'
+                  OVERRIDES_PATH: 'src/assets/overrides.json'
 
-      # Step 5: Fill the poster/title cache for films the club never watched —
-      # both the ones on member lists and the ones in member watch logs.
-      - name: Enrich list films
-        run: python .github/scripts/enrich_list_films.py
-        env:
-          LISTS_PATH: "src/assets/lists.json"
-          WATCHED_PATH: "src/assets/watched.json"
-          JSON_PATH: "src/assets/films.json"
-          LIST_FILMS_PATH: "src/assets/listFilms.json"
-          OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+            # Step 5: Fill the poster/title cache for films the club never watched —
+            # both the ones on member lists and the ones in member watch logs.
+            - name: Enrich list films
+              run: python .github/scripts/enrich_list_films.py
+              env:
+                  LISTS_PATH: 'src/assets/lists.json'
+                  WATCHED_PATH: 'src/assets/watched.json'
+                  JSON_PATH: 'src/assets/films.json'
+                  LIST_FILMS_PATH: 'src/assets/listFilms.json'
+                  OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+                  # Posters come from OMDB, trailers from TMDb — the same key the
+                  # sheet sync uses. Unset, the summaries land without a trailer
+                  # and a later deploy fills them in; nothing fails for want of it.
+                  TMDB_KEY: ${{ secrets.TMDB_KEY }}
 
-      # Step 6: Commit whatever those two steps derived, before the build, so
-      # the deployed site never shows a half-applied state. Both steps are
-      # no-ops on the source-only pushes that make up most deploys.
-      - name: Commit derived data
-        run: |
-          git add src/assets/films.json src/assets/listFilms.json
-          if git diff --staged --quiet; then
-            echo "No derived data changes to commit."
-            exit 0
-          fi
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -m "Apply member overrides and enrich list films"
-          # The worker commits to main while this runs, so rebase onto whatever
-          # landed in the meantime rather than failing the deploy on a stale ref.
-          git pull --rebase --autostash
-          git push
+            # Step 6: Commit whatever those two steps derived, before the build, so
+            # the deployed site never shows a half-applied state. Both steps are
+            # no-ops on the source-only pushes that make up most deploys.
+            - name: Commit derived data
+              run: |
+                  git add src/assets/films.json src/assets/listFilms.json
+                  if git diff --staged --quiet; then
+                    echo "No derived data changes to commit."
+                    exit 0
+                  fi
+                  git config --local user.email "github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "github-actions[bot]"
+                  git commit -m "Apply member overrides and enrich list films"
+                  # The worker commits to main while this runs, so rebase onto whatever
+                  # landed in the meantime rather than failing the deploy on a stale ref.
+                  git pull --rebase --autostash
+                  git push
 
-      # Step 7: Setup Bun
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+            # Step 7: Setup Bun
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
 
-      # Step 8: Install dependencies
-      - name: Install dependencies
-        run: bun install
+            # Step 8: Install dependencies
+            - name: Install dependencies
+              run: bun install
 
-      # Step 9: Build the project
-      #
-      # The two editing settings are repository *variables*, not secrets: both
-      # are public by design (the client ID is sent by the browser, the worker
-      # URL is the address it calls). Unset, they build a site with no editing
-      # surfaces at all rather than a broken one.
-      - name: Build the project
-        run: bun run build
-        env:
-          VITE_GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
-          VITE_EDITOR_API_URL: ${{ vars.EDITOR_API_URL }}
+            # Step 9: Build the project
+            #
+            # The two editing settings are repository *variables*, not secrets: both
+            # are public by design (the client ID is sent by the browser, the worker
+            # URL is the address it calls). Unset, they build a site with no editing
+            # surfaces at all rather than a broken one.
+            - name: Build the project
+              run: bun run build
+              env:
+                  VITE_GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+                  VITE_EDITOR_API_URL: ${{ vars.EDITOR_API_URL }}
 
-      # Step 10: Verify build output
-      - name: Verify build output
-        run: |
-          echo "Checking build output directory..."
-          ls -la
-          if [ -d "dist" ]; then
-            echo "dist directory exists"
-            ls -la dist
-          else
-            echo "ERROR: dist directory does not exist"
-            exit 1
-          fi
+            # Step 10: Verify build output
+            - name: Verify build output
+              run: |
+                  echo "Checking build output directory..."
+                  ls -la
+                  if [ -d "dist" ]; then
+                    echo "dist directory exists"
+                    ls -la dist
+                  else
+                    echo "ERROR: dist directory does not exist"
+                    exit 1
+                  fi
 
-      # Step 11: Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
+            # Step 11: Deploy to GitHub Pages
+            - name: Deploy to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./dist
+                  publish_branch: gh-pages

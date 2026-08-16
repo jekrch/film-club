@@ -1,7 +1,26 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode, useCallback } from 'react';
+import React, {
+    createContext,
+    useState,
+    useContext,
+    useEffect,
+    ReactNode,
+    useCallback,
+} from 'react';
 
 // Define the possible card sizes
-export type CardSize = 'standard' | 'compact' | 'poster';
+export const CARD_SIZES = ['standard', 'compact', 'poster'] as const;
+
+export type CardSize = (typeof CARD_SIZES)[number];
+
+/**
+ * The single list both the rehydrate and the setter validate against.
+ *
+ * These two checks used to be written out separately and had drifted: the
+ * setter accepted 'poster' but the localStorage read did not, so choosing the
+ * poster view and reloading silently dropped back to compact.
+ */
+const isCardSize = (value: unknown): value is CardSize =>
+    typeof value === 'string' && (CARD_SIZES as readonly string[]).includes(value);
 
 // Define the shape of the context data
 interface ViewSettingsContextProps {
@@ -29,12 +48,12 @@ export const ViewSettingsProvider: React.FC<ViewSettingsProviderProps> = ({ chil
             if (storedSettings) {
                 const settings = JSON.parse(storedSettings);
                 // Validate the stored value
-                if (settings.cardSize === 'standard' || settings.cardSize === 'compact') {
+                if (isCardSize(settings?.cardSize)) {
                     return settings.cardSize;
                 }
             }
         } catch (error) {
-            console.error("Error reading view settings from localStorage", error);
+            console.error('Error reading view settings from localStorage', error);
         }
         return 'compact'; // Default value
     });
@@ -45,14 +64,14 @@ export const ViewSettingsProvider: React.FC<ViewSettingsProviderProps> = ({ chil
             const settings = { cardSize };
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(settings));
         } catch (error) {
-            console.error("Error saving view settings to localStorage", error);
+            console.error('Error saving view settings to localStorage', error);
         }
     }, [cardSize]);
 
     // Memoized function to update state, preventing unnecessary re-renders
     const setCardSize = useCallback((size: CardSize) => {
         // Basic validation
-        if (size === 'standard' || size === 'compact' || size === 'poster') {
+        if (isCardSize(size)) {
             setCardSizeState(size);
         } else {
             console.warn(`Invalid card size attempted: ${size}`);
@@ -62,11 +81,7 @@ export const ViewSettingsProvider: React.FC<ViewSettingsProviderProps> = ({ chil
     // Value provided by the context
     const value = { cardSize, setCardSize };
 
-    return (
-        <ViewSettingsContext.Provider value={value}>
-            {children}
-        </ViewSettingsContext.Provider>
-    );
+    return <ViewSettingsContext.Provider value={value}>{children}</ViewSettingsContext.Provider>;
 };
 
 export const useViewSettings = (): ViewSettingsContextProps => {

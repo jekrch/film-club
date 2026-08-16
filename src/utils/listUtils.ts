@@ -9,6 +9,8 @@ import {
 import type { WatchedLog } from '../types/watched';
 import { pendingFilmSummary } from './pendingFilmSummaries';
 import { getWatchedEntryFor } from './watchedUtils';
+import { resolveEntryDetails, type EntryDetails } from './entryDetails';
+import { resolveTrailerKey } from './youtube';
 
 /**
  * A list entry with its display metadata filled in from whichever source knows
@@ -37,6 +39,28 @@ export interface ResolvedListEntry {
      */
     poster: string | null;
     clubFilm?: Film;
+    /**
+     * The YouTube key this row's trailer button plays, or null when the member
+     * hid it or nothing knows one. Resolved here for the same reason the poster
+     * is: every surface showing this entry should offer the same trailer.
+     *
+     * Named apart from the stored {@link FilmListEntry.trailerKey} on purpose —
+     * that one is the member's override alone, this one is the answer after the
+     * film's own trailer and their hide flag have been folded in.
+     */
+    resolvedTrailerKey: string | null;
+    /**
+     * What the row's expandable panel shows about the film — tagline, summary,
+     * cast — or null when nothing knows any of it. Same shape whichever record
+     * it came from; see {@link EntryDetails}.
+     */
+    details: EntryDetails | null;
+    /**
+     * Scene art for the wash behind the row, from the summary cache. A club
+     * film's own backdrops are reached through {@link clubFilm} instead, which
+     * is why this is empty for one.
+     */
+    backdropImages: string[];
     /** The owner's score for this film out of 9, from wherever they gave it. */
     score: number | null;
     /** Where {@link score} came from; null when they have no score for it. */
@@ -181,6 +205,9 @@ export const resolveListEntry = (
             title: clubFilm.title,
             year: clubFilm.year ?? null,
             poster: posterOverride ?? clubFilm.poster ?? null,
+            resolvedTrailerKey: resolveTrailerKey(entry, clubFilm),
+            details: resolveEntryDetails(clubFilm, undefined),
+            backdropImages: [],
             clubFilm,
         };
     }
@@ -196,13 +223,24 @@ export const resolveListEntry = (
             title: summary.title,
             year: summary.year ?? null,
             poster: posterOverride ?? summary.poster ?? null,
+            resolvedTrailerKey: resolveTrailerKey(entry, summary),
+            details: resolveEntryDetails(undefined, summary),
+            backdropImages: summary.backdropImages ?? [],
         };
     }
 
     // An id OMDB doesn't know, or one added from another device. The row still
-    // renders, with its rank and note intact — and with the member's poster,
-    // which is the one case where it is the only artwork the row has.
-    return { ...base, title: null, year: null, poster: posterOverride };
+    // renders, with its rank and note intact — and with the member's poster and
+    // trailer, which are the one case where they are all the row has.
+    return {
+        ...base,
+        title: null,
+        year: null,
+        poster: posterOverride,
+        resolvedTrailerKey: resolveTrailerKey(entry, null),
+        details: null,
+        backdropImages: [],
+    };
 };
 
 /**

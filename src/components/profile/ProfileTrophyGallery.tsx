@@ -32,14 +32,17 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
     const memberTrophies: TrophyAward[] = [];
     //const memberNameLower = memberName.toLowerCase();
 
-    films.forEach(film => {
+    films.forEach((film) => {
         const trophyNotes = film.movieClubInfo?.trophyNotes;
         if (!trophyNotes) return;
 
         // Split by comma to get individual trophy entries
-        const trophyEntries = trophyNotes.split(',').map(t => t.trim()).filter(t => t !== '');
+        const trophyEntries = trophyNotes
+            .split(',')
+            .map((t) => t.trim())
+            .filter((t) => t !== '');
 
-        trophyEntries.forEach(entry => {
+        trophyEntries.forEach((entry) => {
             // Check if this member's name appears in this trophy entry (case-insensitive)
             const regex = new RegExp(`\\b${memberName}\\b`, 'gi');
             if (regex.test(entry)) {
@@ -48,7 +51,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                     filmTitle: film.title,
                     filmYear: film.year,
                     poster: film.poster,
-                    awardText: entry
+                    awardText: entry,
                 });
             }
         });
@@ -62,7 +65,7 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
     const groupedTrophies: GroupedTrophy[] = [];
     const trophyGroups = new Map<string, GroupedTrophy>();
 
-    memberTrophies.forEach(trophy => {
+    memberTrophies.forEach((trophy) => {
         // Normalize the award text by removing the member name to get the "award type"
         // e.g., "Jacob gets a Togetherness Trophy" -> "gets a Togetherness Trophy"
         // e.g., "Togetherness Trophy: Jacob" -> "Togetherness Trophy:"
@@ -92,29 +95,31 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
         const existing = trophyGroups.get(awardKey);
         if (existing) {
             // Avoid duplicate films in the same group
-            if (!existing.films.some(f => f.filmId === trophy.filmId)) {
+            if (!existing.films.some((f) => f.filmId === trophy.filmId)) {
                 existing.films.push({
                     filmId: trophy.filmId,
                     filmTitle: trophy.filmTitle,
                     filmYear: trophy.filmYear,
-                    poster: trophy.poster
+                    poster: trophy.poster,
                 });
             }
         } else {
             trophyGroups.set(awardKey, {
                 awardName: awardKey,
-                films: [{
-                    filmId: trophy.filmId,
-                    filmTitle: trophy.filmTitle,
-                    filmYear: trophy.filmYear,
-                    poster: trophy.poster
-                }]
+                films: [
+                    {
+                        filmId: trophy.filmId,
+                        filmTitle: trophy.filmTitle,
+                        filmYear: trophy.filmYear,
+                        poster: trophy.poster,
+                    },
+                ],
             });
         }
     });
 
     // Convert map to array and sort by number of films (most first)
-    trophyGroups.forEach(group => groupedTrophies.push(group));
+    trophyGroups.forEach((group) => groupedTrophies.push(group));
     groupedTrophies.sort((a, b) => b.films.length - a.films.length);
 
     return (
@@ -162,7 +167,8 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
                                                 alt={film.filmTitle}
                                                 className="w-6 h-9 object-cover rounded shadow-sm ring-1 ring-amber-400/20"
                                                 onError={(e) => {
-                                                    (e.target as HTMLImageElement).src = '/placeholder-poster.png';
+                                                    (e.target as HTMLImageElement).src =
+                                                        '/placeholder-poster.png';
                                                 }}
                                             />
                                             <span className="text-sm text-slate-300 group-hover/film:text-slate-100 truncate max-w-[150px]">

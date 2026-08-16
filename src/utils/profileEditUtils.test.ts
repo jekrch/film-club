@@ -117,19 +117,25 @@ describe('parseProfileForm', () => {
     });
 
     it('refuses a half-filled row rather than dropping the half', () => {
-        expect(parseProfileForm(form({ interview: [newInterviewRow('First film?', '')] }))).toEqual({
-            error: expect.stringContaining('First film?'),
-        });
-        expect(parseProfileForm(form({ interview: [newInterviewRow('', 'Jaws.')] }))).toHaveProperty(
-            'error'
+        expect(parseProfileForm(form({ interview: [newInterviewRow('First film?', '')] }))).toEqual(
+            {
+                error: expect.stringContaining('First film?'),
+            }
         );
+        expect(
+            parseProfileForm(form({ interview: [newInterviewRow('', 'Jaws.')] }))
+        ).toHaveProperty('error');
     });
 
     it('catches an over-long field before the round trip', () => {
-        expect(parseProfileForm(form({ title: 'x'.repeat(TITLE_LIMIT + 1) }))).toHaveProperty('error');
+        expect(parseProfileForm(form({ title: 'x'.repeat(TITLE_LIMIT + 1) }))).toHaveProperty(
+            'error'
+        );
         expect(parseProfileForm(form({ bio: 'x'.repeat(BIO_LIMIT + 1) }))).toHaveProperty('error');
         expect(
-            parseProfileForm(form({ interview: [newInterviewRow('Q', 'x'.repeat(ANSWER_LIMIT + 1))] }))
+            parseProfileForm(
+                form({ interview: [newInterviewRow('Q', 'x'.repeat(ANSWER_LIMIT + 1))] })
+            )
         ).toHaveProperty('error');
     });
 });

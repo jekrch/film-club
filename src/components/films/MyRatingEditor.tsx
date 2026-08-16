@@ -327,7 +327,9 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
 
                     {notice && <p className="text-sm text-emerald-300">{notice}</p>}
                     {saveError && <p className="text-sm text-rose-300">{saveError}</p>}
-                    {authError && !saveError && <p className="text-sm text-rose-300">{authError}</p>}
+                    {authError && !saveError && (
+                        <p className="text-sm text-rose-300">{authError}</p>
+                    )}
 
                     <p className="border-t border-slate-700/60 pt-3 text-xs text-slate-500">
                         Signed in as {member}.{' '}

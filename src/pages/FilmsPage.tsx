@@ -1,6 +1,6 @@
 import FilmList from '../components/films/FilmList';
-import { filmData as initialFilmData } from '../types/film'; 
-import { teamMembers } from '../types/team'; 
+import { filmData as initialFilmData } from '../types/film';
+import { teamMembers } from '../types/team';
 import PageLayout from '../components/layout/PageLayout';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
@@ -8,7 +8,7 @@ import Select from '../components/common/Select';
 import { useFilmFiltering, SortOption, getSortOptionDisplayName } from '../hooks/useFilmFilter';
 
 // Define Member Names for sort options if not already defined in the hook or utils
-const clubMemberNamesForSort = teamMembers.filter(t => t.queue).map(u => u.name);
+const clubMemberNamesForSort = teamMembers.filter((t) => t.queue).map((u) => u.name);
 
 const FilmsPage = () => {
     // Use the custom hook
@@ -34,7 +34,7 @@ const FilmsPage = () => {
         'clubRating',
         'controversial',
         'watchDate',
-        ...clubMemberNamesForSort
+        ...clubMemberNamesForSort,
     ];
 
     return (
@@ -44,7 +44,10 @@ const FilmsPage = () => {
             <AccentCard key={'search-card'} accent="blue" className="p-6 mb-8 text-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label htmlFor="search" className="block mb-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400">
+                        <label
+                            htmlFor="search"
+                            className="block mb-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-slate-400"
+                        >
                             Search Films
                         </label>
                         <div className="group relative">
@@ -54,8 +57,19 @@ const FilmsPage = () => {
                                 aria-hidden="true"
                                 className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 transition-colors duration-200 group-focus-within:text-slate-300"
                             >
-                                <circle cx="9" cy="9" r="5.5" stroke="currentColor" strokeWidth="1.5" />
-                                <path d="M13.5 13.5L17 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                <circle
+                                    cx="9"
+                                    cy="9"
+                                    r="5.5"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                />
+                                <path
+                                    d="M13.5 13.5L17 17"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                />
                             </svg>
                             <input
                                 type="text"
@@ -74,8 +88,18 @@ const FilmsPage = () => {
                                     size="xs"
                                     className="absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2"
                                 >
-                                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" className="h-3.5 w-3.5">
-                                        <path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                    <svg
+                                        viewBox="0 0 20 20"
+                                        fill="none"
+                                        aria-hidden="true"
+                                        className="h-3.5 w-3.5"
+                                    >
+                                        <path
+                                            d="M6 6l8 8M14 6l-8 8"
+                                            stroke="currentColor"
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                        />
                                     </svg>
                                 </Button>
                             )}
@@ -97,7 +121,10 @@ const FilmsPage = () => {
                         placeholder="All Selectors"
                         value={selectedSelector}
                         onChange={setSelectedSelector}
-                        options={allSelectors.map((selector) => ({ value: selector, label: selector }))}
+                        options={allSelectors.map((selector) => ({
+                            value: selector,
+                            label: selector,
+                        }))}
                     />
                 </div>
 
@@ -130,9 +157,7 @@ const FilmsPage = () => {
                 </div>
             </AccentCard>
 
-            <div className="mb-4 text-sm text-slate-300">
-                {resultsText}
-            </div>
+            <div className="mb-4 text-sm text-slate-300">{resultsText}</div>
 
             <FilmList films={filteredFilms} />
         </PageLayout>

@@ -6,12 +6,12 @@ import { getAllFilmCreditsForPerson, parseWatchDate, PersonCredit } from '../uti
 // Active selectors in cycle order (queue > 0, ascending). Used to figure out who
 // picks after the current "up next" selector once they've made their choice.
 const sortedActiveMembers = teamMembers
-    .filter(member => typeof member.queue === 'number' && member.queue > 0)
+    .filter((member) => typeof member.queue === 'number' && member.queue > 0)
     .sort((a, b) => (a.queue ?? Infinity) - (b.queue ?? Infinity));
 
 const getNextSelectorName = (currentSelector?: string | null): string | null => {
     if (!currentSelector || sortedActiveMembers.length === 0) return null;
-    const idx = sortedActiveMembers.findIndex(m => m.name === currentSelector);
+    const idx = sortedActiveMembers.findIndex((m) => m.name === currentSelector);
     if (idx === -1) return null;
     return sortedActiveMembers[(idx + 1) % sortedActiveMembers.length].name;
 };
@@ -28,7 +28,7 @@ export interface UseFilmDetailsReturn {
     error: string | null;
     filmsBySameSelector: Film[];
     previousFilm: Film | null; // The film the club watched immediately before this one
-    nextFilm: Film | null;     // The film the club watched immediately after this one
+    nextFilm: Film | null; // The film the club watched immediately after this one
     nextSelectorPlaceholder: string | null; // Selector for the not-yet-chosen film after the "up next" pick
     watchUrl: string | null;
     linkCheckStatus: 'idle' | 'valid' | 'not_found'; // Simplified for this hook example
@@ -40,10 +40,12 @@ export interface UseFilmDetailsReturn {
 
 const getCriterionChannelUrl = (title: string): string => {
     const baseUrl = 'https://www.criterionchannel.com/videos/';
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
     return `${baseUrl}${slug}`;
 };
-
 
 export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
     const [film, setFilm] = useState<Film | null>(null);
@@ -79,12 +81,12 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         setCreditsModalState({ isOpen: false, personName: null, filmography: null });
 
         if (!imdbId) {
-            setError("Film ID is missing.");
+            setError('Film ID is missing.');
             setLoading(false);
             return;
         }
 
-        const foundFilm = allFilmsData.find(f => f.imdbID === imdbId);
+        const foundFilm = allFilmsData.find((f) => f.imdbID === imdbId);
 
         if (!foundFilm) {
             setError(`Film with ID ${imdbId} not found.`);
@@ -114,11 +116,19 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         const currentSelector = foundFilm.movieClubInfo?.selector;
         if (currentSelector) {
             const otherFilms = allFilmsData
-                .filter(otherFilm => otherFilm.imdbID !== imdbId && otherFilm.movieClubInfo?.selector === currentSelector)
+                .filter(
+                    (otherFilm) =>
+                        otherFilm.imdbID !== imdbId &&
+                        otherFilm.movieClubInfo?.selector === currentSelector
+                )
                 .sort((a, b) => {
-                    const dateA = a.movieClubInfo?.watchDate ? new Date(a.movieClubInfo.watchDate).getTime() : 0;
-                    const dateB = b.movieClubInfo?.watchDate ? new Date(b.movieClubInfo.watchDate).getTime() : 0;
-                    return (dateB - dateA) || (a.title ?? '').localeCompare(b.title ?? '');
+                    const dateA = a.movieClubInfo?.watchDate
+                        ? new Date(a.movieClubInfo.watchDate).getTime()
+                        : 0;
+                    const dateB = b.movieClubInfo?.watchDate
+                        ? new Date(b.movieClubInfo.watchDate).getTime()
+                        : 0;
+                    return dateB - dateA || (a.title ?? '').localeCompare(b.title ?? '');
                 });
             setFilmsBySameSelector(otherFilms);
         } else {
@@ -133,30 +143,43 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         if (!film) return data;
 
         const creditFieldsToScan = [
-            'director', 'writer', 'actors', 'cinematographer', 'editor',
-            'productionDesigner', 'musicComposer', 'costumeDesigner'
+            'director',
+            'writer',
+            'actors',
+            'cinematographer',
+            'editor',
+            'productionDesigner',
+            'musicComposer',
+            'costumeDesigner',
         ] as const; // Important for type safety
 
         const personsInCurrentFilm = new Set<string>();
-        creditFieldsToScan.forEach(fieldKey => {
+        creditFieldsToScan.forEach((fieldKey) => {
             const creditString = film[fieldKey] as string | undefined; // Type assertion
-            if (creditString && typeof creditString === 'string' && creditString.toLowerCase() !== 'n/a') {
-                creditString.split(',').map(p => p.trim()).filter(p => p).forEach(p => personsInCurrentFilm.add(p));
+            if (
+                creditString &&
+                typeof creditString === 'string' &&
+                creditString.toLowerCase() !== 'n/a'
+            ) {
+                creditString
+                    .split(',')
+                    .map((p) => p.trim())
+                    .filter((p) => p)
+                    .forEach((p) => personsInCurrentFilm.add(p));
             }
         });
 
         // Include the TMDb cast list so cast-strip names can be grouped too.
-        film.cast?.forEach(member => {
+        film.cast?.forEach((member) => {
             const name = member?.name?.trim();
             if (name) personsInCurrentFilm.add(name);
         });
 
-        personsInCurrentFilm.forEach(personName => {
+        personsInCurrentFilm.forEach((personName) => {
             data[personName] = getAllFilmCreditsForPerson(personName, allFilmsData);
         });
         return data;
     }, [film]); // Only depends on the current film
-
 
     // Locate this film within the club's chronological watch history so the page
     // can offer "previous"/"next" navigation. The unwatched "up next" pick has no
@@ -166,12 +189,12 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
         if (!film) return empty;
 
         const watchedTimeline = allFilmsData
-            .filter(f => parseWatchDate(f.movieClubInfo?.watchDate))
+            .filter((f) => parseWatchDate(f.movieClubInfo?.watchDate))
             .sort((a, b) => {
                 const dateA = parseWatchDate(a.movieClubInfo!.watchDate)!.getTime();
                 const dateB = parseWatchDate(b.movieClubInfo!.watchDate)!.getTime();
                 // Stable secondary sort by title keeps same-date pairs in a fixed order.
-                return (dateA - dateB) || (a.title ?? '').localeCompare(b.title ?? '');
+                return dateA - dateB || (a.title ?? '').localeCompare(b.title ?? '');
             });
 
         // The "up next" pick (a film with a selector but no watch date) follows the
@@ -186,14 +209,16 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
             };
         }
 
-        const currentIndex = watchedTimeline.findIndex(f => f.imdbID === film.imdbID);
+        const currentIndex = watchedTimeline.findIndex((f) => f.imdbID === film.imdbID);
         if (currentIndex === -1) return empty;
 
         const isMostRecentlyWatched = currentIndex === watchedTimeline.length - 1;
         // Surface the unwatched "up next" pick as the next film once we reach the
         // most recent watch.
         const upNextFilm = isMostRecentlyWatched
-            ? allFilmsData.find(f => f.movieClubInfo?.selector && !parseWatchDate(f.movieClubInfo?.watchDate)) ?? null
+            ? (allFilmsData.find(
+                  (f) => f.movieClubInfo?.selector && !parseWatchDate(f.movieClubInfo?.watchDate)
+              ) ?? null)
             : null;
 
         return {
@@ -202,7 +227,6 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
             nextSelectorPlaceholder: null,
         };
     }, [film]);
-
 
     const handleCreditPersonClick = (personName: string, filmographyForModal: PersonCredit[]) => {
         setCreditsModalState({

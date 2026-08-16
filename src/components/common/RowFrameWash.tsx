@@ -16,12 +16,20 @@ interface RowFrameWashProps {
  * lands on the artwork rather than the title block at the bottom.
  */
 const FRAMING: Record<FrameImage['kind'], { scale: number; position: string; opacity: string }> = {
-    still: { scale: 1.05, position: 'center 35%', opacity: 'opacity-[0.17] group-hover:opacity-[0.29]' },
+    still: {
+        scale: 1.05,
+        position: 'center 35%',
+        opacity: 'opacity-[0.17] group-hover:opacity-[0.29]',
+    },
     // Posters run brighter and busier than scene stills, so the same opacity
     // would read as a louder wash rather than a matching one. Written out
     // rather than computed: Tailwind can't see a class name it didn't find in
     // the source, the same reason AccentCard keeps static accent maps.
-    poster: { scale: 1.35, position: 'center 28%', opacity: 'opacity-[0.13] group-hover:opacity-[0.22]' },
+    poster: {
+        scale: 1.35,
+        position: 'center 28%',
+        opacity: 'opacity-[0.13] group-hover:opacity-[0.22]',
+    },
 };
 
 /**

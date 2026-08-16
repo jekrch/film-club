@@ -19,7 +19,7 @@ export interface FilmFrame {
     onSite: boolean;
 }
 
-const pickRandom = <T,>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
+const pickRandom = <T>(items: T[]): T => items[Math.floor(Math.random() * items.length)];
 
 /**
  * Cheap identity for a set of sources: enough to notice a film swapped in or a

@@ -31,7 +31,10 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
     const listboxId = `${controlId}-listbox`;
 
     const allOptions: SelectOption[] = [{ value: '', label: placeholder }, ...options];
-    const selectedIndex = Math.max(0, allOptions.findIndex((o) => o.value === value));
+    const selectedIndex = Math.max(
+        0,
+        allOptions.findIndex((o) => o.value === value)
+    );
     const selectedLabel = allOptions[selectedIndex]?.label ?? placeholder;
 
     const [open, setOpen] = useState(false);
@@ -41,7 +44,10 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
     const rootRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const listRef = useRef<HTMLUListElement>(null);
-    const typeaheadRef = useRef<{ query: string; timer: number | null }>({ query: '', timer: null });
+    const typeaheadRef = useRef<{ query: string; timer: number | null }>({
+        query: '',
+        timer: null,
+    });
 
     const close = useCallback(() => {
         setOpen(false);
@@ -109,10 +115,16 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                 else setHighlighted((h) => Math.max(h - 1, 0));
                 break;
             case 'Home':
-                if (open) { e.preventDefault(); setHighlighted(0); }
+                if (open) {
+                    e.preventDefault();
+                    setHighlighted(0);
+                }
                 break;
             case 'End':
-                if (open) { e.preventDefault(); setHighlighted(allOptions.length - 1); }
+                if (open) {
+                    e.preventDefault();
+                    setHighlighted(allOptions.length - 1);
+                }
                 break;
             case 'Enter':
             case ' ':
@@ -121,7 +133,10 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                 else setOpen(true);
                 break;
             case 'Escape':
-                if (open) { e.preventDefault(); close(); }
+                if (open) {
+                    e.preventDefault();
+                    close();
+                }
                 break;
             case 'Tab':
                 if (open) setOpen(false);
@@ -160,7 +175,9 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                         // read as an control at all — a darker fill disappears.
                         'group flex w-full items-center justify-between gap-2 rounded-md border bg-slate-800/60 px-4 py-2 text-left text-sm transition-colors duration-200',
                         'focus:outline-none focus-visible:border-slate-400 focus-visible:ring-1 focus-visible:ring-slate-400/50',
-                        open ? 'border-slate-400 text-slate-100' : 'border-slate-600/70 hover:border-slate-500 hover:bg-slate-800/80',
+                        open
+                            ? 'border-slate-400 text-slate-100'
+                            : 'border-slate-600/70 hover:border-slate-500 hover:bg-slate-800/80',
                         hasSelection ? 'text-slate-100' : 'text-slate-400'
                     )}
                 >
@@ -174,7 +191,13 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                             open && 'rotate-180'
                         )}
                     >
-                        <path d="M6 8l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        <path
+                            d="M6 8l4 4 4-4"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        />
                     </svg>
                 </button>
 
@@ -203,7 +226,9 @@ const Select = ({ value, onChange, options, placeholder, label, id, className }:
                                     onClick={() => commit(index)}
                                     className={classNames(
                                         'flex cursor-pointer items-center gap-2 px-4 py-2 text-sm transition-colors duration-150',
-                                        isActive ? 'bg-slate-700/45 text-slate-100' : 'text-slate-300',
+                                        isActive
+                                            ? 'bg-slate-700/45 text-slate-100'
+                                            : 'text-slate-300',
                                         !option.value && 'text-slate-400'
                                     )}
                                 >

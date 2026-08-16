@@ -84,6 +84,36 @@ describe('entryFrameSource', () => {
     });
 });
 
+describe('entryFrameSource with cache stills', () => {
+    it('washes a cache film’s own scene art rather than its poster', () => {
+        // The reason a list film can look like anything but a poster: before CI
+        // fetched these, a row with no member image had only portrait artwork to
+        // stretch across a wide frame.
+        const source = entryFrameSource({
+            imdbID: 'tt2000000',
+            title: 'A Cached Film',
+            poster: 'https://example.com/cached-poster.jpg',
+            backdropImages: ['https://example.com/cached-still.jpg'],
+        });
+        expect(source.images[0]).toEqual({
+            url: 'https://example.com/cached-still.jpg',
+            kind: 'still',
+        });
+        expect(source.onSite).toBe(false);
+    });
+
+    it('still lets the member’s own image win over them', () => {
+        const source = entryFrameSource({
+            imdbID: 'tt2000000',
+            title: 'A Cached Film',
+            poster: null,
+            image: 'https://example.com/mine.jpg',
+            backdropImages: ['https://example.com/cached-still.jpg'],
+        });
+        expect(source.images[0]).toEqual({ url: 'https://example.com/mine.jpg', kind: 'still' });
+    });
+});
+
 describe('collectionFrameImage', () => {
     const cached = (imdbID: string, image?: string) => ({
         imdbID,
@@ -95,9 +125,9 @@ describe('collectionFrameImage', () => {
     // A list card washing a poster behind its own stack of posters is the case
     // this ordering exists to avoid.
     it('takes a still from anywhere on the list over the top row’s poster', () => {
-        expect(collectionFrameImage([cached('tt0000002'), cached('tt0000003', 'https://mine.jpg')])).toEqual(
-            { url: 'https://mine.jpg', kind: 'still' }
-        );
+        expect(
+            collectionFrameImage([cached('tt0000002'), cached('tt0000003', 'https://mine.jpg')])
+        ).toEqual({ url: 'https://mine.jpg', kind: 'still' });
     });
 
     it('settles for the first poster when the list has no stills at all', () => {
@@ -109,14 +139,20 @@ describe('collectionFrameImage', () => {
 
     it('is null for an empty list, and for one whose films have no art', () => {
         expect(collectionFrameImage([])).toBeNull();
-        expect(collectionFrameImage([{ imdbID: 'tt0000003', title: null, poster: null }])).toBeNull();
+        expect(
+            collectionFrameImage([{ imdbID: 'tt0000003', title: null, poster: null }])
+        ).toBeNull();
     });
 });
 
 describe('entryFrameImage', () => {
     it('is the best image, or null when there is none', () => {
         expect(
-            entryFrameImage({ imdbID: 'tt0000002', title: 'A Cached Film', poster: 'https://x/p.jpg' })
+            entryFrameImage({
+                imdbID: 'tt0000002',
+                title: 'A Cached Film',
+                poster: 'https://x/p.jpg',
+            })
         ).toEqual({ url: 'https://x/p.jpg', kind: 'poster' });
         expect(entryFrameImage({ imdbID: 'tt0000003', title: null, poster: null })).toBeNull();
     });

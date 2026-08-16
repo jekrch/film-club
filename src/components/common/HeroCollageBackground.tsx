@@ -23,7 +23,8 @@ interface HeroCollageBackgroundProps {
  * outer thirds are pure art. The center panel sits under the text at every
  * size, so it stays low throughout.
  */
-const STRENGTH_VARS = '[--hero-edge:0.28] md:[--hero-edge:0.46] 2xl:[--hero-edge:0.6] [--hero-center:0.15]';
+const STRENGTH_VARS =
+    '[--hero-edge:0.28] md:[--hero-edge:0.46] 2xl:[--hero-edge:0.6] [--hero-center:0.15]';
 
 /**
  * Where each frame sits in the banner, in the order they're filled.
@@ -60,7 +61,8 @@ const PANELS = [
 ];
 
 /** Top and bottom dissolve, applied to the collage as a whole. */
-const VERTICAL_FADE = 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)';
+const VERTICAL_FADE =
+    'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%)';
 
 /**
  * One film, spread across the whole banner instead of standing in a third of it.
@@ -127,7 +129,9 @@ const HeroCollageBackground: React.FC<HeroCollageBackgroundProps> = ({
     }
 
     return (
-        <div className={`absolute inset-0 overflow-hidden pointer-events-none ${STRENGTH_VARS} ${className}`}>
+        <div
+            className={`absolute inset-0 overflow-hidden pointer-events-none ${STRENGTH_VARS} ${className}`}
+        >
             {/* The frames, masked as a group so the collage dissolves at the
                 top and bottom of the card. */}
             <div

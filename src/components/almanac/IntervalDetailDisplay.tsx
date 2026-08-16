@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../common/Button';
-import { Film } from '../../types/film'; 
+import { Film } from '../../types/film';
 
 // Define a more specific type if FilmWithDate is commonly used
 type FilmWithDate = Film & { parsedWatchDate: Date };
@@ -23,7 +23,12 @@ const IntervalDetailDisplay: React.FC<IntervalDetailDisplayProps> = ({ detail, o
         <div className="mt-4 p-3 bg-slate-700/25 rounded-xl border border-slate-600/30 animate-fade-in">
             <div className="flex justify-between items-center mb-2">
                 <h4 className="text-sm font-semibold text-slate-400">
-                    Interval of {detail.days} day{detail.days === 1 ? '' : 's'} ending {detail.endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    Interval of {detail.days} day{detail.days === 1 ? '' : 's'} ending{' '}
+                    {detail.endDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                    })}
                 </h4>
                 <Button
                     onClick={onClose}
@@ -37,14 +42,19 @@ const IntervalDetailDisplay: React.FC<IntervalDetailDisplayProps> = ({ detail, o
             </div>
             {detail.films.length > 0 ? (
                 <ul className="list-none text-xs space-y-1 text-slate-300">
-                    {detail.films.map(film => (
+                    {detail.films.map((film) => (
                         <li key={film.imdbID}>
-                            Film Watched: <span className="italic font-medium text-slate-200">{film.title} ({film.year})</span>
+                            Film Watched:{' '}
+                            <span className="italic font-medium text-slate-200">
+                                {film.title} ({film.year})
+                            </span>
                         </li>
                     ))}
                 </ul>
             ) : (
-                <p className="text-xs text-slate-400 italic">No specific film recorded for this interval endpoint.</p>
+                <p className="text-xs text-slate-400 italic">
+                    No specific film recorded for this interval endpoint.
+                </p>
             )}
         </div>
     );

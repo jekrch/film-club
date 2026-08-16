@@ -13,16 +13,16 @@ const StatCard: React.FC<StatCardProps> = ({
     label,
     value,
     description,
-    valueClassName = "font-mono text-slate-100 tracking-tight text-lg sm:text-xl md:text-2xl",
+    valueClassName = 'font-mono text-slate-100 tracking-tight text-lg sm:text-xl md:text-2xl',
 }) => {
     return (
         // No rail: these repeat in a grid
         <AccentCard key={`card-${label}`} rail={false} className="p-4">
-            <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">{label}</p>
+            <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">
+                {label}
+            </p>
             <p className={valueClassName}>{value}</p>
-            {description && (
-                <p className="text-xs text-slate-400 mt-0.5">{description}</p>
-            )}
+            {description && <p className="text-xs text-slate-400 mt-0.5">{description}</p>}
         </AccentCard>
     );
 };

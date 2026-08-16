@@ -248,11 +248,11 @@ function layoutComponent(nodeIds: string[], edges: Edge[]): LaidComponent {
  * components are shelf-packed left-to-right, wrapping onto a new row once a
  * roughly square overall bound is reached so the result stays compact.
  */
-function applyDagreLayout(
-    nodes: Node<FilmNodeData>[],
-    edges: Edge[]
-): Node<FilmNodeData>[] {
-    const components = connectedComponents(nodes.map((n) => n.id), edges)
+function applyDagreLayout(nodes: Node<FilmNodeData>[], edges: Edge[]): Node<FilmNodeData>[] {
+    const components = connectedComponents(
+        nodes.map((n) => n.id),
+        edges
+    )
         .map((ids) => layoutComponent(ids, edges))
         // Tallest first packs into tidier shelves.
         .sort((a, b) => b.height - a.height);
@@ -262,10 +262,7 @@ function applyDagreLayout(
     // tall shelves. ASPECT ≈ target width:height of the overall layout.
     const ASPECT = 2.6;
     const totalArea = components.reduce((sum, c) => sum + (c.width + GAP) * (c.height + GAP), 0);
-    const targetWidth = Math.max(
-        Math.sqrt(totalArea * ASPECT),
-        ...components.map((c) => c.width)
-    );
+    const targetWidth = Math.max(Math.sqrt(totalArea * ASPECT), ...components.map((c) => c.width));
 
     const centreById = new Map<string, { x: number; y: number }>();
     let shelfX = 0;
@@ -306,10 +303,7 @@ function FilmNode({ data }: NodeProps<Node<FilmNodeData>>) {
     const glowOpacity = 0.5 + intensity * 0.5;
     const borderColor = `rgba(99, 179, 237, ${glowOpacity})`;
 
-    const posterUrl =
-        film.poster && film.poster !== 'N/A'
-            ? film.poster
-            : undefined;
+    const posterUrl = film.poster && film.poster !== 'N/A' ? film.poster : undefined;
 
     return (
         <div
@@ -399,9 +393,7 @@ function FilmNode({ data }: NodeProps<Node<FilmNodeData>>) {
                 >
                     {film.title}
                 </div>
-                <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 1 }}>
-                    {film.year}
-                </div>
+                <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 1 }}>{film.year}</div>
             </div>
         </div>
     );
@@ -444,13 +436,28 @@ function ConnectionDetailPanel({
                 fontSize: 13,
             }}
         >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    marginBottom: 10,
+                }}
+            >
                 <div style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.3 }}>
-                    <Link to={`/films/${detail.filmA.imdbID}`} onClick={onClose} style={filmLinkStyle}>
+                    <Link
+                        to={`/films/${detail.filmA.imdbID}`}
+                        onClick={onClose}
+                        style={filmLinkStyle}
+                    >
                         {detail.filmA.title}
                     </Link>{' '}
                     <span style={{ color: '#64748b', fontWeight: 400 }}>&</span>{' '}
-                    <Link to={`/films/${detail.filmB.imdbID}`} onClick={onClose} style={filmLinkStyle}>
+                    <Link
+                        to={`/films/${detail.filmB.imdbID}`}
+                        onClick={onClose}
+                        style={filmLinkStyle}
+                    >
                         {detail.filmB.title}
                     </Link>
                 </div>
@@ -470,7 +477,8 @@ function ConnectionDetailPanel({
                 </button>
             </div>
             <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>
-                {detail.sharedCredits.length} shared credit{detail.sharedCredits.length !== 1 ? 's' : ''}
+                {detail.sharedCredits.length} shared credit
+                {detail.sharedCredits.length !== 1 ? 's' : ''}
             </div>
             <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
                 {detail.sharedCredits.map((sc) => (
@@ -519,12 +527,10 @@ interface FilmConnectionGraphProps {
     style?: React.CSSProperties;
 }
 
-const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
-    films,
-    className,
-    style,
-}) => {
-    const [selectedConnection, setSelectedConnection] = React.useState<ConnectionDetail | null>(null);
+const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, className, style }) => {
+    const [selectedConnection, setSelectedConnection] = React.useState<ConnectionDetail | null>(
+        null
+    );
     const [creditsPerson, setCreditsPerson] = React.useState<{
         name: string;
         filmography: PersonCredit[];
@@ -683,48 +689,50 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
 
     return (
         <>
-        <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">Connection Graph</h3>
-        <div
-            className={className}
-            style={{
-                width: '100%',
-                height: 500,
-                // Matches AccentCard: rounded-xl (12px) and a slate-700 border.
-                // Inline because React Flow needs concrete values here.
-                borderRadius: 12,
-                overflow: 'hidden',
-                position: 'relative',
-                border: '1px solid #334155',
-                ...style,
-            }}
-        >
-            <style>{DARK_FLOW_STYLES}</style>
-            <ReactFlow
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onEdgeClick={onEdgeClick}
-                nodeTypes={nodeTypes}
-                fitView
-                fitViewOptions={{ padding: 0.15 }}
-                minZoom={0.2}
-                maxZoom={1.5}
-                proOptions={{ hideAttribution: true }}
-                className="dark-flow"
+            <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
+                Connection Graph
+            </h3>
+            <div
+                className={className}
+                style={{
+                    width: '100%',
+                    height: 500,
+                    // Matches AccentCard: rounded-xl (12px) and a slate-700 border.
+                    // Inline because React Flow needs concrete values here.
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    position: 'relative',
+                    border: '1px solid #334155',
+                    ...style,
+                }}
             >
-                <Background color="#334155" gap={24} size={1} />
-                <Controls
-                    className="react-flow__controls--dark"
-                    style={{
-                        // Opaque on purpose: these controls float over the graph
-                        // and need a solid backing to stay legible.
-                        background: '#1e293b',
-                        border: '1px solid #334155',
-                        borderRadius: 8,
-                    }}
-                />
-                {/* <MiniMap
+                <style>{DARK_FLOW_STYLES}</style>
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onEdgeClick={onEdgeClick}
+                    nodeTypes={nodeTypes}
+                    fitView
+                    fitViewOptions={{ padding: 0.15 }}
+                    minZoom={0.2}
+                    maxZoom={1.5}
+                    proOptions={{ hideAttribution: true }}
+                    className="dark-flow"
+                >
+                    <Background color="#334155" gap={24} size={1} />
+                    <Controls
+                        className="react-flow__controls--dark"
+                        style={{
+                            // Opaque on purpose: these controls float over the graph
+                            // and need a solid backing to stay legible.
+                            background: '#1e293b',
+                            border: '1px solid #334155',
+                            borderRadius: 8,
+                        }}
+                    />
+                    {/* <MiniMap
                     nodeColor={() => '#3b82f6'}
                     maskColor="rgba(15, 23, 42, 0.8)"
                     style={{
@@ -733,24 +741,24 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({
                         borderRadius: 8,
                     }}
                 /> */}
-            </ReactFlow>
+                </ReactFlow>
 
-            {selectedConnection && (
-                <ConnectionDetailPanel
-                    detail={selectedConnection}
-                    onClose={() => setSelectedConnection(null)}
-                    onPersonClick={handlePersonClick}
+                {selectedConnection && (
+                    <ConnectionDetailPanel
+                        detail={selectedConnection}
+                        onClose={() => setSelectedConnection(null)}
+                        onPersonClick={handlePersonClick}
+                    />
+                )}
+
+                {/* Always mounted so the modal can run its own close animation. */}
+                <CreditsModal
+                    isOpen={!!creditsPerson}
+                    onClose={() => setCreditsPerson(null)}
+                    personName={creditsPerson?.name ?? null}
+                    filmography={creditsPerson?.filmography ?? null}
                 />
-            )}
-
-            {/* Always mounted so the modal can run its own close animation. */}
-            <CreditsModal
-                isOpen={!!creditsPerson}
-                onClose={() => setCreditsPerson(null)}
-                personName={creditsPerson?.name ?? null}
-                filmography={creditsPerson?.filmography ?? null}
-            />
-        </div>
+            </div>
         </>
     );
 };

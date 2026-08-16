@@ -46,7 +46,10 @@ const scoredClubFilm = makeFilm({
     title: 'A Club Film',
     year: '1999',
     movieClubInfo: makeClubInfo({
-        clubRatings: [makeRating({ user: 'andy', score: 8 }), makeRating({ user: 'gabe', score: 2 })],
+        clubRatings: [
+            makeRating({ user: 'andy', score: 8 }),
+            makeRating({ user: 'gabe', score: 2 }),
+        ],
     }),
 });
 
@@ -214,5 +217,52 @@ describe('resolveListEntry scores', () => {
             score: 0,
             scoreSource: 'entry',
         });
+    });
+});
+
+// --- Which trailer a row plays -------------------------------------------
+
+describe('resolveListEntry trailers', () => {
+    const trailerSources = {
+        films: [makeFilm({ imdbID: 'tt0000001', title: 'A Club Film', trailerKey: 'CLUBTRAILER' })],
+        summaries: {
+            tt0000002: { ...summaries.tt0000002, trailerKey: 'CACHETRAILER' },
+        },
+    };
+
+    const entryFor = (imdbID: string, overrides = {}) => ({
+        rank: 1,
+        imdbID,
+        description: null,
+        ...overrides,
+    });
+
+    it("plays the film's own trailer, from whichever source knew it", () => {
+        expect(resolveListEntry(entryFor('tt0000001'), trailerSources).resolvedTrailerKey).toBe(
+            'CLUBTRAILER'
+        );
+        expect(resolveListEntry(entryFor('tt0000002'), trailerSources).resolvedTrailerKey).toBe(
+            'CACHETRAILER'
+        );
+    });
+
+    it("plays the member's own link over it", () => {
+        const entry = entryFor('tt0000001', { trailerKey: 'dQw4w9WgXcQ' });
+        expect(resolveListEntry(entry, trailerSources).resolvedTrailerKey).toBe('dQw4w9WgXcQ');
+    });
+
+    it('plays nothing when the member hid it', () => {
+        const hidden = entryFor('tt0000001', { trailerKey: 'dQw4w9WgXcQ', hideTrailer: true });
+        expect(resolveListEntry(hidden, trailerSources).resolvedTrailerKey).toBeNull();
+    });
+
+    it('is the row’s only trailer when nothing knows the film yet', () => {
+        // A film added a minute ago: no club record, no summary, and therefore
+        // no trailer but the one the member pasted.
+        const pending = entryFor('tt0000003', { trailerKey: 'dQw4w9WgXcQ' });
+        expect(resolveListEntry(pending, trailerSources).resolvedTrailerKey).toBe('dQw4w9WgXcQ');
+        expect(
+            resolveListEntry(entryFor('tt0000003'), trailerSources).resolvedTrailerKey
+        ).toBeNull();
     });
 });

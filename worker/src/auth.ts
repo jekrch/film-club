@@ -84,7 +84,9 @@ export function adminEmails(env: Env): Set<string> {
             console.error('ADMIN_EMAILS is not valid JSON; treating it as empty.');
             return new Set();
         }
-        values = Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === 'string') : [];
+        values = Array.isArray(parsed)
+            ? parsed.filter((v): v is string => typeof v === 'string')
+            : [];
     } else {
         values = raw.split(',');
     }

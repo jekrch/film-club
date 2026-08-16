@@ -16,14 +16,14 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
         // Find all member names in the trophy text (case-insensitive)
         const memberMatches: { name: string; start: number; end: number }[] = [];
 
-        teamMembers.forEach(member => {
+        teamMembers.forEach((member) => {
             const regex = new RegExp(`\\b${member.name}\\b`, 'gi');
             let match;
             while ((match = regex.exec(trophyText)) !== null) {
                 memberMatches.push({
                     name: member.name!,
                     start: match.index,
-                    end: match.index + member.name!.length
+                    end: match.index + member.name!.length,
                 });
             }
         });
@@ -82,7 +82,10 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
         return parts;
     };
 
-    const trophies = trophyNotes.split(',').map(t => t.trim()).filter(t => t !== '');
+    const trophies = trophyNotes
+        .split(',')
+        .map((t) => t.trim())
+        .filter((t) => t !== '');
 
     return (
         <div className="mt-8 pt-6 border-t border-slate-700">

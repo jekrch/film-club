@@ -19,13 +19,13 @@ import { useLocation } from 'react-router-dom';
  * you're already on shouldn't replay the animation.
  */
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { pathname } = useLocation();
+    const { pathname } = useLocation();
 
-  return (
-    <div key={pathname} className="page-enter">
-      {children}
-    </div>
-  );
+    return (
+        <div key={pathname} className="page-enter">
+            {children}
+        </div>
+    );
 };
 
 export default PageTransition;

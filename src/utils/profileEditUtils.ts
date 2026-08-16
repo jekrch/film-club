@@ -83,7 +83,9 @@ export const toProfileForm = (values: ProfileValues): ProfileFormValues => ({
 /** Two interviews are the same when their questions and answers are, in order. */
 export const sameInterview = (a: InterviewItem[], b: InterviewItem[]): boolean =>
     a.length === b.length &&
-    a.every((item, index) => item.question === b[index].question && item.answer === b[index].answer);
+    a.every(
+        (item, index) => item.question === b[index].question && item.answer === b[index].answer
+    );
 
 /**
  * Whether the form still matches what was seeded into it. Compared on the typed
@@ -137,12 +139,17 @@ export function parseProfileForm(form: ProfileFormValues): ProfileParseResult {
         // shouldn't make the member tidy it away first.
         if (question === '' && answer === '') continue;
         if (question === '') return { error: 'One of your answers has no question above it.' };
-        if (answer === '') return { error: `"${question}" needs an answer, or clear the question.` };
+        if (answer === '')
+            return { error: `"${question}" needs an answer, or clear the question.` };
         if (question.length > QUESTION_LIMIT) {
-            return { error: `A question is ${question.length} characters; the limit is ${QUESTION_LIMIT}.` };
+            return {
+                error: `A question is ${question.length} characters; the limit is ${QUESTION_LIMIT}.`,
+            };
         }
         if (answer.length > ANSWER_LIMIT) {
-            return { error: `An answer is ${answer.length} characters; the limit is ${ANSWER_LIMIT}.` };
+            return {
+                error: `An answer is ${answer.length} characters; the limit is ${ANSWER_LIMIT}.`,
+            };
         }
 
         interview.push({ question, answer });

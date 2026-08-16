@@ -18,7 +18,7 @@ interface FilmCastStripProps {
 const FilmCastStrip = ({ cast, personAllFilmographies, onPersonClick }: FilmCastStripProps) => {
     if (!cast || cast.length === 0) return null;
 
-    const people: PersonStripEntry[] = cast.map(member => ({
+    const people: PersonStripEntry[] = cast.map((member) => ({
         name: member.name,
         profileUrl: member.profileUrl,
         subtitle: member.character,

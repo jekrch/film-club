@@ -83,7 +83,10 @@ export interface ListInput {
     description: string | null;
     /** Whether the order renders as a numbered ranking. Omitted, the worker assumes it does. */
     ranked?: boolean;
-    entries: Pick<FilmListEntry, 'imdbID' | 'description' | 'image' | 'posterImage' | 'score'>[];
+    entries: Pick<
+        FilmListEntry,
+        'imdbID' | 'description' | 'image' | 'posterImage' | 'score' | 'trailerKey' | 'hideTrailer'
+    >[];
     /** Admins only; omitted, the worker uses the caller's own name. */
     owner?: string;
 }
@@ -132,7 +135,10 @@ async function request<T>(path: string, token: string, options: RequestOptions =
         // Rethrow an abort untouched: a cancelled search is not a failure, and
         // callers check `error.name === 'AbortError'`.
         if (error instanceof DOMException && error.name === 'AbortError') throw error;
-        throw new ClubApiError(0, "Couldn't reach the server. Check your connection and try again.");
+        throw new ClubApiError(
+            0,
+            "Couldn't reach the server. Check your connection and try again."
+        );
     }
 
     // The worker answers with JSON on every path, including errors — but a
@@ -184,7 +190,9 @@ export const getLists = async (
     token: string,
     signal?: AbortSignal
 ): Promise<FilmListDefinition[]> => {
-    const { lists } = await request<{ lists: FilmListDefinition[] }>('/api/lists', token, { signal });
+    const { lists } = await request<{ lists: FilmListDefinition[] }>('/api/lists', token, {
+        signal,
+    });
     return lists;
 };
 
@@ -202,11 +210,7 @@ export interface ListWriteResult {
  * permanent id itself. Pass `NEW_LIST_ID` when creating — the id it returns is
  * the one to navigate to.
  */
-export const putList = (
-    token: string,
-    id: string,
-    input: ListInput
-): Promise<ListWriteResult> =>
+export const putList = (token: string, id: string, input: ListInput): Promise<ListWriteResult> =>
     request<ListWriteResult>(`/api/lists/${encodeURIComponent(id)}`, token, {
         method: 'PUT',
         body: input,
@@ -233,6 +237,14 @@ export interface WatchedPatch {
     image?: string | null;
     /** An `https` URL to use as the film's poster, or null to clear it. */
     posterImage?: string | null;
+    /**
+     * A YouTube video key to play instead of the film's own trailer, or null to
+     * go back to it. The worker takes a full YouTube URL here too and stores the
+     * key either way.
+     */
+    trailerKey?: string | null;
+    /** True to offer no trailer on this row at all; wins over `trailerKey`. */
+    hideTrailer?: boolean;
     /** Admins only; omitted, the worker uses the caller's own name. */
     owner?: string;
 }

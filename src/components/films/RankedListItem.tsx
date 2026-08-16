@@ -4,6 +4,8 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 
 import Markdown from '../common/Markdown';
 import RowFrameWash from '../common/RowFrameWash';
+import TrailerButton from '../common/TrailerButton';
+import EntryDetailsPanel, { EntryDetailsToggle } from './EntryDetailsPanel';
 import { ResolvedListEntry, ScoreSource } from '../../utils/listUtils';
 import { entryFrameImage } from '../../utils/frameSources';
 import { MAX_SCORE } from '../../utils/ratingEditUtils';
@@ -63,6 +65,10 @@ const SPANS_NOTE = 'row-start-1 sm:row-span-2';
  */
 const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, owner }) => {
     const { clubFilm, title, year, poster, rank, description, imdbID, score, scoreSource } = entry;
+    const trailerKey = entry.resolvedTrailerKey;
+    const { details } = entry;
+    const [detailsOpen, setDetailsOpen] = useState(false);
+    const panelId = `list-details-${imdbID}`;
     // A dead poster URL falls back to the same empty frame a poster-less entry
     // gets, rather than to a placeholder image. Swapping `src` on error is the
     // habit elsewhere in this codebase, but it can't stop a loop here: React
@@ -124,7 +130,9 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                     and drops the optical correction with the figures it was
                     correcting for. */}
                 {ranked ? (
-                    <span className={`col-start-1 ${SPANS_NOTE} flex ${POSTER_HEIGHT} w-16 sm:w-24 select-none items-center justify-center pb-[0.22em] font-serif text-[2.5rem] sm:text-6xl font-normal tabular-nums leading-none tracking-tight text-slate-500/70 transition-colors duration-200 group-hover:text-amber-400/60`}>
+                    <span
+                        className={`col-start-1 ${SPANS_NOTE} flex ${POSTER_HEIGHT} w-16 sm:w-24 select-none items-center justify-center pb-[0.22em] font-serif text-[2.5rem] sm:text-6xl font-normal tabular-nums leading-none tracking-tight text-slate-500/70 transition-colors duration-200 group-hover:text-amber-400/60`}
+                    >
                         {rank}
                     </span>
                 ) : (
@@ -151,7 +159,9 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                             onError={() => setPosterFailed(true)}
                         />
                     ) : (
-                        <span className={`flex ${POSTER_HEIGHT} w-12 items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}>
+                        <span
+                            className={`flex ${POSTER_HEIGHT} w-12 items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}
+                        >
                             ?
                         </span>
                     ),
@@ -165,7 +175,9 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                         // title, and the title is what the row is.
                         <h5 className="break-words font-medium text-slate-200 transition-colors group-hover:text-slate-100 sm:truncate">
                             {displayTitle}
-                            {year && <span className="ml-1.5 font-normal text-slate-500">{year}</span>}
+                            {year && (
+                                <span className="ml-1.5 font-normal text-slate-500">{year}</span>
+                            )}
                             {!clubFilm && (
                                 <ArrowTopRightOnSquareIcon
                                     className="ml-1.5 inline h-3 w-3 align-baseline text-slate-600"
@@ -176,8 +188,19 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                         'min-w-0'
                     )}
 
-                    {(score !== null || clubAverage !== null) && (
+                    {(score !== null ||
+                        clubAverage !== null ||
+                        trailerKey !== null ||
+                        details !== null) && (
                         <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+                            {/* Leads the cluster: it is the only thing here that
+                                does something, and most list films have no page
+                                on this site, so it is the one way to see the
+                                film before going out to IMDb for it. */}
+                            {trailerKey && (
+                                <TrailerButton trailerKey={trailerKey} title={displayTitle} />
+                            )}
+
                             {/* The owner's own score, wherever they gave it — on
                                 this list, in their log, or in the club. All three
                                 are the same person's opinion of the same film,
@@ -208,9 +231,24 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                                             club
                                         </span>
                                     )}
-                                    <span className={getRatingColorClass(clubAverage)}>{clubAverage.toFixed(1)}</span>
+                                    <span className={getRatingColorClass(clubAverage)}>
+                                        {clubAverage.toFixed(1)}
+                                    </span>
                                     <span className="text-slate-600">/{MAX_RATING}</span>
                                 </span>
+                            )}
+
+                            {/* Last in the cluster, where a control that changes
+                                the row's own height belongs — the badges before
+                                it are labels, and this is the thing that acts on
+                                what is under them. */}
+                            {details && (
+                                <EntryDetailsToggle
+                                    isOpen={detailsOpen}
+                                    onToggle={() => setDetailsOpen((open) => !open)}
+                                    title={displayTitle}
+                                    panelId={panelId}
+                                />
                             )}
                         </span>
                     )}
@@ -222,6 +260,15 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                     </div>
                 )}
             </div>
+
+            {/* Outside the grid and across the whole row: the film's own
+                description, unlike the owner's note, isn't answering to the
+                title's column. */}
+            {details && detailsOpen && (
+                <div className="relative">
+                    <EntryDetailsPanel details={details} panelId={panelId} />
+                </div>
+            )}
         </div>
     );
 };

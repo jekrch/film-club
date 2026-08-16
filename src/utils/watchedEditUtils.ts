@@ -2,6 +2,7 @@ import type { WatchedPatch } from '../api/clubApi';
 import type { WatchedEntry } from '../types/watched';
 import { parseImageUrl } from './imageUrl';
 import { parseRatingForm, type RatingFormValues } from './ratingEditUtils';
+import { parseTrailerLink } from './youtube';
 
 /**
  * The pure half of the watch-log row editor: what is stored, what the member
@@ -28,6 +29,10 @@ export interface WatchedValues {
     image: string | null;
     /** The member's own poster for the film; same rules, different frame. */
     posterImage: string | null;
+    /** The member's own trailer as a YouTube key; see {@link parseTrailerLink}. */
+    trailerKey: string | null;
+    /** True when the row should offer no trailer at all, whatever anyone knows. */
+    hideTrailer: boolean;
 }
 
 /** The same fields as form state; every input is a string, empty for "unset". */
@@ -36,6 +41,11 @@ export interface WatchedFormValues extends RatingFormValues {
     watchDate: string;
     image: string;
     posterImage: string;
+    /** The link as typed — a URL or a bare key; parsing turns it into one. */
+    trailer: string;
+    /** A checkbox rather than a third state of {@link trailer}, so a member
+     *  hiding the trailer keeps whatever link they had for when they unhide it. */
+    hideTrailer: boolean;
 }
 
 /** Today in the *viewer's* timezone — the default date for a film being logged now. */
@@ -52,6 +62,8 @@ export const toWatchedForm = (values: WatchedValues): WatchedFormValues => ({
     blurb: values.blurb ?? '',
     image: values.image ?? '',
     posterImage: values.posterImage ?? '',
+    trailer: values.trailerKey ?? '',
+    hideTrailer: values.hideTrailer,
 });
 
 /** The stored fields of an entry, dropping the provenance the editor never touches. */
@@ -64,6 +76,8 @@ export const toWatchedValues = (entry: WatchedEntry): WatchedValues => ({
     // as one deliberately left blank.
     image: entry.image ?? null,
     posterImage: entry.posterImage ?? null,
+    trailerKey: entry.trailerKey ?? null,
+    hideTrailer: entry.hideTrailer ?? false,
 });
 
 export type WatchedParseResult = { values: WatchedValues } | { error: string };
@@ -100,8 +114,18 @@ export function parseWatchedForm(form: WatchedFormValues): WatchedParseResult {
     const posterImage = parseImageUrl(form.posterImage);
     if ('error' in posterImage) return { error: `Poster: ${posterImage.error}` };
 
+    const trailer = parseTrailerLink(form.trailer);
+    if ('error' in trailer) return { error: `Trailer: ${trailer.error}` };
+
     return {
-        values: { watchDate, ...rating.values, image: image.value, posterImage: posterImage.value },
+        values: {
+            watchDate,
+            ...rating.values,
+            image: image.value,
+            posterImage: posterImage.value,
+            trailerKey: trailer.value,
+            hideTrailer: form.hideTrailer,
+        },
     };
 }
 
@@ -118,5 +142,7 @@ export function buildWatchedPatch(next: WatchedValues, baseline: WatchedValues):
     if (next.blurb !== baseline.blurb) patch.blurb = next.blurb;
     if (next.image !== baseline.image) patch.image = next.image;
     if (next.posterImage !== baseline.posterImage) patch.posterImage = next.posterImage;
+    if (next.trailerKey !== baseline.trailerKey) patch.trailerKey = next.trailerKey;
+    if (next.hideTrailer !== baseline.hideTrailer) patch.hideTrailer = next.hideTrailer;
     return patch;
 }

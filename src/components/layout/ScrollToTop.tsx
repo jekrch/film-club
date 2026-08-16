@@ -13,13 +13,13 @@ import { useLocation } from 'react-router-dom';
  * This is the only place that resets scroll; the data hooks must not do it too.
  */
 function ScrollToTop() {
-  const { pathname } = useLocation();
+    const { pathname } = useLocation();
 
-  useLayoutEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
-  }, [pathname]);
+    useLayoutEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, [pathname]);
 
-  return null;
+    return null;
 }
 
 export default ScrollToTop;

@@ -16,6 +16,8 @@ const form = (overrides: Partial<WatchedFormValues> = {}): WatchedFormValues => 
     blurb: '',
     image: '',
     posterImage: '',
+    trailer: '',
+    hideTrailer: false,
     ...overrides,
 });
 
@@ -26,6 +28,8 @@ const values = (overrides: Partial<WatchedValues> = {}): WatchedValues => ({
     blurb: null,
     image: null,
     posterImage: null,
+    trailerKey: null,
+    hideTrailer: false,
     ...overrides,
 });
 
@@ -41,6 +45,8 @@ describe('parseWatchedForm', () => {
                 blurb: 'Held up.',
                 image: null,
                 posterImage: null,
+                trailerKey: null,
+                hideTrailer: false,
             },
         });
     });
@@ -92,7 +98,9 @@ describe('buildWatchedPatch', () => {
     });
 
     it('is empty when nothing changed, so a no-op never costs a commit', () => {
-        expect(buildWatchedPatch(values({ blurb: 'Same.' }), values({ blurb: 'Same.' }))).toEqual({});
+        expect(buildWatchedPatch(values({ blurb: 'Same.' }), values({ blurb: 'Same.' }))).toEqual(
+            {}
+        );
     });
 
     it('sends an explicit null for a field the member cleared', () => {
@@ -120,7 +128,10 @@ describe('buildWatchedPatch', () => {
 
     it('sends a moved date on a rewatch', () => {
         expect(
-            buildWatchedPatch(values({ watchDate: '2026-08-10' }), values({ watchDate: '2026-01-02' }))
+            buildWatchedPatch(
+                values({ watchDate: '2026-08-10' }),
+                values({ watchDate: '2026-01-02' })
+            )
         ).toEqual({ watchDate: '2026-08-10' });
     });
 });

@@ -10,8 +10,8 @@ interface ChartContainerProps {
 
 const ChartContainer: React.FC<ChartContainerProps> = ({
     children,
-    className = "mb-4",
-    accent = "blue",
+    className = 'mb-4',
+    accent = 'blue',
 }) => {
     return (
         <AccentCard accent={accent} className={`p-3 sm:p-4 md:p-5 ${className}`}>

@@ -83,7 +83,10 @@ function today(): string {
  */
 function corsHeaders(request: Request, env: Env): Record<string, string> {
     const origin = request.headers.get('Origin');
-    const allowed = (env.ALLOWED_ORIGIN || '').split(',').map((o) => o.trim()).filter(Boolean);
+    const allowed = (env.ALLOWED_ORIGIN || '')
+        .split(',')
+        .map((o) => o.trim())
+        .filter(Boolean);
 
     const headers: Record<string, string> = {
         Vary: 'Origin',
@@ -132,7 +135,11 @@ async function readBody(request: Request): Promise<unknown> {
  * provenance for humans reading the file — `apply_overrides.py` whitelists the
  * three real fields and never copies these into `films.json`.
  */
-function mergeRating(existing: RatingOverride | undefined, patch: RatingPatch, member: Member): RatingOverride {
+function mergeRating(
+    existing: RatingOverride | undefined,
+    patch: RatingPatch,
+    member: Member
+): RatingOverride {
     return { ...existing, ...patch, updatedBy: member.name, updatedAt: timestamp() };
 }
 
@@ -171,7 +178,10 @@ async function putRating(
             const existing = film.ratings[user];
 
             if (ratingUnchanged(existing, patch)) {
-                return { commit: false, result: { imdbID: imdbId, rating: existing, changed: false } };
+                return {
+                    commit: false,
+                    result: { imdbID: imdbId, rating: existing, changed: false },
+                };
             }
 
             const rating = mergeRating(existing, patch, member);
@@ -261,7 +271,9 @@ function watchedUnchanged(existing: WatchedEntry | undefined, next: WatchedEntry
         existing.scoreQualifier === next.scoreQualifier &&
         existing.blurb === next.blurb &&
         existing.image === next.image &&
-        existing.posterImage === next.posterImage
+        existing.posterImage === next.posterImage &&
+        existing.trailerKey === next.trailerKey &&
+        existing.hideTrailer === next.hideTrailer
     );
 }
 
@@ -317,11 +329,22 @@ async function putWatched(
                     'posterImage' in patch
                         ? (patch.posterImage ?? null)
                         : (existing?.posterImage ?? null),
+                trailerKey:
+                    'trailerKey' in patch
+                        ? (patch.trailerKey ?? null)
+                        : (existing?.trailerKey ?? null),
+                hideTrailer:
+                    'hideTrailer' in patch
+                        ? (patch.hideTrailer ?? false)
+                        : (existing?.hideTrailer ?? false),
                 updatedAt: timestamp(),
             };
 
             if (watchedUnchanged(existing, next)) {
-                return { commit: false, result: { entry: existing, created: false, changed: false } };
+                return {
+                    commit: false,
+                    result: { entry: existing, created: false, changed: false },
+                };
             }
 
             if (index === -1) entries.push(next);
@@ -382,7 +405,12 @@ async function deleteWatched(
  * time. Clients that are creating should PUT to `/api/lists/new`; any unmatched
  * id behaves the same way.
  */
-async function putList(request: Request, env: Env, member: Member, pathId: string): Promise<unknown> {
+async function putList(
+    request: Request,
+    env: Env,
+    member: Member,
+    pathId: string
+): Promise<unknown> {
     const body = await readBody(request);
     const input = validateListInput(body);
     // Resolved per branch rather than up front: on an update, an absent `owner`
@@ -401,7 +429,11 @@ async function putList(request: Request, env: Env, member: Member, pathId: strin
             if (index === -1) {
                 const owner = resolveListOwner(requestedOwner, member, names, null);
                 const created: FilmListDefinition = {
-                    id: assignListId(owner, input.name, lists.map((list) => list.id)),
+                    id: assignListId(
+                        owner,
+                        input.name,
+                        lists.map((list) => list.id)
+                    ),
                     name: input.name,
                     owner,
                     description: input.description,

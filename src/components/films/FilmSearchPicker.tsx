@@ -92,7 +92,9 @@ const FilmSearchPicker: React.FC<FilmSearchPickerProps> = ({
 
     return (
         <div>
-            <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">{label}</span>
+            <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
+                {label}
+            </span>
             <div className="relative">
                 <MagnifyingGlassIcon
                     className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
@@ -145,7 +147,9 @@ const FilmSearchPicker: React.FC<FilmSearchPickerProps> = ({
                                 )}
                                 <span className="min-w-0 flex-grow truncate text-slate-200">
                                     {hit.title}
-                                    {hit.year && <span className="ml-1.5 text-slate-500">{hit.year}</span>}
+                                    {hit.year && (
+                                        <span className="ml-1.5 text-slate-500">{hit.year}</span>
+                                    )}
                                 </span>
                                 {chosen.has(hit.imdbID) ? (
                                     <span className="flex-shrink-0 text-xs uppercase tracking-wider text-slate-500">

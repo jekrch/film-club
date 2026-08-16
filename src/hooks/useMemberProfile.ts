@@ -53,9 +53,7 @@ export function useMemberProfile(name: string | undefined): MemberProfileState {
         withToken((token) => getClub(token, controller.signal))
             .then((club) => {
                 if (controller.signal.aborted) return;
-                const match = club.find(
-                    (entry) => entry.name.toLowerCase() === name.toLowerCase()
-                );
+                const match = club.find((entry) => entry.name.toLowerCase() === name.toLowerCase());
                 // A name the roster doesn't know is not an error to report: the
                 // page is already rendering that member from the bundle, and the
                 // only way here is a profile that exists.

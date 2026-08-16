@@ -95,7 +95,7 @@ export const resolveTrophyIcon = (text: string): IconComponent => {
     let bestIcon: IconComponent = TrophyIcon as IconComponent;
 
     ICON_MAP.forEach(({ keywords, Icon }) => {
-        keywords.forEach(kw => {
+        keywords.forEach((kw) => {
             const i = lower.indexOf(kw);
             if (i !== -1 && i < bestIndex) {
                 bestIndex = i;

@@ -29,10 +29,11 @@ import { useUnanimousScores } from '../hooks/useUnanimousScores';
 import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
 import FilmConnectionGraph from '../components/almanac/FilmConnectionGraph';
 
-
 // Helper Functions (can be moved to utils if not already there)
 const formatTotalMinutes = (totalMinutes: number): string => {
-    if (isNaN(totalMinutes) || totalMinutes < 0) { return "0 days : 00 hrs : 00 m"; }
+    if (isNaN(totalMinutes) || totalMinutes < 0) {
+        return '0 days : 00 hrs : 00 m';
+    }
     const minutesPerDay = 1440;
     const minutesPerHour = 60;
     const days = Math.floor(totalMinutes / minutesPerDay);
@@ -66,19 +67,13 @@ const AlmanacPage: React.FC = () => {
         closeIntervalDetail,
     } = useAlmanacCharts(filmData);
 
-    const {
-        allMemberStats,
-        getHighlightClass,
-        formatAverage,
-        formatYear,
-    } = useMemberStatistics(filmData, teamMembersData as TeamMember[]);
+    const { allMemberStats, getHighlightClass, formatAverage, formatYear } = useMemberStatistics(
+        filmData,
+        teamMembersData as TeamMember[]
+    );
 
-    const {
-        frequentPersons,
-        creditsModalState,
-        handleFrequentPersonClick,
-        closeCreditsModal,
-    } = useFrequentPersons(filmData);
+    const { frequentPersons, creditsModalState, handleFrequentPersonClick, closeCreditsModal } =
+        useFrequentPersons(filmData);
 
     // General stats, derived during render rather than in an effect.
     //
@@ -89,60 +84,66 @@ const AlmanacPage: React.FC = () => {
     // state landed, the banner mounted, and everything below it dropped by the
     // banner's full height. Deriving it during render means the first painted
     // frame is already the finished page, at its final height.
-    const {
-        totalRuntimeString,
-        totalFilmsCount,
-        watchedFilmsCount,
-        foundingDate,
-        daysActive,
-    } = useMemo(() => {
-        const watchedWithDates = filmData
-            .map(f => ({ ...f, pDate: parseWatchDateUtil(f.movieClubInfo?.watchDate) }))
-            .filter(f => f.pDate) as (Film & { pDate: Date })[];
-        // Sort ascending by date to find the first (founding) date
-        const sortedWatchedForFounding = [...watchedWithDates].sort((a, b) => a.pDate.getTime() - b.pDate.getTime());
-        const firstDate = sortedWatchedForFounding[0]?.pDate ?? null;
+    const { totalRuntimeString, totalFilmsCount, watchedFilmsCount, foundingDate, daysActive } =
+        useMemo(() => {
+            const watchedWithDates = filmData
+                .map((f) => ({ ...f, pDate: parseWatchDateUtil(f.movieClubInfo?.watchDate) }))
+                .filter((f) => f.pDate) as (Film & { pDate: Date })[];
+            // Sort ascending by date to find the first (founding) date
+            const sortedWatchedForFounding = [...watchedWithDates].sort(
+                (a, b) => a.pDate.getTime() - b.pDate.getTime()
+            );
+            const firstDate = sortedWatchedForFounding[0]?.pDate ?? null;
 
-        const totalMinutes = watchedWithDates.reduce((sum, film) => {
-            const runtimeStr = film.runtime;
-            if (runtimeStr && typeof runtimeStr === 'string') {
-                const rt = parseInt(runtimeStr.replace(/\D/g, ''), 10);
-                if (!isNaN(rt)) return sum + rt;
-            }
-            return sum;
-        }, 0);
+            const totalMinutes = watchedWithDates.reduce((sum, film) => {
+                const runtimeStr = film.runtime;
+                if (runtimeStr && typeof runtimeStr === 'string') {
+                    const rt = parseInt(runtimeStr.replace(/\D/g, ''), 10);
+                    if (!isNaN(rt)) return sum + rt;
+                }
+                return sum;
+            }, 0);
 
-        return {
-            totalRuntimeString: formatTotalMinutes(totalMinutes),
-            totalFilmsCount: filmData.length,
-            watchedFilmsCount: watchedWithDates.length,
-            foundingDate: firstDate,
-            daysActive: firstDate ? daysBetween(firstDate, new Date()) : null,
-        };
-    }, []); // filmData is static; the only live input is today's date
+            return {
+                totalRuntimeString: formatTotalMinutes(totalMinutes),
+                totalFilmsCount: filmData.length,
+                watchedFilmsCount: watchedWithDates.length,
+                foundingDate: firstDate,
+                daysActive: firstDate ? daysBetween(firstDate, new Date()) : null,
+            };
+        }, []); // filmData is static; the only live input is today's date
 
     // The club's highest-scoring films, used as the collage behind the founding
     // banner. Requires 2+ scores so a single outlier rating can't top the list.
-    const topRatedFilms = useMemo(() => (
-        filmData
-            .map(film => ({ film, avg: calculateClubAverage(film.movieClubInfo?.clubRatings) }))
-            .filter((entry): entry is { film: Film; avg: number } => (
-                entry.avg !== null && countValidRatings(entry.film.movieClubInfo?.clubRatings) >= 2
-            ))
-            .sort((a, b) => b.avg - a.avg)
-            .slice(0, 12)
-            .map(({ film }) => film)
-    ), []);
+    const topRatedFilms = useMemo(
+        () =>
+            filmData
+                .map((film) => ({
+                    film,
+                    avg: calculateClubAverage(film.movieClubInfo?.clubRatings),
+                }))
+                .filter(
+                    (entry): entry is { film: Film; avg: number } =>
+                        entry.avg !== null &&
+                        countValidRatings(entry.film.movieClubInfo?.clubRatings) >= 2
+                )
+                .sort((a, b) => b.avg - a.avg)
+                .slice(0, 12)
+                .map(({ film }) => film),
+        []
+    );
 
-    const handleCategorySelected = useCallback((category: ChartCategory) => {
-        setSelectedCategory(category);
-    }, [setSelectedCategory]);
+    const handleCategorySelected = useCallback(
+        (category: ChartCategory) => {
+            setSelectedCategory(category);
+        },
+        [setSelectedCategory]
+    );
 
-    const {
-        unanimousScores,
-        totalUnanimousCount,
-    } = useUnanimousScores(filmData, teamMembersData as TeamMember[]);
-
+    const { unanimousScores, totalUnanimousCount } = useUnanimousScores(
+        filmData,
+        teamMembersData as TeamMember[]
+    );
 
     return (
         <PageLayout>
@@ -164,10 +165,18 @@ const AlmanacPage: React.FC = () => {
                         Founded
                     </p>
                     <p className="text-xl sm:text-2xl font-light text-slate-100">
-                        {foundingDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        {foundingDate.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        })}
                     </p>
                     <p className="mt-3 text-sm text-slate-400">
-                        Active <span className="font-mono text-slate-200">{daysActive.toLocaleString()}</span> days
+                        Active{' '}
+                        <span className="font-mono text-slate-200">
+                            {daysActive.toLocaleString()}
+                        </span>{' '}
+                        days
                     </p>
                 </HeroBanner>
             )}
@@ -194,9 +203,13 @@ const AlmanacPage: React.FC = () => {
                 <p className="mb-2 text-center text-xs text-slate-400 mt-3 italic">
                     Click on a category slice, bar, or label to view the corresponding films below.
                 </p>
-                {donutChartOptions.series && ((donutChartOptions.series[0] as Highcharts.SeriesPieOptions).data?.length || 0) > 0 ? (
+                {donutChartOptions.series &&
+                ((donutChartOptions.series[0] as Highcharts.SeriesPieOptions).data?.length || 0) >
+                    0 ? (
                     <HighchartsReact highcharts={Highcharts} options={donutChartOptions} />
-                ) : (<div className="text-center py-8 text-slate-400 text-sm">Loading chart...</div>)}
+                ) : (
+                    <div className="text-center py-8 text-slate-400 text-sm">Loading chart...</div>
+                )}
             </ChartContainer>
 
             {selectedPieSliceName && (
@@ -205,7 +218,7 @@ const AlmanacPage: React.FC = () => {
                     title={filteredListTitle}
                     films={filteredFilmsForPieSlice}
                     onClose={closeFilteredList}
-                    layoutMode='horizontal'
+                    layoutMode="horizontal"
                     hideSizeButtons={true}
                 />
             )}
@@ -214,9 +227,18 @@ const AlmanacPage: React.FC = () => {
                 <p className="mb-2 text-center text-xs text-slate-400 italic">
                     Click on a point to see which film was watched at the end of that interval.
                 </p>
-                {meetingIntervalChartOptions.series && ((meetingIntervalChartOptions.series[0] as Highcharts.SeriesLineOptions).data?.length || 0) > 0 ? (
-                    <HighchartsReact highcharts={Highcharts} options={meetingIntervalChartOptions} />
-                ) : (<div className="text-center py-8 text-slate-400 text-sm">Loading intervals...</div>)}
+                {meetingIntervalChartOptions.series &&
+                ((meetingIntervalChartOptions.series[0] as Highcharts.SeriesLineOptions).data
+                    ?.length || 0) > 0 ? (
+                    <HighchartsReact
+                        highcharts={Highcharts}
+                        options={meetingIntervalChartOptions}
+                    />
+                ) : (
+                    <div className="text-center py-8 text-slate-400 text-sm">
+                        Loading intervals...
+                    </div>
+                )}
                 {selectedIntervalDetail && (
                     <IntervalDetailDisplay
                         detail={selectedIntervalDetail}
@@ -226,7 +248,9 @@ const AlmanacPage: React.FC = () => {
             </ChartContainer>
 
             <div className="mb-8 sm:mb-10">
-                <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">Member Stats Breakdown</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
+                    Member Stats Breakdown
+                </h3>
                 {allMemberStats.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {allMemberStats.map(({ member, stats, highlights }) => (
@@ -241,11 +265,17 @@ const AlmanacPage: React.FC = () => {
                             />
                         ))}
                     </div>
-                ) : (<p className="text-center text-sm text-slate-400 italic py-4">Calculating member stats...</p>)}
+                ) : (
+                    <p className="text-center text-sm text-slate-400 italic py-4">
+                        Calculating member stats...
+                    </p>
+                )}
             </div>
 
             <div className="mb-8 sm:mb-10">
-                <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">Frequently Credited Artists</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
+                    Frequently Credited Artists
+                </h3>
                 {frequentPersons.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
                         {frequentPersons.map((person) => (
@@ -256,36 +286,60 @@ const AlmanacPage: React.FC = () => {
                                 rail={false}
                                 className="p-4"
                                 decoration={
-                                    <FilmFrameWash films={(person.filmography || []).map(credit => credit.film)} />
+                                    <FilmFrameWash
+                                        films={(person.filmography || []).map(
+                                            (credit) => credit.film
+                                        )}
+                                    />
                                 }
                             >
                                 <div className="flex justify-between items-center mb-3 border-b border-slate-700/60 pb-2">
                                     <h4
                                         className="text-lg font-semibold text-blue-400 hover:text-blue-300 cursor-pointer truncate"
-                                        onClick={() => handleFrequentPersonClick(person.name, person.filmography || [])}
+                                        onClick={() =>
+                                            handleFrequentPersonClick(
+                                                person.name,
+                                                person.filmography || []
+                                            )
+                                        }
                                         title={`View all credits for ${person.name}`}
                                     >
                                         {person.name}
                                     </h4>
-                                    <span className="text-sm text-slate-400 flex-shrink-0 ml-2">({person.count} films)</span>
+                                    <span className="text-sm text-slate-400 flex-shrink-0 ml-2">
+                                        ({person.count} films)
+                                    </span>
                                 </div>
                                 <ul className="space-y-2 text-sm">
-                                    {(person.filmography || []).slice(0, 5).map(({ film, roles }) => (
-                                        <li key={film.imdbID} className="text-slate-300">
-                                            <Link to={`/films/${film.imdbID}`} className="hover:text-slate-100 hover:underline">
-                                                {film.title} ({film.year})
-                                            </Link>
-                                            <span className="text-slate-400 text-xs block ml-2">- {roles.join(', ')}</span>
-                                        </li>
-                                    ))}
+                                    {(person.filmography || [])
+                                        .slice(0, 5)
+                                        .map(({ film, roles }) => (
+                                            <li key={film.imdbID} className="text-slate-300">
+                                                <Link
+                                                    to={`/films/${film.imdbID}`}
+                                                    className="hover:text-slate-100 hover:underline"
+                                                >
+                                                    {film.title} ({film.year})
+                                                </Link>
+                                                <span className="text-slate-400 text-xs block ml-2">
+                                                    - {roles.join(', ')}
+                                                </span>
+                                            </li>
+                                        ))}
                                     {(person.filmography || []).length > 5 && (
                                         <li className="text-center mt-2">
                                             <Button
-                                                onClick={() => handleFrequentPersonClick(person.name, person.filmography || [])}
+                                                onClick={() =>
+                                                    handleFrequentPersonClick(
+                                                        person.name,
+                                                        person.filmography || []
+                                                    )
+                                                }
                                                 variant="link"
                                                 size="xs"
                                             >
-                                                View all {(person.filmography || []).length} credits...
+                                                View all {(person.filmography || []).length}{' '}
+                                                credits...
                                             </Button>
                                         </li>
                                     )}
@@ -300,9 +354,12 @@ const AlmanacPage: React.FC = () => {
                 )}
             </div>
 
-            <FilmConnectionGraph films={filmData} className="backdrop-grayscale-50 backdrop-opacity-50" />
-            
-            <div className="h-8"/>
+            <FilmConnectionGraph
+                films={filmData}
+                className="backdrop-grayscale-50 backdrop-opacity-50"
+            />
+
+            <div className="h-8" />
             {/* Unanimous Scores Section */}
             <UnanimousScoresCard
                 unanimousScores={unanimousScores}

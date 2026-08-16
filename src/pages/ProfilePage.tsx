@@ -53,7 +53,13 @@ const ProfilePage: React.FC = () => {
 
     if (loading) return <LoadingSpinner />;
     if (error || !member) {
-        return <ErrorDisplay message={error || "Could not load profile details."} backPath="/about" backButtonLabel="Back to About Page" />;
+        return (
+            <ErrorDisplay
+                message={error || 'Could not load profile details.'}
+                backPath="/about"
+                backButtonLabel="Back to About Page"
+            />
+        );
     }
 
     // Everything below renders the live record when there is one, so a save
@@ -63,27 +69,31 @@ const ProfilePage: React.FC = () => {
 
     // Constants for UI display, can remain in component
     const MAX_INTERVIEW_ITEMS_BEFORE_SCROLL = 2;
-    const needsInterviewExpansion = shown.interview && shown.interview.length > MAX_INTERVIEW_ITEMS_BEFORE_SCROLL;
+    const needsInterviewExpansion =
+        shown.interview && shown.interview.length > MAX_INTERVIEW_ITEMS_BEFORE_SCROLL;
     const collapsedInterviewMaxHeight = 'max-h-80';
     const hasEnoughControversialFilms = mostControversialFilms.length >= 1;
-    const hasStats = currentUserStats && Object.entries(currentUserStats).some(([key, val]) =>
-        (val !== null && val !== 0 && (!Array.isArray(val) || val.length > 0))
-        || (key === 'totalSelections' && val === 0)
-    );
+    const hasStats =
+        currentUserStats &&
+        Object.entries(currentUserStats).some(
+            ([key, val]) =>
+                (val !== null && val !== 0 && (!Array.isArray(val) || val.length > 0)) ||
+                (key === 'totalSelections' && val === 0)
+        );
     const MAX_BLURBS_COLLAPSED = 3;
     const needsBlurbsSectionExpansion = reviewBlurbs.length > MAX_BLURBS_COLLAPSED;
-    const displayedBlurbs = isBlurbsSectionExpanded ? reviewBlurbs : reviewBlurbs.slice(0, MAX_BLURBS_COLLAPSED);
+    const displayedBlurbs = isBlurbsSectionExpanded
+        ? reviewBlurbs
+        : reviewBlurbs.slice(0, MAX_BLURBS_COLLAPSED);
     const MAX_RATING_DISPLAY = 9;
 
     return (
         <PageLayout>
-            <Button
-                onClick={() => navigate(-1)}
-                variant="link"
-                size="md"
-                className="mb-8 group"
-            >
-                <ChevronLeftIcon className="h-5 w-5 transition-transform group-hover:-translate-x-1" aria-hidden="true" />
+            <Button onClick={() => navigate(-1)} variant="link" size="md" className="mb-8 group">
+                <ChevronLeftIcon
+                    className="h-5 w-5 transition-transform group-hover:-translate-x-1"
+                    aria-hidden="true"
+                />
                 Back
             </Button>
 
@@ -102,14 +112,18 @@ const ProfilePage: React.FC = () => {
                     className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
                 />
                 <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 mt-3 sm:mt-2">
-                    <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{shown.name}</h1>
+                    <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">
+                        {shown.name}
+                    </h1>
                     <p className="text-lg text-blue-400/90 mb-1">{shown.title}</p>
                     <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
                         <Markdown>{shown.bio}</Markdown>
                     </div>
                     {shown.url && (
                         <div className="mt-4">
-                            <a className="text-blue-400" href={shown.url}>{shown.url.replace('https://', '')}</a>
+                            <a className="text-blue-400" href={shown.url}>
+                                {shown.url.replace('https://', '')}
+                            </a>
                         </div>
                     )}
                 </div>
@@ -120,7 +134,11 @@ const ProfilePage: React.FC = () => {
                 before editing existed; signing in is offered in the nav and
                 nowhere else. */}
             {canEdit && (
-                <ProfileEditor member={shown} profileLoading={profileLoading} onSaved={applyLocal} />
+                <ProfileEditor
+                    member={shown}
+                    profileLoading={profileLoading}
+                    onSaved={applyLocal}
+                />
             )}
 
             {/* Renders nothing when this member has no lists — unless the
@@ -136,11 +154,24 @@ const ProfilePage: React.FC = () => {
 
             {shown.interview && shown.interview.length > 0 && (
                 <AccentCard accent="blue" className="p-6 md:p-10 mb-8">
-                    <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700/60 pb-3"> Interview </h3>
-                    <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}>
-                        <div className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}>
+                    <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700/60 pb-3">
+                        {' '}
+                        Interview{' '}
+                    </h3>
+                    <div
+                        className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}
+                    >
+                        <div
+                            className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}
+                        >
                             <div className="divide-y divide-slate-700/60-mt-4">
-                                {shown.interview.map((item, index) => <InterviewItem key={index} question={item.question} answer={item.answer} />)}
+                                {shown.interview.map((item, index) => (
+                                    <InterviewItem
+                                        key={index}
+                                        question={item.question}
+                                        answer={item.answer}
+                                    />
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -151,7 +182,25 @@ const ProfilePage: React.FC = () => {
                                 variant="link"
                                 aria-expanded={isInterviewExpanded}
                             >
-                                {isInterviewExpanded ? (<> Show Less <ChevronUpIcon className="h-4 w-4" aria-hidden="true" /> </>) : (<> Show Full Interview <ChevronDownIcon className="h-4 w-4" aria-hidden="true" /> </>)}
+                                {isInterviewExpanded ? (
+                                    <>
+                                        {' '}
+                                        Show Less{' '}
+                                        <ChevronUpIcon
+                                            className="h-4 w-4"
+                                            aria-hidden="true"
+                                        />{' '}
+                                    </>
+                                ) : (
+                                    <>
+                                        {' '}
+                                        Show Full Interview{' '}
+                                        <ChevronDownIcon
+                                            className="h-4 w-4"
+                                            aria-hidden="true"
+                                        />{' '}
+                                    </>
+                                )}
                             </Button>
                         </div>
                     )}
@@ -179,12 +228,13 @@ const ProfilePage: React.FC = () => {
                                     ))}
                                 </div>
                                 <p className="text-xs text-slate-500 mt-4 text-center italic">
-                                    Films where {member.name} had the largest score difference (magnitude) from the club average.
+                                    Films where {member.name} had the largest score difference
+                                    (magnitude) from the club average.
                                 </p>
                             </AccentCard>
                         </div>
                     )}
-                     {!hasEnoughControversialFilms && hasStats && (
+                    {!hasEnoughControversialFilms && hasStats && (
                         <div className="lg:col-span-1 hidden lg:block"></div>
                     )}
                 </div>
@@ -192,11 +242,19 @@ const ProfilePage: React.FC = () => {
 
             {reviewBlurbs.length > 0 && (
                 <AccentCard accent="emerald" className="p-6 md:p-10 mb-8">
-                    <h4 className="text-xl font-bold text-slate-100 mb-6 border-b border-slate-700/60 pb-3">In Their Own Words</h4>
+                    <h4 className="text-xl font-bold text-slate-100 mb-6 border-b border-slate-700/60 pb-3">
+                        In Their Own Words
+                    </h4>
                     <div className="space-y-5">
                         {displayedBlurbs.map((blurbItem) => (
-                            <div key={blurbItem.filmId} className="pt-5 border-t border-slate-700/60 first:pt-0 first:border-t-0">
-                                <ProfileBlurbItem blurbItem={blurbItem} maxRating={MAX_RATING_DISPLAY} />
+                            <div
+                                key={blurbItem.filmId}
+                                className="pt-5 border-t border-slate-700/60 first:pt-0 first:border-t-0"
+                            >
+                                <ProfileBlurbItem
+                                    blurbItem={blurbItem}
+                                    maxRating={MAX_RATING_DISPLAY}
+                                />
                             </div>
                         ))}
                     </div>
@@ -207,7 +265,19 @@ const ProfilePage: React.FC = () => {
                                 variant="link"
                                 aria-expanded={isBlurbsSectionExpanded}
                             >
-                                {isBlurbsSectionExpanded ? (<> Show Fewer Reviews <ChevronUpIcon className="h-4 w-4" /> </>) : (<> Show More Reviews <ChevronDownIcon className="h-4 w-4" /> </>)}
+                                {isBlurbsSectionExpanded ? (
+                                    <>
+                                        {' '}
+                                        Show Fewer Reviews{' '}
+                                        <ChevronUpIcon className="h-4 w-4" />{' '}
+                                    </>
+                                ) : (
+                                    <>
+                                        {' '}
+                                        Show More Reviews{' '}
+                                        <ChevronDownIcon className="h-4 w-4" />{' '}
+                                    </>
+                                )}
                             </Button>
                         </div>
                     )}
@@ -230,13 +300,12 @@ const ProfilePage: React.FC = () => {
 
             {selectedFilms.length > 0 ? (
                 <div className="mb-12 mt-8">
-                    <FilmList
-                        films={selectedFilms}
-                        title={`Films Selected by ${member.name}`}
-                    />
+                    <FilmList films={selectedFilms} title={`Films Selected by ${member.name}`} />
                 </div>
             ) : (
-                (!currentUserStats || currentUserStats.totalSelections === null || currentUserStats.totalSelections < 0) && (
+                (!currentUserStats ||
+                    currentUserStats.totalSelections === null ||
+                    currentUserStats.totalSelections < 0) && (
                     <div className="text-center py-8 text-slate-400 italic mt-8">
                         {member.name} hasn't selected any films yet.
                     </div>

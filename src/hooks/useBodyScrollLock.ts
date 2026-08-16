@@ -35,44 +35,44 @@ let previousWidth = '';
 let lockedScrollY = 0;
 
 export function useBodyScrollLock(isLocked: boolean): void {
-  useLayoutEffect(() => {
-    if (!isLocked) return;
+    useLayoutEffect(() => {
+        if (!isLocked) return;
 
-    if (lockCount === 0) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      const rootGutter = window.getComputedStyle(document.documentElement).scrollbarGutter;
-      const reservesGutter = typeof rootGutter === 'string' && rootGutter.includes('stable');
+        if (lockCount === 0) {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            const rootGutter = window.getComputedStyle(document.documentElement).scrollbarGutter;
+            const reservesGutter = typeof rootGutter === 'string' && rootGutter.includes('stable');
 
-      lockedScrollY = window.scrollY;
-      previousOverflow = document.body.style.overflow;
-      previousPaddingRight = document.body.style.paddingRight;
-      previousPosition = document.body.style.position;
-      previousTop = document.body.style.top;
-      previousWidth = document.body.style.width;
+            lockedScrollY = window.scrollY;
+            previousOverflow = document.body.style.overflow;
+            previousPaddingRight = document.body.style.paddingRight;
+            previousPosition = document.body.style.position;
+            previousTop = document.body.style.top;
+            previousWidth = document.body.style.width;
 
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${lockedScrollY}px`;
-      document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${lockedScrollY}px`;
+            document.body.style.width = '100%';
 
-      if (scrollbarWidth > 0 && !reservesGutter) {
-        const currentPaddingRight =
-          parseFloat(window.getComputedStyle(document.body).paddingRight) || 0;
-        document.body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`;
-      }
-    }
-    lockCount += 1;
+            if (scrollbarWidth > 0 && !reservesGutter) {
+                const currentPaddingRight =
+                    parseFloat(window.getComputedStyle(document.body).paddingRight) || 0;
+                document.body.style.paddingRight = `${currentPaddingRight + scrollbarWidth}px`;
+            }
+        }
+        lockCount += 1;
 
-    return () => {
-      lockCount -= 1;
-      if (lockCount === 0) {
-        document.body.style.overflow = previousOverflow;
-        document.body.style.paddingRight = previousPaddingRight;
-        document.body.style.position = previousPosition;
-        document.body.style.top = previousTop;
-        document.body.style.width = previousWidth;
-        window.scrollTo(0, lockedScrollY);
-      }
-    };
-  }, [isLocked]);
+        return () => {
+            lockCount -= 1;
+            if (lockCount === 0) {
+                document.body.style.overflow = previousOverflow;
+                document.body.style.paddingRight = previousPaddingRight;
+                document.body.style.position = previousPosition;
+                document.body.style.top = previousTop;
+                document.body.style.width = previousWidth;
+                window.scrollTo(0, lockedScrollY);
+            }
+        };
+    }, [isLocked]);
 }

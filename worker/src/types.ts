@@ -43,6 +43,10 @@ export interface FilmListEntry {
     image: string | null;
     /** An `https` image the member picked as the film's poster, or null. */
     posterImage: string | null;
+    /** A YouTube video key the member picked as this film's trailer, or null. */
+    trailerKey: string | null;
+    /** True when the row should offer no trailer at all; wins over `trailerKey`. */
+    hideTrailer: boolean;
     /**
      * The owner's score for this pick out of 9, or null when they gave none
      * here — the site then falls back to their watch log and club rating, which
@@ -81,6 +85,10 @@ export interface WatchedEntry {
     image: string | null;
     /** An `https` image the member picked as the film's poster, or null. */
     posterImage: string | null;
+    /** A YouTube video key the member picked as this film's trailer, or null. */
+    trailerKey: string | null;
+    /** True when the row should offer no trailer at all; wins over `trailerKey`. */
+    hideTrailer: boolean;
     updatedAt: string;
 }
 

@@ -1,55 +1,56 @@
-@import "tailwindcss";
-@import "./fonts.css";
+@import 'tailwindcss';
+@import './fonts.css';
 
 body {
-  background-color: #0f172b;
+    background-color: #0f172b;
 }
 
 /* Tint the stills lightbox (react-viewport-lightbox) with the app's blue accent. */
 .film-stills-viewer {
-  --rvl-accent: #60a5fa; /* blue-400 */
+    --rvl-accent: #60a5fa; /* blue-400 */
 }
 
 @layer base {
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
-    /* Reserve the scrollbar's width even on pages short enough not to need one.
+    html {
+        font-family: 'Inter', system-ui, sans-serif;
+        /* Reserve the scrollbar's width even on pages short enough not to need one.
        Without this, navigating between a long page (the films grid) and a short
        one (a 404, a sparse profile) adds or removes the scrollbar, and every
        centered container on the page shifts sideways as it does. */
-    scrollbar-gutter: stable;
-  }
+        scrollbar-gutter: stable;
+    }
 }
 
 :root {
-  /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; */
-  line-height: 1.5;
-  font-weight: 400;
+    /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; */
+    line-height: 1.5;
+    font-weight: 400;
 
-  /* color-scheme: light dark; */
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #0f172b;
+    /* color-scheme: light dark; */
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #0f172b;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 html,
 body,
-#root { 
-  height: 100%; /* Allow children (like App's main div) to use percentage heights or min-h-screen */
-  width: 100%;  /* Allow children to naturally expand to full width */
-  margin: 0;    
-  padding: 0;  
-  box-sizing: border-box; 
+#root {
+    height: 100%; /* Allow children (like App's main div) to use percentage heights or min-h-screen */
+    width: 100%; /* Allow children to naturally expand to full width */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 /* Optional: Apply a default background to the body to see its extent */
 
-
-*, *::before, *::after {
-  box-sizing: inherit; /* Ensure all elements inherit box-sizing */
+*,
+*::before,
+*::after {
+    box-sizing: inherit; /* Ensure all elements inherit box-sizing */
 }
 
 /* Default link color, for links that don't state one of their own.
@@ -60,15 +61,15 @@ body,
    no matter what its className says. Inside the layer, a link that names a
    color gets it, and one that doesn't still gets this. */
 @layer base {
-  a {
-    font-weight: 500;
-    color: var(--color-blue-300);
-    text-decoration: inherit;
-  }
+    a {
+        font-weight: 500;
+        color: var(--color-blue-300);
+        text-decoration: inherit;
+    }
 
-  a:hover {
-    color: var(--color-blue-400);
-  }
+    a:hover {
+        color: var(--color-blue-400);
+    }
 }
 
 /* Credit line under a hero collage frame: quiet enough to read as a caption on
@@ -78,26 +79,26 @@ body,
    Kept as a rule (rather than utilities at the call site) because it bundles
    colour, weight and shadow into one named treatment reused by every frame. */
 a.hero-credit {
-  font-weight: 400;
-  color: var(--color-slate-500);
-  text-shadow: 0 1px 2px rgb(0 0 0 / 0.55);
+    font-weight: 400;
+    color: var(--color-slate-500);
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.55);
 }
 
 a.hero-credit:hover {
-  color: var(--color-slate-200);
+    color: var(--color-slate-200);
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+    font-size: 3.2em;
+    line-height: 1.1;
 }
 
 /* Neutral button reset. This deliberately imposes no background, padding, or
@@ -110,39 +111,42 @@ h1 {
    so an unlayered `button { ... }` rule silently beats all Tailwind utilities
    and no `bg-*`/`border-*`/`p-*` class on a <button> would apply. */
 @layer base {
-  button {
-    border: 0;
-    padding: 0;
-    background-color: transparent;
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    cursor: pointer;
-  }
-  button:focus {
-    outline: none;
-  }
-  /* Keyboard-only focus, as an outline rather than a ring: an outline needs no
+    button {
+        border: 0;
+        padding: 0;
+        background-color: transparent;
+        color: inherit;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        cursor: pointer;
+    }
+    button:focus {
+        outline: none;
+    }
+    /* Keyboard-only focus, as an outline rather than a ring: an outline needs no
      offset color, so one rule works on the page background and on any card. */
-  button:focus-visible {
-    outline: 2px solid var(--color-slate-400);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
+    button:focus-visible {
+        outline: 2px solid var(--color-slate-400);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
 }
 
+@layer utilities {
+    .animate-fade-in {
+        animation: fade-in 0.3s ease-out forwards;
+    }
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
 
- @layer utilities {
-   .animate-fade-in {
-  animation: fade-in 0.3s ease-out forwards;
-  }
-  @keyframes fade-in {
-   0% { opacity: 0; }
-    100% { opacity: 1; }
-   }
-
-  /* Hero banners widen past the page container on very wide screens, so they
+    /* Hero banners widen past the page container on very wide screens, so they
      read as banners rather than as one more card in the column. Below 1536px
      they sit flush with the rest of the page.
 
@@ -151,69 +155,75 @@ h1 {
      rather than viewport-derived on purpose: `100vw` includes the scrollbar
      and would overflow, while fixed steps are chosen to leave a real gutter at
      each breakpoint (64px at 1536, 128px at 1920, 224px at 2560). */
-  @media (min-width: 1536px) {
-    .banner-bleed { margin-inline: -6rem; }
-  }
-  @media (min-width: 1920px) {
-    .banner-bleed { margin-inline: -14rem; }
-  }
-  @media (min-width: 2560px) {
-    .banner-bleed { margin-inline: -28rem; }
-  }
+    @media (min-width: 1536px) {
+        .banner-bleed {
+            margin-inline: -6rem;
+        }
+    }
+    @media (min-width: 1920px) {
+        .banner-bleed {
+            margin-inline: -14rem;
+        }
+    }
+    @media (min-width: 2560px) {
+        .banner-bleed {
+            margin-inline: -28rem;
+        }
+    }
 }
 
 /* Thin, dark-themed scrollbar matching the site's slate palette.
    Used for overflow containers like the cast strip. */
 .themed-scrollbar {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #475569 transparent; /* thumb / track (Firefox) */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #475569 transparent; /* thumb / track (Firefox) */
 }
 .themed-scrollbar::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
+    height: 6px;
+    width: 6px;
 }
 .themed-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 .themed-scrollbar::-webkit-scrollbar-thumb {
-  background: #475569; /* slate-600 */
-  border-radius: 9999px;
+    background: #475569; /* slate-600 */
+    border-radius: 9999px;
 }
 .themed-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #64748b; /* slate-500 */
+    background: #64748b; /* slate-500 */
 }
 
 .swiper-scrollbar {
-  /* Make the scrollbar track slightly thicker */
-  height: 10px !important; /* Default is often 4px or 6px. Adjust as needed. */
+    /* Make the scrollbar track slightly thicker */
+    height: 10px !important; /* Default is often 4px or 6px. Adjust as needed. */
 
-  /* Optional: Slightly adjust position if needed due to height change */
-  /* bottom: 4px !important; */ /* Default is often 6px */
+    /* Optional: Slightly adjust position if needed due to height change */
+    /* bottom: 4px !important; */ /* Default is often 6px */
 
-  /* Optional: Set a subtle background for the track itself in dark mode */
-  /* background: rgba(255, 255, 255, 0.1); */
+    /* Optional: Set a subtle background for the track itself in dark mode */
+    /* background: rgba(255, 255, 255, 0.1); */
 }
 
 /* Target the draggable scrollbar handle (the thumb) */
 .swiper-scrollbar-drag {
-  /* Make the handle lighter for dark mode */
-  /* Use a Tailwind color hex code or any color you prefer */
-  background: #6b7280 !important; /* Example: Slate-500 */
-  /* Try other options: */
-  /* background: #9ca3af !important; /* Slate-400 */
-  /* background: #d1d5db !important; /* Slate-300 */
+    /* Make the handle lighter for dark mode */
+    /* Use a Tailwind color hex code or any color you prefer */
+    background: #6b7280 !important; /* Example: Slate-500 */
+    /* Try other options: */
+    /* background: #9ca3af !important; /* Slate-400 */
+    /* background: #d1d5db !important; /* Slate-300 */
 
-  /* Ensure the handle visually fills the track height */
-  border-radius: 5px !important; /* Make border-radius half of the track height */
+    /* Ensure the handle visually fills the track height */
+    border-radius: 5px !important; /* Make border-radius half of the track height */
 }
 
 /* Optional: Hover effect for the drag handle */
 .swiper-scrollbar-drag:hover {
-  background: #9ca3af !important; /* Example: Lighten on hover (Slate-400) */
+    background: #9ca3af !important; /* Example: Lighten on hover (Slate-400) */
 }
 
 @layer utilities {
-  /* Route enter transition, applied by PageTransition to the incoming page.
+    /* Route enter transition, applied by PageTransition to the incoming page.
 
      The opacity is front-loaded (full by 65%) while the lift keeps easing out
      past it, so the page reads as already there and settling rather than as
@@ -229,51 +239,78 @@ h1 {
      Backwards fill applies only before the animation starts, leaving
      `transform: none` behind — which is exactly where the last keyframe lands,
      so there's no jump at the end either. */
-  @keyframes page-enter {
-    0%   { opacity: 0; transform: translate3d(0, 14px, 0); }
-    65%  { opacity: 1; }
-    100% { opacity: 1; transform: translate3d(0, 0, 0); }
-  }
-
-  .page-enter {
-    animation: page-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .page-enter {
-      animation: none;
+    @keyframes page-enter {
+        0% {
+            opacity: 0;
+            transform: translate3d(0, 14px, 0);
+        }
+        65% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
     }
-  }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0px); }
-  }
-  /* Exit counterparts — mirrors of the above, used while a modal animates out.
+    .page-enter {
+        animation: page-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .page-enter {
+            animation: none;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0px);
+        }
+    }
+    /* Exit counterparts — mirrors of the above, used while a modal animates out.
      Durations must stay in sync with MODAL_ANIMATION_MS in useModalPresence. */
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-  @keyframes scaleOut {
-    from { opacity: 1; transform: scale(1) translateY(0px); }
-    to { opacity: 0; transform: scale(0.95) translateY(10px); }
-  }
-  .animate-fadeIn {
-    animation: fadeIn 0.2s ease-out forwards;
-  }
-  .animate-scaleIn {
-    animation: scaleIn 0.2s ease-out forwards;
-  }
-  .animate-fadeOut {
-    animation: fadeOut 0.2s ease-in forwards;
-  }
-  .animate-scaleOut {
-    animation: scaleOut 0.2s ease-in forwards;
-  }
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+    @keyframes scaleOut {
+        from {
+            opacity: 1;
+            transform: scale(1) translateY(0px);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+    }
+    .animate-fadeIn {
+        animation: fadeIn 0.2s ease-out forwards;
+    }
+    .animate-scaleIn {
+        animation: scaleIn 0.2s ease-out forwards;
+    }
+    .animate-fadeOut {
+        animation: fadeOut 0.2s ease-in forwards;
+    }
+    .animate-scaleOut {
+        animation: scaleOut 0.2s ease-in forwards;
+    }
 }
-

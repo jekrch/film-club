@@ -104,7 +104,9 @@ describe('WatchedPage', () => {
         const log = within(screen.getByRole('list'));
         const links = log.getAllByRole('link', { name: new RegExp(filmData[0].title, 'i') });
         expect(links).toHaveLength(2);
-        links.forEach((link) => expect(link).toHaveAttribute('href', `/films/${filmData[0].imdbID}`));
+        links.forEach((link) =>
+            expect(link).toHaveAttribute('href', `/films/${filmData[0].imdbID}`)
+        );
         expect(screen.getByText('Club film')).toBeInTheDocument();
     });
 
@@ -151,7 +153,9 @@ describe('WatchedPage', () => {
     it('says so plainly when a member has logged nothing', () => {
         renderFor('Jacob');
         expect(screen.getByRole('heading', { name: '0 Films' })).toBeInTheDocument();
-        expect(screen.getByText(/hasn't logged anything watched outside the club/i)).toBeInTheDocument();
+        expect(
+            screen.getByText(/hasn't logged anything watched outside the club/i)
+        ).toBeInTheDocument();
     });
 
     it('reports an unknown member rather than rendering an empty log', () => {

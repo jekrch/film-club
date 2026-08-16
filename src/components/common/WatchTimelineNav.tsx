@@ -1,5 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeftIcon, ChevronRightIcon, FilmIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    FilmIcon,
+    QuestionMarkCircleIcon,
+} from '@heroicons/react/24/outline';
 import { Film } from '../../types/film';
 
 interface WatchTimelineNavProps {
@@ -7,12 +12,16 @@ interface WatchTimelineNavProps {
     nextFilm: Film | null;
     nextSelectorPlaceholder?: string | null; // Selector for the not-yet-chosen next film
     sincePreviousGap?: string | null; // Time elapsed since the previous film was watched
-    untilNextGap?: string | null;     // Time until the next film was watched
+    untilNextGap?: string | null; // Time until the next film was watched
 }
 
 const formatWatchDate = (date?: string | null): string | null =>
     date
-        ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+        ? new Date(date).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+          })
         : null;
 
 interface NavCardProps {
@@ -48,7 +57,9 @@ const NavCard = ({ film, direction }: NavCardProps) => {
                         WebkitMaskImage: `linear-gradient(to ${fadeDirection}, black, transparent)`,
                         maskImage: `linear-gradient(to ${fadeDirection}, black, transparent)`,
                     }}
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                    }}
                 />
             )}
             <div className="relative z-10 flex-shrink-0 w-12 h-[72px] rounded-md overflow-hidden bg-slate-800 shadow-lg shadow-black/40 ring-1 ring-slate-700/50">
@@ -56,19 +67,28 @@ const NavCard = ({ film, direction }: NavCardProps) => {
                     src={film.poster}
                     alt=""
                     className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
-                    onError={(e) => { const target = e.target as HTMLImageElement; target.src = '/placeholder-poster.png'; target.onerror = null; }}
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder-poster.png';
+                        target.onerror = null;
+                    }}
                 />
             </div>
             <div className="relative z-10 min-w-0 flex-grow">
-                <div className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500 mb-1 ${isPrev ? '' : 'flex-row-reverse'}`}>
-                    <Chevron className={`h-3.5 w-3.5 text-blue-400/70 transition-transform duration-200 ${isPrev ? 'group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'}`} />
+                <div
+                    className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500 mb-1 ${isPrev ? '' : 'flex-row-reverse'}`}
+                >
+                    <Chevron
+                        className={`h-3.5 w-3.5 text-blue-400/70 transition-transform duration-200 ${isPrev ? 'group-hover:-translate-x-0.5' : 'group-hover:translate-x-0.5'}`}
+                    />
                     {label}
                 </div>
                 <h4 className="text-slate-200 font-medium truncate group-hover:text-blue-400 transition-colors">
                     {film.title}
                 </h4>
                 <p className="text-xs text-slate-500 mt-0.5 truncate">
-                    {film.year}{watchDate ? ` · ${watchDate}` : ''}
+                    {film.year}
+                    {watchDate ? ` · ${watchDate}` : ''}
                 </p>
             </div>
         </Link>
@@ -94,7 +114,9 @@ const NextPlaceholderCard = ({ selector }: { selector: string }) => {
                     WebkitMaskImage: 'linear-gradient(to right, black, transparent)',
                     maskImage: 'linear-gradient(to right, black, transparent)',
                 }}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                }}
             />
             <div className="relative z-10 flex-shrink-0 w-12 h-[72px] rounded-md overflow-hidden bg-slate-800/60 ring-1 ring-dashed ring-slate-700/50 flex items-center justify-center">
                 <QuestionMarkCircleIcon className="h-6 w-6 text-slate-600" />
@@ -104,18 +126,20 @@ const NextPlaceholderCard = ({ selector }: { selector: string }) => {
                     <ChevronRightIcon className="h-3.5 w-3.5 text-blue-400/70" />
                     Next Film
                 </div>
-                <h4 className="text-slate-400 font-medium italic truncate">
-                    Not yet selected
-                </h4>
-                <p className="text-xs text-slate-500 mt-0.5 truncate">
-                    {selector} selects next
-                </p>
+                <h4 className="text-slate-400 font-medium italic truncate">Not yet selected</h4>
+                <p className="text-xs text-slate-500 mt-0.5 truncate">{selector} selects next</p>
             </div>
         </div>
     );
 };
 
-const WatchTimelineNav = ({ previousFilm, nextFilm, nextSelectorPlaceholder, sincePreviousGap, untilNextGap }: WatchTimelineNavProps) => {
+const WatchTimelineNav = ({
+    previousFilm,
+    nextFilm,
+    nextSelectorPlaceholder,
+    sincePreviousGap,
+    untilNextGap,
+}: WatchTimelineNavProps) => {
     if (!previousFilm && !nextFilm && !nextSelectorPlaceholder) return null;
 
     return (
@@ -134,7 +158,10 @@ const WatchTimelineNav = ({ previousFilm, nextFilm, nextSelectorPlaceholder, sin
                         <NavCard film={previousFilm} direction="prev" />
                         {sincePreviousGap && (
                             <p className="text-[11px] text-slate-500 mt-2 px-1">
-                                <span className="text-slate-400 font-medium">{sincePreviousGap}</span> since previous film
+                                <span className="text-slate-400 font-medium">
+                                    {sincePreviousGap}
+                                </span>{' '}
+                                since previous film
                             </p>
                         )}
                     </div>
@@ -146,7 +173,8 @@ const WatchTimelineNav = ({ previousFilm, nextFilm, nextSelectorPlaceholder, sin
                         <NavCard film={nextFilm} direction="next" />
                         {untilNextGap && (
                             <p className="text-[11px] text-slate-500 mt-2 px-1 text-right">
-                                <span className="text-slate-400 font-medium">{untilNextGap}</span> until next film
+                                <span className="text-slate-400 font-medium">{untilNextGap}</span>{' '}
+                                until next film
                             </p>
                         )}
                     </div>

@@ -39,8 +39,8 @@ export const useUnanimousScores = (
         }
 
         // Get active members (those with a queue position)
-        const activeMembers = teamMembers.filter(m => typeof m.queue === 'number' && m.queue > 0);
-        const activeMemberNames = new Set(activeMembers.map(m => m.name.toLowerCase()));
+        const activeMembers = teamMembers.filter((m) => typeof m.queue === 'number' && m.queue > 0);
+        const activeMemberNames = new Set(activeMembers.map((m) => m.name.toLowerCase()));
 
         if (activeMemberNames.size < 2) {
             return []; // Need at least 2 members for a unanimous score to be meaningful
@@ -49,31 +49,32 @@ export const useUnanimousScores = (
         // Find films where all active members gave the same score
         const unanimousFilms: UnanimousScoreEntry[] = [];
 
-        films.forEach(film => {
+        films.forEach((film) => {
             const movieClubInfo = film.movieClubInfo;
             if (!movieClubInfo?.clubRatings || movieClubInfo.clubRatings.length === 0) return;
 
             // Filter to only ratings from active members with valid scores
-            const activeMemberRatings = movieClubInfo.clubRatings.filter(rating => 
-                activeMemberNames.has(rating.user.toLowerCase()) && 
-                rating.score !== null && 
-                typeof rating.score === 'number' && 
-                !isNaN(rating.score)
+            const activeMemberRatings = movieClubInfo.clubRatings.filter(
+                (rating) =>
+                    activeMemberNames.has(rating.user.toLowerCase()) &&
+                    rating.score !== null &&
+                    typeof rating.score === 'number' &&
+                    !isNaN(rating.score)
             );
 
             // Check if all active members have rated this film
             if (activeMemberRatings.length !== activeMemberNames.size) return;
 
             // Check if all scores are identical
-            const scores = activeMemberRatings.map(r => r.score as number);
+            const scores = activeMemberRatings.map((r) => r.score as number);
             const firstScore = scores[0];
-            const allSame = scores.every(s => s === firstScore);
+            const allSame = scores.every((s) => s === firstScore);
 
             if (allSame) {
                 unanimousFilms.push({
                     score: firstScore,
                     film,
-                    watchDate: parseWatchDate(movieClubInfo.watchDate)
+                    watchDate: parseWatchDate(movieClubInfo.watchDate),
                 });
             }
         });
@@ -81,7 +82,7 @@ export const useUnanimousScores = (
         // Group by score
         const scoreGroups = new Map<number, UnanimousScoreEntry[]>();
 
-        unanimousFilms.forEach(entry => {
+        unanimousFilms.forEach((entry) => {
             const existing = scoreGroups.get(entry.score) || [];
             existing.push(entry);
             scoreGroups.set(entry.score, existing);
@@ -102,7 +103,7 @@ export const useUnanimousScores = (
             result.push({
                 score,
                 films: sortedEntries,
-                namesakeFilm: sortedEntries[0].film
+                namesakeFilm: sortedEntries[0].film,
             });
         });
 
@@ -123,6 +124,6 @@ export const useUnanimousScores = (
     return {
         unanimousScores,
         totalUnanimousCount,
-        isLoading
+        isLoading,
     };
 };

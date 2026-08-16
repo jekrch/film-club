@@ -41,21 +41,25 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
     data,
     isExpanded,
     onToggleExpand,
-    onFilmClick
+    onFilmClick,
 }) => {
     const { score, films, namesakeFilm } = data;
 
     return (
         // Keeps its semantic score tint, but sits at the inset level: same
         // radius and border as every other card nested inside a card.
-        <div className={`p-3 ${getScoreBgClass(score)} rounded-xl border border-slate-600/30 transition-colors`}>
+        <div
+            className={`p-3 ${getScoreBgClass(score)} rounded-xl border border-slate-600/30 transition-colors`}
+        >
             {/* Main namesake row */}
             <div
                 className="flex items-center space-x-3 cursor-pointer group"
                 onClick={() => onFilmClick(namesakeFilm.imdbID)}
                 role="button"
                 tabIndex={0}
-                onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') onFilmClick(namesakeFilm.imdbID); }}
+                onKeyPress={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') onFilmClick(namesakeFilm.imdbID);
+                }}
                 title={`View ${namesakeFilm.title}`}
             >
                 {/* Film poster */}
@@ -72,7 +76,9 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                 )}
 
                 {/* Score badge */}
-                <div className={`text-2xl font-bold ${getScoreColorClass(score)} w-8 text-center flex-shrink-0`}>
+                <div
+                    className={`text-2xl font-bold ${getScoreColorClass(score)} w-8 text-center flex-shrink-0`}
+                >
                     {score}
                 </div>
 
@@ -82,7 +88,8 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                         A "{stripLeadingArticle(namesakeFilm.title)}"
                     </p>
                     <p className="text-xs text-slate-500">
-                        {namesakeFilm.year}{films.length > 1 && ` · ${films.length} films total`}
+                        {namesakeFilm.year}
+                        {films.length > 1 && ` · ${films.length} films total`}
                     </p>
                 </div>
 
@@ -114,7 +121,9 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                             onClick={() => onFilmClick(film.imdbID)}
                             role="button"
                             tabIndex={0}
-                            onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') onFilmClick(film.imdbID); }}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') onFilmClick(film.imdbID);
+                            }}
                         >
                             {film.poster && film.poster !== 'N/A' ? (
                                 <img
@@ -132,7 +141,10 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                             </div>
                             {watchDate && (
                                 <span className="text-xs text-slate-500 flex-shrink-0">
-                                    {watchDate.toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
+                                    {watchDate.toLocaleDateString('en-US', {
+                                        month: 'short',
+                                        year: '2-digit',
+                                    })}
                                 </span>
                             )}
                         </div>
@@ -143,15 +155,13 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
     );
 };
 
-const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({
-    unanimousScores,
-}) => {
+const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({ unanimousScores }) => {
     const navigate = useNavigate();
     const [expandedScore, setExpandedScore] = useState<number | null>(null);
 
     const toggleExpanded = (score: number, e: React.MouseEvent) => {
         e.stopPropagation();
-        setExpandedScore(prev => prev === score ? null : score);
+        setExpandedScore((prev) => (prev === score ? null : score));
     };
 
     const handleFilmClick = (imdbID: string) => {

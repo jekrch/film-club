@@ -4,10 +4,14 @@ import { Film } from '../../types/film';
 import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils';
 import { CardSize } from '../../contexts/ViewSettingsContext';
 import PopcornRating from '../common/PopcornRating';
-import { PopcornPodStamp, POPCORN_POD_POSTER_FILTER, RIBBON_FOLD_CLIP_LEFT, RIBBON_FOLD_CLIP_RIGHT } from './PopcornPod';
+import {
+    PopcornPodStamp,
+    POPCORN_POD_POSTER_FILTER,
+    RIBBON_FOLD_CLIP_LEFT,
+    RIBBON_FOLD_CLIP_RIGHT,
+} from './PopcornPod';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
-
 
 interface FilmCardProps {
     film: Film;
@@ -78,7 +82,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 // Only update state when there's an actual change
-                setIsVisible(prev => {
+                setIsVisible((prev) => {
                     if (prev !== entry.isIntersecting) {
                         return entry.isIntersecting;
                     }
@@ -87,7 +91,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
             },
             {
                 threshold: 0.1,
-                rootMargin: '50px'
+                rootMargin: '50px',
             }
         );
 
@@ -101,9 +105,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     const selectorName = film.movieClubInfo?.selector;
 
     // Prepare rating entries, filtering out null or empty scores
-    const ratingEntries = clubRatings
-        ? clubRatings.filter(rating => rating.score !== null)
-        : [];
+    const ratingEntries = clubRatings ? clubRatings.filter((rating) => rating.score !== null) : [];
 
     // Calculate club average rating
     const clubAverageDisplay = calculateClubAverage(clubRatings);
@@ -111,10 +113,10 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     // Format watch date for overlay (MM/DD/YY)
     const watchDateFormatted = film.movieClubInfo?.watchDate
         ? new Date(film.movieClubInfo.watchDate).toLocaleDateString('en-US', {
-            month: '2-digit',
-            day: '2-digit',
-            year: '2-digit'
-        })
+              month: '2-digit',
+              day: '2-digit',
+              year: '2-digit',
+          })
         : null;
 
     // Determine if the "Up Next" elements should be shown
@@ -158,10 +160,12 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     {/* Band + tails. Only `scale` is transitioned: Tailwind v4 keeps
                         rotate as its own property, so animating `transform` wholesale
                         would fight the -45deg rake. */}
-                    <div className="
+                    <div
+                        className="
                         absolute w-[10.4em] left-[-2.6em] top-[1.7em] -rotate-45
                         transition-[scale] duration-300 ease-out group-hover:scale-105
-                    ">
+                    "
+                    >
                         {/* Tails, tucked under each end of the band and running off
                             past the card's edges — only the tapering inner tip of
                             each stays visible, so the ribbon reads as folding around
@@ -179,7 +183,8 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             ribbon, with a blur behind it to keep the lettering legible
                             over busy art. Padding is in `em`, so the band's depth
                             tracks the lettering instead of being set independently. */}
-                        <div className="
+                        <div
+                            className="
                             relative text-center whitespace-nowrap leading-none
                             py-[0.34em] tracking-[0.08em]
                             font-black uppercase text-white
@@ -190,7 +195,8 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             transition-all duration-300 ease-out
                             group-hover:from-emerald-500/90 group-hover:via-emerald-400/90 group-hover:to-emerald-500/90
                             group-hover:shadow-xl
-                        ">
+                        "
+                        >
                             Up Next
                         </div>
                     </div>
@@ -204,17 +210,22 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     hairline border that warms to the accent on hover, and only the
                     faintest shadow. The card is defined by its edge, not by a panel
                     of color or a drop shadow. */}
-                <div className={`
+                <div
+                    className={`
                     overflow-hidden h-full flex flex-col
                     border border-slate-700/60 hover:border-blue-400/30 rounded-lg
                     shadow-sm shadow-black/30
                     transition-colors duration-300
                     ${isPopcornPod ? '!border-amber-400/40' : ''}
-                `}>
+                `}
+                >
                     {/* Poster Container: Fixed aspect ratio, clips image. The slate
                         placeholder background means an in-flight image fades from a
                         neutral tone instead of flashing black on iOS. */}
-                    <div className="relative w-full overflow-hidden bg-slate-800" style={{ paddingBottom: '140%' /* Shorter aspect ratio */ }}>
+                    <div
+                        className="relative w-full overflow-hidden bg-slate-800"
+                        style={{ paddingBottom: '140%' /* Shorter aspect ratio */ }}
+                    >
                         {/* Poster Image: Covers container, aligned top.
                             No transform-gpu: forcing a GPU layer on every poster
                             thrashes iOS Safari's limited compositing-tile budget
@@ -236,7 +247,10 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     ${isPopcornPod ? POPCORN_POD_POSTER_FILTER : ''} /* Cheapened treatment for a non-selection */
                                 `}
                                 onLoad={() => setLoaded(true)}
-                                onError={(e) => { e.currentTarget.src = '/placeholder-poster.png'; setLoaded(true); }} // Fallback image
+                                onError={(e) => {
+                                    e.currentTarget.src = '/placeholder-poster.png';
+                                    setLoaded(true);
+                                }} // Fallback image
                             />
                         )}
 
@@ -253,16 +267,20 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
 
                     {/* Card Content Section: Below poster, contains text info - NOT shown in poster-only mode */}
                     {!isPosterOnly && (
-                        <div className={`flex flex-col flex-grow ${isCompact ? 'p-1.5' : 'p-2'} bg-slate-800/40 border-t border-white/[0.06]`}>
+                        <div
+                            className={`flex flex-col flex-grow ${isCompact ? 'p-1.5' : 'p-2'} bg-slate-800/40 border-t border-white/[0.06]`}
+                        >
                             {/* Film Title. Hover brightens rather than turning blue:
                                 saturated blue is reserved for data (club average,
                                 genre chips), not for hover feedback — the card's
                                 border carries the accent instead. */}
-                            <h3 className={`
+                            <h3
+                                className={`
                                 font-normal text-slate-300 truncate leading-tight tracking-wide
                                 group-hover:text-slate-100 transition-colors duration-200
                                 ${isCompact ? 'text-xs' : 'text-sm'}
-                            `}>
+                            `}
+                            >
                                 {film.title}
                                 {film.year && (
                                     <span className="ml-1.5 text-slate-500">{film.year}</span>
@@ -273,10 +291,12 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                 typographic line in the same micro-label idiom the
                                 detail page uses for its field headings. */}
                             {(selectorName || watchDateFormatted) && (
-                                <div className={`
+                                <div
+                                    className={`
                                     mt-1 flex items-center gap-1.5 uppercase tracking-widest text-slate-500
                                     ${isCompact ? 'text-[9px]' : 'text-[10px]'}
-                                `}>
+                                `}
+                                >
                                     {selectorName && (
                                         <>
                                             <span className="w-1 h-1 rounded-full flex-shrink-0 bg-emerald-400/80"></span>
@@ -284,10 +304,14 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                         </>
                                     )}
                                     {selectorName && watchDateFormatted && (
-                                        <span className="text-slate-700" aria-hidden="true">/</span>
+                                        <span className="text-slate-700" aria-hidden="true">
+                                            /
+                                        </span>
                                     )}
                                     {watchDateFormatted && (
-                                        <span className="font-mono tracking-normal">{watchDateFormatted}</span>
+                                        <span className="font-mono tracking-normal">
+                                            {watchDateFormatted}
+                                        </span>
                                     )}
                                 </div>
                             )}
@@ -296,41 +320,66 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             <div className={`mt-auto ${isCompact ? 'pt-1.5' : 'pt-2'}`}>
                                 {showUpNext ? (
                                     // --- RENDER IF "UP NEXT" ---
-                                    <div className={`grid grid-cols-2 gap-x-2 gap-y-0.5 ${isCompact ? 'text-[10px]' : 'text-xs'}`}>
+                                    <div
+                                        className={`grid grid-cols-2 gap-x-2 gap-y-0.5 ${isCompact ? 'text-[10px]' : 'text-xs'}`}
+                                    >
                                         {/* Director */}
-                                        {film.director && film.director !== "N/A" && (
-                                            <div className="flex items-center text-slate-400 truncate col-span-2" title="Director">
-                                                <UserIcon className={`mr-1 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} />
-                                                <span className="truncate">{film.director.split(',')[0]}</span>
+                                        {film.director && film.director !== 'N/A' && (
+                                            <div
+                                                className="flex items-center text-slate-400 truncate col-span-2"
+                                                title="Director"
+                                            >
+                                                <UserIcon
+                                                    className={`mr-1 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`}
+                                                />
+                                                <span className="truncate">
+                                                    {film.director.split(',')[0]}
+                                                </span>
                                             </div>
                                         )}
                                         {/* Country */}
-                                        {film.language && film.country !== "N/A" && (
-                                            <div className="flex items-center text-slate-400 col-span-2" title="Country">
-                                                <GlobeEuropeAfricaIcon className={`mr-1 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`} />
-                                                <span className="text-slate-500 truncate">{film.country}</span>
+                                        {film.language && film.country !== 'N/A' && (
+                                            <div
+                                                className="flex items-center text-slate-400 col-span-2"
+                                                title="Country"
+                                            >
+                                                <GlobeEuropeAfricaIcon
+                                                    className={`mr-1 text-slate-500 flex-shrink-0 ${isCompact ? 'w-2 h-2' : 'w-2.5 h-2.5'}`}
+                                                />
+                                                <span className="text-slate-500 truncate">
+                                                    {film.country}
+                                                </span>
                                             </div>
                                         )}
                                         {/* Fallback if no info */}
-                                        {(!film.genre || film.genre === "N/A") && (!film.director || film.director === "N/A") && (!film.imdbRating || film.imdbRating === "N/A") && (
-                                            <div className="text-slate-500 text-[10px] italic col-span-2">More info coming soon...</div>
-                                        )}
+                                        {(!film.genre || film.genre === 'N/A') &&
+                                            (!film.director || film.director === 'N/A') &&
+                                            (!film.imdbRating || film.imdbRating === 'N/A') && (
+                                                <div className="text-slate-500 text-[10px] italic col-span-2">
+                                                    More info coming soon...
+                                                </div>
+                                            )}
                                     </div>
                                 ) : (
                                     // --- RENDER IF WATCHED ---
                                     <>
                                         {/* Member Ratings Display */}
                                         {ratingEntries.length > 0 && (
-                                            <div className={`flex flex-wrap items-stretch gap-1 ${isCompact ? 'gap-0.5' : 'gap-1'}`}>
+                                            <div
+                                                className={`flex flex-wrap items-stretch gap-1 ${isCompact ? 'gap-0.5' : 'gap-1'}`}
+                                            >
                                                 {ratingEntries.map((rating) => {
                                                     const numericRating = rating.score as number;
-                                                    const ratingColorClass = getRatingColorClass(numericRating);
+                                                    const ratingColorClass =
+                                                        getRatingColorClass(numericRating);
                                                     return (
                                                         <div
                                                             key={rating.user}
-                                                            title={rating.scoreQualifier
-                                                                ? `${rating.user}: ${rating.score}/9 (${rating.scoreQualifier} — a ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} score; see the film page)`
-                                                                : `${rating.user}: ${rating.score}/9`}
+                                                            title={
+                                                                rating.scoreQualifier
+                                                                    ? `${rating.user}: ${rating.score}/9 (${rating.scoreQualifier} — a ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} score; see the film page)`
+                                                                    : `${rating.user}: ${rating.score}/9`
+                                                            }
                                                             className={`
                                                                 flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-10
                                                                 text-center bg-white/[0.04] rounded-md ring-1 ring-inset ring-white/[0.06]
@@ -339,14 +388,20 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                                             `}
                                                         >
                                                             {/* Member Initials */}
-                                                            <div className={`uppercase font-mono text-slate-400 leading-none tracking-widest whitespace-nowrap ${isCompact ? 'text-[8px]' : 'text-[9px]'}`}>
+                                                            <div
+                                                                className={`uppercase font-mono text-slate-400 leading-none tracking-widest whitespace-nowrap ${isCompact ? 'text-[8px]' : 'text-[9px]'}`}
+                                                            >
                                                                 {rating.user.substring(0, 2)}
                                                             </div>
                                                             {/* Member Rating */}
-                                                            <div className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[11px]' : 'text-sm'}`}>
+                                                            <div
+                                                                className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[11px]' : 'text-sm'}`}
+                                                            >
                                                                 {rating.score}
                                                                 {rating.scoreQualifier && (
-                                                                    <span className="align-super text-[0.6em] text-amber-400/90 lowercase">{rating.scoreQualifier}</span>
+                                                                    <span className="align-super text-[0.6em] text-amber-400/90 lowercase">
+                                                                        {rating.scoreQualifier}
+                                                                    </span>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -357,25 +412,30 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
 
                                         {/* Club Average Rating Display — intentionally disabled toggle */}
                                         {/* eslint-disable-next-line no-constant-binary-expression */}
-                                        {false && clubAverageDisplay !== null && clubAverageDisplay !== undefined && ratingEntries.length > 0 && (
-                                            <div className={`w-full flex items-center justify-end text-xs text-slate-400 mt-2 ${isCompact ? 'mt-1.5 text-[10px]' : 'mt-2 text-xs'}`}>
-                                                <PopcornRating
-                                                    rating={clubAverageDisplay as number}
-                                                    maxRating={9}
-                                                    size={isCompact ? 'small' : 'regular'}
-                                                    showPartialFill={true}
-                                                    title={`Average Club Rating: ${clubAverageDisplay?.toFixed(1)}/9`}
-                                                    className="mr-auto opacity-70"
-                                                />
-                                            </div>
-                                        )}
+                                        {false &&
+                                            clubAverageDisplay !== null &&
+                                            clubAverageDisplay !== undefined &&
+                                            ratingEntries.length > 0 && (
+                                                <div
+                                                    className={`w-full flex items-center justify-end text-xs text-slate-400 mt-2 ${isCompact ? 'mt-1.5 text-[10px]' : 'mt-2 text-xs'}`}
+                                                >
+                                                    <PopcornRating
+                                                        rating={clubAverageDisplay as number}
+                                                        maxRating={9}
+                                                        size={isCompact ? 'small' : 'regular'}
+                                                        showPartialFill={true}
+                                                        title={`Average Club Rating: ${clubAverageDisplay?.toFixed(1)}/9`}
+                                                        className="mr-auto opacity-70"
+                                                    />
+                                                </div>
+                                            )}
                                     </>
                                 )}
                             </div>
-
                         </div>
                     )}
-                </div> {/* End Inner Card Div */}
+                </div>{' '}
+                {/* End Inner Card Div */}
             </Link>
         </div>
     );

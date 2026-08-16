@@ -13,10 +13,28 @@ appearing in it would corrupt all of them. Hence the separate cache, and hence
 the rule that ids already present in films.json are never fetched or stored
 here.
 
-The cache is deliberately thin -- title, year, poster, and a little context --
-with no cast, keywords, or backdrops. One OMDB call per id, once ever: ids
-already cached are left alone. Ids no list references any more are pruned, and
-keys are written sorted, so the diff stays readable.
+Two sources fill one record. OMDB supplies the identity -- title, year, poster,
+and a line of context -- at one call per id, once ever. TMDb supplies what OMDB
+has none of: the trailer, the tagline, a summary, the top-billed cast, and wide
+scene art for the row backgrounds. Ids no list references any more are pruned,
+and keys are written sorted, so the diff stays readable.
+
+The TMDb half is two calls per film (`find` to turn an IMDb id into a TMDb one,
+then one details request with credits, videos, and images appended) and is
+version-stamped rather than presence-checked: a summary carrying the current
+TMDB_VERSION is never fetched again, and bumping that constant is how a new
+field gets backfilled across films cached before it existed. A film TMDb answered
+about but has no trailer for stores `trailerKey: null` -- "asked, there is none",
+which is not the same as "not asked yet". A request that *failed* stamps nothing,
+so an outage costs a retry on the next deploy rather than a permanently empty
+record. Without TMDB_KEY the whole half is skipped: the posters still land, and
+the next deploy that has the key fills the rest in.
+
+**The cache stays deliberately thinner than a club film.** No keywords, no crew,
+no financials, no `personProfiles` index -- a cast member's TMDb id rides on the
+cast entry itself. This file is bundled and shipped to every visitor, and unlike
+films.json (one film per club meeting) it grows with whatever members add, so
+each field here is a per-visitor cost paid on the whole cache.
 
 Runs in deploy.yml before the build, so a list or a watch logged on the site has
 its posters by the time the site is rebuilt. The worker makes no OMDB call of
@@ -98,6 +116,158 @@ def get_omdb_summary(imdb_id, api_key):
     return summary
 
 
+# Bump this when the fields below change, so films cached under an older stamp
+# are looked up again. Mirrors TMDB_FETCH_VERSION in sync_sheet_to_json.py, and
+# for the same reason: a new field is worthless if only films added afterwards
+# have it.
+# v1: trailerKey.
+# v2: added tagline, plot, cast, and backdropImages.
+TMDB_VERSION = 2
+TMDB_VERSION_FIELD = "tmdbVersion"
+
+# What one TMDb lookup contributes, and therefore what a re-stamp overwrites.
+TMDB_FIELDS = ("trailerKey", "tagline", "plot", "cast", "backdropImages")
+
+TMDB_PROFILE_IMAGE_BASE = "https://image.tmdb.org/t/p/w185"
+TMDB_BACKDROP_IMAGE_BASE = "https://image.tmdb.org/t/p/w1280"
+
+# Deliberately smaller than the club films' twelve. These render in a row's
+# expanded panel rather than on a page of their own, and every one of them is
+# bytes in the bundle for every visitor.
+TMDB_CAST_LIMIT = 8
+
+# Enough for the row wash to have variety across a list without paying for a
+# gallery -- nothing here renders more than one at a time.
+TMDB_BACKDROP_LIMIT = 3
+
+# Distinguishes "TMDb answered and had nothing" from "the request failed", which
+# is the difference between stamping a summary done and retrying it next deploy.
+TMDB_FAILED = object()
+
+
+def _tmdb_get(url, tmdb_bearer_token, what):
+    """One TMDb request. Returns the parsed body, or TMDB_FAILED."""
+    headers = {"Authorization": f"Bearer {tmdb_bearer_token}", "accept": "application/json"}
+    try:
+        response = requests.get(url, headers=headers, timeout=20)
+        response.raise_for_status()
+        return response.json()
+    except (requests.exceptions.RequestException, json.JSONDecodeError) as e:
+        print(f"Error fetching {what}: {e}")
+        return TMDB_FAILED
+
+
+def _pick_trailer(videos):
+    """The primary YouTube trailer's key, official preferred, or None.
+
+    The same rule get_tmdb_film_details applies to club films, so a film on a
+    list and a film in the club end up pointing at the same video.
+    """
+    trailers = [
+        v for v in videos
+        if v.get("site") == "YouTube" and v.get("type") == "Trailer" and v.get("key")
+    ]
+    if not trailers:
+        return None
+    official = next((v for v in trailers if v.get("official")), None)
+    return (official or trailers[0])["key"]
+
+
+def _pick_cast(credits):
+    """Top-billed cast, each with the TMDb id that makes the name a link.
+
+    Club films resolve a name to an id through the per-film `personProfiles`
+    map, because the club's person modal is keyed by name. Nothing here has a
+    modal to open -- a cache film's cast member has no club filmography -- so the
+    id rides on the entry itself and the name links straight out to TMDb.
+    """
+    members = sorted(credits.get("cast") or [], key=lambda c: c.get("order", 9999))
+    cast = []
+    for member in members[:TMDB_CAST_LIMIT]:
+        name = member.get("name")
+        if not name:
+            continue
+        profile_path = member.get("profile_path")
+        cast.append({
+            "name": name,
+            "character": member.get("character") or None,
+            "profileUrl": f"{TMDB_PROFILE_IMAGE_BASE}{profile_path}" if profile_path else None,
+            "tmdbId": member.get("id"),
+        })
+    return cast
+
+
+def _pick_backdrops(images):
+    """Wide scene art for the row backgrounds, textless first.
+
+    Same ordering as the club films' backdrops: an image with no language on it
+    is a clean frame, one with a language is usually a title card.
+    """
+    backdrops = sorted(
+        (images or {}).get("backdrops") or [],
+        key=lambda b: (b.get("iso_639_1") is not None, -(b.get("vote_average") or 0)),
+    )
+    return [
+        f"{TMDB_BACKDROP_IMAGE_BASE}{b['file_path']}"
+        for b in backdrops[:TMDB_BACKDROP_LIMIT]
+        if b.get("file_path")
+    ]
+
+
+def get_tmdb_details(imdb_id, tmdb_bearer_token):
+    """Everything TMDb contributes to one summary, or TMDB_FAILED.
+
+    Two requests, because TMDb is keyed by its own ids: `find` turns the IMDb id
+    into one, and a single details call appends credits, videos, and images to
+    the record. Adding a field to TMDB_FIELDS costs nothing extra at request
+    time -- it is already in this response.
+
+    An id TMDb has no record of answers with empty fields rather than
+    TMDB_FAILED: that is an answer, and re-asking it every deploy would be two
+    requests a film forever.
+    """
+    found = _tmdb_get(
+        f"https://api.themoviedb.org/3/find/{imdb_id}?external_source=imdb_id",
+        tmdb_bearer_token,
+        f"TMDb id for {imdb_id}",
+    )
+    if found is TMDB_FAILED:
+        return TMDB_FAILED
+
+    tmdb_id = None
+    for media_type in ("movie", "tv"):
+        results = found.get(f"{media_type}_results") or []
+        if results:
+            tmdb_id = results[0].get("id")
+            break
+
+    if not tmdb_id:
+        print(f"TMDb has no record for {imdb_id}; storing an empty enrichment.")
+        return {field: None for field in TMDB_FIELDS}
+
+    data = _tmdb_get(
+        f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}"
+        "?append_to_response=credits,videos,images"
+        # Textless and English stills only, so a row's background is scene art
+        # rather than a foreign title card.
+        "&include_image_language=en,null",
+        tmdb_bearer_token,
+        f"TMDb details for {imdb_id}",
+    )
+    if data is TMDB_FAILED:
+        return TMDB_FAILED
+
+    return {
+        "trailerKey": _pick_trailer((data.get("videos") or {}).get("results") or []),
+        "tagline": _clean(data.get("tagline")),
+        # TMDb calls it the overview; the field is named for the club films' own
+        # `plot` so one panel component can render either shape.
+        "plot": _clean(data.get("overview")),
+        "cast": _pick_cast(data.get("credits") or {}) or None,
+        "backdropImages": _pick_backdrops(data.get("images")) or None,
+    }
+
+
 # Distinguishes "failed to load" from a file that legitimately holds null.
 LOAD_FAILED = object()
 
@@ -161,7 +331,55 @@ def collect_referenced_ids(lists_data, watched_data):
     return referenced
 
 
-def enrich_list_films(lists_path, watched_path, films_path, list_films_path, api_key):
+def add_tmdb_details(summaries, tmdb_bearer_token):
+    """Fills the TMDb half of every summary not already stamped current.
+
+    Runs over the whole cache rather than only the films fetched this time, so
+    bumping TMDB_VERSION backfills films cached before a field existed instead of
+    leaving the site with two generations of record. A summary already carrying
+    the current stamp is skipped, which is what keeps this one lookup per film
+    per version.
+
+    Empty fields are dropped rather than stored as null, with one exception:
+    `trailerKey` keeps its null, because the frontend reads absent as "the member
+    may still be waiting on CI" and null as "there is none". Everything else
+    reads the same either way, and an absent key is smaller.
+    """
+    stale = [
+        imdb_id
+        for imdb_id, summary in summaries.items()
+        if summary.get(TMDB_VERSION_FIELD) != TMDB_VERSION
+    ]
+    if not stale:
+        return
+
+    if not tmdb_bearer_token:
+        print(f"TMDB_KEY is not set; leaving {len(stale)} film(s) unenriched for now.")
+        return
+
+    for imdb_id in stale:
+        summary = summaries[imdb_id]
+        details = get_tmdb_details(imdb_id, tmdb_bearer_token)
+        if details is TMDB_FAILED:
+            # Left unstamped on purpose: the next deploy tries again rather than
+            # recording an outage as "this film has nothing".
+            print(f"Leaving {imdb_id} unenriched; TMDb did not answer.")
+            continue
+
+        for field in TMDB_FIELDS:
+            value = details.get(field)
+            if value is None and field != "trailerKey":
+                summary.pop(field, None)
+            else:
+                summary[field] = value
+        summary[TMDB_VERSION_FIELD] = TMDB_VERSION
+        print(
+            f"Enriched {imdb_id}: "
+            + ", ".join(f for f in TMDB_FIELDS if summary.get(f) is not None)
+        )
+
+
+def enrich_list_films(lists_path, watched_path, films_path, list_films_path, api_key, tmdb_key=None):
     """Refresh the summary cache. Returns True on success (no-op included)."""
     lists_data = _load_json(lists_path, list)
     watched_data = _load_json(watched_path, dict)
@@ -176,7 +394,10 @@ def enrich_list_films(lists_path, watched_path, films_path, list_films_path, api
     wanted = collect_referenced_ids(lists_data, watched_data) - club_ids
 
     pruned = sorted(set(cache) - wanted)
-    updated = {imdb_id: cache[imdb_id] for imdb_id in cache if imdb_id in wanted}
+    # Copied rather than aliased: add_trailers fills a field in place, and a
+    # summary shared with `cache` would make the "already up to date" comparison
+    # below compare the file against itself and skip the write.
+    updated = {imdb_id: dict(cache[imdb_id]) for imdb_id in cache if imdb_id in wanted}
     for imdb_id in pruned:
         print(f"Pruning unreferenced summary: {imdb_id}")
 
@@ -190,6 +411,8 @@ def enrich_list_films(lists_path, watched_path, films_path, list_films_path, api
         summary = get_omdb_summary(imdb_id, api_key)
         if summary:
             updated[imdb_id] = summary
+
+    add_tmdb_details(updated, tmdb_key)
 
     # Sorted keys so the diff of a generated file stays readable.
     ordered = {imdb_id: updated[imdb_id] for imdb_id in sorted(updated)}
@@ -216,6 +439,7 @@ def main():
         os.environ.get("JSON_PATH", DEFAULT_FILMS_PATH),
         os.environ.get("LIST_FILMS_PATH", DEFAULT_LIST_FILMS_PATH),
         os.environ.get("OMDB_API_KEY"),
+        os.environ.get("TMDB_KEY"),
     )
 
 

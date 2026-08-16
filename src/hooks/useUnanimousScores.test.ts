@@ -117,9 +117,7 @@ describe('useUnanimousScores', () => {
             }),
         });
 
-        const { result } = renderHook(() =>
-            useUnanimousScores([newer, older, lower], members)
-        );
+        const { result } = renderHook(() => useUnanimousScores([newer, older, lower], members));
 
         // Two distinct unanimous scores, sorted descending by score.
         expect(result.current.unanimousScores.map((g) => g.score)).toEqual([9, 7]);
