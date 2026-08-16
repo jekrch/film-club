@@ -715,12 +715,7 @@ const ListEditorPage: React.FC = () => {
                     )}
                 </div>
 
-                {status !== 'signed-in' ? (
-                    <p className="text-sm text-slate-400">
-                        Sign in from the menu, with the Google account you gave the club, to build
-                        your lists.
-                    </p>
-                ) : locked ? (
+                {status !== 'signed-in' ? null : locked ? (
                     <p className="text-slate-400">
                         This list belongs to {owner}. Only its owner can edit it.
                     </p>

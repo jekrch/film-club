@@ -314,8 +314,13 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                     </Button>
                 )}
 
+                {/* Railed in emerald, the accent this codebase reserves for a
+                    member's own voice (see `AccentCard`), and matching the note
+                    on a list row. Without it the review and the film's own
+                    tagline and synopsis in the panel below are the same grey at
+                    the same size, a hairline apart. */}
                 {blurb && !editing && (
-                    <div className="col-span-3 col-start-1 row-start-2 ml-3 mt-1.5 prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-slate-300 sm:col-span-1 sm:col-start-2 sm:ml-4">
+                    <div className="col-span-3 col-start-1 row-start-2 ml-3 mt-1.5 border-l-2 border-emerald-400/30 pl-3 prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-slate-300 sm:col-span-1 sm:col-start-2 sm:ml-4">
                         <Markdown>{blurb}</Markdown>
                     </div>
                 )}

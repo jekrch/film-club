@@ -233,17 +233,6 @@ const WatchedPage: React.FC = () => {
                     <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
                 </div>
 
-                {/* Signing in happens in the nav and nowhere else; this only
-                    points the owner of the log at it. */}
-                {configured && !canEdit && status !== 'signed-in' && (
-                    <div className="mb-6 border-b border-slate-700/60 pb-6">
-                        <p className="text-sm text-slate-400">
-                            Is this yours? Sign in from the menu to log a film, or to score and
-                            review one.
-                        </p>
-                    </div>
-                )}
-
                 {canEdit && (
                     <div className="mb-6 border-b border-slate-700/60 pb-6">
                         <FilmSearchPicker

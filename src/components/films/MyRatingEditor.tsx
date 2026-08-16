@@ -21,9 +21,9 @@ import {
 /**
  * The signed-in member's own row on a film, made editable (§8.9).
  *
- * Collapsed until asked for, and that matters: expanding it is what mounts the
- * Google sign-in button, so no third-party script runs for someone who is only
- * reading the page.
+ * Rendered only for a signed-in member, and collapsed until asked for: someone
+ * reading the page is never offered an editor, and never told how to sign in —
+ * the nav's account control is the one place that happens.
  *
  * A save commits to the repo and is live after the next Pages build — about a
  * minute. The panel therefore shows the value from its own state with a note
@@ -105,7 +105,7 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
         if (!sameFormValues(current, baselineForm)) setForm(baselineForm);
     }, [baselineForm]);
 
-    if (!configured) return null;
+    if (!configured || status !== 'signed-in') return null;
 
     const update = (field: keyof RatingFormValues, value: string) => {
         setForm((current) => ({ ...current, [field]: value }));
@@ -195,156 +195,147 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
                 </Button>
             </div>
 
-            {status !== 'signed-in' ? (
-                <p className="text-sm text-slate-400">
-                    Sign in from the menu, with the Google account you gave the club, to edit your
-                    score and review for {film.title}.
-                </p>
-            ) : (
-                <div className="space-y-4">
-                    <div className="flex flex-wrap gap-4">
-                        <label className="block w-28">
-                            <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
-                                Score / {MAX_SCORE}
-                            </span>
-                            <input
-                                type="number"
-                                inputMode="decimal"
-                                min={0}
-                                max={MAX_SCORE}
-                                step={SCORE_STEP}
-                                value={form.score}
-                                onChange={(e) => update('score', e.target.value)}
-                                disabled={saving || overridesLoading}
-                                placeholder="—"
-                                className={FIELD_CLASS}
-                            />
-                        </label>
-                        <label className="block w-28">
-                            <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
-                                Qualifier
-                            </span>
-                            <input
-                                type="text"
-                                maxLength={1}
-                                value={form.qualifier}
-                                onChange={(e) => update('qualifier', e.target.value)}
-                                disabled={saving || overridesLoading}
-                                placeholder="d"
-                                className={FIELD_CLASS}
-                            />
-                        </label>
-                        <p className="max-w-xs self-end pb-2 text-xs italic text-slate-500">
-                            A qualifier marks a score given on a different rubric — "d" for a
-                            documentary. Leave it blank otherwise.
-                        </p>
-                    </div>
-
-                    <label className="block">
+            <div className="space-y-4">
+                <div className="flex flex-wrap gap-4">
+                    <label className="block w-28">
                         <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
-                            Review
+                            Score / {MAX_SCORE}
                         </span>
-                        <textarea
-                            rows={10}
-                            maxLength={BLURB_LIMIT}
-                            value={form.blurb}
-                            onChange={(e) => update('blurb', e.target.value)}
+                        <input
+                            type="number"
+                            inputMode="decimal"
+                            min={0}
+                            max={MAX_SCORE}
+                            step={SCORE_STEP}
+                            value={form.score}
+                            onChange={(e) => update('score', e.target.value)}
                             disabled={saving || overridesLoading}
-                            placeholder="What did you make of it? Markdown works here."
-                            className={REVIEW_CLASS}
+                            placeholder="—"
+                            className={FIELD_CLASS}
                         />
                     </label>
+                    <label className="block w-28">
+                        <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
+                            Qualifier
+                        </span>
+                        <input
+                            type="text"
+                            maxLength={1}
+                            value={form.qualifier}
+                            onChange={(e) => update('qualifier', e.target.value)}
+                            disabled={saving || overridesLoading}
+                            placeholder="d"
+                            className={FIELD_CLASS}
+                        />
+                    </label>
+                    <p className="max-w-xs self-end pb-2 text-xs italic text-slate-500">
+                        A qualifier marks a score given on a different rubric — "d" for a
+                        documentary. Leave it blank otherwise.
+                    </p>
+                </div>
 
-                    <div className="flex flex-wrap items-center gap-3">
+                <label className="block">
+                    <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
+                        Review
+                    </span>
+                    <textarea
+                        rows={10}
+                        maxLength={BLURB_LIMIT}
+                        value={form.blurb}
+                        onChange={(e) => update('blurb', e.target.value)}
+                        disabled={saving || overridesLoading}
+                        placeholder="What did you make of it? Markdown works here."
+                        className={REVIEW_CLASS}
+                    />
+                </label>
+
+                <div className="flex flex-wrap items-center gap-3">
+                    <Button
+                        type="button"
+                        variant="solid"
+                        size="sm"
+                        accent="blue"
+                        onClick={() => void handleSave()}
+                        disabled={saving || overridesLoading || !dirty}
+                    >
+                        {saving ? 'Saving…' : 'Save'}
+                    </Button>
+
+                    {dirty && !saving && (
                         <Button
                             type="button"
-                            variant="solid"
+                            variant="link"
                             size="sm"
-                            accent="blue"
-                            onClick={() => void handleSave()}
-                            disabled={saving || overridesLoading || !dirty}
+                            onClick={() => {
+                                setForm(baselineForm);
+                                setSaveError(null);
+                                setNotice(null);
+                            }}
+                            className="text-slate-400 hover:text-slate-200"
                         >
-                            {saving ? 'Saving…' : 'Save'}
+                            Discard changes
                         </Button>
+                    )}
 
-                        {dirty && !saving && (
-                            <Button
-                                type="button"
-                                variant="link"
-                                size="sm"
-                                onClick={() => {
-                                    setForm(baselineForm);
-                                    setSaveError(null);
-                                    setNotice(null);
-                                }}
-                                className="text-slate-400 hover:text-slate-200"
-                            >
-                                Discard changes
-                            </Button>
-                        )}
-
-                        {/* Revert exists only where there is an override to
-                            remove: it hands the row back to the sheet, which is
-                            meaningless for a row the sheet still owns. */}
-                        {override && !confirmingRevert && (
+                    {/* Revert exists only where there is an override to
+                        remove: it hands the row back to the sheet, which is
+                        meaningless for a row the sheet still owns. */}
+                    {override && !confirmingRevert && (
+                        <Button
+                            type="button"
+                            variant="link"
+                            size="sm"
+                            accent="rose"
+                            onClick={() => setConfirmingRevert(true)}
+                            disabled={saving}
+                            className="ml-auto"
+                        >
+                            Revert to the sheet
+                        </Button>
+                    )}
+                    {override && confirmingRevert && (
+                        <span className="ml-auto flex items-center gap-3 text-sm text-slate-400">
+                            Drop your edits and use the sheet's value?
                             <Button
                                 type="button"
                                 variant="link"
                                 size="sm"
                                 accent="rose"
-                                onClick={() => setConfirmingRevert(true)}
+                                onClick={() => void handleRevert()}
                                 disabled={saving}
-                                className="ml-auto"
                             >
-                                Revert to the sheet
+                                Revert
                             </Button>
-                        )}
-                        {override && confirmingRevert && (
-                            <span className="ml-auto flex items-center gap-3 text-sm text-slate-400">
-                                Drop your edits and use the sheet's value?
-                                <Button
-                                    type="button"
-                                    variant="link"
-                                    size="sm"
-                                    accent="rose"
-                                    onClick={() => void handleRevert()}
-                                    disabled={saving}
-                                >
-                                    Revert
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="link"
-                                    size="sm"
-                                    onClick={() => setConfirmingRevert(false)}
-                                    className="text-slate-400 hover:text-slate-200"
-                                >
-                                    Cancel
-                                </Button>
-                            </span>
-                        )}
-                    </div>
-
-                    {notice && <p className="text-sm text-emerald-300">{notice}</p>}
-                    {saveError && <p className="text-sm text-rose-300">{saveError}</p>}
-                    {authError && !saveError && (
-                        <p className="text-sm text-rose-300">{authError}</p>
+                            <Button
+                                type="button"
+                                variant="link"
+                                size="sm"
+                                onClick={() => setConfirmingRevert(false)}
+                                className="text-slate-400 hover:text-slate-200"
+                            >
+                                Cancel
+                            </Button>
+                        </span>
                     )}
-
-                    <p className="border-t border-slate-700/60 pt-3 text-xs text-slate-500">
-                        Signed in as {member}.{' '}
-                        <Button
-                            type="button"
-                            variant="link"
-                            size="xs"
-                            onClick={signOut}
-                            className="text-slate-400 hover:text-slate-200"
-                        >
-                            Sign out
-                        </Button>
-                    </p>
                 </div>
-            )}
+
+                {notice && <p className="text-sm text-emerald-300">{notice}</p>}
+                {saveError && <p className="text-sm text-rose-300">{saveError}</p>}
+                {authError && !saveError && <p className="text-sm text-rose-300">{authError}</p>}
+
+                <p className="border-t border-slate-700/60 pt-3 text-xs text-slate-500">
+                    Signed in as {member}.{' '}
+                    <Button
+                        type="button"
+                        variant="link"
+                        size="xs"
+                        onClick={signOut}
+                        className="text-slate-400 hover:text-slate-200"
+                    >
+                        Sign out
+                    </Button>
+                </p>
+            </div>
         </AccentCard>
     );
 };

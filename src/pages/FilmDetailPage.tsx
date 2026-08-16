@@ -795,8 +795,8 @@ const FilmDetailPage = () => {
                                     )}
                                 </div>
 
-                                {/* A member's own score and review, editable in place. Collapsed
-                                until asked for — opening it is what loads Google sign-in. */}
+                                {/* A member's own score and review, editable in place. Renders
+                                nothing at all unless a member is signed in. */}
                                 <MyRatingEditor
                                     film={film}
                                     override={
