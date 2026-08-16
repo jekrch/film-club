@@ -22,6 +22,7 @@ import { getTeamMemberByName } from '../types/team';
 import type { WatchedEntry } from '../types/watched';
 import { compareWatched, getWatchedForMember, resolveWatchedEntries } from '../utils/watchedUtils';
 import { todayLocal } from '../utils/watchedEditUtils';
+import { entryFrameSource } from '../utils/frameSources';
 
 /**
  * One member's watch log: everything they watched on their own, most recent
@@ -84,13 +85,13 @@ const WatchedPage: React.FC = () => {
     const resolved = useMemo(() => resolveWatchedEntries(entries), [entries]);
     const logged = useMemo(() => new Set(entries.map((entry) => entry.imdbID)), [entries]);
 
-    // The banner collage can only draw on club films; a log made entirely of
-    // films the club never watched has none, and HeroCollageBackground renders
-    // nothing rather than a lone frame — leaving the banner as a plain card.
-    const collageFilms = useMemo(
-        () => resolved.map((entry) => entry.clubFilm).filter((film) => film !== undefined),
-        [resolved]
-    );
+    // Art for the banner, drawn from the whole log rather than just the films
+    // the club happens to have watched: the member's own image link first, then
+    // the club's stills, then the poster — whichever poster the row resolved to,
+    // the member's own included. A log of two or
+    // more films therefore always has a collage, which is the point — most of
+    // what's logged here the club never watched.
+    const collage = useMemo(() => resolved.map(entryFrameSource), [resolved]);
 
     /** Folds a written entry into local state, keeping the log in watch order. */
     const applyLocal = useCallback((entry: WatchedEntry) => {
@@ -163,7 +164,7 @@ const WatchedPage: React.FC = () => {
                 Back
             </Button>
 
-            <HeroBanner films={collageFilms} className="mb-8">
+            <HeroBanner sources={collage} className="mb-8">
                 <p className="mb-3 text-xs uppercase tracking-[0.2em] text-blue-400/80">Watched</p>
                 <h1 className="mb-3 break-words text-3xl font-thin text-slate-100 sm:text-4xl">
                     {owner}'s watch log

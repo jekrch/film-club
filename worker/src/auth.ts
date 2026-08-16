@@ -62,14 +62,28 @@ export function memberNames(env: Env): string[] {
     return [...new Set(memberMap(env).values())];
 }
 
-/** Accepts either a JSON array or a plain comma-separated list, since both are easy to fat-finger into a secret. */
-function adminEmails(env: Env): Set<string> {
+/**
+ * Accepts either a JSON array or a plain comma-separated list, since both are
+ * easy to fat-finger into a secret.
+ *
+ * A secret that parses as neither fails *closed*, to an empty admin set. This
+ * runs on every request, outside {@link authenticate}'s own error handling, so
+ * letting the parse throw would turn one stray character into a 500 on reads as
+ * well as writes — the whole service down rather than one privilege lost.
+ */
+export function adminEmails(env: Env): Set<string> {
     const raw = (env.ADMIN_EMAILS || '').trim();
     if (!raw) return new Set();
 
     let values: string[];
     if (raw.startsWith('[')) {
-        const parsed: unknown = JSON.parse(raw);
+        let parsed: unknown;
+        try {
+            parsed = JSON.parse(raw);
+        } catch {
+            console.error('ADMIN_EMAILS is not valid JSON; treating it as empty.');
+            return new Set();
+        }
         values = Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === 'string') : [];
     } else {
         values = raw.split(',');

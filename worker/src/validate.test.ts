@@ -9,6 +9,7 @@ import { HttpError } from './errors';
 import {
     LIMITS,
     assignListId,
+    resolveListOwner,
     resolveOwner,
     slugify,
     validateImdbId,
@@ -55,7 +56,10 @@ describe('validateRatingPatch', () => {
         expectStatus(() => validateRatingPatch({ score: 8.15 }), 400);
     });
 
-    it('rejects scores outside 0–10 and non-numbers', () => {
+    it('rejects scores outside the club\u2019s 0\u20139 scale, and non-numbers', () => {
+        // 10 is not a score here: the club rates out of 9, and the site has
+        // rendered every score as "/9" since long before it could write one.
+        expectStatus(() => validateRatingPatch({ score: 10 }), 400);
         expectStatus(() => validateRatingPatch({ score: 11 }), 400);
         expectStatus(() => validateRatingPatch({ score: -1 }), 400);
         expectStatus(() => validateRatingPatch({ score: '7' }), 400);
@@ -149,6 +153,27 @@ describe('validateWatchedPatch', () => {
         expectStatus(() => validateWatchedPatch({ blurb: 'x'.repeat(LIMITS.blurb + 1) }), 400);
     });
 
+    it('carries an image link, and null to clear one', () => {
+        expect(validateWatchedPatch({ image: 'https://img.example/still.jpg' })).toEqual({
+            image: 'https://img.example/still.jpg',
+        });
+        expect(validateWatchedPatch({ image: null })).toEqual({ image: null });
+        expectStatus(() => validateWatchedPatch({ image: 'http://img.example/still.jpg' }), 400);
+    });
+
+    it('carries a poster link independently of the background one', () => {
+        // Two fields, one set of rules, and neither implies the other: a member
+        // fixing a bad poster is not also asking for a new background.
+        expect(validateWatchedPatch({ posterImage: 'https://img.example/poster.jpg' })).toEqual({
+            posterImage: 'https://img.example/poster.jpg',
+        });
+        expect(validateWatchedPatch({ posterImage: null })).toEqual({ posterImage: null });
+        expect(
+            validateWatchedPatch({ image: 'https://img.example/still.jpg', posterImage: null })
+        ).toEqual({ image: 'https://img.example/still.jpg', posterImage: null });
+        expectStatus(() => validateWatchedPatch({ posterImage: 'http://img.example/p.jpg' }), 400);
+    });
+
     it('rejects a body with nothing it understands', () => {
         expectStatus(() => validateWatchedPatch({}), 400);
         expectStatus(() => validateWatchedPatch({ rewatch: true }), 400);
@@ -183,8 +208,8 @@ describe('validateListInput', () => {
             ],
         });
         expect(list.entries).toEqual([
-            { rank: 1, imdbID: 'tt0091251', description: 'first' },
-            { rank: 2, imdbID: 'tt0107653', description: null },
+            { rank: 1, imdbID: 'tt0091251', description: 'first', image: null, posterImage: null, score: null },
+            { rank: 2, imdbID: 'tt0107653', description: null, image: null, posterImage: null, score: null },
         ]);
     });
 
@@ -198,8 +223,131 @@ describe('validateListInput', () => {
         expect(list).toEqual({
             name: 'Top 5 Devastations',
             description: null,
-            entries: [{ rank: 1, imdbID: 'tt0091251', description: null }],
+            ranked: true,
+            entries: [
+                { rank: 1, imdbID: 'tt0091251', description: null, image: null, posterImage: null, score: null },
+            ],
         });
+    });
+
+    it('defaults to a ranked list and takes false when told', () => {
+        // Absent is what a client too old to send the flag means, and what every
+        // list written before it existed was.
+        expect(validateListInput(base).ranked).toBe(true);
+        expect(validateListInput({ ...base, ranked: null }).ranked).toBe(true);
+        expect(validateListInput({ ...base, ranked: false }).ranked).toBe(false);
+        expectStatus(() => validateListInput({ ...base, ranked: 'no' }), 400);
+    });
+
+    it('ranks an unranked list positionally all the same', () => {
+        // Unranked drops the numerals on the site, not the order the member
+        // arranged — which is `rank`, and is still stored.
+        const list = validateListInput({
+            ...base,
+            ranked: false,
+            entries: [{ imdbID: 'tt0091251' }, { imdbID: 'tt0107653' }],
+        });
+        expect(list.entries.map((e) => e.rank)).toEqual([1, 2]);
+    });
+
+    it('takes a per-entry score on the same 0–9 scale', () => {
+        const list = validateListInput({
+            ...base,
+            entries: [{ imdbID: 'tt0091251', score: 8.5 }, { imdbID: 'tt0107653', score: null }],
+        });
+        expect(list.entries.map((e) => e.score)).toEqual([8.5, null]);
+
+        // Absent is the same as null: no score *here*, so the site falls back to
+        // the member's log or club rating.
+        expect(validateListInput(base).entries[0].score).toBeNull();
+
+        expectStatus(
+            () => validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', score: 10 }] }),
+            400
+        );
+        expectStatus(
+            () => validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', score: 8.15 }] }),
+            400
+        );
+        expectStatus(
+            () => validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', score: '8' }] }),
+            400
+        );
+    });
+
+    it('takes an https background image per entry and rejects anything else', () => {
+        const list = validateListInput({
+            ...base,
+            entries: [{ imdbID: 'tt0091251', image: '  https://img.example/still.jpg  ' }],
+        });
+        expect(list.entries[0].image).toBe('https://img.example/still.jpg');
+
+        // Blank is the same as unset — a cleared field shouldn't store "".
+        expect(
+            validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', image: '   ' }] }).entries[0]
+                .image
+        ).toBeNull();
+
+        // http would commit cleanly and then be blocked as mixed content.
+        expectStatus(
+            () => validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', image: 'http://img.example/x.jpg' }] }),
+            400
+        );
+        expectStatus(
+            () => validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', image: 'not a url' }] }),
+            400
+        );
+        expectStatus(
+            () =>
+                validateListInput({
+                    ...base,
+                    entries: [
+                        { imdbID: 'tt0091251', image: `https://img.example/${'x'.repeat(LIMITS.imageUrl)}.jpg` },
+                    ],
+                }),
+            400
+        );
+    });
+
+    it('takes an https poster per entry, separate from the background image', () => {
+        const list = validateListInput({
+            ...base,
+            entries: [
+                {
+                    imdbID: 'tt0091251',
+                    image: 'https://img.example/still.jpg',
+                    posterImage: '  https://img.example/poster.jpg  ',
+                },
+            ],
+        });
+        expect(list.entries[0]).toMatchObject({
+            image: 'https://img.example/still.jpg',
+            posterImage: 'https://img.example/poster.jpg',
+        });
+
+        // Blank and absent both mean "use the film's own poster".
+        expect(
+            validateListInput({ ...base, entries: [{ imdbID: 'tt0091251', posterImage: '  ' }] })
+                .entries[0].posterImage
+        ).toBeNull();
+        expect(validateListInput(base).entries[0].posterImage).toBeNull();
+
+        expectStatus(
+            () =>
+                validateListInput({
+                    ...base,
+                    entries: [{ imdbID: 'tt0091251', posterImage: 'http://img.example/p.jpg' }],
+                }),
+            400
+        );
+        expectStatus(
+            () =>
+                validateListInput({
+                    ...base,
+                    entries: [{ imdbID: 'tt0091251', posterImage: 'not a url' }],
+                }),
+            400
+        );
     });
 
     it('requires a name and allows an empty list', () => {
@@ -262,6 +410,42 @@ describe('resolveOwner', () => {
 
     it("won't let even an admin invent a member", () => {
         expectStatus(() => resolveOwner('Nobody', { name: 'Jacob', admin: true }, members), 400);
+    });
+});
+
+describe('resolveListOwner', () => {
+    const members = ['Andy', 'Jacob', 'Mark'];
+    const admin = { name: 'Jacob', admin: true };
+    const member = { name: 'Jacob', admin: false };
+
+    it('leaves an existing list with its owner when the body names nobody', () => {
+        // The regression this exists for: the list editor never sends `owner`,
+        // and an admin may edit anyone's list. Falling back to the caller here
+        // handed them Andy's list, entries intact and attribution gone.
+        expect(resolveListOwner(undefined, admin, members, 'Andy')).toBe('Andy');
+        expect(resolveListOwner(null, admin, members, 'Andy')).toBe('Andy');
+        expect(resolveListOwner('', admin, members, 'Andy')).toBe('Andy');
+    });
+
+    it('gives a new list to the caller', () => {
+        expect(resolveListOwner(undefined, member, members, null)).toBe('Jacob');
+    });
+
+    it('still lets an admin transfer a list by naming the owner outright', () => {
+        expect(resolveListOwner('Mark', admin, members, 'Andy')).toBe('Mark');
+    });
+
+    it('leaves a member editing their own list alone', () => {
+        expect(resolveListOwner(undefined, member, members, 'Jacob')).toBe('Jacob');
+    });
+
+    it('forbids a non-admin naming someone else, list or no list', () => {
+        expectStatus(() => resolveListOwner('Andy', member, members, 'Jacob'), 403);
+        expectStatus(() => resolveListOwner('Andy', member, members, null), 403);
+    });
+
+    it("won't let even an admin invent a member", () => {
+        expectStatus(() => resolveListOwner('Nobody', admin, members, 'Andy'), 400);
     });
 });
 

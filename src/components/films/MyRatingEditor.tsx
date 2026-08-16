@@ -9,9 +9,12 @@ import { deleteRating, putRating, type RatingOverride } from '../../api/clubApi'
 import type { Film } from '../../types/film';
 import {
     BLURB_LIMIT,
+    MAX_SCORE,
+    SCORE_STEP,
     baselineRating,
     buildRatingPatch,
     parseRatingForm,
+    sameFormValues,
     toFormValues,
     type RatingFormValues,
 } from '../../utils/ratingEditUtils';
@@ -70,18 +73,30 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
 
     const baseline = useMemo(() => baselineRating(override, clubRating), [override, clubRating]);
     const baselineForm = useMemo(() => toFormValues(baseline), [baseline]);
-    const dirty =
-        form.score !== baselineForm.score ||
-        form.qualifier !== baselineForm.qualifier ||
-        form.blurb !== baselineForm.blurb;
+    const dirty = !sameFormValues(form, baselineForm);
 
-    // The live override arrives after the panel is already open, so the form
-    // re-seeds when it lands — unless the member has started typing, whose work
+    // The member's own rating arrives after the panel is already open — the
+    // sign-in resolves, then the live override lands — so the form re-seeds each
+    // time the baseline moves, unless the member has started typing, whose work
     // must not be thrown away by a late response.
-    const dirtyRef = useRef(dirty);
-    dirtyRef.current = dirty;
+    //
+    // "Has started typing" is measured against the values last seeded, not
+    // against the incoming baseline: the two differ precisely when the baseline
+    // has just changed, so comparing with the new one reads the arrival itself
+    // as member input and leaves the form stuck on its empty initial values.
+    const formRef = useRef(form);
+    formRef.current = form;
+    const seededRef = useRef<RatingFormValues | null>(null);
     useEffect(() => {
-        if (!dirtyRef.current) setForm(baselineForm);
+        const current = formRef.current;
+        const seeded = seededRef.current;
+        const typedIn = seeded !== null && !sameFormValues(current, seeded);
+        // Reaching the new baseline by hand counts as untouched: there is
+        // nothing of the member's to protect, and the seed stays in step.
+        if (typedIn && !sameFormValues(current, baselineForm)) return;
+
+        seededRef.current = baselineForm;
+        if (!sameFormValues(current, baselineForm)) setForm(baselineForm);
     }, [baselineForm]);
 
     if (!configured) return null;
@@ -187,14 +202,14 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
                     <div className="flex flex-wrap gap-4">
                         <label className="block w-28">
                             <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
-                                Score
+                                Score / {MAX_SCORE}
                             </span>
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 min={0}
-                                max={10}
-                                step={0.1}
+                                max={MAX_SCORE}
+                                step={SCORE_STEP}
                                 value={form.score}
                                 onChange={(e) => update('score', e.target.value)}
                                 disabled={saving || overridesLoading}

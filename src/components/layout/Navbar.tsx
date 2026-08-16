@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { NavLink, Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Cross as Hamburger } from 'hamburger-react'
+import NavAuthControl from '../../auth/NavAuthControl';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -61,15 +62,18 @@ const Navbar = () => {
               />
             </Link>
           </div>
-          {/* Desktop menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-7">
+          {/* Desktop menu. The sign-in control sits past the links with more
+              air than the links give each other, so it reads as a separate
+              thing rather than a fifth destination. */}
+          <div className="hidden md:flex ml-10 items-center gap-8">
+            <div className="flex items-baseline space-x-7">
               {links.map((link) => (
                 <NavLink key={link.to} to={link.to} end={link.to === '/'} className={desktopLink}>
                   {link.label}
                 </NavLink>
               ))}
             </div>
+            <NavAuthControl />
           </div>
 
           {/* Mobile menu button. hamburger-react supplies aria-expanded itself;
@@ -115,6 +119,11 @@ const Navbar = () => {
               </NavLink>
             </motion.div>
           ))}
+          {/* Below the links and behind a rule: signing in isn't navigation,
+              and for most visitors it's not for them at all. */}
+          <div className="mt-2 border-t border-slate-800/70 pt-2">
+            <NavAuthControl variant="inline" />
+          </div>
         </div>
       </motion.div>
     </nav>

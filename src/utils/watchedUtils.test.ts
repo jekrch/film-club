@@ -105,6 +105,31 @@ describe('resolveWatchedEntry', () => {
         expect(resolved.clubFilm).toBeUndefined();
     });
 
+    it('shows the member’s own poster over the film’s, club film included', () => {
+        // Their private record of a viewing, so their artwork stands — and it
+        // says nothing about the club's copy, which lives in films.json.
+        const resolved = resolveWatchedEntry(
+            entry({ imdbID: 'tt0107653', posterImage: 'mine.jpg' }),
+            sources({})
+        );
+        expect(resolved.poster).toBe('mine.jpg');
+        expect(resolved.clubFilm).toBe(clubFilm);
+        expect(clubFilm.poster).toBe('club.jpg');
+
+        expect(
+            resolveWatchedEntry(entry({ imdbID: 'tt2000000', posterImage: 'mine.jpg' }), sources({}))
+                .poster
+        ).toBe('mine.jpg');
+    });
+
+    it('is the only artwork an unenriched entry has', () => {
+        const resolved = resolveWatchedEntry(
+            entry({ imdbID: 'tt9999999', posterImage: 'mine.jpg' }),
+            sources({})
+        );
+        expect(resolved).toMatchObject({ title: null, poster: 'mine.jpg' });
+    });
+
     it('degrades to a placeholder for an id nothing knows yet', () => {
         // A film logged a minute ago has not been through the CI enrichment step.
         const resolved = resolveWatchedEntry(entry({ imdbID: 'tt9999999' }), sources({}));

@@ -14,6 +14,8 @@ const form = (overrides: Partial<WatchedFormValues> = {}): WatchedFormValues => 
     score: '',
     qualifier: '',
     blurb: '',
+    image: '',
+    posterImage: '',
     ...overrides,
 });
 
@@ -22,6 +24,8 @@ const values = (overrides: Partial<WatchedValues> = {}): WatchedValues => ({
     score: null,
     scoreQualifier: null,
     blurb: null,
+    image: null,
+    posterImage: null,
     ...overrides,
 });
 
@@ -30,7 +34,14 @@ describe('parseWatchedForm', () => {
         expect(
             parseWatchedForm(form({ score: '7.5', qualifier: 'D', blurb: '  Held up.  ' }))
         ).toEqual({
-            values: { watchDate: '2026-08-09', score: 7.5, scoreQualifier: 'd', blurb: 'Held up.' },
+            values: {
+                watchDate: '2026-08-09',
+                score: 7.5,
+                scoreQualifier: 'd',
+                blurb: 'Held up.',
+                image: null,
+                posterImage: null,
+            },
         });
     });
 
@@ -59,6 +70,15 @@ describe('parseWatchedForm', () => {
         expect(parseWatchedForm(form({ watchDate: todayLocal() }))).toHaveProperty('values');
     });
 
+    it('says which of the two image fields a bad link is in', () => {
+        expect(parseWatchedForm(form({ image: 'http://img.example/still.jpg' }))).toEqual({
+            error: expect.stringContaining('Background image'),
+        });
+        expect(parseWatchedForm(form({ posterImage: 'img.example/poster.jpg' }))).toEqual({
+            error: expect.stringContaining('Poster'),
+        });
+    });
+
     it('applies the club’s score rules', () => {
         expect(parseWatchedForm(form({ score: '8.15' }))).toHaveProperty('error');
         expect(parseWatchedForm(form({ score: '11' }))).toHaveProperty('error');
@@ -80,6 +100,22 @@ describe('buildWatchedPatch', () => {
             score: null,
             blurb: null,
         });
+    });
+
+    it('treats the two image fields as separate edits', () => {
+        expect(
+            buildWatchedPatch(
+                values({ posterImage: 'https://img.example/poster.jpg' }),
+                values({ image: 'https://img.example/still.jpg' })
+            )
+        ).toEqual({ image: null, posterImage: 'https://img.example/poster.jpg' });
+
+        // Setting a poster leaves a background the member never touched alone,
+        // so the patch — and the diff it commits — stays one field wide.
+        const withStill = values({ image: 'https://img.example/still.jpg' });
+        expect(
+            buildWatchedPatch({ ...withStill, posterImage: 'https://img.example/p.jpg' }, withStill)
+        ).toEqual({ posterImage: 'https://img.example/p.jpg' });
     });
 
     it('sends a moved date on a rewatch', () => {

@@ -80,7 +80,9 @@ export type RatingPatch = {
 export interface ListInput {
     name: string;
     description: string | null;
-    entries: Pick<FilmListEntry, 'imdbID' | 'description'>[];
+    /** Whether the order renders as a numbered ranking. Omitted, the worker assumes it does. */
+    ranked?: boolean;
+    entries: Pick<FilmListEntry, 'imdbID' | 'description' | 'image' | 'posterImage' | 'score'>[];
     /** Admins only; omitted, the worker uses the caller's own name. */
     owner?: string;
 }
@@ -226,6 +228,10 @@ export interface WatchedPatch {
     score?: number | null;
     scoreQualifier?: string | null;
     blurb?: string | null;
+    /** An `https` URL for the row's background art, or null to clear it. */
+    image?: string | null;
+    /** An `https` URL to use as the film's poster, or null to clear it. */
+    posterImage?: string | null;
     /** Admins only; omitted, the worker uses the caller's own name. */
     owner?: string;
 }

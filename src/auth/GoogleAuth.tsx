@@ -9,21 +9,25 @@ import React, {
     useState,
 } from 'react';
 
-import { ClubApiError, getSession, isEditorConfigured } from '../api/clubApi';
-import { readTokenExpiry } from './gis';
+import { ClubApiError, GOOGLE_CLIENT_ID, getSession, isEditorConfigured } from '../api/clubApi';
+import { initGoogleIdentity, readTokenExpiry } from './gis';
+import { clearToken, loadToken, saveToken } from './sessionStore';
 
 /**
  * Who the current visitor is, for the editing surfaces only.
  *
- * The token is a Google ID token and is held **in memory only** — deliberately
- * not in `localStorage` or `sessionStorage`, which would widen the blast radius
- * of any XSS on the site (§8.2). The cost is that a reload signs you out; the
- * benefit is that a stolen script can't lift a credential off disk. Tokens last
- * about an hour, so an editing session outliving one is rare.
+ * The token is a Google ID token, kept in `sessionStorage` so a reload doesn't
+ * cost a sign-in — a revision of §8.2, with the reasoning and the XSS tradeoff
+ * set out in `sessionStore.ts`. Restoring is deliberately cheap and Google-free:
+ * the stored token goes straight to our worker to be re-checked, so a refresh
+ * loads no third-party script and shows no prompt.
  *
- * Nothing here runs on an ordinary page view: the provider mounts with no
- * session, loads no script, and makes no request until a member opens an
- * editing surface and signs in.
+ * Google is involved again only when a token is about to expire, where GIS is
+ * asked to issue a replacement. That path may quietly fail — it is best-effort,
+ * and the session simply ends at expiry as it always did when it does.
+ *
+ * Nothing here runs for a visitor who has never signed in: with no stored token
+ * the provider mounts, does nothing, and makes no request.
  */
 
 export type AuthStatus = 'signed-out' | 'authenticating' | 'signed-in';
@@ -42,6 +46,12 @@ export interface ClubAuthValue {
     /** The signed-in member's `club.json` name, or null. */
     member: string | null;
     admin: boolean;
+    /**
+     * True while a session is being restored or renewed without anyone having
+     * asked. Distinct from `authenticating`, which is a sign-in a person just
+     * started and whose failure they should be told about.
+     */
+    resuming: boolean;
     /** Last sign-in failure, in words meant for the member. */
     error: string | null;
     /** False when this build has no worker URL or client ID; hide every editor. */
@@ -65,9 +75,24 @@ const ClubAuthContext = createContext<ClubAuthValue | undefined>(undefined);
 const SIGN_IN_TO_SAVE = 'Sign in to save changes.';
 const SESSION_EXPIRED = 'Your sign-in expired. Sign in again to save.';
 
+/**
+ * How long before a token dies to ask Google for its replacement. Long enough
+ * that a save started just before the swap still has a valid token behind it,
+ * short enough not to be asking every few minutes.
+ */
+const RENEW_LEAD_MS = 2 * 60 * 1000;
+
+/**
+ * How long to wait on a renewal before giving up on it. GIS reports nothing
+ * dependable when silent re-issue *doesn't* happen, so a timer is the only way
+ * to know it isn't coming.
+ */
+const RENEW_TIMEOUT_MS = 8000;
+
 export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [session, setSession] = useState<Session | null>(null);
     const [status, setStatus] = useState<AuthStatus>('signed-out');
+    const [resuming, setResuming] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // `withToken` needs the live session without being rebuilt on every change:
@@ -76,12 +101,33 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
     const sessionRef = useRef<Session | null>(null);
     sessionRef.current = session;
 
+    // Restores and renewals are tracked in a ref as well as in state: the code
+    // that receives a credential needs to know, right then, whether a person
+    // asked for it or we did — and in the restore case that decision happens
+    // before React has re-rendered anything.
+    const resumingRef = useRef(false);
+    const renewTimer = useRef<number | null>(null);
+
     const configured = useMemo(isEditorConfigured, []);
 
     const endSession = useCallback((reason: string | null) => {
+        // Every path that drops a session comes through here — expiry, a 401
+        // from the worker, an explicit sign-out — so this is the one place the
+        // stored token has to be cleared for it to never outlive the session it
+        // belongs to.
+        clearToken();
         setSession(null);
         setStatus('signed-out');
         setError(reason);
+    }, []);
+
+    const finishResume = useCallback(() => {
+        resumingRef.current = false;
+        setResuming(false);
+        if (renewTimer.current !== null) {
+            window.clearTimeout(renewTimer.current);
+            renewTimer.current = null;
+        }
     }, []);
 
     const signOut = useCallback(() => {
@@ -89,11 +135,14 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
         // offers the chooser rather than silently re-picking the same account —
         // which is the whole point of signing out on a shared machine.
         window.google?.accounts?.id?.disableAutoSelect();
+        finishResume();
         endSession(null);
-    }, [endSession]);
+    }, [endSession, finishResume]);
 
     const acceptCredential = useCallback(
         async (credential: string) => {
+            const wasSilent = resumingRef.current;
+            finishResume();
             setStatus('authenticating');
             setError(null);
             try {
@@ -105,6 +154,9 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
                     admin,
                 });
                 setStatus('signed-in');
+                // Stored only once the worker has vouched for it, so a rejected
+                // credential is never left behind to be retried on every load.
+                saveToken(credential);
             } catch (err) {
                 // A 403 here is the ordinary case of someone signing in with a
                 // Google account that isn't in MEMBER_EMAILS, so it gets a
@@ -115,15 +167,79 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
                         : err instanceof Error
                           ? err.message
                           : 'Sign-in failed.';
-                endSession(message);
+                // Nobody asked for a restore, so nobody should be shown its
+                // failure — a member whose stored token has gone stale should
+                // find a signed-out nav, not an error about something they
+                // didn't do. A renewal under a live session is the exception:
+                // that one explains why the next save would fail.
+                const reason = !wasSilent
+                    ? message
+                    : sessionRef.current
+                      ? SESSION_EXPIRED
+                      : null;
+                endSession(reason);
             }
         },
-        [endSession]
+        [endSession, finishResume]
     );
 
-    // Drop the session the moment its token expires rather than waiting for a
-    // save to fail on it. Nothing schedules when signed out, so this is inert
-    // for every visitor who never signs in.
+    // The GIS callback outlives any one render, so it reaches the current
+    // handler through a ref rather than capturing the one it was created with.
+    const accept = useRef(acceptCredential);
+    accept.current = acceptCredential;
+
+    /**
+     * Puts a stored token back to work.
+     *
+     * It is re-checked against the worker rather than trusted: the signature is
+     * not verifiable here, and `member`/`admin` can have changed since it was
+     * issued. That costs one request, and only for someone who was signed in.
+     */
+    // One attempt per page load, guarded against StrictMode's double effect so
+    // development doesn't send the worker two identical restores.
+    const restored = useRef(false);
+    useEffect(() => {
+        if (!configured || restored.current) return;
+        const token = loadToken();
+        if (!token) return;
+
+        restored.current = true;
+        resumingRef.current = true;
+        setResuming(true);
+        void accept.current(token);
+    }, [configured]);
+
+    /**
+     * Asks Google for a replacement token for the account this browser last
+     * used, before the current one expires.
+     *
+     * Best-effort by nature. `auto_select` lets GIS answer without showing
+     * anything when it can; when it can't it falls back to the One Tap card,
+     * and when it does neither the timer below stops us waiting and the session
+     * runs out on schedule.
+     */
+    const renewSession = useCallback(() => {
+        if (!isEditorConfigured() || resumingRef.current) return;
+
+        resumingRef.current = true;
+        setResuming(true);
+
+        // The prompt is deliberately not cancelled when this fires: if a One
+        // Tap card is sitting on screen, clicking it should still work. All
+        // that lapses is our waiting on it.
+        renewTimer.current = window.setTimeout(finishResume, RENEW_TIMEOUT_MS);
+
+        initGoogleIdentity(GOOGLE_CLIENT_ID, (credential) => {
+            void accept.current(credential);
+        })
+            .then((gis) => gis.prompt())
+            .catch(finishResume);
+    }, [finishResume]);
+
+    // Try for a replacement token shortly before this one dies, and drop the
+    // session the moment it does rather than waiting for a save to fail on it.
+    // Nothing schedules when signed out, so this is inert for every visitor who
+    // never signs in.
     useEffect(() => {
         if (!session) return;
         const remaining = session.expiresAt - Date.now();
@@ -131,9 +247,21 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
             endSession(SESSION_EXPIRED);
             return;
         }
-        const timer = window.setTimeout(() => endSession(SESSION_EXPIRED), remaining);
-        return () => window.clearTimeout(timer);
-    }, [session, endSession]);
+
+        // Only worth scheduling when there is real time to renew *into*: a
+        // token already inside the lead window would renew immediately, and if
+        // Google handed back the same near-expiry token that would spin.
+        const renew =
+            remaining > RENEW_LEAD_MS
+                ? window.setTimeout(renewSession, remaining - RENEW_LEAD_MS)
+                : null;
+        const expire = window.setTimeout(() => endSession(SESSION_EXPIRED), remaining);
+
+        return () => {
+            if (renew !== null) window.clearTimeout(renew);
+            window.clearTimeout(expire);
+        };
+    }, [session, endSession, renewSession]);
 
     const withToken = useCallback(
         async <T,>(call: (token: string) => Promise<T>): Promise<T> => {
@@ -168,6 +296,7 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
             status,
             member: session?.member ?? null,
             admin: session?.admin ?? false,
+            resuming,
             error,
             configured,
             acceptCredential,
@@ -176,7 +305,17 @@ export const ClubAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
             withToken,
             canEditAs,
         }),
-        [status, session, error, configured, acceptCredential, signOut, withToken, canEditAs]
+        [
+            status,
+            session,
+            resuming,
+            error,
+            configured,
+            acceptCredential,
+            signOut,
+            withToken,
+            canEditAs,
+        ]
     );
 
     return <ClubAuthContext.Provider value={value}>{children}</ClubAuthContext.Provider>;

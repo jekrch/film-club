@@ -29,11 +29,55 @@ export interface RatingFormValues {
 /** The worker's cap on a review. */
 export const BLURB_LIMIT = 4000;
 
+/**
+ * The top of the club's scale. Every score on this site is out of 9 — the club
+ * says so on the about page, and every surface that renders one has said so all
+ * along; only the editors were still accepting 0–10. The worker enforces the
+ * same bound (`validateScore` in `worker/src/validate.ts`), which is the copy
+ * that is actually trusted.
+ */
+export const MAX_SCORE = 9;
+
+/** The step both score inputs use, matching the one-decimal-place rule below. */
+export const SCORE_STEP = 0.1;
+
+export type ScoreParseResult = { score: number | null } | { error: string };
+
+/**
+ * Parses one score field: blank for unset, otherwise 0–{@link MAX_SCORE} with at
+ * most one decimal place.
+ *
+ * Shared by the rating editor, the watch-log editor, and the list editor so the
+ * three cannot drift apart on what a score is.
+ */
+export function parseScoreField(raw: string): ScoreParseResult {
+    const trimmed = raw.trim();
+    if (trimmed === '') return { score: null };
+
+    const parsed = Number(trimmed);
+    if (!Number.isFinite(parsed)) return { error: 'Score must be a number.' };
+    if (parsed < 0 || parsed > MAX_SCORE) {
+        return { error: `Score must be between 0 and ${MAX_SCORE}.` };
+    }
+
+    const tenths = parsed * 10;
+    // 8.1 * 10 is 81.00000000000001 in binary floating point, so round-trip
+    // rather than testing for an integer directly.
+    if (Math.abs(tenths - Math.round(tenths)) > 1e-9) {
+        return { error: 'Score can have at most one decimal place.' };
+    }
+    return { score: Math.round(tenths) / 10 };
+}
+
 export const toFormValues = (values: RatingValues): RatingFormValues => ({
     score: values.score === null ? '' : String(values.score),
     qualifier: values.scoreQualifier ?? '',
     blurb: values.blurb ?? '',
 });
+
+/** Field-by-field equality; `toFormValues` returns a fresh object every call. */
+export const sameFormValues = (a: RatingFormValues, b: RatingFormValues): boolean =>
+    a.score === b.score && a.qualifier === b.qualifier && a.blurb === b.blurb;
 
 /**
  * What the member has right now, resolved field by field.
@@ -68,20 +112,9 @@ export type ParseResult = { values: RatingValues } | { error: string };
  * trust.
  */
 export function parseRatingForm(form: RatingFormValues): ParseResult {
-    const rawScore = form.score.trim();
-    let score: number | null = null;
-    if (rawScore !== '') {
-        const parsed = Number(rawScore);
-        if (!Number.isFinite(parsed)) return { error: 'Score must be a number.' };
-        if (parsed < 0 || parsed > 10) return { error: 'Score must be between 0 and 10.' };
-        const tenths = parsed * 10;
-        // 8.1 * 10 is 81.00000000000001 in binary floating point, so round-trip
-        // rather than testing for an integer directly.
-        if (Math.abs(tenths - Math.round(tenths)) > 1e-9) {
-            return { error: 'Score can have at most one decimal place.' };
-        }
-        score = Math.round(tenths) / 10;
-    }
+    const parsedScore = parseScoreField(form.score);
+    if ('error' in parsedScore) return parsedScore;
+    const { score } = parsedScore;
 
     const qualifier = form.qualifier.trim().toLowerCase();
     if (qualifier !== '' && !/^[a-z]$/.test(qualifier)) {

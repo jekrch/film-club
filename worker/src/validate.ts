@@ -22,6 +22,14 @@ import type { FilmListEntry } from './types';
 export const IMDB_ID_PATTERN = /^tt\d{7,9}$/;
 
 /**
+ * The top of the club's scale: every score on the site is out of 9, whether it
+ * is a club rating, a personal watch, or a pick on a list. Mirrored on the site
+ * as `MAX_SCORE` in `src/utils/ratingEditUtils.ts`, which catches a typo in the
+ * form; this is the copy that is trusted.
+ */
+export const MAX_SCORE = 9;
+
+/**
  * Sanity bounds on what one commit may contain, not technical limits. The
  * worker makes no per-film network call on save (§8.6), so a long list costs it
  * nothing — these exist to keep a single request from writing an absurd file.
@@ -33,6 +41,8 @@ export const LIMITS = {
     entryDescription: 500,
     entries: 100,
     blurb: 4000,
+    /** A URL, not an image — nothing here fetches what it points at. */
+    imageUrl: 500,
     /** Films in one member's watch log. A log grows for years; a list does not. */
     watched: 2000,
 } as const;
@@ -57,6 +67,8 @@ export type RatingPatch = Partial<Record<RatingField, number | string | null>> &
 export interface ListInput {
     name: string;
     description: string | null;
+    /** Whether the order renders numbered. Always stored, defaulting to true. */
+    ranked: boolean;
     entries: FilmListEntry[];
 }
 
@@ -86,6 +98,35 @@ function optionalText(value: unknown, max: number, field: string): string | null
     return trimmed;
 }
 
+/**
+ * A member-supplied image URL for a row's background art, or `null` to clear it.
+ *
+ * `https` only. The site is served over HTTPS, so an `http` image is blocked as
+ * mixed content — it would commit cleanly and then render as nothing, which is
+ * the worst of the available failures. Nothing here fetches the URL: it is
+ * stored verbatim and ends up as an `<img src>`, so what matters is that the
+ * browser can load it, not that it resolves today.
+ *
+ * The site checks the same rules before saving (`parseImageUrl` in
+ * `src/utils/imageUrl.ts`) so a typo is caught in the form; this is the copy
+ * that is actually trusted.
+ */
+export function validateImageUrl(value: unknown, field = 'image'): string | null {
+    const text = optionalText(value, LIMITS.imageUrl, field);
+    if (text === null) return null;
+
+    let parsed: URL;
+    try {
+        parsed = new URL(text);
+    } catch {
+        throw badRequest(`${field}: expected a full URL starting with https://`);
+    }
+    if (parsed.protocol !== 'https:') {
+        throw badRequest(`${field}: must be an https:// URL`);
+    }
+    return text;
+}
+
 /** Validates an IMDb id from a URL path or a list entry. */
 export function validateImdbId(value: unknown, field = 'imdbID'): string {
     if (typeof value !== 'string' || !IMDB_ID_PATTERN.test(value)) {
@@ -95,23 +136,25 @@ export function validateImdbId(value: unknown, field = 'imdbID'): string {
 }
 
 /**
- * Scores are numbers in 0–10 with at most one decimal place.
+ * Scores are numbers in 0–{@link MAX_SCORE} with at most one decimal place.
  *
  * The sheet path tolerates unparseable cells by storing them verbatim; the
  * worker deliberately does not — it only ever emits values that path would have
  * produced, so `films.json` stays uniform whichever writer filled a row.
  */
-function validateScore(value: unknown): number | null {
+function validateScore(value: unknown, field = 'score'): number | null {
     if (value === null) return null;
     if (typeof value !== 'number' || !Number.isFinite(value)) {
-        throw badRequest('score: expected a number or null');
+        throw badRequest(`${field}: expected a number or null`);
     }
-    if (value < 0 || value > 10) throw badRequest('score: must be between 0 and 10');
+    if (value < 0 || value > MAX_SCORE) {
+        throw badRequest(`${field}: must be between 0 and ${MAX_SCORE}`);
+    }
     const tenths = value * 10;
     // Binary floating point means 8.1 * 10 is 81.00000000000001, so round-trip
     // rather than testing for an integer directly.
     if (Math.abs(tenths - Math.round(tenths)) > 1e-9) {
-        throw badRequest('score: at most one decimal place');
+        throw badRequest(`${field}: at most one decimal place`);
     }
     return Math.round(tenths) / 10;
 }
@@ -152,7 +195,14 @@ export function validateRatingPatch(body: unknown): RatingPatch {
 }
 
 /** Fields a member may set on a watch-log entry. `imdbID` comes from the path, never the body. */
-const WATCHED_FIELDS = ['watchDate', 'score', 'scoreQualifier', 'blurb'] as const;
+const WATCHED_FIELDS = [
+    'watchDate',
+    'score',
+    'scoreQualifier',
+    'blurb',
+    'image',
+    'posterImage',
+] as const;
 
 /**
  * A partial watch-log update, with the same merge semantics as
@@ -168,6 +218,8 @@ export interface WatchedPatch {
     score?: number | null;
     scoreQualifier?: string | null;
     blurb?: string | null;
+    image?: string | null;
+    posterImage?: string | null;
 }
 
 /**
@@ -210,6 +262,8 @@ export function validateWatchedPatch(body: unknown): WatchedPatch {
     if ('score' in raw) patch.score = validateScore(raw.score);
     if ('scoreQualifier' in raw) patch.scoreQualifier = validateQualifier(raw.scoreQualifier);
     if ('blurb' in raw) patch.blurb = optionalText(raw.blurb, LIMITS.blurb, 'blurb');
+    if ('image' in raw) patch.image = validateImageUrl(raw.image);
+    if ('posterImage' in raw) patch.posterImage = validateImageUrl(raw.posterImage, 'posterImage');
 
     if (Object.keys(patch).length === 0) {
         throw badRequest(`watched: nothing to update (expected one of ${WATCHED_FIELDS.join(', ')})`);
@@ -223,8 +277,11 @@ export function validateWatchedPatch(body: unknown): WatchedPatch {
  *
  * Ranks are assigned positionally from the array order — a client-supplied
  * `rank` is ignored, which keeps the stored ranks dense and 1-based however the
- * editor reorders. Duplicate ids keep their first occurrence, so a
- * double-tapped "add" can't produce a list with the same film twice.
+ * editor reorders. That holds for an unranked list too: `ranked` decides whether
+ * the site draws the numbers, not whether the order is recorded.
+ *
+ * Duplicate ids keep their first occurrence, so a double-tapped "add" can't
+ * produce a list with the same film twice.
  */
 export function validateListInput(body: unknown): ListInput {
     const raw = asRecord(body, 'list');
@@ -233,6 +290,13 @@ export function validateListInput(body: unknown): ListInput {
     if (name === null) throw badRequest('name: a list needs a name');
 
     const description = optionalText(raw.description, LIMITS.listDescription, 'description');
+
+    // Absent means ranked: that is what every list was before the flag existed,
+    // and what a client too old to send it still means.
+    if (raw.ranked !== undefined && raw.ranked !== null && typeof raw.ranked !== 'boolean') {
+        throw badRequest('ranked: expected true or false');
+    }
+    const ranked = raw.ranked === undefined || raw.ranked === null ? true : raw.ranked;
 
     const rawEntries = raw.entries ?? [];
     if (!Array.isArray(rawEntries)) throw badRequest('entries: expected an array');
@@ -256,10 +320,20 @@ export function validateListInput(body: unknown): ListInput {
                 LIMITS.entryDescription,
                 `entries[${index}].description`
             ),
+            image: validateImageUrl(entry.image, `entries[${index}].image`),
+            posterImage: validateImageUrl(entry.posterImage, `entries[${index}].posterImage`),
+            // Absent and null are the same thing here — no score on this list —
+            // because unlike a rating override there is no second writer to
+            // defer to. The site fills the gap from the member's log or their
+            // club rating when it renders the row.
+            score:
+                entry.score === undefined
+                    ? null
+                    : validateScore(entry.score, `entries[${index}].score`),
         });
     });
 
-    return { name, description, entries };
+    return { name, description, ranked, entries };
 }
 
 /**
@@ -285,6 +359,34 @@ export function resolveOwner(
     const match = memberNames.find((name) => name.toLowerCase() === wanted);
     if (!match) throw badRequest(`owner: "${requested}" is not a club member`);
     return match;
+}
+
+/**
+ * Resolves who a list belongs to *after* a save.
+ *
+ * {@link resolveOwner} answers "who is this write for", and for a create that is
+ * the whole question. An update asks a second one it can't see: a body carrying
+ * no `owner` means **leave it where it is**, not "give it to the caller".
+ *
+ * The distinction only bites for an admin, and it bites hard. Admins may edit
+ * anyone's list, and the editor never sends `owner` — so defaulting to the
+ * caller silently retitled every list an admin touched as their own, id and
+ * entries intact but attribution gone. Deferring to `existingOwner` keeps an
+ * ownership transfer what it reads like: something the body actually asked for.
+ *
+ * `existingOwner` is `null` on create, where there is nothing to defer to.
+ */
+export function resolveListOwner(
+    requested: unknown,
+    caller: { name: string; admin: boolean },
+    memberNames: readonly string[],
+    existingOwner: string | null
+): string {
+    const named = requested !== null && requested !== undefined && requested !== '';
+    if (!named && existingOwner !== null) return existingOwner;
+    // A body that *did* name someone still goes through the full check, so a
+    // non-admin naming another member is a 403 whether or not the list exists.
+    return resolveOwner(requested, caller, memberNames);
 }
 
 /** URL-safe slug: lowercase, non-alphanumerics collapsed to single hyphens. */

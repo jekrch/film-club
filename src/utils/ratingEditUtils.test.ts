@@ -86,7 +86,8 @@ describe('parseRatingForm', () => {
 
     it.each([
         ['not a number', form({ score: 'eight' }), /must be a number/],
-        ['out of range', form({ score: '11' }), /between 0 and 10/],
+        ['a score above the club\u2019s scale', form({ score: '10' }), /between 0 and 9/],
+        ['a negative score', form({ score: '-1' }), /between 0 and 9/],
         ['too precise', form({ score: '8.15' }), /one decimal place/],
         ['a multi-letter qualifier', form({ qualifier: 'doc' }), /single letter/],
         ['an over-long review', form({ blurb: 'x'.repeat(4001) }), /limit is 4000/],

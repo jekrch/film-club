@@ -38,6 +38,12 @@ export interface GoogleIdApi {
         use_fedcm_for_prompt?: boolean;
     }): void;
     renderButton(parent: HTMLElement, options: GoogleButtonOptions): void;
+    /**
+     * Asks GIS to re-issue a credential for an account this browser has already
+     * used. With `auto_select` it can do that without any UI at all; when it
+     * can't, it falls back to the One Tap card.
+     */
+    prompt(): void;
     /** Clears the "remember me" hint so the next sign-in offers the chooser. */
     disableAutoSelect(): void;
 }
@@ -76,6 +82,42 @@ export function loadGoogleIdentity(): Promise<GoogleIdApi> {
     });
 
     return loading;
+}
+
+/**
+ * `google.accounts.id.initialize` is global and single-shot in practice: the
+ * callback GIS keeps is the one from the first call, and calling it again resets
+ * state under any button it has already painted. So initialization happens once
+ * per page and the handler lives here, swapped by whichever caller most recently
+ * asked — both of them (the rendered button and the session resume) hand the
+ * credential to the same place, so which one wins doesn't matter.
+ */
+let initialized = false;
+let credentialHandler: ((credential: string) => void) | null = null;
+
+export async function initGoogleIdentity(
+    clientId: string,
+    onCredential: (credential: string) => void
+): Promise<GoogleIdApi> {
+    const gis = await loadGoogleIdentity();
+    credentialHandler = onCredential;
+
+    if (!initialized) {
+        gis.initialize({
+            client_id: clientId,
+            callback: ({ credential }) => credentialHandler?.(credential),
+            // Consulted only by `prompt()`, which this app calls in exactly one
+            // situation: resuming a session on a browser that had one already.
+            // `renderButton` ignores it, so an explicit sign-in still goes
+            // through the account chooser rather than silently re-picking —
+            // which was the point of keeping it off before there was a resume.
+            auto_select: true,
+            cancel_on_tap_outside: true,
+        });
+        initialized = true;
+    }
+
+    return gis;
 }
 
 /**

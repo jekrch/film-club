@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { GOOGLE_CLIENT_ID } from '../api/clubApi';
 import { useClubAuth } from './GoogleAuth';
-import { loadGoogleIdentity } from './gis';
+import { initGoogleIdentity } from './gis';
 
 /**
  * The Sign in with Google button, rendered by Google's own library.
@@ -27,19 +27,16 @@ const GoogleSignInButton: React.FC<{ className?: string }> = ({ className }) => 
         if (!configured) return;
         let cancelled = false;
 
-        loadGoogleIdentity()
+        // Initialization is shared with the session resume and happens once per
+        // page (see `gis.ts`); this only claims the credential handler and asks
+        // for a button. Nothing here calls `prompt()`, so no One Tap card
+        // appears — pressing this button still goes through the account
+        // chooser, which is what an explicit "I want to edit" should do.
+        initGoogleIdentity(GOOGLE_CLIENT_ID, (credential) => {
+            void accept.current(credential);
+        })
             .then((gis) => {
                 if (cancelled || !target.current) return;
-                gis.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: ({ credential }) => {
-                        void accept.current(credential);
-                    },
-                    // No One Tap: this is an explicit "I want to edit" action, and
-                    // an auto-selected account is a surprise on a shared machine.
-                    auto_select: false,
-                    cancel_on_tap_outside: true,
-                });
                 gis.renderButton(target.current, {
                     type: 'standard',
                     theme: 'filled_black',

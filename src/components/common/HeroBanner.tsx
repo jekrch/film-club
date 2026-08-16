@@ -1,12 +1,18 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Film } from '../../types/film';
+import { FrameSource } from '../../utils/frameSources';
 import BaseCard from './BaseCard';
 import HeroCollageBackground from './HeroCollageBackground';
 
 interface HeroBannerProps {
-    /** Films the collage draws its frames from. It picks its own panels. */
-    films: Film[];
+    /** Club films the collage draws its frames from. It picks its own panels. */
+    films?: Film[];
+    /**
+     * Art from films that may have no club record — a member's list or watch
+     * log. Pass this or `films`, not both; this one wins.
+     */
+    sources?: FrameSource[];
     children: React.ReactNode;
     /** Classes for the card itself — page-level spacing belongs here. */
     className?: string;
@@ -32,12 +38,13 @@ const DEFAULT_CONTENT = 'mx-auto max-w-2xl px-2 py-10 sm:px-6 sm:py-12 md:py-14 
  */
 const HeroBanner: React.FC<HeroBannerProps> = ({
     films,
+    sources,
     children,
     className,
     contentClassName = DEFAULT_CONTENT,
 }) => (
     <BaseCard className={classNames('banner-bleed overflow-hidden relative', className)}>
-        <HeroCollageBackground films={films} />
+        <HeroCollageBackground films={films} sources={sources} />
         <div className={classNames('relative z-30', contentClassName)}>{children}</div>
     </BaseCard>
 );

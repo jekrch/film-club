@@ -1,5 +1,6 @@
 import type { WatchedPatch } from '../api/clubApi';
 import type { WatchedEntry } from '../types/watched';
+import { parseImageUrl } from './imageUrl';
 import { parseRatingForm, type RatingFormValues } from './ratingEditUtils';
 
 /**
@@ -17,18 +18,24 @@ import { parseRatingForm, type RatingFormValues } from './ratingEditUtils';
  * build.
  */
 
-/** The four fields of an entry a member may set, normalized to what the worker stores. */
+/** The fields of an entry a member may set, normalized to what the worker stores. */
 export interface WatchedValues {
     watchDate: string;
     score: number | null;
     scoreQualifier: string | null;
     blurb: string | null;
+    /** Background art for the row; see {@link parseImageUrl}. */
+    image: string | null;
+    /** The member's own poster for the film; same rules, different frame. */
+    posterImage: string | null;
 }
 
-/** The same four as form state; every input is a string, empty for "unset". */
+/** The same fields as form state; every input is a string, empty for "unset". */
 export interface WatchedFormValues extends RatingFormValues {
     /** `YYYY-MM-DD`, the value format of `<input type="date">`. */
     watchDate: string;
+    image: string;
+    posterImage: string;
 }
 
 /** Today in the *viewer's* timezone — the default date for a film being logged now. */
@@ -43,6 +50,8 @@ export const toWatchedForm = (values: WatchedValues): WatchedFormValues => ({
     score: values.score === null ? '' : String(values.score),
     qualifier: values.scoreQualifier ?? '',
     blurb: values.blurb ?? '',
+    image: values.image ?? '',
+    posterImage: values.posterImage ?? '',
 });
 
 /** The stored fields of an entry, dropping the provenance the editor never touches. */
@@ -51,6 +60,10 @@ export const toWatchedValues = (entry: WatchedEntry): WatchedValues => ({
     score: entry.score,
     scoreQualifier: entry.scoreQualifier,
     blurb: entry.blurb,
+    // Absent on entries stored before the field existed, which reads the same
+    // as one deliberately left blank.
+    image: entry.image ?? null,
+    posterImage: entry.posterImage ?? null,
 });
 
 export type WatchedParseResult = { values: WatchedValues } | { error: string };
@@ -79,7 +92,17 @@ export function parseWatchedForm(form: WatchedFormValues): WatchedParseResult {
     const rating = parseRatingForm(form);
     if ('error' in rating) return rating;
 
-    return { values: { watchDate, ...rating.values } };
+    // Both URL fields are checked by the same rules, so the message has to say
+    // which one failed — `parseImageUrl` only knows it was handed a bad link.
+    const image = parseImageUrl(form.image);
+    if ('error' in image) return { error: `Background image: ${image.error}` };
+
+    const posterImage = parseImageUrl(form.posterImage);
+    if ('error' in posterImage) return { error: `Poster: ${posterImage.error}` };
+
+    return {
+        values: { watchDate, ...rating.values, image: image.value, posterImage: posterImage.value },
+    };
 }
 
 /**
@@ -93,5 +116,7 @@ export function buildWatchedPatch(next: WatchedValues, baseline: WatchedValues):
     if (next.score !== baseline.score) patch.score = next.score;
     if (next.scoreQualifier !== baseline.scoreQualifier) patch.scoreQualifier = next.scoreQualifier;
     if (next.blurb !== baseline.blurb) patch.blurb = next.blurb;
+    if (next.image !== baseline.image) patch.image = next.image;
+    if (next.posterImage !== baseline.posterImage) patch.posterImage = next.posterImage;
     return patch;
 }

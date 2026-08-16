@@ -16,6 +16,11 @@ export interface ResolvedWatchedEntry extends WatchedEntry {
     /** Null when neither films.json nor the summary cache knows this id. */
     title: string | null;
     year: string | null;
+    /**
+     * The poster to draw: the member's own {@link WatchedEntry.posterImage} if
+     * they set one, otherwise the film's. Resolved here so every surface
+     * showing this entry draws the same poster. Null when there is neither.
+     */
     poster: string | null;
     clubFilm?: Film;
 }
@@ -63,15 +68,33 @@ export const compareWatched = (a: WatchedEntry, b: WatchedEntry): number =>
 export const getWatchedForMember = (
     name: string | undefined | null,
     sources: WatchedDataSources = {}
-): WatchedEntry[] => {
+): WatchedEntry[] => [...rawLogFor(name, sources)].sort(compareWatched);
+
+/** One member's log as stored, unsorted. Empty for an unknown or missing name. */
+const rawLogFor = (
+    name: string | undefined | null,
+    sources: WatchedDataSources
+): readonly WatchedEntry[] => {
     if (!name) return [];
     const normalized = name.trim().toLowerCase();
     if (!normalized) return [];
 
     const log = sources.watched ?? watchedLog;
     const key = Object.keys(log).find((owner) => owner.trim().toLowerCase() === normalized);
-    return key === undefined ? [] : [...log[key]].sort(compareWatched);
+    return key === undefined ? [] : log[key];
 };
+
+/**
+ * One member's entry for one film, if they have logged it. There is at most one
+ * — a rewatch moves the date rather than adding a row — so this is a lookup, not
+ * a filter.
+ */
+export const getWatchedEntryFor = (
+    name: string | undefined | null,
+    imdbID: string,
+    sources: WatchedDataSources = {}
+): WatchedEntry | undefined =>
+    rawLogFor(name, sources).find((entry) => entry.imdbID === imdbID);
 
 /**
  * Fills in an entry's display metadata, preferring the full club record so a
@@ -86,22 +109,33 @@ export const resolveWatchedEntry = (
     sources: WatchedDataSources = {}
 ): ResolvedWatchedEntry => {
     const clubFilm = indexFilms(sources.films ?? filmData).get(entry.imdbID);
+    // The member's own poster displaces the film's, a club film's included: this
+    // row is their private record of a viewing, and swapping its artwork claims
+    // nothing about the club's copy — which lives in `films.json` and is never
+    // written from here.
+    const posterOverride = entry.posterImage ?? null;
+
     if (clubFilm) {
         return {
             ...entry,
             title: clubFilm.title,
             year: clubFilm.year ?? null,
-            poster: clubFilm.poster ?? null,
+            poster: posterOverride ?? clubFilm.poster ?? null,
             clubFilm,
         };
     }
 
     const summary = (sources.summaries ?? listFilmSummaries)[entry.imdbID];
     if (summary) {
-        return { ...entry, title: summary.title, year: summary.year ?? null, poster: summary.poster ?? null };
+        return {
+            ...entry,
+            title: summary.title,
+            year: summary.year ?? null,
+            poster: posterOverride ?? summary.poster ?? null,
+        };
     }
 
-    return { ...entry, title: null, year: null, poster: null };
+    return { ...entry, title: null, year: null, poster: posterOverride };
 };
 
 /** Resolves a whole log, in watch order. */

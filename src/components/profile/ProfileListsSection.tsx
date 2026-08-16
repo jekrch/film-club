@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { PencilSquareIcon, PlusIcon, QueueListIcon } from '@heroicons/react/24/outline';
 
 import AccentCard from '../common/AccentCard';
+import RowFrameWash from '../common/RowFrameWash';
 import { useClubAuth } from '../../auth/GoogleAuth';
 import { FilmListDefinition } from '../../types/list';
+import { collectionFrameImage } from '../../utils/frameSources';
 import { resolveListEntries } from '../../utils/listUtils';
 
 interface ProfileListsSectionProps {
@@ -62,19 +64,31 @@ const ProfileListsSection: React.FC<ProfileListsSectionProps> = ({ lists, owner 
                 {lists.map((list) => {
                     // Resolved rather than raw so the preview can use whichever
                     // source knows the poster, and skip entries with none.
-                    const preview = resolveListEntries(list)
-                        .filter((entry) => entry.poster)
-                        .slice(0, PREVIEW_COUNT);
+                    const entries = resolveListEntries(list);
+                    const preview = entries.filter((entry) => entry.poster).slice(0, PREVIEW_COUNT);
+                    // Drawn from the whole list, not just the rows the stack
+                    // shows: a still anywhere on it beats a poster at rank 1,
+                    // and washing a poster behind a stack of posters is the one
+                    // outcome worth avoiding here.
+                    const wash = collectionFrameImage(entries);
 
                     return (
                         // The edit link is a sibling of the card link rather than
                         // a child: an anchor inside an anchor is invalid, and the
                         // browser's own handling of it is not something to rely on.
+                        //
+                        // `relative` and `overflow-hidden` are the wash's doing:
+                        // it lays itself over the row and has to be clipped to
+                        // the rounded corners. Each child below is `relative` so
+                        // it stacks above the art — a positioned element paints
+                        // over static siblings whatever the source order.
                         <div
                             key={list.id}
-                            className="group flex items-center gap-4 rounded-xl border border-slate-600/30 bg-slate-700/25 px-4 py-3.5 transition-colors duration-200 hover:border-amber-500/25 hover:bg-slate-700/45"
+                            className="group relative flex items-center gap-4 overflow-hidden rounded-xl border border-slate-600/30 bg-slate-700/25 px-4 py-3.5 transition-colors duration-200 hover:border-amber-500/25 hover:bg-slate-700/45"
                         >
-                            <Link to={`/lists/${list.id}`} className="min-w-0 flex-grow">
+                            <RowFrameWash image={wash} />
+
+                            <Link to={`/lists/${list.id}`} className="relative min-w-0 flex-grow">
                                 <h5 className="truncate font-medium text-slate-200 transition-colors group-hover:text-slate-100">
                                     {list.name}
                                 </h5>
@@ -96,7 +110,7 @@ const ProfileListsSection: React.FC<ProfileListsSectionProps> = ({ lists, owner 
                                 descends to keep the top-ranked poster on top of
                                 the stack. */}
                             {preview.length > 0 && (
-                                <div className="hidden flex-shrink-0 sm:flex" aria-hidden="true">
+                                <div className="relative hidden flex-shrink-0 sm:flex" aria-hidden="true">
                                     {preview.map((entry, index) => (
                                         <img
                                             key={entry.imdbID}
@@ -118,7 +132,7 @@ const ProfileListsSection: React.FC<ProfileListsSectionProps> = ({ lists, owner 
                                     to={`/lists/${list.id}/edit`}
                                     aria-label={`Edit ${list.name}`}
                                     title={`Edit ${list.name}`}
-                                    className="flex-shrink-0 rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-700/45 hover:text-amber-300"
+                                    className="relative flex-shrink-0 rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-700/45 hover:text-amber-300"
                                 >
                                     <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
                                 </Link>

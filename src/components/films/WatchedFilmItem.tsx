@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 
 import Button from '../common/Button';
+import Markdown from '../common/Markdown';
+import ImageUrlPreview from '../common/ImageUrlPreview';
+import RowFrameWash from '../common/RowFrameWash';
+import { entryFrameImage } from '../../utils/frameSources';
 import { getRatingColorClass } from '../../utils/ratingUtils';
 import { formatWatchDate, type ResolvedWatchedEntry } from '../../utils/watchedUtils';
 import {
@@ -15,14 +18,23 @@ import {
     todayLocal,
     type WatchedFormValues,
 } from '../../utils/watchedEditUtils';
-import { BLURB_LIMIT } from '../../utils/ratingEditUtils';
+import { BLURB_LIMIT, MAX_SCORE, SCORE_STEP } from '../../utils/ratingEditUtils';
+import { IMAGE_URL_LIMIT } from '../../utils/imageUrl';
 import type { WatchedPatch } from '../../api/clubApi';
 
 /** The scale the club scores on, which members use for their own watches too. */
-const MAX_RATING = 9;
+const MAX_RATING = MAX_SCORE;
 
-/** Poster height, shared with the date column so the two center on each other. */
-const POSTER_HEIGHT = 'h-[4.5rem]';
+/**
+ * The poster's box, at a poster's own 2:3.
+ *
+ * It is the row's left anchor and is sized to be looked at. The date used to own
+ * a band twice its width — 6rem of centered serif for "Aug 15, 2026", against a
+ * 3rem poster — which spent the row's most valuable space on its least
+ * interesting field. The date is now a caption over the title, where the profile
+ * preview has always put it, and the poster has the room that band was using.
+ */
+const POSTER_CLASS = 'h-24 w-16 sm:h-30 sm:w-20';
 
 const FIELD_CLASS =
     'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
@@ -128,22 +140,22 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
         );
 
     return (
-        <div className="group rounded-xl border border-slate-600/30 bg-slate-700/25 p-3 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/45 sm:p-4">
-            <div className="flex items-start">
-                {/* The date owns the band the rank numeral owns on a list row:
-                    this log is ordered by when, not by how good. Sized to the
-                    poster rather than the row so a long review can't drift it. */}
-                <div
-                    className={`flex ${POSTER_HEIGHT} w-16 flex-shrink-0 select-none flex-col items-center justify-center pr-2 text-center sm:w-24 sm:pr-3`}
-                >
-                    <time
-                        dateTime={watchDate}
-                        className="font-serif text-sm leading-tight tabular-nums text-slate-400 transition-colors duration-200 group-hover:text-blue-300/80 sm:text-base"
-                    >
-                        {formatWatchDate(watchDate)}
-                    </time>
-                </div>
+        // `relative` and `overflow-hidden` are the wash's doing: it lays itself
+        // over the row and has to be clipped to the rounded corners. The blocks
+        // below are `relative` so they stack above the art — a positioned
+        // element paints over static siblings regardless of source order.
+        <div className="group relative overflow-hidden rounded-xl border border-slate-600/30 bg-slate-700/25 p-3 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/45 sm:p-4">
+            {/* Not while the editor is open: the form is the whole row then, and
+                art behind a date field and a textarea is just noise. */}
+            {!editing && <RowFrameWash image={entryFrameImage(entry)} />}
 
+            {/* A grid rather than a flex row, for the review's sake: on a wide
+                screen it belongs beside the poster in the title's column, and on
+                a phone that column is barely 200px, which turns a paragraph into
+                a ribbon of three-word lines. Spanning the full width there is a
+                change of placement, not of markup — which a flex row would need
+                two copies of. */}
+            <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start">
                 {wrapLink(
                     poster && !posterFailed ? (
                         <img
@@ -151,23 +163,38 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                             alt={`${displayTitle} poster`}
                             loading="lazy"
                             decoding="async"
-                            className={`block ${POSTER_HEIGHT} w-12 rounded-md object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 transition-opacity hover:opacity-80`}
+                            className={`block ${POSTER_CLASS} rounded-md object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 transition-opacity hover:opacity-80`}
                             onError={() => setPosterFailed(true)}
                         />
                     ) : (
                         <span
-                            className={`flex ${POSTER_HEIGHT} w-12 items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}
+                            className={`flex ${POSTER_CLASS} items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}
                         >
                             ?
                         </span>
                     ),
-                    'flex-shrink-0 block'
+                    'col-start-1 row-start-1 block sm:row-span-2'
                 )}
 
-                <div className="ml-3 min-w-0 flex-grow sm:ml-4">
-                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <div className="col-start-2 row-start-1 ml-3 min-w-0 sm:ml-4">
+                    {/* The log is ordered by when, so the date leads the row —
+                        but as a caption over the title rather than a column
+                        beside it. Every row's is at the same place under the
+                        same poster edge, which is what makes a date scannable;
+                        the width it used to hold was never doing that work. */}
+                    <time
+                        dateTime={watchDate}
+                        className="block text-xs uppercase tracking-widest tabular-nums text-slate-500 transition-colors duration-200 group-hover:text-blue-300/80"
+                    >
+                        {formatWatchDate(watchDate)}
+                    </time>
+
+                    <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                         {wrapLink(
-                            <h5 className="truncate font-medium text-slate-200 transition-colors group-hover:text-slate-100">
+                            // Wraps on a phone rather than truncating: the title
+                            // is what the row is, and a truncated one beside a
+                            // poster leaves the reader guessing.
+                            <h5 className="break-words font-medium text-slate-200 transition-colors group-hover:text-slate-100 sm:truncate">
                                 {displayTitle}
                                 {year && <span className="ml-1.5 font-normal text-slate-500">{year}</span>}
                                 {!clubFilm && (
@@ -202,32 +229,35 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                             </span>
                         )}
                     </div>
-
-                    {blurb && !editing && (
-                        <div className="prose prose-sm prose-invert mt-1.5 max-w-none text-sm leading-relaxed text-slate-300">
-                            <ReactMarkdown>{blurb}</ReactMarkdown>
-                        </div>
-                    )}
                 </div>
 
                 {canEdit && !editing && (
                     <Button
                         type="button"
                         variant="ghost"
-                        size="xs"
+                        size="sm"
                         onClick={openEditor}
                         aria-label={`Edit ${displayTitle}`}
-                        className="ml-2 flex-shrink-0 hover:text-blue-300"
+                        className="col-start-3 row-start-1 ml-2 hover:text-blue-300"
                     >
                         <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
                     </Button>
                 )}
+
+                {blurb && !editing && (
+                    <div className="col-span-3 col-start-1 row-start-2 ml-3 mt-1.5 prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-slate-300 sm:col-span-1 sm:col-start-2 sm:ml-4">
+                        <Markdown>{blurb}</Markdown>
+                    </div>
+                )}
             </div>
 
             {editing && (
-                <div className="mt-4 space-y-4 border-t border-slate-700/60 pt-4">
-                    <div className="flex flex-wrap gap-4">
-                        <label className="block w-44">
+                <div className="relative mt-4 space-y-4 border-t border-slate-700/60 pt-4">
+                    {/* The date field takes the row on a phone; the two small
+                        ones pair off underneath it rather than being wrapped one
+                        per line by a `w-44` that leaves no room beside it. */}
+                    <div className="flex flex-wrap gap-x-4 gap-y-3">
+                        <label className="block w-full sm:w-44">
                             <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
                                 Watched
                             </span>
@@ -242,14 +272,14 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                         </label>
                         <label className="block w-24">
                             <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
-                                Score
+                                Score / {MAX_RATING}
                             </span>
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 min={0}
-                                max={10}
-                                step={0.1}
+                                max={MAX_RATING}
+                                step={SCORE_STEP}
                                 value={form.score}
                                 onChange={(e) => setForm({ ...form, score: e.target.value })}
                                 disabled={busy}
@@ -288,7 +318,62 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                         />
                     </label>
 
-                    <div className="flex flex-wrap items-center gap-3">
+                    {/* Two links, two jobs: one is washed in behind the row,
+                        the other stands in for the poster beside it. They sit
+                        together because a member fixing a film's artwork has no
+                        reason to know which of the two they want until they see
+                        both described. */}
+                    <label className="block">
+                        <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
+                            Background image
+                        </span>
+                        <div className="flex items-start gap-3">
+                            <input
+                                type="url"
+                                inputMode="url"
+                                maxLength={IMAGE_URL_LIMIT}
+                                value={form.image}
+                                onChange={(e) => setForm({ ...form, image: e.target.value })}
+                                disabled={busy}
+                                placeholder="https://… a still you'd rather see behind this row"
+                                className={FIELD_CLASS}
+                            />
+                            <ImageUrlPreview url={form.image} className="h-10 w-16" />
+                        </div>
+                        <span className="mt-1 block text-xs text-slate-500">
+                            Optional. Leave it blank to use the film's own artwork.
+                        </span>
+                    </label>
+
+                    <label className="block">
+                        <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
+                            Poster
+                        </span>
+                        <div className="flex items-start gap-3">
+                            <input
+                                type="url"
+                                inputMode="url"
+                                maxLength={IMAGE_URL_LIMIT}
+                                value={form.posterImage}
+                                onChange={(e) => setForm({ ...form, posterImage: e.target.value })}
+                                disabled={busy}
+                                placeholder="https://… a poster you'd rather see than this one"
+                                className={FIELD_CLASS}
+                            />
+                            {/* Shaped like the poster it replaces, so a wide
+                                still pasted in here shows what it would do to
+                                the row before it is saved. */}
+                            <ImageUrlPreview url={form.posterImage} className="h-16 w-11 object-top" />
+                        </div>
+                        <span className="mt-1 block text-xs text-slate-500">
+                            Optional. Leave it blank to use the film's own poster.
+                        </span>
+                    </label>
+
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                        {/* Full width on a phone: at its natural width it shares
+                            a line with Cancel and, once confirmed, with Remove —
+                            a thumb's width from the two destructive outcomes. */}
                         <Button
                             type="button"
                             variant="solid"
@@ -296,6 +381,7 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                             accent="blue"
                             onClick={() => void handleSave()}
                             disabled={busy}
+                            className="w-full sm:w-auto"
                         >
                             {busy ? 'Saving…' : 'Save'}
                         </Button>
@@ -323,7 +409,7 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({ entry, canEdit, onSav
                                 Remove
                             </Button>
                         ) : (
-                            <span className="ml-auto flex items-center gap-3 text-sm text-slate-400">
+                            <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-400 sm:ml-auto sm:w-auto">
                                 Drop {displayTitle} from your log?
                                 <Button
                                     type="button"

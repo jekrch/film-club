@@ -37,6 +37,7 @@ import type {
 import {
     LIMITS,
     assignListId,
+    resolveListOwner,
     resolveOwner,
     validateImdbId,
     validateListInput,
@@ -248,7 +249,9 @@ function watchedUnchanged(existing: WatchedEntry | undefined, next: WatchedEntry
         existing.watchDate === next.watchDate &&
         existing.score === next.score &&
         existing.scoreQualifier === next.scoreQualifier &&
-        existing.blurb === next.blurb
+        existing.blurb === next.blurb &&
+        existing.image === next.image &&
+        existing.posterImage === next.posterImage
     );
 }
 
@@ -299,6 +302,11 @@ async function putWatched(
                         ? (patch.scoreQualifier ?? null)
                         : (existing?.scoreQualifier ?? null),
                 blurb: 'blurb' in patch ? (patch.blurb ?? null) : (existing?.blurb ?? null),
+                image: 'image' in patch ? (patch.image ?? null) : (existing?.image ?? null),
+                posterImage:
+                    'posterImage' in patch
+                        ? (patch.posterImage ?? null)
+                        : (existing?.posterImage ?? null),
                 updatedAt: timestamp(),
             };
 
@@ -367,11 +375,10 @@ async function deleteWatched(
 async function putList(request: Request, env: Env, member: Member, pathId: string): Promise<unknown> {
     const body = await readBody(request);
     const input = validateListInput(body);
-    const owner = resolveOwner(
-        (body as Record<string, unknown>).owner,
-        member,
-        memberNames(env)
-    );
+    // Resolved per branch rather than up front: on an update, an absent `owner`
+    // has to mean the stored owner, which isn't known until the file is read.
+    const requestedOwner = (body as Record<string, unknown>).owner;
+    const names = memberNames(env);
 
     return commitJson<FilmListDefinition[], unknown>(
         env,
@@ -382,11 +389,13 @@ async function putList(request: Request, env: Env, member: Member, pathId: strin
             const index = lists.findIndex((list) => list.id === pathId);
 
             if (index === -1) {
+                const owner = resolveListOwner(requestedOwner, member, names, null);
                 const created: FilmListDefinition = {
                     id: assignListId(owner, input.name, lists.map((list) => list.id)),
                     name: input.name,
                     owner,
                     description: input.description,
+                    ranked: input.ranked,
                     entries: input.entries,
                 };
                 // Creation order — the frontend renders lists in file order.
@@ -404,6 +413,11 @@ async function putList(request: Request, env: Env, member: Member, pathId: strin
                 throw forbidden(`"${existing.name}" belongs to ${existing.owner}.`);
             }
 
+            // Defers to the stored owner when the body names nobody. An admin
+            // editing someone else's list is routine and sends no `owner`, so
+            // taking the caller's name here would reassign the list to them.
+            const owner = resolveListOwner(requestedOwner, member, names, existing.owner);
+
             const updated: FilmListDefinition = {
                 // Immutable: the id survives a rename, and an owner change is a
                 // deliberate admin action rather than a side effect of the body.
@@ -411,6 +425,7 @@ async function putList(request: Request, env: Env, member: Member, pathId: strin
                 name: input.name,
                 owner,
                 description: input.description,
+                ranked: input.ranked,
                 entries: input.entries,
             };
             lists[index] = updated;

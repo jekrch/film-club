@@ -1,11 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Reorder, useDragControls } from 'framer-motion';
-import { Bars3Icon, ChevronLeftIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+    Bars3Icon,
+    ChevronDownIcon,
+    ChevronLeftIcon,
+    ChevronUpIcon,
+    TrashIcon,
+} from '@heroicons/react/24/outline';
 
 import PageLayout from '../components/layout/PageLayout';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
+import ImageUrlPreview from '../components/common/ImageUrlPreview';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import FilmSearchPicker from '../components/films/FilmSearchPicker';
 import GoogleSignInButton from '../auth/GoogleSignInButton';
@@ -18,8 +25,10 @@ import {
     type FilmSearchResult,
     type ListInput,
 } from '../api/clubApi';
-import { getListById, resolveListEntry } from '../utils/listUtils';
-import type { FilmListDefinition } from '../types/list';
+import { getListById, resolveListEntry, type ScoreSource } from '../utils/listUtils';
+import { IMAGE_URL_LIMIT, parseImageUrl } from '../utils/imageUrl';
+import { MAX_SCORE, SCORE_STEP, parseScoreField } from '../utils/ratingEditUtils';
+import { isRankedList, type FilmListDefinition } from '../types/list';
 
 /**
  * The list editor: `/lists/new` and `/lists/:listId/edit` (§8.9).
@@ -37,10 +46,36 @@ import type { FilmListDefinition } from '../types/list';
 interface DraftEntry {
     imdbID: string;
     description: string;
+    /** The member's own background art for the row; empty means the film's own. */
+    image: string;
+    /** The member's own poster for the film; empty means the one OMDB supplied. */
+    posterImage: string;
+    /** The owner's score for this pick, empty for "whatever I've scored it elsewhere". */
+    score: string;
+    /**
+     * The score the row would show if {@link score} stays empty — from the
+     * owner's watch log or their club rating — and where it comes from. Shown as
+     * the field's placeholder so nobody retypes a score they already gave.
+     */
+    inheritedScore: number | null;
+    inheritedFrom: ScoreSource | null;
     title: string | null;
     year: string | null;
+    /**
+     * The *film's* poster, never the member's override — the row draws
+     * {@link posterImage} over it and has to be able to fall back the moment
+     * that field is cleared, which a resolved poster with the override already
+     * baked in couldn't do.
+     */
     poster: string | null;
 }
+
+/** How an inherited score reads in the hint under the field. */
+const INHERITED_FROM_LABEL: Record<ScoreSource, string> = {
+    entry: 'this list',
+    log: 'your watch log',
+    club: 'your club rating',
+};
 
 /** Matches the worker's caps, so a draft can't be built that the save would reject. */
 const LIMITS = { name: 80, description: 1000, entryDescription: 500, entries: 100 };
@@ -49,14 +84,55 @@ const FIELD_CLASS =
     'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
     'placeholder:text-slate-500 focus:border-amber-400/60 focus:outline-none';
 
+/**
+ * The same field, one step down in size — but only once there is room for it.
+ * Mobile Safari zooms the page in on any field it focuses whose text is under
+ * 16px, and it does not zoom back out, so a row field that reads `text-sm` on a
+ * phone costs the member their whole viewport for the rest of the edit.
+ */
+const ROW_FIELD_CLASS = `${FIELD_CLASS} text-base sm:text-sm`;
+
+/**
+ * How far the fields under a row are indented on a wide screen, so they line up
+ * with the title rather than the reorder controls. It is the width of
+ * everything left of the title — controls (2rem), rank (1.5rem), poster (3rem)
+ * and the three `gap-3`s between them, 8.75rem in all. On a phone there is no
+ * room to give away, so the fields start at the row's own edge instead.
+ */
+const FIELD_INDENT = 'sm:pl-35';
+
+/**
+ * What the row would score without a score of its own — the owner's watch log,
+ * then their club rating. Resolved from an entry with its score stripped, so it
+ * answers "what does this fall back to" rather than "what does it show now".
+ */
+const inheritedScoreFor = (
+    imdbID: string,
+    owner: string | undefined
+): Pick<DraftEntry, 'inheritedScore' | 'inheritedFrom'> => {
+    const { score, scoreSource } = resolveListEntry(
+        { rank: 0, imdbID, description: null, score: null },
+        {},
+        owner
+    );
+    return { inheritedScore: score, inheritedFrom: scoreSource };
+};
+
 const toDraft = (list: FilmListDefinition): DraftEntry[] =>
     [...list.entries]
         .sort((a, b) => a.rank - b.rank)
         .map((entry) => {
-            const resolved = resolveListEntry(entry);
+            // Resolved with the poster override stripped, so `poster` is the
+            // film's own — see {@link DraftEntry.poster}. Everywhere outside
+            // this editor wants the resolved poster and passes the entry whole.
+            const resolved = resolveListEntry({ ...entry, posterImage: null }, {}, list.owner);
             return {
                 imdbID: entry.imdbID,
                 description: entry.description ?? '',
+                image: entry.image ?? '',
+                posterImage: entry.posterImage ?? '',
+                score: entry.score === null || entry.score === undefined ? '' : String(entry.score),
+                ...inheritedScoreFor(entry.imdbID, list.owner),
                 title: resolved.title,
                 year: resolved.year,
                 poster: resolved.poster,
@@ -68,7 +144,16 @@ const toDraft = (list: FilmListDefinition): DraftEntry[] =>
 interface EntryRowProps {
     entry: DraftEntry;
     rank: number;
+    /** False on an unranked list, where the row shows a bullet instead. */
+    ranked: boolean;
+    /** Both true on a one-film list; each disables the arrow it bounds. */
+    isFirst: boolean;
+    isLast: boolean;
+    onMove: (direction: -1 | 1) => void;
     onNoteChange: (note: string) => void;
+    onImageChange: (image: string) => void;
+    onPosterImageChange: (posterImage: string) => void;
+    onScoreChange: (score: string) => void;
     onRemove: () => void;
 }
 
@@ -79,73 +164,204 @@ interface EntryRowProps {
  *
  * Dragging is bound to the handle rather than the row (`dragListener={false}`),
  * so selecting text in the note textarea can't start a reorder.
+ *
+ * The row is a header — controls, rank, poster, title — with the fields
+ * underneath rather than beside them. Nested in the title's column they were
+ * left about 110px on a phone, since the chrome to their left is a fixed width
+ * that a narrow screen doesn't shrink; below it, every field gets the row.
  */
-const EntryRow: React.FC<EntryRowProps> = ({ entry, rank, onNoteChange, onRemove }) => {
+const EntryRow: React.FC<EntryRowProps> = ({
+    entry,
+    rank,
+    ranked,
+    isFirst,
+    isLast,
+    onMove,
+    onNoteChange,
+    onImageChange,
+    onPosterImageChange,
+    onScoreChange,
+    onRemove,
+}) => {
     const controls = useDragControls();
+    const label = entry.title ?? entry.imdbID;
+    // What the row will actually show once saved, kept live as the field is
+    // typed in — including back to the film's own poster when it is cleared.
+    const rowPoster = entry.posterImage.trim() === '' ? entry.poster : entry.posterImage.trim();
+    const inherited =
+        entry.inheritedScore !== null && entry.inheritedFrom !== null
+            ? `${entry.inheritedScore} from ${INHERITED_FROM_LABEL[entry.inheritedFrom]}`
+            : null;
 
     return (
         <Reorder.Item
             value={entry}
             dragListener={false}
             dragControls={controls}
-            className="flex items-start gap-3 rounded-xl border border-slate-600/30 bg-slate-700/25 p-3"
+            className="rounded-xl border border-slate-600/30 bg-slate-700/25 p-2.5 sm:p-3"
         >
-            <button
-                type="button"
-                onPointerDown={(event) => controls.start(event)}
-                aria-label={`Reorder ${entry.title ?? entry.imdbID}`}
-                className="mt-1 cursor-grab touch-none rounded p-1 text-slate-500 hover:text-slate-300 active:cursor-grabbing"
-            >
-                <Bars3Icon className="h-5 w-5" aria-hidden="true" />
-            </button>
+            <div className="flex items-start gap-2 sm:gap-3">
+                {/* Drag is the fast way to move a film and the arrows are the
+                    reliable one: a drag on a phone fights the page's own scroll,
+                    and framer's reorder doesn't scroll the window, so on a list
+                    longer than the screen dragging alone can't reach the far
+                    end. The arrows are also the only reorder a keyboard has. */}
+                <div className="flex w-9 flex-shrink-0 flex-col items-center sm:w-8">
+                    <button
+                        type="button"
+                        onClick={() => onMove(-1)}
+                        disabled={isFirst}
+                        aria-label={`Move ${label} up`}
+                        className="rounded p-2 text-slate-500 transition-colors hover:text-slate-300 disabled:opacity-25 disabled:hover:text-slate-500 sm:p-1.5"
+                    >
+                        <ChevronUpIcon className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                    <button
+                        type="button"
+                        onPointerDown={(event) => controls.start(event)}
+                        aria-label={`Reorder ${label} by dragging`}
+                        className="cursor-grab touch-none rounded p-2 text-slate-500 transition-colors hover:text-slate-300 active:cursor-grabbing sm:p-1.5"
+                    >
+                        <Bars3Icon className="h-5 w-5" aria-hidden="true" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => onMove(1)}
+                        disabled={isLast}
+                        aria-label={`Move ${label} down`}
+                        className="rounded p-2 text-slate-500 transition-colors hover:text-slate-300 disabled:opacity-25 disabled:hover:text-slate-500 sm:p-1.5"
+                    >
+                        <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                </div>
 
-            <span className="w-6 flex-shrink-0 select-none pt-1 text-center font-serif text-2xl tabular-nums leading-none text-slate-500/70">
-                {rank}
-            </span>
-
-            {entry.poster ? (
-                <img
-                    src={entry.poster}
-                    alt=""
-                    loading="lazy"
-                    className="h-[4.5rem] w-12 flex-shrink-0 rounded-md object-cover object-top ring-1 ring-slate-600/40"
-                    onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                    }}
-                />
-            ) : (
-                <span className="flex h-[4.5rem] w-12 flex-shrink-0 items-center justify-center rounded-md bg-slate-800 text-[10px] text-slate-600 ring-1 ring-slate-600/40">
-                    ?
+                {/* The position is worth showing either way — it is what dragging
+                    changes — but only a ranking states it as a number. */}
+                <span className="w-6 flex-shrink-0 select-none pt-1 text-center font-serif text-xl tabular-nums leading-none text-slate-500/70 sm:text-2xl">
+                    {ranked ? rank : <span className="inline-block h-1.5 w-1.5 rounded-full bg-slate-500/70 align-middle" />}
                 </span>
-            )}
 
-            <div className="min-w-0 flex-grow">
-                <div className="flex items-baseline gap-2">
-                    <h5 className="truncate font-medium text-slate-200">
+                {rowPoster ? (
+                    <img
+                        src={rowPoster}
+                        alt=""
+                        loading="lazy"
+                        className="h-[4.5rem] w-12 flex-shrink-0 rounded-md object-cover object-top ring-1 ring-slate-600/40"
+                        onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                        }}
+                        // Restored on load, since this element now shows a URL
+                        // the member is still typing: without it the first
+                        // half-typed address would hide the thumb for good.
+                        onLoad={(e) => {
+                            e.currentTarget.style.display = '';
+                        }}
+                    />
+                ) : (
+                    <span className="flex h-[4.5rem] w-12 flex-shrink-0 items-center justify-center rounded-md bg-slate-800 text-[10px] text-slate-600 ring-1 ring-slate-600/40">
+                        ?
+                    </span>
+                )}
+
+                <div className="min-w-0 flex-grow pt-0.5">
+                    {/* Wraps on a phone rather than truncating: the title is all
+                        that identifies the row there, and the width left for it
+                        can't hold much of one. */}
+                    <h5 className="break-words font-medium text-slate-200 sm:truncate">
                         {entry.title ?? entry.imdbID}
                         {entry.year && <span className="ml-1.5 font-normal text-slate-500">{entry.year}</span>}
                     </h5>
                 </div>
+
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={onRemove}
+                    aria-label={`Remove ${label}`}
+                    className="-mt-0.5 flex-shrink-0 hover:text-rose-300"
+                >
+                    <TrashIcon className="h-4 w-4" aria-hidden="true" />
+                </Button>
+            </div>
+
+            <div className={`mt-2 space-y-2 ${FIELD_INDENT}`}>
+                {/* Left blank, the row shows whatever score the member has given
+                    the film elsewhere — the placeholder is that score, so an
+                    empty field reads as "the one I already gave" and not as
+                    "unscored". Typing here overrides it for this list only. */}
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <label className="flex flex-shrink-0 items-center gap-1.5 text-xs uppercase tracking-wider text-slate-500">
+                        Score
+                        <input
+                            type="number"
+                            inputMode="decimal"
+                            min={0}
+                            max={MAX_SCORE}
+                            step={SCORE_STEP}
+                            value={entry.score}
+                            onChange={(e) => onScoreChange(e.target.value)}
+                            placeholder={entry.inheritedScore === null ? '—' : String(entry.inheritedScore)}
+                            aria-label={`Your score for ${label}, out of ${MAX_SCORE}`}
+                            className="w-16 rounded-md border border-slate-600/60 bg-slate-800/60 px-2 py-1 text-right text-base text-slate-100 placeholder:text-slate-500 focus:border-amber-400/60 focus:outline-none sm:text-sm"
+                        />
+                        <span className="whitespace-nowrap normal-case">/ {MAX_SCORE}</span>
+                    </label>
+
+                    {inherited && (
+                        <p className="min-w-0 text-xs italic text-slate-500">
+                            {entry.score.trim() === ''
+                                ? `Showing ${inherited}.`
+                                : `Overrides ${inherited}.`}
+                        </p>
+                    )}
+                </div>
+
                 <textarea
                     rows={2}
                     maxLength={LIMITS.entryDescription}
                     value={entry.description}
                     onChange={(e) => onNoteChange(e.target.value)}
                     placeholder="Why this one? (optional, Markdown)"
-                    className={`${FIELD_CLASS} mt-1.5 text-sm`}
+                    className={ROW_FIELD_CLASS}
+                />
+
+                {/* Most films on a list are ones the club never watched, so all
+                    the row has to work with is whatever OMDB had — often a
+                    poster of the wrong edition, sometimes none at all, and never
+                    a still. These two fields fix each half of that: wide art to
+                    wash behind the row, and the poster beside it. The thumbnail
+                    on the first is the only place a dead link shows as dead —
+                    on the list itself the art is faded far too low to tell one
+                    from a dark frame. */}
+                <div className="flex items-center gap-2">
+                    <input
+                        type="url"
+                        inputMode="url"
+                        maxLength={IMAGE_URL_LIMIT}
+                        value={entry.image}
+                        onChange={(e) => onImageChange(e.target.value)}
+                        placeholder="https://… background image (optional)"
+                        aria-label={`Background image for ${label}`}
+                        className={ROW_FIELD_CLASS}
+                    />
+                    <ImageUrlPreview url={entry.image} className="h-9 w-14" />
+                </div>
+
+                {/* The poster needs no preview of its own: the row's thumb above
+                    is already showing this URL at the size and crop it will
+                    have, and falls back the moment the field is cleared. */}
+                <input
+                    type="url"
+                    inputMode="url"
+                    maxLength={IMAGE_URL_LIMIT}
+                    value={entry.posterImage}
+                    onChange={(e) => onPosterImageChange(e.target.value)}
+                    placeholder="https://… poster (optional)"
+                    aria-label={`Poster for ${label}`}
+                    className={ROW_FIELD_CLASS}
                 />
             </div>
-
-            <Button
-                type="button"
-                variant="ghost"
-                size="xs"
-                onClick={onRemove}
-                aria-label={`Remove ${entry.title ?? entry.imdbID}`}
-                className="mt-1 hover:text-rose-300"
-            >
-                <TrashIcon className="h-4 w-4" aria-hidden="true" />
-            </Button>
         </Reorder.Item>
     );
 };
@@ -161,6 +377,7 @@ const ListEditorPage: React.FC = () => {
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [ranked, setRanked] = useState(true);
     const [entries, setEntries] = useState<DraftEntry[]>([]);
     const [owner, setOwner] = useState<string | null>(null);
     /** True once the list has been found in either source. */
@@ -176,6 +393,7 @@ const ListEditorPage: React.FC = () => {
     const [saveError, setSaveError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
+    const [confirmingCancel, setConfirmingCancel] = useState(false);
 
     // A late arrival from the live read must not overwrite work in progress, so
     // seeding checks this rather than the state it is about to replace.
@@ -184,6 +402,7 @@ const ListEditorPage: React.FC = () => {
     const seed = useCallback((list: FilmListDefinition) => {
         setName(list.name);
         setDescription(list.description ?? '');
+        setRanked(isRankedList(list));
         setEntries(toDraft(list));
         setOwner(list.owner);
         setFound(true);
@@ -243,11 +462,31 @@ const ListEditorPage: React.FC = () => {
             {
                 imdbID: hit.imdbID,
                 description: '',
+                image: '',
+                posterImage: '',
+                score: '',
+                // A film just added may already be one the member has watched or
+                // scored with the club, and the row should say so from the
+                // moment it appears.
+                ...inheritedScoreFor(hit.imdbID, owner ?? member ?? undefined),
                 title: hit.title,
                 year: hit.year,
                 poster: hit.poster,
             },
         ]);
+    };
+
+    /** Replaces one row's editable fields, leaving the rest of the draft alone. */
+    const patchEntry = (imdbID: string, patch: Partial<DraftEntry>) =>
+        mutate(entries.map((entry) => (entry.imdbID === imdbID ? { ...entry, ...patch } : entry)));
+
+    /** The arrow controls' half of reordering — a swap with the neighbour. */
+    const moveEntry = (index: number, direction: -1 | 1) => {
+        const target = index + direction;
+        if (target < 0 || target >= entries.length) return;
+        const next = [...entries];
+        [next[index], next[target]] = [next[target], next[index]];
+        mutate(next);
     };
 
     const handleSave = async () => {
@@ -257,12 +496,47 @@ const ListEditorPage: React.FC = () => {
             return;
         }
 
+        // Checked here rather than on every keystroke: a half-typed URL is not a
+        // mistake yet, and the row it belongs to is named in the message so a
+        // long list doesn't turn into a hunt.
+        const images = new Map<string, string | null>();
+        const posterImages = new Map<string, string | null>();
+        const scores = new Map<string, number | null>();
+        for (const entry of entries) {
+            const label = entry.title ?? entry.imdbID;
+
+            const parsed = parseImageUrl(entry.image);
+            if ('error' in parsed) {
+                setSaveError(`${label}, background image: ${parsed.error}`);
+                return;
+            }
+            images.set(entry.imdbID, parsed.value);
+
+            const parsedPoster = parseImageUrl(entry.posterImage);
+            if ('error' in parsedPoster) {
+                setSaveError(`${label}, poster: ${parsedPoster.error}`);
+                return;
+            }
+            posterImages.set(entry.imdbID, parsedPoster.value);
+
+            const score = parseScoreField(entry.score);
+            if ('error' in score) {
+                setSaveError(`${label}: ${score.error}`);
+                return;
+            }
+            scores.set(entry.imdbID, score.score);
+        }
+
         const input: ListInput = {
             name: trimmedName,
             description: description.trim() === '' ? null : description.trim(),
+            ranked,
             entries: entries.map((entry) => ({
                 imdbID: entry.imdbID,
                 description: entry.description.trim() === '' ? null : entry.description.trim(),
+                image: images.get(entry.imdbID) ?? null,
+                posterImage: posterImages.get(entry.imdbID) ?? null,
+                score: scores.get(entry.imdbID) ?? null,
             })),
         };
 
@@ -282,6 +556,28 @@ const ListEditorPage: React.FC = () => {
         } finally {
             setSaving(false);
         }
+    };
+
+    /**
+     * Leaves the draft behind for the list as it is stored: the list's own page
+     * when it exists, the owner's profile when this was a create that never
+     * happened. `replace` so Back doesn't return to an editor whose state is
+     * gone.
+     *
+     * An untouched draft leaves at once — the confirm is only worth a click when
+     * there is something to lose.
+     */
+    const handleCancel = () => {
+        if (touched.current && !confirmingCancel) {
+            setConfirmingCancel(true);
+            return;
+        }
+        if (!creating && listId) {
+            navigate(`/lists/${listId}`, { replace: true });
+            return;
+        }
+        const home = owner ?? member;
+        navigate(home ? `/profile/${encodeURIComponent(home)}` : '/about', { replace: true });
     };
 
     const handleDelete = async () => {
@@ -332,8 +628,11 @@ const ListEditorPage: React.FC = () => {
                 Back
             </Button>
 
-            <AccentCard accent="amber" className="mb-8 p-4 sm:p-6 md:p-8">
-                <div className="mb-6 flex items-center gap-3">
+            <AccentCard accent="amber" className="mb-8 p-3 sm:p-6 md:p-8">
+                {/* Wraps rather than squeezing: the signed-in line is
+                    `whitespace-nowrap`, so on a narrow screen it would take its
+                    width out of the heading instead. */}
+                <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">
                     <h1 className="text-2xl font-thin text-slate-100">
                         {creating ? 'New list' : 'Edit list'}
                     </h1>
@@ -402,13 +701,37 @@ const ListEditorPage: React.FC = () => {
                             />
                         </label>
 
+                        {/* Ordering is never in question — the draft is a
+                            sequence and dragging is how it's set. What this
+                            decides is whether the list claims that sequence is a
+                            ranking. */}
+                        <div>
+                            <label className="flex items-center gap-2.5">
+                                <input
+                                    type="checkbox"
+                                    checked={ranked}
+                                    onChange={(e) => {
+                                        touched.current = true;
+                                        setRanked(e.target.checked);
+                                    }}
+                                    className="h-4 w-4 rounded border-slate-600/60 bg-slate-800/60 text-amber-500 focus:ring-amber-400/60"
+                                />
+                                <span className="text-sm text-slate-300">Numbered ranking</span>
+                            </label>
+                            <p className="mt-1 pl-[1.625rem] text-xs italic text-slate-500">
+                                Off, the films show as a plain list. They stay in the order you
+                                arrange them either way.
+                            </p>
+                        </div>
+
                         <FilmSearchPicker onPick={addFilm} chosen={chosen} accent="amber" />
 
-                        {/* --- The draft, in rank order --- */}
+                        {/* --- The draft, in order --- */}
                         <div>
                             <div className="mb-2 flex items-center gap-3">
                                 <span className="text-xs uppercase tracking-wider text-slate-500">
-                                    {entries.length} film{entries.length !== 1 ? 's' : ''} — drag to reorder
+                                    {entries.length} film{entries.length !== 1 ? 's' : ''} — drag or use
+                                    the arrows to reorder
                                 </span>
                                 <span className="h-px flex-grow bg-slate-700/60" />
                             </div>
@@ -429,14 +752,21 @@ const ListEditorPage: React.FC = () => {
                                             key={entry.imdbID}
                                             entry={entry}
                                             rank={index + 1}
+                                            ranked={ranked}
+                                            isFirst={index === 0}
+                                            isLast={index === entries.length - 1}
+                                            onMove={(direction) => moveEntry(index, direction)}
                                             onNoteChange={(note) =>
-                                                mutate(
-                                                    entries.map((candidate) =>
-                                                        candidate.imdbID === entry.imdbID
-                                                            ? { ...candidate, description: note }
-                                                            : candidate
-                                                    )
-                                                )
+                                                patchEntry(entry.imdbID, { description: note })
+                                            }
+                                            onImageChange={(image) =>
+                                                patchEntry(entry.imdbID, { image })
+                                            }
+                                            onPosterImageChange={(posterImage) =>
+                                                patchEntry(entry.imdbID, { posterImage })
+                                            }
+                                            onScoreChange={(score) =>
+                                                patchEntry(entry.imdbID, { score })
                                             }
                                             onRemove={() =>
                                                 mutate(
@@ -451,7 +781,12 @@ const ListEditorPage: React.FC = () => {
                             )}
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-3 border-t border-slate-700/60 pt-4">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-slate-700/60 pt-4">
+                            {/* Full width on a phone: it is the one action the
+                                page exists for, and at its natural width it
+                                shares a line with Cancel, which is a thumb's
+                                width away from the button that discards the
+                                draft. */}
                             <Button
                                 type="button"
                                 variant="solid"
@@ -459,12 +794,51 @@ const ListEditorPage: React.FC = () => {
                                 accent="amber"
                                 onClick={() => void handleSave()}
                                 disabled={saving}
+                                className="w-full sm:w-auto"
                             >
                                 {saving ? 'Saving…' : creating ? 'Create list' : 'Save changes'}
                             </Button>
-                            <span className="text-xs text-slate-500">
-                                Saved lists appear on the site about a minute later.
-                            </span>
+                            {!confirmingCancel && (
+                                <Button
+                                    type="button"
+                                    variant="link"
+                                    size="sm"
+                                    onClick={handleCancel}
+                                    disabled={saving}
+                                    className="text-slate-400 hover:text-slate-200"
+                                >
+                                    Cancel
+                                </Button>
+                            )}
+
+                            {confirmingCancel ? (
+                                <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-400">
+                                    Discard your changes?
+                                    <Button
+                                        type="button"
+                                        variant="link"
+                                        size="sm"
+                                        accent="rose"
+                                        onClick={handleCancel}
+                                        disabled={saving}
+                                    >
+                                        Discard
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="link"
+                                        size="sm"
+                                        onClick={() => setConfirmingCancel(false)}
+                                        className="text-slate-400 hover:text-slate-200"
+                                    >
+                                        Keep editing
+                                    </Button>
+                                </span>
+                            ) : (
+                                <span className="text-xs text-slate-500">
+                                    Saved lists appear on the site about a minute later.
+                                </span>
+                            )}
 
                             {!creating && !confirmingDelete && (
                                 <Button
@@ -480,7 +854,7 @@ const ListEditorPage: React.FC = () => {
                                 </Button>
                             )}
                             {!creating && confirmingDelete && (
-                                <span className="ml-auto flex items-center gap-3 text-sm text-slate-400">
+                                <span className="flex w-full flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-400 sm:ml-auto sm:w-auto">
                                     Delete "{name}" for good?
                                     <Button
                                         type="button"

@@ -32,6 +32,10 @@ export const FilmFrameImage: React.FC<{ frame: FilmFrame }> = ({ frame }) => {
 /**
  * The quiet credit line naming the film a frame came from, linking to it.
  *
+ * A film the club watched has a page here; one that only appears on a member's
+ * list or watch log doesn't, so its credit goes out to IMDb — the same split the
+ * rows themselves make on their titles.
+ *
  * `pointer-events-auto` because the layers these sit in are inert as a whole;
  * only the link itself should take clicks. Its color comes from the
  * `.hero-credit` rule in index.css — see the comment there.
@@ -39,12 +43,22 @@ export const FilmFrameImage: React.FC<{ frame: FilmFrame }> = ({ frame }) => {
 export const FilmFrameCredit: React.FC<{ frame: FilmFrame; className?: string }> = ({
     frame,
     className = '',
-}) => (
-    <Link
-        to={`/films/${frame.imdbID}`}
-        title={frame.title}
-        className={`hero-credit pointer-events-auto max-w-full truncate text-[10px] uppercase tracking-[0.18em] transition-colors ${className}`}
-    >
-        {frame.title}
-    </Link>
-);
+}) => {
+    const style = `hero-credit pointer-events-auto max-w-full truncate text-[10px] uppercase tracking-[0.18em] transition-colors ${className}`;
+
+    return frame.onSite ? (
+        <Link to={`/films/${frame.imdbID}`} title={frame.title} className={style}>
+            {frame.title}
+        </Link>
+    ) : (
+        <a
+            href={`https://www.imdb.com/title/${frame.imdbID}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={frame.title}
+            className={style}
+        >
+            {frame.title}
+        </a>
+    );
+};

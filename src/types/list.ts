@@ -19,12 +19,51 @@ import listFilmsData from '../assets/listFilms.json';
  * resolves in `films.json`.
  */
 
-/** One film on a list. `rank` is 1-based and positional — reordering renumbers. */
+/**
+ * One film on a list. `rank` is 1-based and positional — reordering renumbers.
+ *
+ * A list always has an order; {@link FilmListDefinition.ranked} decides only
+ * whether that order is *numbered* when it renders.
+ */
 export interface FilmListEntry {
     rank: number;
     imdbID: string;
     /** Optional Markdown note about this pick. */
     description: string | null;
+    /**
+     * The owner's score for this pick, out of 9 — the club's scale, since a
+     * member scoring a film on their list is doing the same thing they do in the
+     * club, alone.
+     *
+     * Null or absent means they set none *here*, which is the common case: the
+     * score then comes from wherever they already gave the film one — their
+     * watch log, then their club rating. `resolveListEntry` does that fallback,
+     * so nobody has to retype a score they have already given.
+     */
+    score?: number | null;
+    /**
+     * An `https` image the member picked for this row's background art, or null
+     * to use whatever the film already has. Absent on entries written before the
+     * field existed, which is why readers treat it as optional.
+     *
+     * This is the only way a list-only film gets scene art: the summary cache
+     * holds a poster and nothing else.
+     */
+    image?: string | null;
+    /**
+     * An `https` image the member picked as this film's poster, or null to use
+     * the one OMDB supplied. Absent on entries written before the field
+     * existed, for the same reason {@link image} may be.
+     *
+     * Separate from {@link image} because the two are framed differently and
+     * fail differently: this one stands in for the poster everywhere the row
+     * draws one, at poster proportions, while `image` is wide art washed behind
+     * it. A member wanting a better poster — the cache holds whatever OMDB had,
+     * which for an obscure film is often nothing or the wrong edition — should
+     * not have to accept a portrait image stretched across the row's background
+     * to get one.
+     */
+    posterImage?: string | null;
 }
 
 /** A single member-curated list. */
@@ -36,8 +75,21 @@ export interface FilmListDefinition {
     owner: string;
     /** Optional Markdown blurb about the list as a whole. */
     description: string | null;
+    /**
+     * Whether the order is a *ranking*, i.e. drawn with numerals.
+     *
+     * An unranked list is still ordered — its owner arranged it, and `rank`
+     * still records that arrangement — it simply isn't claiming that the third
+     * film beat the fourth. Absent means ranked: every list written before this
+     * field existed was a numbered one.
+     */
+    ranked?: boolean;
     entries: FilmListEntry[];
 }
+
+/** A list is a ranking unless it says otherwise. See {@link FilmListDefinition.ranked}. */
+export const isRankedList = (list: Pick<FilmListDefinition, 'ranked'>): boolean =>
+    list.ranked !== false;
 
 /**
  * Thin poster/title record for a film that appears on a list but is not a club

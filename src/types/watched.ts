@@ -33,6 +33,22 @@ export interface WatchedEntry {
     scoreQualifier: string | null;
     /** Optional Markdown review. */
     blurb: string | null;
+    /**
+     * An `https` image the member picked for this row's background art, or null
+     * to use whatever the film already has. Absent on entries written before the
+     * field existed, which is why readers treat it as optional.
+     */
+    image?: string | null;
+    /**
+     * An `https` image the member picked as this film's poster, or null to use
+     * the one OMDB supplied. Absent on entries written before the field
+     * existed, for the same reason {@link image} may be.
+     *
+     * Separate from {@link image}: this stands in for the poster wherever the
+     * row draws one, at poster proportions, while `image` is wide art washed
+     * behind the row. See the note on the list-entry field of the same name.
+     */
+    posterImage?: string | null;
     updatedAt: string;
 }
 

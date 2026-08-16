@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { EyeIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 import AccentCard from '../common/AccentCard';
+import RowFrameWash from '../common/RowFrameWash';
 import { useClubAuth } from '../../auth/GoogleAuth';
+import { entryFrameImage } from '../../utils/frameSources';
 import {
     formatWatchDate,
     formatWatchedScore,
@@ -49,8 +51,11 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
     const watchedPath = `/watched/${encodeURIComponent(owner ?? '')}`;
 
     return (
-        <AccentCard accent="blue" className="mb-8 p-6 md:p-10">
-            <div className="mb-6 flex items-center gap-3">
+        <AccentCard accent="blue" className="mb-8 p-4 sm:p-6 md:p-10">
+            {/* Wraps rather than squeezing: the trailing link and count are
+                `whitespace-nowrap`, so on a narrow screen they would take their
+                width out of the heading instead. */}
+            <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <EyeIcon className="h-5 w-5 text-blue-400/80" />
                 <h4 className="text-xl font-bold text-slate-100">Watched</h4>
                 <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
@@ -78,43 +83,54 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
                     <ul className="space-y-2">
                         {preview.map((entry) => (
                             <li key={entry.imdbID}>
+                                {/* `relative` and `overflow-hidden` are the
+                                    wash's doing: it lays itself over the row and
+                                    has to be clipped to the rounded corners. The
+                                    row's contents move into a `relative` wrapper
+                                    so they stack above the art — a positioned
+                                    element paints over static siblings whatever
+                                    the source order. */}
                                 <Link
                                     to={watchedPath}
-                                    className="group flex items-center gap-4 rounded-xl border border-slate-600/30 bg-slate-700/25 px-4 py-3 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/45"
+                                    className="group relative block overflow-hidden rounded-xl border border-slate-600/30 bg-slate-700/25 px-3 py-3 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/45 sm:px-4"
                                 >
-                                    {entry.poster ? (
-                                        <img
-                                            src={entry.poster}
-                                            alt=""
-                                            loading="lazy"
-                                            className="h-14 w-[2.4rem] flex-shrink-0 rounded object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40"
-                                            onError={(e) => {
-                                                e.currentTarget.style.visibility = 'hidden';
-                                            }}
-                                        />
-                                    ) : (
-                                        <span className="h-14 w-[2.4rem] flex-shrink-0 rounded bg-slate-800 ring-1 ring-slate-600/40" />
-                                    )}
+                                    <RowFrameWash image={entryFrameImage(entry)} />
 
-                                    <div className="min-w-0 flex-grow">
-                                        <h5 className="truncate font-medium text-slate-200 transition-colors group-hover:text-slate-100">
-                                            {entry.title ?? entry.imdbID}
-                                            {entry.year && (
-                                                <span className="ml-1.5 font-normal text-slate-500">
-                                                    {entry.year}
-                                                </span>
-                                            )}
-                                        </h5>
-                                        <p className="mt-0.5 text-xs uppercase tracking-widest text-slate-500">
-                                            {formatWatchDate(entry.watchDate)}
-                                        </p>
+                                    <div className="relative flex items-center gap-3 sm:gap-4">
+                                        {entry.poster ? (
+                                            <img
+                                                src={entry.poster}
+                                                alt=""
+                                                loading="lazy"
+                                                className="h-14 w-[2.4rem] flex-shrink-0 rounded object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40"
+                                                onError={(e) => {
+                                                    e.currentTarget.style.visibility = 'hidden';
+                                                }}
+                                            />
+                                        ) : (
+                                            <span className="h-14 w-[2.4rem] flex-shrink-0 rounded bg-slate-800 ring-1 ring-slate-600/40" />
+                                        )}
+
+                                        <div className="min-w-0 flex-grow">
+                                            <h5 className="break-words font-medium text-slate-200 transition-colors group-hover:text-slate-100 sm:truncate">
+                                                {entry.title ?? entry.imdbID}
+                                                {entry.year && (
+                                                    <span className="ml-1.5 font-normal text-slate-500">
+                                                        {entry.year}
+                                                    </span>
+                                                )}
+                                            </h5>
+                                            <p className="mt-0.5 text-xs uppercase tracking-widest text-slate-500">
+                                                {formatWatchDate(entry.watchDate)}
+                                            </p>
+                                        </div>
+
+                                        {formatWatchedScore(entry) && (
+                                            <span className="flex-shrink-0 font-mono text-sm text-slate-400">
+                                                {formatWatchedScore(entry)}
+                                            </span>
+                                        )}
                                     </div>
-
-                                    {formatWatchedScore(entry) && (
-                                        <span className="flex-shrink-0 font-mono text-sm text-slate-400">
-                                            {formatWatchedScore(entry)}
-                                        </span>
-                                    )}
                                 </Link>
                             </li>
                         ))}

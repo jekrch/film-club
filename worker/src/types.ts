@@ -39,6 +39,16 @@ export interface FilmListEntry {
     rank: number;
     imdbID: string;
     description: string | null;
+    /** An `https` image the member picked as the row's background art, or null. */
+    image: string | null;
+    /** An `https` image the member picked as the film's poster, or null. */
+    posterImage: string | null;
+    /**
+     * The owner's score for this pick out of 9, or null when they gave none
+     * here — the site then falls back to their watch log and club rating, which
+     * is a read-side concern the worker takes no part in.
+     */
+    score: number | null;
 }
 
 /** A single member-curated list, exactly as it is stored in `lists.json`. */
@@ -47,6 +57,8 @@ export interface FilmListDefinition {
     name: string;
     owner: string;
     description: string | null;
+    /** Whether the list's order renders as a numbered ranking. */
+    ranked: boolean;
     entries: FilmListEntry[];
 }
 
@@ -65,6 +77,10 @@ export interface WatchedEntry {
     score: number | null;
     scoreQualifier: string | null;
     blurb: string | null;
+    /** An `https` image the member picked as the row's background art, or null. */
+    image: string | null;
+    /** An `https` image the member picked as the film's poster, or null. */
+    posterImage: string | null;
     updatedAt: string;
 }
 

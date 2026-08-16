@@ -10,10 +10,16 @@ export default {
     // test rendering a Markdown body would fail to parse it. The stub renders
     // the source text, which is what those tests assert on.
     '^react-markdown$': '<rootDir>/src/test-utils/ReactMarkdownStub.tsx',
+    // Same story for the one remark plugin the Markdown component passes it.
+    '^remark-breaks$': '<rootDir>/src/test-utils/remarkBreaksStub.ts',
     // `import.meta.env` is Vite syntax and a parse error in the CommonJS output
     // below. The stub reports "editing not configured", which is the state the
     // read-only surfaces are asserted in.
     '^.*config/editorEnv$': '<rootDir>/src/test-utils/editorEnvStub.ts',
+    // jose is ESM-only too, and the worker's auth.ts calls it at module scope.
+    // The stub exists so the pure helpers in that file can be tested; it
+    // deliberately cannot verify a token. See the stub for why.
+    '^jose$': '<rootDir>/src/test-utils/joseStub.ts',
   },
   transform: {
     '^.+\\.tsx?$': [

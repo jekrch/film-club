@@ -1,6 +1,7 @@
 import { getListById, getListsForMember, resolveListEntries, resolveListEntry } from './listUtils';
 import { FilmListDefinition, ListFilmSummary } from '../types/list';
-import { makeFilm } from '../test-utils/factories';
+import type { WatchedEntry } from '../types/watched';
+import { makeClubInfo, makeFilm, makeRating } from '../test-utils/factories';
 
 const clubFilm = makeFilm({ imdbID: 'tt0000001', title: 'A Club Film', year: '1999' });
 
@@ -34,6 +35,43 @@ const gabesList: FilmListDefinition = {
 };
 
 const sources = { lists: [andysList, gabesList], films: [clubFilm], summaries };
+
+// --- Where a row's score comes from --------------------------------------
+//
+// The same list, against data where Andy has rated the club film with the club
+// and logged the cached one on his own.
+
+const scoredClubFilm = makeFilm({
+    imdbID: 'tt0000001',
+    title: 'A Club Film',
+    year: '1999',
+    movieClubInfo: makeClubInfo({
+        clubRatings: [makeRating({ user: 'andy', score: 8 }), makeRating({ user: 'gabe', score: 2 })],
+    }),
+});
+
+const logEntry = (imdbID: string, score: number | null): WatchedEntry => ({
+    imdbID,
+    watchDate: '2026-01-01',
+    score,
+    scoreQualifier: null,
+    blurb: null,
+    updatedAt: '2026-01-01T00:00:00Z',
+});
+
+const scoreSources = {
+    lists: [andysList],
+    films: [scoredClubFilm],
+    summaries,
+    watched: { Andy: [logEntry('tt0000002', 6.5)] },
+};
+
+const entryFor = (imdbID: string, score?: number | null) => ({
+    rank: 1,
+    imdbID,
+    description: null,
+    ...(score === undefined ? {} : { score }),
+});
 
 describe('getListsForMember', () => {
     it('matches an owner case-insensitively', () => {
@@ -79,6 +117,26 @@ describe('resolveListEntry', () => {
         expect(resolved.clubFilm).toBeUndefined();
     });
 
+    it('shows the member’s own poster over the film’s, whichever source has it', () => {
+        const own = { posterImage: 'https://example.com/mine.jpg' };
+
+        // A club film's poster is displaced on the row and untouched in
+        // films.json — this is the member's list, not a club record.
+        const onClub = resolveListEntry({ ...andysList.entries[1], ...own }, sources);
+        expect(onClub.poster).toBe('https://example.com/mine.jpg');
+        expect(onClub.clubFilm).toBe(clubFilm);
+
+        expect(resolveListEntry({ ...andysList.entries[0], ...own }, sources).poster).toBe(
+            'https://example.com/mine.jpg'
+        );
+
+        // The one case where it is the row's only artwork: a film saved a
+        // minute ago, which the CI enrichment step hasn't reached.
+        expect(resolveListEntry({ ...andysList.entries[2], ...own }, sources).poster).toBe(
+            'https://example.com/mine.jpg'
+        );
+    });
+
     it('degrades to a placeholder when neither source knows the id', () => {
         const resolved = resolveListEntry(andysList.entries[2], sources);
         expect(resolved.imdbID).toBe('tt0000003');
@@ -92,5 +150,69 @@ describe('resolveListEntry', () => {
 describe('resolveListEntries', () => {
     it('returns entries in rank order regardless of stored order', () => {
         expect(resolveListEntries(andysList, sources).map((e) => e.rank)).toEqual([1, 2, 3]);
+    });
+
+    it('resolves scores against the list owner, not the caller', () => {
+        // The club film is one Andy rated 8; the cached film is one he logged.
+        const [first, second] = resolveListEntries(andysList, scoreSources);
+        expect(first).toMatchObject({ score: 8, scoreSource: 'club' });
+        expect(second).toMatchObject({ score: 6.5, scoreSource: 'log' });
+    });
+});
+
+describe('resolveListEntry scores', () => {
+    it("uses the entry's own score ahead of anything else", () => {
+        expect(resolveListEntry(entryFor('tt0000001', 3), scoreSources, 'Andy')).toMatchObject({
+            score: 3,
+            scoreSource: 'entry',
+        });
+    });
+
+    it('falls back to the owner’s watch log', () => {
+        expect(resolveListEntry(entryFor('tt0000002'), scoreSources, 'Andy')).toMatchObject({
+            score: 6.5,
+            scoreSource: 'log',
+        });
+    });
+
+    it('falls back to the owner’s club rating, and only theirs', () => {
+        expect(resolveListEntry(entryFor('tt0000001'), scoreSources, 'andy')).toMatchObject({
+            score: 8,
+            scoreSource: 'club',
+        });
+        expect(resolveListEntry(entryFor('tt0000001'), scoreSources, 'Joey')).toMatchObject({
+            score: null,
+            scoreSource: null,
+        });
+    });
+
+    it('prefers the log to the club rating for a film in both', () => {
+        const alsoLogged = { ...scoreSources, watched: { Andy: [logEntry('tt0000001', 4)] } };
+        expect(resolveListEntry(entryFor('tt0000001'), alsoLogged, 'Andy')).toMatchObject({
+            score: 4,
+            scoreSource: 'log',
+        });
+    });
+
+    it('treats a scoreless log entry as no score at all, and keeps looking', () => {
+        const unscoredLog = { ...scoreSources, watched: { Andy: [logEntry('tt0000001', null)] } };
+        expect(resolveListEntry(entryFor('tt0000001'), unscoredLog, 'Andy')).toMatchObject({
+            score: 8,
+            scoreSource: 'club',
+        });
+    });
+
+    it('has no score with no owner to resolve one against', () => {
+        expect(resolveListEntry(entryFor('tt0000001'), scoreSources)).toMatchObject({
+            score: null,
+            scoreSource: null,
+        });
+    });
+
+    it('keeps a zero, which is a score like any other', () => {
+        expect(resolveListEntry(entryFor('tt0000001', 0), scoreSources, 'Andy')).toMatchObject({
+            score: 0,
+            scoreSource: 'entry',
+        });
     });
 });

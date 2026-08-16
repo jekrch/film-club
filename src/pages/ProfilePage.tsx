@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
 import { ChevronLeftIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
+import Markdown from '../components/common/Markdown';
 import CircularImage from '../components/common/CircularImage';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';
@@ -18,7 +18,6 @@ import HeroBanner from '../components/common/HeroBanner';
 import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
 import ProfileListsSection from '../components/profile/ProfileListsSection';
 import ProfileWatchedSection from '../components/profile/ProfileWatchedSection';
-import SignInPrompt from '../auth/SignInPrompt';
 
 import { useProfileData } from '../hooks/useProfileData'; 
 
@@ -93,7 +92,7 @@ const ProfilePage: React.FC = () => {
                     <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>
                     <p className="text-lg text-blue-400/90 mb-1">{member.title}</p>
                     <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
-                        <ReactMarkdown>{member.bio}</ReactMarkdown>
+                        <Markdown>{member.bio}</Markdown>
                     </div>
                     {member.url && (
                         <div className="mt-4">
@@ -102,6 +101,17 @@ const ProfilePage: React.FC = () => {
                     )}
                 </div>
             </HeroBanner>
+
+            {/* Renders nothing when this member has no lists — unless the
+                signed-in member is looking at their own profile, where it is
+                the way into the list editor. */}
+            <ProfileListsSection lists={lists} owner={member.name} />
+
+            {/* Personal watches, sitting alongside the lists at the top of the
+                page but out of every club statistic below them — see
+                `types/watched.ts`. Renders nothing for a member with an empty
+                log, unless it's their own profile. */}
+            <ProfileWatchedSection owner={member.name} />
 
             {member.interview && member.interview.length > 0 && (
                 <AccentCard accent="blue" className="p-6 md:p-10 mb-8">
@@ -187,20 +197,6 @@ const ProfilePage: React.FC = () => {
             {allFilms && member.name && (
                 <ProfileTrophyGallery memberName={member.name} films={allFilms} />
             )}
-
-            {/* Renders nothing when this member has no lists — unless the
-                signed-in member is looking at their own profile, where it is
-                the way into the list editor. */}
-            <ProfileListsSection lists={lists} owner={member.name} />
-
-            {/* Personal watches, kept below the club sections and out of every
-                statistic above them — see `types/watched.ts`. Renders nothing
-                for a member with an empty log, unless it's their own profile. */}
-            <ProfileWatchedSection owner={member.name} />
-
-            {/* The way in for a member arriving signed out: the editing links
-                above can't know who you are until you have a session. */}
-            <SignInPrompt className="mb-8 text-right" />
 
             {topRatedFilms.length > 0 && (
                 <div className="mb-12 mt-8">
