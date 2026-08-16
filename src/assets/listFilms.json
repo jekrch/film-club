@@ -63,9 +63,30 @@
     "backdropImages": [
       "https://image.tmdb.org/t/p/w1280/4safDVSZx7a4I1TQoSyz6E1agzM.jpg",
       "https://image.tmdb.org/t/p/w1280/1nUEGq1MdNuOL2QtRZzha8kiEfu.jpg",
-      "https://image.tmdb.org/t/p/w1280/73I0jw1aYNzwu9qK8p8cbYgVN6N.jpg"
+      "https://image.tmdb.org/t/p/w1280/73I0jw1aYNzwu9qK8p8cbYgVN6N.jpg",
+      "https://image.tmdb.org/t/p/w1280/bb2kVVUwStaJtRAcI6cGMuEsFHS.jpg",
+      "https://image.tmdb.org/t/p/w1280/vo3cB6xkMswMz9gB2X517TmxmI2.jpg",
+      "https://image.tmdb.org/t/p/w1280/GLEJSixWoZlQAGIHX5OGb0D1vC.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "Billy Wilder, I.A.L. Diamond, Ferenc Molnár",
+    "imdbRating": "7.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "73/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "Daniel L. Fapp"
   },
   "tt0063522": {
     "imdbID": "tt0063522",
@@ -131,9 +152,30 @@
     "backdropImages": [
       "https://image.tmdb.org/t/p/w1280/qszuXKhzYR24oRpsmh7eZaPbvL8.jpg",
       "https://image.tmdb.org/t/p/w1280/hE5KpQDUtT0uIJBeO4HUNKLpqeB.jpg",
-      "https://image.tmdb.org/t/p/w1280/4ILk2YBFRtwc7hj9eOH5pNystiU.jpg"
+      "https://image.tmdb.org/t/p/w1280/4ILk2YBFRtwc7hj9eOH5pNystiU.jpg",
+      "https://image.tmdb.org/t/p/w1280/j9QrZb3orCHSm6W030UgkzKRA8A.jpg",
+      "https://image.tmdb.org/t/p/w1280/7etAiEdOrq9rNwlxZgN2NbKiHTi.jpg",
+      "https://image.tmdb.org/t/p/w1280/7kchtj4yoZIlEo8LaV6lKL4eyla.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "Ira Levin, Roman Polanski",
+    "imdbRating": "8.0",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "97%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "96/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "William A. Fraker"
   },
   "tt0077745": {
     "imdbID": "tt0077745",
@@ -199,9 +241,30 @@
     "backdropImages": [
       "https://image.tmdb.org/t/p/w1280/lyHnFsWafILUlizalpCSikJT7Ui.jpg",
       "https://image.tmdb.org/t/p/w1280/qBsQzHPQZIiSr57jQmc3T0QcD9j.jpg",
-      "https://image.tmdb.org/t/p/w1280/j0AZ67brlWze2Owv47z1E27LQQy.jpg"
+      "https://image.tmdb.org/t/p/w1280/j0AZ67brlWze2Owv47z1E27LQQy.jpg",
+      "https://image.tmdb.org/t/p/w1280/4h3xWMY40I881T6m9GqureeN5Y9.jpg",
+      "https://image.tmdb.org/t/p/w1280/4P5fQ8EOEshYNaUd6loZ0okecAY.jpg",
+      "https://image.tmdb.org/t/p/w1280/elJfyurIhgPaS1pRQbexsAXoDHF.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "W.D. Richter, Jack Finney",
+    "imdbRating": "7.4",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "75/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "Michael Chapman"
   },
   "tt0098354": {
     "imdbID": "tt0098354",
@@ -267,9 +330,30 @@
     "backdropImages": [
       "https://image.tmdb.org/t/p/w1280/cIpD6PGtCRG3ynaaBWZmf5cw8C5.jpg",
       "https://image.tmdb.org/t/p/w1280/fwOGk0QNDeDQj4nkqfCbzkyWx2.jpg",
-      "https://image.tmdb.org/t/p/w1280/hDWjocAmvCm5NB4Gxro3D3L6Kau.jpg"
+      "https://image.tmdb.org/t/p/w1280/hDWjocAmvCm5NB4Gxro3D3L6Kau.jpg",
+      "https://image.tmdb.org/t/p/w1280/uQsVzcPsv8IX4L0w5BG4qLqTcCb.jpg",
+      "https://image.tmdb.org/t/p/w1280/rDgqJpSShGgxOUmIB4iZZO1ztMe.jpg",
+      "https://image.tmdb.org/t/p/w1280/hwLJetNWABp0fqYXJd3GcmiYBkN.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "Zeph E. Daniel, Rick Fry",
+    "imdbRating": "6.5",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "69%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "50/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "Rick Fichter"
   },
   "tt13521006": {
     "imdbID": "tt13521006",
@@ -335,9 +419,30 @@
     "backdropImages": [
       "https://image.tmdb.org/t/p/w1280/atvEgnjjXN5QvFDThXVz4nyU9yi.jpg",
       "https://image.tmdb.org/t/p/w1280/2BwVFd1hdOvcEZKvXO8TGclfFtC.jpg",
-      "https://image.tmdb.org/t/p/w1280/pS4oSxn9g0PAzkWD5zrSOuRIgT6.jpg"
+      "https://image.tmdb.org/t/p/w1280/pS4oSxn9g0PAzkWD5zrSOuRIgT6.jpg",
+      "https://image.tmdb.org/t/p/w1280/o3YleBe0QGNNlUqm6CnJVqGQQH4.jpg",
+      "https://image.tmdb.org/t/p/w1280/lwq1xsKt0g2Aho1bBaOisG4xZyd.jpg",
+      "https://image.tmdb.org/t/p/w1280/i1MlzRgWoM9E6raAf7mUx3HkIek.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "Ari Aster",
+    "imdbRating": "6.6",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "67%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "63/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "Pawel Pogorzelski"
   },
   "tt37287335": {
     "imdbID": "tt37287335",
@@ -403,9 +508,30 @@
     "backdropImages": [
       "https://image.tmdb.org/t/p/w1280/rZfmzpixLKLR3Hg2u0WgC7XLFl8.jpg",
       "https://image.tmdb.org/t/p/w1280/r013C8Me2bZ0pUi0OWJRh0h7MzT.jpg",
-      "https://image.tmdb.org/t/p/w1280/5lTZyuBTNOfawsfPT8Q0cIg6qAF.jpg"
+      "https://image.tmdb.org/t/p/w1280/5lTZyuBTNOfawsfPT8Q0cIg6qAF.jpg",
+      "https://image.tmdb.org/t/p/w1280/diOZbaDnB2CIilwd0527AB1qMvW.jpg",
+      "https://image.tmdb.org/t/p/w1280/u5BkYDM5gfK4wINfoIFMAcEUKhx.jpg",
+      "https://image.tmdb.org/t/p/w1280/4k99kV4R1bbbrsnjR205v91Xbin.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "Curry Barker",
+    "imdbRating": "7.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "77/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "Taylor Clemons"
   },
   "tt5052448": {
     "imdbID": "tt5052448",
@@ -471,9 +597,30 @@
     "backdropImages": [
       "https://image.tmdb.org/t/p/w1280/bBQHALHRAaaORlPNXv7fNcRXYdx.jpg",
       "https://image.tmdb.org/t/p/w1280/o8dPH0ZSIyyViP6rjRX1djwCUwI.jpg",
-      "https://image.tmdb.org/t/p/w1280/vZ7EVk7FaNEWYqlVWbFLHP8Z0LU.jpg"
+      "https://image.tmdb.org/t/p/w1280/vZ7EVk7FaNEWYqlVWbFLHP8Z0LU.jpg",
+      "https://image.tmdb.org/t/p/w1280/jDXOmBG97WOlT5iog0kxMBShDTN.jpg",
+      "https://image.tmdb.org/t/p/w1280/Ae58bf7Yj6OPzwKerPgXSnxCJdh.jpg",
+      "https://image.tmdb.org/t/p/w1280/aVyJnGubW0OBvqmqVg2z2wCuEsn.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "Jordan Peele",
+    "imdbRating": "7.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "98%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "85/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "Denson Baker, Toby Oliver"
   },
   "tt7858616": {
     "imdbID": "tt7858616",
@@ -528,6 +675,24 @@
       "https://image.tmdb.org/t/p/w1280/iSK99Ylb0OwIA2D2xF3U9FzqHFa.jpg",
       "https://image.tmdb.org/t/p/w1280/nYpCxThysC4xr7V5xJ0XcQXNKoq.jpg"
     ],
-    "tmdbVersion": 2
+    "tmdbVersion": 3,
+    "writer": "Tilman Singer",
+    "imdbRating": "5.4",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "5.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "63/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "cinematographer": "Paul Faltz"
   }
 }
