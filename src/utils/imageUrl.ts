@@ -47,3 +47,30 @@ export function parseImageUrl(raw: string | null | undefined): ImageUrlResult {
 
     return { value: trimmed };
 }
+
+/**
+ * The same rule for a member's own avatar, which may additionally be a path
+ * into the site's `public/images`.
+ *
+ * That exception exists because all six profiles are stored that way
+ * (`/images/andy.jpg`), and a field that refused its own current value would
+ * fail the first time someone edited the bio next to it. A path has to be
+ * site-absolute and single-slashed: `//host/x` is a protocol-relative URL to
+ * another origin wearing a path's clothes.
+ *
+ * Mirrors `validateProfileImage` in `worker/src/validate.ts`, which is the copy
+ * that is actually trusted.
+ */
+export function parseProfileImageUrl(raw: string | null | undefined): ImageUrlResult {
+    const trimmed = (raw ?? '').trim();
+    if (trimmed.startsWith('/')) {
+        if (trimmed.length > IMAGE_URL_LIMIT) {
+            return { error: `That path is ${trimmed.length} characters; the limit is ${IMAGE_URL_LIMIT}.` };
+        }
+        if (trimmed.startsWith('//') || trimmed.includes('..')) {
+            return { error: 'A site image path looks like /images/andy.jpg.' };
+        }
+        return { value: trimmed };
+    }
+    return parseImageUrl(trimmed);
+}

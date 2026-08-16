@@ -18,8 +18,12 @@ import HeroBanner from '../components/common/HeroBanner';
 import ProfileTrophyGallery from '../components/profile/ProfileTrophyGallery';
 import ProfileListsSection from '../components/profile/ProfileListsSection';
 import ProfileWatchedSection from '../components/profile/ProfileWatchedSection';
+import ProfileEditor from '../components/profile/ProfileEditor';
+import SignInPrompt from '../auth/SignInPrompt';
+import { useClubAuth } from '../auth/GoogleAuth';
 
-import { useProfileData } from '../hooks/useProfileData'; 
+import { useMemberProfile } from '../hooks/useMemberProfile';
+import { useProfileData } from '../hooks/useProfileData';
 
 const ProfilePage: React.FC = () => {
     const { memberName } = useParams<{ memberName: string }>();
@@ -43,14 +47,24 @@ const ProfilePage: React.FC = () => {
         toggleBlurbsSectionExpanded,
     } = useProfileData(memberName);
 
+    const { configured, status, canEditAs } = useClubAuth();
+    // The live `club.json` record, for a member looking at a profile they may
+    // edit: a bio saved a minute ago is not in the bundle yet (§8.8).
+    const { profile, loading: profileLoading, applyLocal } = useMemberProfile(member?.name);
+
     if (loading) return <LoadingSpinner />;
     if (error || !member) {
         return <ErrorDisplay message={error || "Could not load profile details."} backPath="/about" backButtonLabel="Back to About Page" />;
     }
 
+    // Everything below renders the live record when there is one, so a save
+    // shows on the page that asked for it rather than after the next build.
+    const shown = profile ?? member;
+    const canEdit = configured && canEditAs(shown.name);
+
     // Constants for UI display, can remain in component
     const MAX_INTERVIEW_ITEMS_BEFORE_SCROLL = 2;
-    const needsInterviewExpansion = member.interview && member.interview.length > MAX_INTERVIEW_ITEMS_BEFORE_SCROLL;
+    const needsInterviewExpansion = shown.interview && shown.interview.length > MAX_INTERVIEW_ITEMS_BEFORE_SCROLL;
     const collapsedInterviewMaxHeight = 'max-h-80';
     const hasEnoughControversialFilms = mostControversialFilms.length >= 1;
     const hasStats = currentUserStats && Object.entries(currentUserStats).some(([key, val]) =>
@@ -83,24 +97,35 @@ const ProfilePage: React.FC = () => {
                 contentClassName="mx-auto w-full max-w-[74rem] py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16"
             >
                 <CircularImage
-                    src={member.image}
-                    alt={member.name}
+                    src={shown.image}
+                    alt={shown.name}
                     size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48"
                     className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
                 />
                 <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 mt-3 sm:mt-2">
-                    <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{member.name}</h1>
-                    <p className="text-lg text-blue-400/90 mb-1">{member.title}</p>
+                    <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">{shown.name}</h1>
+                    <p className="text-lg text-blue-400/90 mb-1">{shown.title}</p>
                     <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
-                        <Markdown>{member.bio}</Markdown>
+                        <Markdown>{shown.bio}</Markdown>
                     </div>
-                    {member.url && (
+                    {shown.url && (
                         <div className="mt-4">
-                            <a className="text-blue-400" href={member.url}>{member.url.replace('https://', '')}</a>
+                            <a className="text-blue-400" href={shown.url}>{shown.url.replace('https://', '')}</a>
                         </div>
                     )}
                 </div>
             </HeroBanner>
+
+            {/* The way into editing this profile, for the member it belongs to
+                (or an admin). Everyone else sees the page exactly as it was
+                before editing existed — and a signed-out visitor gets only the
+                quiet prompt below, which is what it was written for (§8.9). */}
+            {canEdit && (
+                <ProfileEditor member={shown} profileLoading={profileLoading} onSaved={applyLocal} />
+            )}
+            {configured && status !== 'signed-in' && (
+                <SignInPrompt className="-mt-4 mb-8 flex justify-end" />
+            )}
 
             {/* Renders nothing when this member has no lists — unless the
                 signed-in member is looking at their own profile, where it is
@@ -113,13 +138,13 @@ const ProfilePage: React.FC = () => {
                 log, unless it's their own profile. */}
             <ProfileWatchedSection owner={member.name} />
 
-            {member.interview && member.interview.length > 0 && (
+            {shown.interview && shown.interview.length > 0 && (
                 <AccentCard accent="blue" className="p-6 md:p-10 mb-8">
                     <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700/60 pb-3"> Interview </h3>
                     <div className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}>
                         <div className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}>
                             <div className="divide-y divide-slate-700/60-mt-4">
-                                {member.interview.map((item, index) => <InterviewItem key={index} question={item.question} answer={item.answer} />)}
+                                {shown.interview.map((item, index) => <InterviewItem key={index} question={item.question} answer={item.answer} />)}
                             </div>
                         </div>
                     </div>

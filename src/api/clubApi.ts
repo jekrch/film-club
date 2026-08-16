@@ -14,6 +14,7 @@
 
 import { EDITOR_API_URL as API_BASE, GOOGLE_CLIENT_ID } from '../config/editorEnv';
 import type { FilmListDefinition, FilmListEntry } from '../types/list';
+import type { InterviewItem, TeamMember } from '../types/team';
 import type { WatchedEntry, WatchedLog } from '../types/watched';
 
 export { GOOGLE_CLIENT_ID };
@@ -274,6 +275,44 @@ export const deleteWatched = (
         token,
         { method: 'DELETE' }
     );
+
+/**
+ * The fields of their own profile a member may change.
+ *
+ * Only the keys present are applied, the same field-level merge the other
+ * writes use — so saving an interview leaves the bio alone. `interview` is the
+ * exception *within* a field: it arrives whole or not at all.
+ *
+ * `name` is not here and never will be: it is the key every rating, list, and
+ * watch log joins on. `queue` and `color` are missing for a milder reason —
+ * they are club-wide settings that happen to be stored per member.
+ */
+export interface ProfilePatch {
+    title?: string;
+    bio?: string;
+    /** An `https` URL, or null to remove the link. */
+    url?: string | null;
+    /** An `https` URL or a site path like `/images/andy.jpg`; null clears it. */
+    image?: string | null;
+    interview?: InterviewItem[];
+    /** Admins only; omitted, the worker uses the caller's own name. */
+    owner?: string;
+}
+
+/** The result of a profile write. `changed: false` means the save was a no-op. */
+export interface ProfileWriteResult {
+    member: TeamMember;
+    changed: boolean;
+}
+
+/** Every member's profile, read live from `main`. */
+export const getClub = async (token: string, signal?: AbortSignal): Promise<TeamMember[]> => {
+    const { club } = await request<{ club: TeamMember[] }>('/api/club', token, { signal });
+    return club;
+};
+
+export const putProfile = (token: string, patch: ProfilePatch): Promise<ProfileWriteResult> =>
+    request<ProfileWriteResult>('/api/profile', token, { method: 'PUT', body: patch });
 
 export const searchFilms = async (
     token: string,

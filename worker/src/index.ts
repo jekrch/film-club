@@ -7,15 +7,16 @@
  * static — nothing on a normal page load talks to this worker, and a save is
  * live once the Pages build that the commit triggers finishes, about a minute.
  *
- * Three files, one writer each (§8.1): `overrides.json` for scores and reviews
+ * Four files, one writer each (§8.1): `overrides.json` for scores and reviews
  * on club films, `lists.json` for member lists, `watched.json` for what members
- * watched on their own. CI owns `films.json` and `listFilms.json` and this
- * worker never touches them.
+ * watched on their own, and `club.json` for the members themselves. CI owns
+ * `films.json` and `listFilms.json` and this worker never touches them.
  */
 
 import { authenticate, memberNames } from './auth';
 import { HttpError, badRequest, forbidden, notFound } from './errors';
 import {
+    CLUB_PATH,
     LISTS_PATH,
     OVERRIDES_PATH,
     WATCHED_PATH,
@@ -31,6 +32,7 @@ import type {
     Member,
     OverridesFile,
     RatingOverride,
+    TeamMember,
     WatchedEntry,
     WatchedLog,
 } from './types';
@@ -41,8 +43,10 @@ import {
     resolveOwner,
     validateImdbId,
     validateListInput,
+    validateProfilePatch,
     validateRatingPatch,
     validateWatchedPatch,
+    type ProfilePatch,
     type RatingPatch,
     type WatchedPatch,
 } from './validate';
@@ -50,6 +54,12 @@ import {
 const EMPTY_OVERRIDES: OverridesFile = { films: {} };
 const EMPTY_LISTS: FilmListDefinition[] = [];
 const EMPTY_WATCHED: WatchedLog = {};
+/**
+ * There is no empty club: `club.json` is the roster the whole site is built
+ * around, and a missing or emptied file is a repo problem rather than a state
+ * this worker should quietly write into.
+ */
+const EMPTY_CLUB: TeamMember[] = [];
 
 /**
  * Commit timestamps drop milliseconds to match the `2026-08-12T19:04:11Z` form
@@ -469,6 +479,95 @@ async function deleteList(env: Env, member: Member, listId: string): Promise<unk
     );
 }
 
+// --- Profiles -----------------------------------------------------------
+
+/**
+ * Applies a validated patch to one member's `club.json` record.
+ *
+ * Field-level merge like every other write here, with one wrinkle: how a cleared
+ * field is stored depends on whether `club.json` calls it optional. `title` and
+ * `bio` are required strings the site renders unconditionally, so a cleared one
+ * is blank. `url` and `interview` are optional and simply disappear — which is
+ * how a member who never had either is already stored, and saves the site from
+ * having to tell an absent link from a `null` one.
+ *
+ * No `updatedBy`/`updatedAt` is stamped, unlike a rating override. Those exist
+ * there because two writers share the file; here the commit message is the whole
+ * provenance, and inventing fields would put them in the bundle's `TeamMember`.
+ */
+function mergeProfile(existing: TeamMember, patch: ProfilePatch): TeamMember {
+    const next: TeamMember = { ...existing };
+
+    if (patch.title !== undefined) next.title = patch.title;
+    if (patch.bio !== undefined) next.bio = patch.bio;
+    if (patch.image !== undefined) next.image = patch.image ?? '';
+
+    if (patch.url !== undefined) {
+        if (patch.url === null) delete next.url;
+        else next.url = patch.url;
+    }
+    if (patch.interview !== undefined) {
+        if (patch.interview.length === 0) delete next.interview;
+        else next.interview = patch.interview;
+    }
+
+    return next;
+}
+
+/**
+ * Edits the caller's own profile — their picture, their role line, their bio,
+ * their link, and their interview.
+ *
+ * The worker cannot *create* a member, only edit one: an unknown owner is a 404
+ * rather than a new record, for the same reason `PUT …/rating` refuses a film
+ * the sheet doesn't know. `club.json` is the roster the entire site joins on,
+ * and adding to it stays a repo edit.
+ */
+async function putProfile(request: Request, env: Env, member: Member): Promise<unknown> {
+    const body = await readBody(request);
+    const patch = validateProfilePatch(body);
+    const owner = resolveOwner(
+        (body as Record<string, unknown>).owner,
+        member,
+        memberNames(env),
+        'profile'
+    );
+
+    return commitJson<TeamMember[], unknown>(
+        env,
+        CLUB_PATH,
+        EMPTY_CLUB,
+        (current): CommitPlan<TeamMember[], unknown> => {
+            const index = current.findIndex(
+                (entry) => entry.name.toLowerCase() === owner.toLowerCase()
+            );
+            if (index === -1) {
+                throw notFound(`${owner} has no profile in club.json.`);
+            }
+
+            const existing = current[index];
+            const updated = mergeProfile(existing, patch);
+
+            // Key order survives the spread, so this compares content rather
+            // than shape — a save that changed nothing must not cost a commit
+            // and the full Pages build behind it.
+            if (JSON.stringify(existing) === JSON.stringify(updated)) {
+                return { commit: false, result: { member: updated, changed: false } };
+            }
+
+            const members = [...current];
+            members[index] = updated;
+
+            return {
+                commit: true,
+                next: members,
+                message: `Update profile: ${owner}`,
+                result: { member: updated, changed: true },
+            };
+        }
+    );
+}
+
 // --- Routing ------------------------------------------------------------
 
 /**
@@ -503,6 +602,16 @@ async function route(request: Request, env: Env): Promise<unknown> {
     if (path === '/api/watched' && method === 'GET') {
         const { data } = await readJson<WatchedLog>(env, WATCHED_PATH);
         return { watched: data ?? EMPTY_WATCHED };
+    }
+
+    if (path === '/api/club' && method === 'GET') {
+        const { data } = await readJson<TeamMember[]>(env, CLUB_PATH);
+        return { club: data ?? EMPTY_CLUB };
+    }
+
+    if (path === '/api/profile') {
+        if (method === 'PUT') return putProfile(request, env, member);
+        throw new HttpError(405, `${method} not allowed on ${path}.`);
     }
 
     if (path === '/api/films/search' && method === 'GET') {

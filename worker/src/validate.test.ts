@@ -13,7 +13,11 @@ import {
     resolveOwner,
     slugify,
     validateImdbId,
+    validateInterview,
     validateListInput,
+    validateProfileImage,
+    validateProfileLink,
+    validateProfilePatch,
     validateRatingPatch,
     validateWatchDate,
     validateWatchedPatch,
@@ -384,6 +388,141 @@ describe('validateListInput', () => {
 
     it('rejects a bad id inside an otherwise valid list', () => {
         expectStatus(() => validateListInput({ ...base, entries: [{ imdbID: 'tt1' }] }), 400);
+    });
+});
+
+describe('validateProfileImage', () => {
+    it('accepts an https URL', () => {
+        expect(validateProfileImage('https://example.com/me.jpg')).toBe('https://example.com/me.jpg');
+    });
+
+    it("accepts the site's own image paths", () => {
+        // Every member is stored this way today. Rejecting it would make the
+        // first bio edit fail on a field the member never touched.
+        expect(validateProfileImage('/images/andy.jpg')).toBe('/images/andy.jpg');
+    });
+
+    it('treats a protocol-relative URL as the other origin it is', () => {
+        expectStatus(() => validateProfileImage('//evil.example/me.jpg'), 400);
+    });
+
+    it('refuses to store a traversal', () => {
+        expectStatus(() => validateProfileImage('/images/../../secrets.json'), 400);
+    });
+
+    it('refuses http', () => {
+        expectStatus(() => validateProfileImage('http://example.com/me.jpg'), 400);
+    });
+
+    it('reads blank as cleared', () => {
+        expect(validateProfileImage('   ')).toBeNull();
+        expect(validateProfileImage(null)).toBeNull();
+    });
+});
+
+describe('validateProfileLink', () => {
+    it('accepts an https URL', () => {
+        expect(validateProfileLink('https://letterboxd.com/andy')).toBe('https://letterboxd.com/andy');
+    });
+
+    it('refuses a bare domain', () => {
+        expectStatus(() => validateProfileLink('letterboxd.com/andy'), 400);
+    });
+
+    it('refuses a site path, which only an image may be', () => {
+        expectStatus(() => validateProfileLink('/images/andy.jpg'), 400);
+    });
+});
+
+describe('validateInterview', () => {
+    it('trims and keeps the order it was given', () => {
+        expect(
+            validateInterview([
+                { question: '  First film?  ', answer: '  Jaws.  ' },
+                { question: 'Last?', answer: 'Sátántangó.' },
+            ])
+        ).toEqual([
+            { question: 'First film?', answer: 'Jaws.' },
+            { question: 'Last?', answer: 'Sátántangó.' },
+        ]);
+    });
+
+    it('drops a row blank on both sides', () => {
+        // The editor keeps an empty pair at the end; saving shouldn't require
+        // the member to tidy it away first.
+        expect(
+            validateInterview([{ question: 'First film?', answer: 'Jaws.' }, { question: '', answer: '  ' }])
+        ).toHaveLength(1);
+    });
+
+    it('refuses a half-filled row rather than silently dropping the half', () => {
+        expectStatus(() => validateInterview([{ question: 'First film?', answer: '' }]), 400);
+        expectStatus(() => validateInterview([{ question: '', answer: 'Jaws.' }]), 400);
+    });
+
+    it('reads absent as no interview', () => {
+        expect(validateInterview(undefined)).toEqual([]);
+        expect(validateInterview(null)).toEqual([]);
+    });
+
+    it('caps the number of questions', () => {
+        const many = Array.from({ length: LIMITS.interviewItems + 1 }, () => ({
+            question: 'Q',
+            answer: 'A',
+        }));
+        expectStatus(() => validateInterview(many), 400);
+    });
+
+    it('caps an answer', () => {
+        expectStatus(
+            () => validateInterview([{ question: 'Q', answer: 'x'.repeat(LIMITS.interviewAnswer + 1) }]),
+            400
+        );
+    });
+});
+
+describe('validateProfilePatch', () => {
+    it('keeps only the fields the body carried', () => {
+        expect(validateProfilePatch({ bio: 'Watches too much.' })).toEqual({
+            bio: 'Watches too much.',
+        });
+    });
+
+    it('drops fields a member may not set', () => {
+        // `name` is the key every rating, list, and log joins on; `queue` and
+        // `color` are club-wide settings that merely live per member.
+        expect(
+            validateProfilePatch({
+                bio: 'Watches too much.',
+                name: 'Someone Else',
+                queue: 1,
+                color: 'rose-300',
+            })
+        ).toEqual({ bio: 'Watches too much.' });
+    });
+
+    it('normalizes a cleared title or bio to blank, not null', () => {
+        // Both are required strings in club.json and render unconditionally.
+        expect(validateProfilePatch({ title: '   ', bio: '' })).toEqual({ title: '', bio: '' });
+    });
+
+    it('normalizes a cleared link or image to null, which the handler removes', () => {
+        expect(validateProfilePatch({ url: '', image: '' })).toEqual({ url: null, image: null });
+    });
+
+    it('rejects a body with nothing it recognizes', () => {
+        // A silent 200 on an unrecognized body would look like a save.
+        expectStatus(() => validateProfilePatch({ nickname: 'Ace' }), 400);
+    });
+
+    it('rejects a non-object body', () => {
+        expectStatus(() => validateProfilePatch('bio'), 400);
+        expectStatus(() => validateProfilePatch([{ bio: 'x' }]), 400);
+    });
+
+    it('caps the bio and the title', () => {
+        expectStatus(() => validateProfilePatch({ bio: 'x'.repeat(LIMITS.bio + 1) }), 400);
+        expectStatus(() => validateProfilePatch({ title: 'x'.repeat(LIMITS.title + 1) }), 400);
     });
 });
 

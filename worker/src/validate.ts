@@ -16,7 +16,7 @@
  */
 
 import { badRequest, forbidden } from './errors';
-import type { FilmListEntry } from './types';
+import type { FilmListEntry, InterviewItem } from './types';
 
 /** IMDb ids as they appear in `films.json`. */
 export const IMDB_ID_PATTERN = /^tt\d{7,9}$/;
@@ -45,6 +45,14 @@ export const LIMITS = {
     imageUrl: 500,
     /** Films in one member's watch log. A log grows for years; a list does not. */
     watched: 2000,
+    /** A member's role line under their name, e.g. "Filmmaker & Director". */
+    title: 80,
+    /** The profile bio. Markdown, and the longest prose the site asks anyone for. */
+    bio: 4000,
+    interviewQuestion: 300,
+    interviewAnswer: 4000,
+    /** Questions on one interview. Long enough that nobody will meet it. */
+    interviewItems: 40,
 } as const;
 
 /** Fields a member may set on their own rating. Anything else in a body is ignored. */
@@ -125,6 +133,132 @@ export function validateImageUrl(value: unknown, field = 'image'): string | null
         throw badRequest(`${field}: must be an https:// URL`);
     }
     return text;
+}
+
+/**
+ * A member's own avatar, which unlike every other image field on the site may
+ * also be a path into the repo's own `public/images`.
+ *
+ * That exception is not a nicety: all six profiles currently point at
+ * `/images/andy.jpg` and the like, and a validator that took https URLs only
+ * would reject every member's existing image the first time they touched their
+ * bio. A path must be site-absolute and single-slashed — `//evil.example` is a
+ * protocol-relative URL to another origin, not a local file, and `..` has no
+ * business in a stored `<img src>`.
+ */
+export function validateProfileImage(value: unknown, field = 'image'): string | null {
+    const text = optionalText(value, LIMITS.imageUrl, field);
+    if (text === null) return null;
+
+    if (text.startsWith('/')) {
+        if (text.startsWith('//') || text.includes('..')) {
+            throw badRequest(`${field}: expected a path like /images/andy.jpg`);
+        }
+        return text;
+    }
+    return validateImageUrl(text, field);
+}
+
+/**
+ * The optional link under a member's bio — a personal site, a Letterboxd
+ * profile. `https` for the same reason images are: the page is served over it.
+ */
+export function validateProfileLink(value: unknown, field = 'url'): string | null {
+    const text = optionalText(value, LIMITS.imageUrl, field);
+    if (text === null) return null;
+
+    let parsed: URL;
+    try {
+        parsed = new URL(text);
+    } catch {
+        throw badRequest(`${field}: expected a full URL starting with https://`);
+    }
+    if (parsed.protocol !== 'https:') throw badRequest(`${field}: must be an https:// URL`);
+    return text;
+}
+
+/**
+ * The interview, replaced wholesale rather than merged per question.
+ *
+ * A row blank on both sides is dropped, so an editor that keeps an empty pair at
+ * the end doesn't have to strip it before saving. A row with only one side
+ * filled is an error instead: it is the shape of a half-finished edit, and
+ * silently discarding an answer someone typed is the one outcome worth refusing.
+ */
+export function validateInterview(value: unknown, field = 'interview'): InterviewItem[] {
+    if (value === null || value === undefined) return [];
+    if (!Array.isArray(value)) throw badRequest(`${field}: expected an array`);
+    if (value.length > LIMITS.interviewItems) {
+        throw badRequest(`${field}: ${value.length} questions exceeds the ${LIMITS.interviewItems} limit`);
+    }
+
+    const items: InterviewItem[] = [];
+    value.forEach((rawItem, index) => {
+        const item = asRecord(rawItem, `${field}[${index}]`);
+        const question = optionalText(
+            item.question,
+            LIMITS.interviewQuestion,
+            `${field}[${index}].question`
+        );
+        const answer = optionalText(item.answer, LIMITS.interviewAnswer, `${field}[${index}].answer`);
+
+        if (question === null && answer === null) return;
+        if (question === null) throw badRequest(`${field}[${index}].question: an answer needs a question`);
+        if (answer === null) throw badRequest(`${field}[${index}].answer: a question needs an answer`);
+
+        items.push({ question, answer });
+    });
+
+    return items;
+}
+
+/**
+ * What a member may change about themselves.
+ *
+ * `name` is absent deliberately and permanently: it is the key every rating,
+ * list, and watch log in the repo joins on, so renaming through this endpoint
+ * would orphan a member's entire history. `queue` and `color` are absent for a
+ * softer reason — the selection rotation and the chart palette are club-wide
+ * settings that happen to be stored per member.
+ */
+const PROFILE_FIELDS = ['title', 'bio', 'url', 'image', 'interview'] as const;
+
+/**
+ * A partial profile update, with the same merge semantics as the other patches:
+ * only the keys the body carried are touched, so saving an interview leaves the
+ * bio alone. `interview` is the exception to field-level merging *within* a
+ * field — it arrives as the whole array or not at all.
+ */
+export interface ProfilePatch {
+    title?: string;
+    bio?: string;
+    url?: string | null;
+    image?: string | null;
+    interview?: InterviewItem[];
+}
+
+/**
+ * Builds a profile patch, keeping only the fields the body actually carried.
+ *
+ * `title` and `bio` normalize to `''` rather than `null` when cleared: both are
+ * required strings in `club.json`, and the site renders them unconditionally.
+ * `url` and `image` are optional there, so a cleared one is `null` and the
+ * handler drops the key entirely.
+ */
+export function validateProfilePatch(body: unknown): ProfilePatch {
+    const raw = asRecord(body, 'profile');
+    const patch: ProfilePatch = {};
+
+    if ('title' in raw) patch.title = optionalText(raw.title, LIMITS.title, 'title') ?? '';
+    if ('bio' in raw) patch.bio = optionalText(raw.bio, LIMITS.bio, 'bio') ?? '';
+    if ('url' in raw) patch.url = validateProfileLink(raw.url);
+    if ('image' in raw) patch.image = validateProfileImage(raw.image);
+    if ('interview' in raw) patch.interview = validateInterview(raw.interview);
+
+    if (Object.keys(patch).length === 0) {
+        throw badRequest(`profile: nothing to update (expected one of ${PROFILE_FIELDS.join(', ')})`);
+    }
+    return patch;
 }
 
 /** Validates an IMDb id from a URL path or a list entry. */
@@ -347,14 +481,16 @@ export function validateListInput(body: unknown): ListInput {
 export function resolveOwner(
     requested: unknown,
     caller: { name: string; admin: boolean },
-    memberNames: readonly string[]
+    memberNames: readonly string[],
+    /** What the caller is trying to write, for the refusal message alone. */
+    what = 'lists'
 ): string {
     if (requested === null || requested === undefined || requested === '') return caller.name;
     if (typeof requested !== 'string') throw badRequest('owner: expected a member name');
 
     const wanted = requested.trim().toLowerCase();
     if (wanted === caller.name.toLowerCase()) return caller.name;
-    if (!caller.admin) throw forbidden('You can only edit your own lists.');
+    if (!caller.admin) throw forbidden(`You can only edit your own ${what}.`);
 
     const match = memberNames.find((name) => name.toLowerCase() === wanted);
     if (!match) throw badRequest(`owner: "${requested}" is not a club member`);

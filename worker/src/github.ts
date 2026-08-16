@@ -4,8 +4,8 @@
  * Ported from `comic-snaps/worker/src/github.ts`, narrowed to the files this
  * worker owns. The invariant that makes this safe is §8.1's **one writer per
  * file**: CI owns `films.json` and `listFilms.json`, the worker owns
- * `overrides.json`, `lists.json`, and `watched.json`, and nothing writes both
- * sides. There is no merge to get wrong — only the sha to respect.
+ * `overrides.json`, `lists.json`, `watched.json`, and `club.json`, and nothing
+ * writes both sides. There is no merge to get wrong — only the sha to respect.
  *
  * Paths are constants in this module. The worker never derives a path from
  * request input; that is the rule that keeps a stolen token's blast radius to
@@ -19,10 +19,17 @@ const GITHUB_API = 'https://api.github.com';
 const USER_AGENT = 'film-club-editor';
 const BRANCH = 'main';
 
-/** The only three paths this worker will ever write. */
+/** The only four paths this worker will ever write. */
 export const LISTS_PATH = 'src/assets/lists.json';
 export const OVERRIDES_PATH = 'src/assets/overrides.json';
 export const WATCHED_PATH = 'src/assets/watched.json';
+/**
+ * Member profiles. Safe to own for the same reason as the other three: nothing
+ * else writes it. CI only *validates* it (`deploy.yml`, `sync-google-sheet.yml`
+ * both run `jq empty` over it), and the sheet sync has never touched it — the
+ * six member records were hand-edited in the repo until now.
+ */
+export const CLUB_PATH = 'src/assets/club.json';
 /** Read-only: used to reject a rating write for a film the sheet doesn't know. */
 export const FILMS_PATH = 'src/assets/films.json';
 

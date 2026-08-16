@@ -119,6 +119,34 @@ export interface OverridesFile {
     films: Record<string, { ratings: Record<string, RatingOverride> }>;
 }
 
+/** One question and answer on a member's profile interview. */
+export interface InterviewItem {
+    question: string;
+    /** Markdown, like a bio. */
+    answer: string;
+}
+
+/**
+ * One club member, exactly as `club.json` stores them. Mirrors `TeamMember` in
+ * `src/types/team.ts`.
+ *
+ * `name` is the join key for the entire site — every rating, list, and watch log
+ * is keyed by it — so the worker treats it as immutable and edits nothing else
+ * structural. `queue` (the selection rotation) and `color` (a Tailwind token the
+ * charts read) are club-wide settings rather than personal ones, and are equally
+ * off-limits to a profile write; see `PROFILE_FIELDS` in `validate.ts`.
+ */
+export interface TeamMember {
+    name: string;
+    title: string;
+    bio: string;
+    image: string;
+    url?: string;
+    queue?: number;
+    color?: string;
+    interview?: InterviewItem[];
+}
+
 /** A single OMDB search hit, trimmed to what the add-film picker needs. */
 export interface FilmSearchResult {
     imdbID: string;

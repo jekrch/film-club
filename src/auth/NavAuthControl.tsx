@@ -31,6 +31,19 @@ interface NavAuthControlProps {
     className?: string;
 }
 
+/**
+ * True for the account chooser Google paints, which it appends to the body
+ * rather than to the panel that asked for it.
+ *
+ * On desktop that chooser is a popup *window* and never touches this document,
+ * but on a phone it is an in-page overlay — so a tap in it arrives here looking
+ * exactly like a tap outside the panel. Closing on it would unmount the button
+ * mid-sign-in, which is the one moment the panel must stay put.
+ */
+const isGoogleSurface = (target: Node | null): boolean =>
+    target instanceof Element &&
+    target.closest('[id^="credential_picker"], iframe[src*="accounts.google.com"]') !== null;
+
 /** Shared body of both variants: who you are, or the way to say so. */
 const AuthPanelContents: React.FC = () => {
     const { status, member, admin, signOut } = useClubAuth();
@@ -74,7 +87,18 @@ const NavAuthControl: React.FC<NavAuthControlProps> = ({ variant = 'icon', class
         if (!isOpen) return;
 
         const onPointerDown = (event: MouseEvent | TouchEvent) => {
-            if (!container.current?.contains(event.target as Node)) setIsOpen(false);
+            const target = event.target as Node | null;
+            // No container means inside and outside can't be told apart, and
+            // guessing "outside" would shut the panel on the member's own tap —
+            // so the press is left alone. Both variants attach the ref, so this
+            // is the mounting gap rather than an ordinary state.
+            if (!container.current) return;
+            if (container.current.contains(target)) return;
+            if (isGoogleSurface(target)) return;
+            // A credential is already in flight: whatever this press was for, it
+            // wasn't dismissing a panel that is about to report how it went.
+            if (status === 'authenticating') return;
+            setIsOpen(false);
         };
         const onKey = (event: KeyboardEvent) => {
             if (event.key === 'Escape') setIsOpen(false);
@@ -91,7 +115,7 @@ const NavAuthControl: React.FC<NavAuthControlProps> = ({ variant = 'icon', class
             document.removeEventListener('touchstart', onPointerDown);
             document.removeEventListener('keydown', onKey);
         };
-    }, [isOpen]);
+    }, [isOpen, status]);
 
     // Signing out from the open panel leaves it showing a sign-in form nobody
     // asked for, so the panel closes with the session.
@@ -110,7 +134,11 @@ const NavAuthControl: React.FC<NavAuthControlProps> = ({ variant = 'icon', class
 
     if (variant === 'inline') {
         return (
-            <div className={className}>
+            // The same ref the icon variant carries: the dismiss effect above is
+            // shared by both, and without a container to measure against it
+            // reads every press as an outside one — which closed this panel on
+            // the tap meant for the Google button inside it.
+            <div ref={container} className={className}>
                 <button
                     type="button"
                     onClick={() => setIsOpen((open) => !open)}
