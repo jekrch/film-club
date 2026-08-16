@@ -49,7 +49,9 @@ describe('summaryDetails', () => {
         expect(summaryDetails(summary({ plot: 'Just a summary.' }))).not.toBeNull();
         expect(summaryDetails(summary({ cast: [{ name: 'Someone' }] }))).not.toBeNull();
         expect(summaryDetails(summary({ director: 'Someone' }))).not.toBeNull();
-        expect(summaryDetails(summary({ crew: [{ name: 'Someone', job: 'Director' }] }))).not.toBeNull();
+        expect(
+            summaryDetails(summary({ crew: [{ name: 'Someone', job: 'Director' }] }))
+        ).not.toBeNull();
         expect(
             summaryDetails(summary({ ratings: [{ source: 'Rotten Tomatoes', value: '96%' }] }))
         ).not.toBeNull();
@@ -142,9 +144,7 @@ describe('clubFilmDetails', () => {
                 tmdbId: 55366,
             },
         ]);
-        expect(details?.ratings).toEqual([
-            { source: 'Internet Movie Database', value: '7.7/10' },
-        ]);
+        expect(details?.ratings).toEqual([{ source: 'Internet Movie Database', value: '7.7/10' }]);
         // The curated backdrop leads, as it does on the film's own page.
         expect(details?.stills).toEqual(['curated.jpg', 'tmdb-1.jpg']);
     });

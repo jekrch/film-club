@@ -155,9 +155,7 @@ const profileUrlFor = (
     name: string,
     own: Record<string, { profileUrl?: string | null }>
 ): string | null =>
-    own[normalizePersonName(name)]?.profileUrl ??
-    getPersonProfileByName(name)?.profileUrl ??
-    null;
+    own[normalizePersonName(name)]?.profileUrl ?? getPersonProfileByName(name)?.profileUrl ?? null;
 
 /**
  * A club film's own record, with its cast and crew mapped to the card shape.

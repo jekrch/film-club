@@ -145,7 +145,9 @@ const EntryDetailsPanel: React.FC<EntryDetailsPanelProps> = ({
             <p className="max-w-prose text-sm leading-relaxed text-slate-300">{details.plot}</p>
         )}
 
-        {details.ratings.length > 0 && <EntryRatingChips ratings={details.ratings} imdbID={imdbID} />}
+        {details.ratings.length > 0 && (
+            <EntryRatingChips ratings={details.ratings} imdbID={imdbID} />
+        )}
 
         {details.stills.length > 0 && <FilmStills images={details.stills} title={title} />}
 
