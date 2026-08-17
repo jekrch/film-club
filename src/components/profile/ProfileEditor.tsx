@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
+    ArrowUpTrayIcon,
     ChevronDownIcon,
     ChevronUpIcon,
     PencilSquareIcon,
@@ -11,9 +12,12 @@ import {
 import AccentCard from '../common/AccentCard';
 import Button from '../common/Button';
 import ImageUrlPreview from '../common/ImageUrlPreview';
-import { putProfile } from '../../api/clubApi';
+import FilmSearchPicker from '../films/FilmSearchPicker';
+import { putProfile, putProfileImage } from '../../api/clubApi';
 import { useClubAuth } from '../../auth/GoogleAuth';
-import type { TeamMember } from '../../types/team';
+import type { BackdropMode, TeamMember } from '../../types/team';
+import { UPLOAD_ACCEPT, prepareAvatarUpload } from '../../utils/imageUpload';
+import { BACKDROP_FILM_LIMIT, resolveBackdropFilm } from '../../utils/profileBackdrop';
 import {
     ANSWER_LIMIT,
     BIO_LIMIT,
@@ -31,7 +35,14 @@ import {
 
 /**
  * A member's own profile, made editable: their picture, their role line, their
- * bio, their link, and their interview (§8.9).
+ * bio, their link, their interview (§8.9), and what their banner draws.
+ *
+ * Two of those don't behave like the rest, and both for the same reason — they
+ * aren't text. A picture may be *uploaded* rather than linked, which commits the
+ * file and the profile immediately instead of waiting for Save; there is no
+ * half-typed state for a file, and holding bytes in form state until a later
+ * click would only invent one. Banner films are picked from search rather than
+ * typed, but are ordinary form state and save with everything else.
  *
  * Collapsed until asked for, like every other editor here — though for a
  * gentler reason than the rest. This one is only rendered for someone already
@@ -60,6 +71,28 @@ const FIELD_CLASS =
 
 const LABEL_CLASS = 'mb-1 block text-xs uppercase tracking-wider text-slate-500';
 
+/**
+ * The two things a banner can draw, in the words a member would use for them.
+ *
+ * "Top-rated" is described by what it *does* rather than named, because it is
+ * the behavior everyone already has and nobody has ever had to think about — the
+ * choice only makes sense if the default is spelled out next to the alternative.
+ */
+const BACKDROP_CHOICES: { mode: BackdropMode; label: string; hint: string }[] = [
+    {
+        mode: 'top-rated',
+        label: 'Films you rated highest',
+        hint: 'A different cut of your best-scored club films on every visit.',
+    },
+    {
+        mode: 'selected',
+        label: 'Films you pick',
+        // Not "in order": the collage shuffles its panels and picks a different
+        // still on every load, for a selection exactly as for the default.
+        hint: `Up to ${BACKDROP_FILM_LIMIT} films, club or not — their artwork fills the banner.`,
+    },
+];
+
 const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, onSaved }) => {
     const { member: signedInAs, withToken } = useClubAuth();
     const [open, setOpen] = useState(false);
@@ -69,6 +102,16 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
     const [saving, setSaving] = useState(false);
     const [saveError, setSaveError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+    /**
+     * The uploaded image as a `data:` URL, so the thumbnail shows what was just
+     * sent. The committed file isn't served until the next Pages build finishes,
+     * so previewing the stored path instead would show a broken image for the
+     * minute that follows an upload — the one moment it most needs to look like
+     * it worked.
+     */
+    const [uploadPreview, setUploadPreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const baseline = useMemo(() => toProfileValues(member), [member]);
     const baselineForm = useMemo(() => toProfileForm(baseline), [baseline]);
@@ -94,6 +137,35 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
 
     const update = (field: 'title' | 'bio' | 'url' | 'image', value: string) => {
         setForm((current) => ({ ...current, [field]: value }));
+        // A typed path is a different picture from the uploaded one, so the
+        // thumbnail goes back to following the field.
+        if (field === 'image') setUploadPreview(null);
+        setNotice(null);
+        setSaveError(null);
+    };
+
+    const setBackdropMode = (backdropMode: BackdropMode) => {
+        setForm((current) => ({ ...current, backdropMode }));
+        setNotice(null);
+        setSaveError(null);
+    };
+
+    const addBackdropFilm = (imdbID: string) => {
+        setForm((current) =>
+            current.backdropFilms.includes(imdbID) ||
+            current.backdropFilms.length >= BACKDROP_FILM_LIMIT
+                ? current
+                : { ...current, backdropFilms: [...current.backdropFilms, imdbID] }
+        );
+        setNotice(null);
+        setSaveError(null);
+    };
+
+    const removeBackdropFilm = (imdbID: string) => {
+        setForm((current) => ({
+            ...current,
+            backdropFilms: current.backdropFilms.filter((id) => id !== imdbID),
+        }));
         setNotice(null);
         setSaveError(null);
     };
@@ -140,6 +212,58 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
         setSaveError(null);
     };
 
+    // An admin editing someone else's profile has to name them; for anyone
+    // editing their own, the worker uses the caller and this is left off.
+    const owner =
+        signedInAs && signedInAs.toLowerCase() !== member.name.toLowerCase()
+            ? member.name
+            : undefined;
+
+    /**
+     * Resizes the picked file and commits it, in one action.
+     *
+     * Unlike every other field here this doesn't wait for Save, and the reason is
+     * that a file has no half-typed state to protect: the member has chosen a
+     * picture or they haven't. Holding the bytes in form state until a later
+     * click would mean a Discard that silently throws away an upload, and a Save
+     * button whose meaning depends on which field was touched.
+     *
+     * The saved record comes back and goes to the page, so the baseline moves
+     * with it — and `form.image` is set to match, or the very next Save would
+     * dutifully write the old path back over the new one.
+     */
+    const handleUpload = async (file: File) => {
+        setUploading(true);
+        setSaveError(null);
+        setNotice(null);
+        try {
+            const prepared = await prepareAvatarUpload(file);
+            const result = await withToken((token) =>
+                putProfileImage(token, {
+                    contentType: prepared.contentType,
+                    data: prepared.data,
+                    ...(owner ? { owner } : {}),
+                })
+            );
+
+            setUploadPreview(prepared.previewUrl);
+            setForm((current) => ({ ...current, image: result.image }));
+            onSaved(result.member);
+            setNotice(
+                result.changed
+                    ? 'Picture uploaded — live on the site in about a minute.'
+                    : 'That was already your picture; nothing changed.'
+            );
+        } catch (err) {
+            setSaveError(err instanceof Error ? err.message : 'Upload failed.');
+        } finally {
+            setUploading(false);
+            // Cleared so picking the same file again still fires a change event,
+            // which matters after a failed upload more than a successful one.
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
+
     const handleSave = async () => {
         const parsed = parseProfileForm(form);
         if ('error' in parsed) {
@@ -152,13 +276,6 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
             setNotice('Nothing to save — this already matches your profile.');
             return;
         }
-
-        // An admin editing someone else's profile has to name them; for anyone
-        // editing their own, the worker uses the caller and this is left off.
-        const owner =
-            signedInAs && signedInAs.toLowerCase() !== member.name.toLowerCase()
-                ? member.name
-                : undefined;
 
         setSaving(true);
         setSaveError(null);
@@ -197,7 +314,7 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
         );
     }
 
-    const busy = saving || profileLoading;
+    const busy = saving || uploading || profileLoading;
 
     return (
         <AccentCard accent="blue" className="mb-8 p-6 md:p-10">
@@ -220,22 +337,63 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
             </div>
 
             <div className="space-y-5">
-                <label className="block">
-                    <span className={LABEL_CLASS}>Profile picture</span>
-                    <div className="flex items-center gap-3">
+                <div>
+                    <label className="block">
+                        <span className={LABEL_CLASS}>Profile picture</span>
+                        <div className="flex items-center gap-3">
+                            <input
+                                type="text"
+                                value={form.image}
+                                onChange={(e) => update('image', e.target.value)}
+                                disabled={busy}
+                                placeholder="/images/andy.jpg or https://…"
+                                className={FIELD_CLASS}
+                            />
+                            {/* Round, because that is the shape it lands in — a
+                                square thumb would hide a badly cropped portrait.
+                                Shows the uploaded image itself while the file it
+                                was committed to is still being deployed. */}
+                            <ImageUrlPreview
+                                url={uploadPreview ?? form.image}
+                                className="h-11 w-11 rounded-full"
+                            />
+                        </div>
+                    </label>
+
+                    {/* The other way to fill that field, for the members — most
+                        of them — with a photograph on their phone rather than a
+                        URL to one. The input itself is hidden because a bare
+                        file input can't be styled and reads as a stray control
+                        next to the rest of the form. */}
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
                         <input
-                            type="text"
-                            value={form.image}
-                            onChange={(e) => update('image', e.target.value)}
+                            ref={fileInputRef}
+                            type="file"
+                            accept={UPLOAD_ACCEPT}
+                            className="sr-only"
+                            aria-label="Upload a profile picture"
                             disabled={busy}
-                            placeholder="/images/andy.jpg or https://…"
-                            className={FIELD_CLASS}
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) void handleUpload(file);
+                            }}
                         />
-                        {/* Round, because that is the shape it lands in — a
-                            square thumb would hide a badly cropped portrait. */}
-                        <ImageUrlPreview url={form.image} className="h-11 w-11 rounded-full" />
+                        <Button
+                            type="button"
+                            variant="link"
+                            size="sm"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={busy}
+                            className="text-blue-400 hover:text-blue-300"
+                        >
+                            <ArrowUpTrayIcon className="h-4 w-4" aria-hidden="true" />
+                            {uploading ? 'Uploading…' : 'Upload a picture'}
+                        </Button>
+                        <span className="text-xs text-slate-500">
+                            JPEG, PNG, or WebP. Saved as soon as it uploads.
+                        </span>
                     </div>
-                </label>
+                </div>
 
                 <label className="block">
                     <span className={LABEL_CLASS}>Title</span>
@@ -274,6 +432,120 @@ const ProfileEditor: React.FC<ProfileEditorProps> = ({ member, profileLoading, o
                         className={FIELD_CLASS}
                     />
                 </label>
+
+                {/* What the collage behind the name and bio at the top of this
+                    page draws from. */}
+                <div className="border-t border-slate-700/60 pt-5">
+                    <div className="mb-3 flex items-center gap-3">
+                        <h5 className="text-sm font-semibold uppercase tracking-wider text-blue-400">
+                            Banner art
+                        </h5>
+                        <span className="h-px flex-grow bg-slate-700/60" />
+                    </div>
+
+                    <div className="space-y-2">
+                        {BACKDROP_CHOICES.map((choice) => (
+                            <label
+                                key={choice.mode}
+                                className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-600/30 bg-slate-700/25 p-3 transition-colors hover:border-blue-500/25 hover:bg-slate-700/40"
+                            >
+                                <input
+                                    type="radio"
+                                    name="backdrop-mode"
+                                    value={choice.mode}
+                                    checked={form.backdropMode === choice.mode}
+                                    onChange={() => setBackdropMode(choice.mode)}
+                                    disabled={busy}
+                                    className="mt-1 accent-blue-500"
+                                />
+                                <span className="min-w-0">
+                                    <span className="block text-sm text-slate-200">
+                                        {choice.label}
+                                    </span>
+                                    <span className="block text-xs text-slate-500">
+                                        {choice.hint}
+                                    </span>
+                                </span>
+                            </label>
+                        ))}
+                    </div>
+
+                    {form.backdropMode === 'selected' && (
+                        <div className="mt-4 space-y-3">
+                            {form.backdropFilms.length === 0 && (
+                                <p className="text-sm italic text-slate-500">
+                                    No films picked yet — the banner shows your top-rated ones until
+                                    you add one.
+                                </p>
+                            )}
+
+                            <ul className="space-y-2">
+                                {form.backdropFilms.map((imdbID) => {
+                                    const film = resolveBackdropFilm(imdbID);
+                                    return (
+                                        <li
+                                            key={imdbID}
+                                            className="flex items-center gap-3 rounded-xl border border-slate-600/30 bg-slate-700/25 px-3 py-2"
+                                        >
+                                            {film.poster ? (
+                                                <img
+                                                    src={film.poster}
+                                                    alt=""
+                                                    loading="lazy"
+                                                    className="h-12 w-8 flex-shrink-0 rounded object-cover object-top"
+                                                    onError={(e) => {
+                                                        e.currentTarget.style.visibility = 'hidden';
+                                                    }}
+                                                />
+                                            ) : (
+                                                <span className="h-12 w-8 flex-shrink-0 rounded bg-slate-800" />
+                                            )}
+                                            <span className="min-w-0 flex-grow truncate text-slate-200">
+                                                {/* An id CI hasn't caught up with
+                                                    yet has no title to show; it
+                                                    is still the film they picked,
+                                                    so it says so rather than
+                                                    disappearing. */}
+                                                {film.title ?? imdbID}
+                                                {film.year && (
+                                                    <span className="ml-1.5 text-slate-500">
+                                                        {film.year}
+                                                    </span>
+                                                )}
+                                            </span>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="xs"
+                                                onClick={() => removeBackdropFilm(imdbID)}
+                                                disabled={busy}
+                                                aria-label={`Remove ${film.title ?? imdbID} from your banner`}
+                                                className="hover:text-rose-300"
+                                            >
+                                                <TrashIcon className="h-4 w-4" aria-hidden="true" />
+                                            </Button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+
+                            {form.backdropFilms.length < BACKDROP_FILM_LIMIT ? (
+                                <FilmSearchPicker
+                                    onPick={(hit) => addBackdropFilm(hit.imdbID)}
+                                    chosen={new Set(form.backdropFilms)}
+                                    label="Add a film to your banner"
+                                    chosenLabel="added"
+                                    accent="blue"
+                                />
+                            ) : (
+                                <p className="text-xs text-slate-500">
+                                    That's all {BACKDROP_FILM_LIMIT} panels. Remove one to swap it
+                                    out.
+                                </p>
+                            )}
+                        </div>
+                    )}
+                </div>
 
                 <div className="border-t border-slate-700/60 pt-5">
                     <div className="mb-3 flex items-center gap-3">

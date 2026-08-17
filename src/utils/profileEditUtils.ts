@@ -1,6 +1,7 @@
 import type { ProfilePatch } from '../api/clubApi';
-import type { InterviewItem, TeamMember } from '../types/team';
+import type { BackdropMode, InterviewItem, TeamMember } from '../types/team';
 import { parseImageUrl, parseProfileImageUrl } from './imageUrl';
+import { BACKDROP_FILM_LIMIT } from './profileBackdrop';
 
 /**
  * The pure half of the profile editor: what `club.json` holds for a member,
@@ -27,6 +28,8 @@ export interface ProfileValues {
     url: string | null;
     image: string | null;
     interview: InterviewItem[];
+    backdropMode: BackdropMode;
+    backdropFilms: string[];
 }
 
 /**
@@ -43,13 +46,22 @@ export interface InterviewRow {
     answer: string;
 }
 
-/** The same fields as form state; every input is a string, empty for "unset". */
+/**
+ * The same fields as form state; every text input is a string, empty for "unset".
+ *
+ * The two banner fields are the exception, and stay in their stored shape: a
+ * mode is a choice between two named things rather than free text, and the film
+ * list is built by a picker that only ever yields valid IMDb ids. There is
+ * nothing to parse back, so nothing is stringified on the way in.
+ */
 export interface ProfileFormValues {
     title: string;
     bio: string;
     url: string;
     image: string;
     interview: InterviewRow[];
+    backdropMode: BackdropMode;
+    backdropFilms: string[];
 }
 
 // Monotonic rather than random: nothing persists these, they only have to be
@@ -70,6 +82,10 @@ export const toProfileValues = (member: TeamMember): ProfileValues => ({
     url: member.url?.trim() ? member.url : null,
     image: member.image?.trim() ? member.image : null,
     interview: member.interview ?? [],
+    // Absent is the default rather than a missing value, on both fields: a
+    // profile written before the banner was choosable is a top-rated one.
+    backdropMode: member.backdropMode ?? 'top-rated',
+    backdropFilms: member.backdropFilms ?? [],
 });
 
 export const toProfileForm = (values: ProfileValues): ProfileFormValues => ({
@@ -78,6 +94,8 @@ export const toProfileForm = (values: ProfileValues): ProfileFormValues => ({
     url: values.url ?? '',
     image: values.image ?? '',
     interview: values.interview.map((item) => newInterviewRow(item.question, item.answer)),
+    backdropMode: values.backdropMode,
+    backdropFilms: values.backdropFilms,
 });
 
 /** Two interviews are the same when their questions and answers are, in order. */
@@ -86,6 +104,10 @@ export const sameInterview = (a: InterviewItem[], b: InterviewItem[]): boolean =
     a.every(
         (item, index) => item.question === b[index].question && item.answer === b[index].answer
     );
+
+/** Two banner selections are the same when they hold the same films in the same order. */
+export const sameFilmIds = (a: string[], b: string[]): boolean =>
+    a.length === b.length && a.every((imdbID, index) => imdbID === b[index]);
 
 /**
  * Whether the form still matches what was seeded into it. Compared on the typed
@@ -97,6 +119,8 @@ export const sameProfileForm = (a: ProfileFormValues, b: ProfileFormValues): boo
     a.bio === b.bio &&
     a.url === b.url &&
     a.image === b.image &&
+    a.backdropMode === b.backdropMode &&
+    sameFilmIds(a.backdropFilms, b.backdropFilms) &&
     a.interview.length === b.interview.length &&
     a.interview.every(
         (row, index) =>
@@ -159,7 +183,28 @@ export function parseProfileForm(form: ProfileFormValues): ProfileParseResult {
         return { error: `An interview holds at most ${INTERVIEW_LIMIT} questions.` };
     }
 
-    return { values: { title, bio, url: url.value, image: image.value, interview } };
+    if (form.backdropFilms.length > BACKDROP_FILM_LIMIT) {
+        return { error: `A banner holds at most ${BACKDROP_FILM_LIMIT} films.` };
+    }
+
+    // A member who picked films and then switched back to their top-rated ones
+    // keeps the picks in the form — switching is not deleting, and they may well
+    // switch back before saving — but nothing unread is stored. That is also
+    // what keeps the mode toggle from being the only thing that stops a stale
+    // list of ids from being drawn.
+    const backdropFilms = form.backdropMode === 'selected' ? [...form.backdropFilms] : [];
+
+    return {
+        values: {
+            title,
+            bio,
+            url: url.value,
+            image: image.value,
+            interview,
+            backdropMode: form.backdropMode,
+            backdropFilms,
+        },
+    };
 }
 
 /**
@@ -174,5 +219,9 @@ export function buildProfilePatch(next: ProfileValues, baseline: ProfileValues):
     if (next.url !== baseline.url) patch.url = next.url;
     if (next.image !== baseline.image) patch.image = next.image;
     if (!sameInterview(next.interview, baseline.interview)) patch.interview = next.interview;
+    if (next.backdropMode !== baseline.backdropMode) patch.backdropMode = next.backdropMode;
+    if (!sameFilmIds(next.backdropFilms, baseline.backdropFilms)) {
+        patch.backdropFilms = next.backdropFilms;
+    }
     return patch;
 }

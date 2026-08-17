@@ -23,6 +23,7 @@ import { useClubAuth } from '../auth/GoogleAuth';
 
 import { useMemberProfile } from '../hooks/useMemberProfile';
 import { useProfileData } from '../hooks/useProfileData';
+import { profileBackdropSources } from '../utils/profileBackdrop';
 
 const ProfilePage: React.FC = () => {
     const { memberName } = useParams<{ memberName: string }>();
@@ -100,8 +101,12 @@ const ProfilePage: React.FC = () => {
             {/* Content is capped at the un-bled width and centered, so when the
                 card bleeds wider on large screens the extra width is banner art
                 only — the avatar and bio stay where they were. */}
+            {/* `sources` rather than `films`, because a member may have named
+                films the club never watched — those have no `Film` record at
+                all, and their art comes from the same summary cache the lists
+                and watch logs read. */}
             <HeroBanner
-                films={topRatedFilms}
+                sources={profileBackdropSources(shown, topRatedFilms)}
                 className="mb-8"
                 contentClassName="mx-auto w-full max-w-[74rem] py-12 sm:p-6 md:p-10 flex flex-col sm:flex-row items-center sm:items-start sm:space-x-10 md:space-x-16"
             >

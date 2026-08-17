@@ -4,6 +4,7 @@ import {
     Node,
     Edge,
     Background,
+    BackgroundVariant,
     Controls,
     useNodesState,
     useEdgesState,
@@ -537,6 +538,27 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
     } | null>(null);
     const threshold = 1;
 
+    // Scroll-to-zoom is opt-in: until the user clicks into the canvas the wheel
+    // belongs to the page, so scrolling past the graph doesn't get captured.
+    const containerRef = React.useRef<HTMLDivElement>(null);
+    const [zoomEnabled, setZoomEnabled] = React.useState(false);
+
+    React.useEffect(() => {
+        if (!zoomEnabled) return;
+        const handlePointerDown = (e: PointerEvent) => {
+            if (!containerRef.current?.contains(e.target as globalThis.Node)) setZoomEnabled(false);
+        };
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setZoomEnabled(false);
+        };
+        document.addEventListener('pointerdown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [zoomEnabled]);
+
     const handlePersonClick = useCallback(
         (name: string) => {
             setCreditsPerson({ name, filmography: getAllFilmCreditsForPerson(name, films) });
@@ -693,7 +715,9 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
                 Connection Graph
             </h3>
             <div
+                ref={containerRef}
                 className={className}
+                onPointerDown={() => setZoomEnabled(true)}
                 style={{
                     width: '100%',
                     height: 500,
@@ -703,6 +727,10 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
                     overflow: 'hidden',
                     position: 'relative',
                     border: '1px solid #334155',
+                    // Own the canvas backdrop rather than letting the page show
+                    // through: a flat slate base with a soft top-centre lift.
+                    background:
+                        'radial-gradient(120% 90% at 50% 0%, #16203a 0%, #121b30 45%, #0e1526 100%)',
                     ...style,
                 }}
             >
@@ -718,10 +746,19 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
                     fitViewOptions={{ padding: 0.15 }}
                     minZoom={0.2}
                     maxZoom={1.5}
+                    zoomOnScroll={zoomEnabled}
+                    // Leave the wheel event alone while inactive so it scrolls
+                    // the page instead of being swallowed by the canvas.
+                    preventScrolling={zoomEnabled}
                     proOptions={{ hideAttribution: true }}
                     className="dark-flow"
                 >
-                    <Background color="#334155" gap={24} size={1} />
+                    <Background
+                        variant={BackgroundVariant.Lines}
+                        color="rgba(148, 163, 184, 0.07)"
+                        gap={40}
+                        lineWidth={1}
+                    />
                     <Controls
                         className="react-flow__controls--dark"
                         style={{
@@ -742,6 +779,27 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
                     }}
                 /> */}
                 </ReactFlow>
+
+                {!zoomEnabled && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 10,
+                            right: 10,
+                            pointerEvents: 'none',
+                            background: 'rgba(15, 23, 42, 0.75)',
+                            border: '1px solid #334155',
+                            borderRadius: 6,
+                            padding: '3px 8px',
+                            fontSize: 11,
+                            color: '#94a3b8',
+                            backdropFilter: 'blur(4px)',
+                            zIndex: 20,
+                        }}
+                    >
+                        Click to zoom
+                    </div>
+                )}
 
                 {selectedConnection && (
                     <ConnectionDetailPanel

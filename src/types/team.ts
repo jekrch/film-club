@@ -1,6 +1,18 @@
 import teamMembersData from '../assets/club.json';
 import { ComprehensiveMemberStats, MemberStatHighlight } from '../utils/statUtils';
 
+/**
+ * Where a member's profile banner gets its art. Mirrors `BackdropMode` in
+ * `worker/src/types.ts`; `top-rated` is the default and is stored as an absent
+ * field rather than the string.
+ *
+ * `top-rated` is the collage this site has always drawn — the club films that
+ * member scored highest, recut on every load. `selected` is a few films they
+ * named themselves, which need not be club films: the banner resolves art
+ * through the same summary cache their lists and watch log use.
+ */
+export type BackdropMode = 'top-rated' | 'selected';
+
 export interface TeamMember {
     name: string;
     title: string;
@@ -10,6 +22,10 @@ export interface TeamMember {
     queue?: number;
     color?: string;
     interview?: InterviewItem[];
+    /** Absent means `top-rated`, which is what every profile was before this existed. */
+    backdropMode?: BackdropMode;
+    /** IMDb ids, in the order the member chose them. Only read in `selected` mode. */
+    backdropFilms?: string[];
 }
 
 export interface InterviewItem {

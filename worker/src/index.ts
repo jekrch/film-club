@@ -20,8 +20,10 @@ import {
     LISTS_PATH,
     OVERRIDES_PATH,
     WATCHED_PATH,
+    commitBinary,
     commitJson,
     fetchClubFilmIds,
+    memberImagePath,
     readJson,
     type CommitPlan,
 } from './github';
@@ -41,6 +43,7 @@ import {
     assignListId,
     resolveListOwner,
     resolveOwner,
+    validateAvatarUpload,
     validateImdbId,
     validateListInput,
     validateProfilePatch,
@@ -111,11 +114,15 @@ function json(data: unknown, status: number, cors: Record<string, string>): Resp
  * Parses the body, refusing anything over the §8.3 size cap *before* parsing it.
  * `Content-Length` is a hint the client controls, so the real check is on the
  * bytes that actually arrived.
+ *
+ * The cap is a parameter for exactly one caller: an avatar upload carries an
+ * image rather than the few hundred bytes of text every other route does, and
+ * raising the shared limit to suit it would raise it for all of them.
  */
-async function readBody(request: Request): Promise<unknown> {
+async function readBody(request: Request, limit: number = LIMITS.body): Promise<unknown> {
     const text = await request.text();
-    if (new TextEncoder().encode(text).byteLength > LIMITS.body) {
-        throw badRequest(`Request body exceeds the ${LIMITS.body / 1024} KB limit.`);
+    if (new TextEncoder().encode(text).byteLength > limit) {
+        throw badRequest(`Request body exceeds the ${limit / 1024} KB limit.`);
     }
     if (!text.trim()) throw badRequest('Expected a JSON body.');
     try {
@@ -543,33 +550,36 @@ function mergeProfile(existing: TeamMember, patch: ProfilePatch): TeamMember {
         else next.interview = patch.interview;
     }
 
+    // Both banner fields follow the optional-field rule above, and their absent
+    // state is the default: no `backdropMode` is `top-rated`, and no
+    // `backdropFilms` is a selection the site falls back out of. A member who
+    // switches back to top-rated keeps nothing behind.
+    if (patch.backdropMode !== undefined) {
+        if (patch.backdropMode === 'top-rated') delete next.backdropMode;
+        else next.backdropMode = patch.backdropMode;
+    }
+    if (patch.backdropFilms !== undefined) {
+        if (patch.backdropFilms.length === 0) delete next.backdropFilms;
+        else next.backdropFilms = patch.backdropFilms;
+    }
+
     return next;
 }
 
 /**
- * Edits the caller's own profile — their picture, their role line, their bio,
- * their link, and their interview.
+ * Applies a validated patch to one member's record and commits it.
  *
- * The worker cannot *create* a member, only edit one: an unknown owner is a 404
- * rather than a new record, for the same reason `PUT …/rating` refuses a film
- * the sheet doesn't know. `club.json` is the roster the entire site joins on,
- * and adding to it stays a repo edit.
+ * Shared by the two routes that write `club.json` — the profile form and an
+ * avatar upload, which finishes by pointing `image` at the file it just
+ * committed. Both need the same 404 on an unknown member and the same "changed
+ * nothing, so don't spend a Pages build" check.
  */
-async function putProfile(request: Request, env: Env, member: Member): Promise<unknown> {
-    const body = await readBody(request);
-    const patch = validateProfilePatch(body);
-    const owner = resolveOwner(
-        (body as Record<string, unknown>).owner,
-        member,
-        memberNames(env),
-        'profile'
-    );
-
-    return commitJson<TeamMember[], unknown>(
+async function commitProfile(env: Env, owner: string, patch: ProfilePatch): Promise<ProfileResult> {
+    return commitJson<TeamMember[], ProfileResult>(
         env,
         CLUB_PATH,
         EMPTY_CLUB,
-        (current): CommitPlan<TeamMember[], unknown> => {
+        (current): CommitPlan<TeamMember[], ProfileResult> => {
             const index = current.findIndex(
                 (entry) => entry.name.toLowerCase() === owner.toLowerCase()
             );
@@ -598,6 +608,77 @@ async function putProfile(request: Request, env: Env, member: Member): Promise<u
             };
         }
     );
+}
+
+/** What both profile routes answer with: the stored record, and whether it moved. */
+interface ProfileResult {
+    member: TeamMember;
+    changed: boolean;
+}
+
+/**
+ * Edits the caller's own profile — their picture, their role line, their bio,
+ * their link, and their interview.
+ *
+ * The worker cannot *create* a member, only edit one: an unknown owner is a 404
+ * rather than a new record, for the same reason `PUT …/rating` refuses a film
+ * the sheet doesn't know. `club.json` is the roster the entire site joins on,
+ * and adding to it stays a repo edit.
+ */
+async function putProfile(request: Request, env: Env, member: Member): Promise<unknown> {
+    const body = await readBody(request);
+    const patch = validateProfilePatch(body);
+    const owner = resolveOwner(
+        (body as Record<string, unknown>).owner,
+        member,
+        memberNames(env),
+        'profile'
+    );
+
+    return commitProfile(env, owner, patch);
+}
+
+/**
+ * Takes a picture rather than a link to one, and puts it in the repo.
+ *
+ * A member's `image` has always been a URL, which is fine for someone who
+ * already hosts their photograph somewhere and useless for everyone else. This
+ * is the other half: the browser resizes the file it was given, sends the bytes,
+ * and the worker commits them to `public/images/members/` and points the profile
+ * at the result.
+ *
+ * **Two commits, deliberately.** The image and `club.json` are separate files, so
+ * writing both atomically would mean the git tree API — five calls and its own
+ * failure modes — to save a Pages build that `deploy.yml`'s `cancel-in-progress`
+ * concurrency group already collapses. The order is what matters: the file lands
+ * first, so the profile never points at a path that isn't there yet. If the
+ * second half fails the member has an unreferenced file in the repo and an
+ * unchanged profile, which is the harmless direction for this to break.
+ */
+async function putProfileImage(request: Request, env: Env, member: Member): Promise<unknown> {
+    const body = await readBody(request, LIMITS.avatarBody);
+    const upload = validateAvatarUpload(body);
+    const owner = resolveOwner(
+        (body as Record<string, unknown>).owner,
+        member,
+        memberNames(env),
+        'profile'
+    );
+
+    const path = await memberImagePath(owner, upload.extension, upload.base64);
+    const uploaded = await commitBinary(
+        env,
+        path,
+        upload.base64,
+        `Upload profile picture: ${owner}`
+    );
+
+    // `public/images/members/andy-1f4c….jpg` is served at `/images/members/…`,
+    // which is the form `club.json` stores and the form the site renders.
+    const image = path.replace(/^public/, '');
+    const result = await commitProfile(env, owner, { image });
+
+    return { ...result, image, uploaded };
 }
 
 // --- Routing ------------------------------------------------------------
@@ -639,6 +720,11 @@ async function route(request: Request, env: Env): Promise<unknown> {
     if (path === '/api/club' && method === 'GET') {
         const { data } = await readJson<TeamMember[]>(env, CLUB_PATH);
         return { club: data ?? EMPTY_CLUB };
+    }
+
+    if (path === '/api/profile/image') {
+        if (method === 'PUT') return putProfileImage(request, env, member);
+        throw new HttpError(405, `${method} not allowed on ${path}.`);
     }
 
     if (path === '/api/profile') {

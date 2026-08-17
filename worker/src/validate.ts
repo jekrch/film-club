@@ -16,7 +16,7 @@
  */
 
 import { badRequest, forbidden } from './errors';
-import type { FilmListEntry, InterviewItem } from './types';
+import type { BackdropMode, FilmListEntry, InterviewItem } from './types';
 
 /** IMDb ids as they appear in `films.json`. */
 export const IMDB_ID_PATTERN = /^tt\d{7,9}$/;
@@ -36,6 +36,19 @@ export const MAX_SCORE = 9;
  */
 export const LIMITS = {
     body: 32 * 1024,
+    /**
+     * The body cap for an avatar upload alone, which is the one route that
+     * carries an image rather than a link to one. Base64 costs a third on top of
+     * {@link avatarBytes}, and the JSON around it a few bytes more.
+     */
+    avatarBody: 900 * 1024,
+    /**
+     * The stored image. The browser resizes to 512px before sending (see
+     * `src/utils/imageUpload.ts`), so a real avatar lands around 60 KB — this is
+     * the ceiling on what a client that skipped that step may commit to the repo,
+     * not a target.
+     */
+    avatarBytes: 600 * 1024,
     listName: 80,
     listDescription: 1000,
     entryDescription: 500,
@@ -55,6 +68,12 @@ export const LIMITS = {
     interviewAnswer: 4000,
     /** Questions on one interview. Long enough that nobody will meet it. */
     interviewItems: 40,
+    /**
+     * Films a member may name for their banner art. Three, because the collage
+     * has three panels (`PANELS` in `src/components/common/HeroCollageBackground.tsx`)
+     * and a fourth would never be drawn.
+     */
+    backdropFilms: 3,
 } as const;
 
 /** Fields a member may set on their own rating. Anything else in a body is ignored. */
@@ -222,6 +241,92 @@ export function validateProfileImage(value: unknown, field = 'image'): string | 
 }
 
 /**
+ * The image types a member may upload, mapped to the extension the committed
+ * file gets.
+ *
+ * **This map is why an upload cannot name its own file.** The extension comes
+ * from here rather than from the filename the browser had, so nothing a client
+ * sends reaches the path — see `memberImagePath` in `github.ts`, and the rule at
+ * the top of that module about paths never being derived from request input.
+ *
+ * GIF is missing on purpose: it is the one common web image type where the
+ * upload path (a canvas re-encode in the browser) would silently throw away the
+ * animation that was the reason for choosing it.
+ */
+export const AVATAR_TYPES: Readonly<Record<string, string>> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+};
+
+/** Standard base64, no line breaks — what `btoa` produces and `atob` takes. */
+const BASE64_PATTERN = /^[A-Za-z0-9+/]+={0,2}$/;
+
+/**
+ * How many bytes a base64 string decodes to, without decoding it.
+ *
+ * The size check has to happen before anything allocates the image, and this is
+ * exact rather than an estimate: four characters carry three bytes, less however
+ * many the padding stands in for.
+ */
+export function base64ByteLength(base64: string): number {
+    const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
+    return (base64.length / 4) * 3 - padding;
+}
+
+/** A profile picture as it arrives: its type, its bytes, and where they came from. */
+export interface AvatarUpload {
+    contentType: string;
+    /** From {@link AVATAR_TYPES}, never from the client. */
+    extension: string;
+    /** The image, still base64 — which is also the form the GitHub API wants. */
+    base64: string;
+    bytes: number;
+}
+
+/**
+ * A profile picture uploaded as bytes rather than linked as a URL.
+ *
+ * The one route on this worker that commits something other than JSON, and the
+ * only one whose payload is not text a human typed. Three things are checked
+ * before any of it reaches GitHub: the type is one this site can serve, the
+ * payload really is base64 (a malformed one would otherwise be committed as a
+ * file that renders as nothing), and it is within {@link LIMITS.avatarBytes} —
+ * every upload lives in the repo forever, so the cap is a cap on what one member
+ * can permanently add to a clone.
+ *
+ * What is *not* checked is that the bytes are an image at all. Nothing here
+ * decodes them, and it doesn't matter: the file is served by GitHub Pages from
+ * a fixed extension out of {@link AVATAR_TYPES}, so a mislabeled payload is a
+ * broken picture rather than a script anyone can run.
+ */
+export function validateAvatarUpload(body: unknown): AvatarUpload {
+    const raw = asRecord(body, 'avatar');
+
+    const contentType =
+        typeof raw.contentType === 'string' ? raw.contentType.trim().toLowerCase() : '';
+    const extension = AVATAR_TYPES[contentType];
+    if (!extension) {
+        throw badRequest(`contentType: expected one of ${Object.keys(AVATAR_TYPES).join(', ')}`);
+    }
+
+    if (typeof raw.data !== 'string') throw badRequest('data: expected base64 image data');
+    const base64 = raw.data.trim();
+    if (base64.length === 0 || base64.length % 4 !== 0 || !BASE64_PATTERN.test(base64)) {
+        throw badRequest('data: expected base64 image data');
+    }
+
+    const bytes = base64ByteLength(base64);
+    if (bytes > LIMITS.avatarBytes) {
+        throw badRequest(
+            `data: ${Math.round(bytes / 1024)} KB exceeds the ${LIMITS.avatarBytes / 1024} KB limit`
+        );
+    }
+
+    return { contentType, extension, base64, bytes };
+}
+
+/**
  * The optional link under a member's bio — a personal site, a Letterboxd
  * profile. `https` for the same reason images are: the page is served over it.
  */
@@ -282,6 +387,52 @@ export function validateInterview(value: unknown, field = 'interview'): Intervie
     return items;
 }
 
+/** The two things a profile banner can draw from. See {@link validateBackdropMode}. */
+export const BACKDROP_MODES = ['top-rated', 'selected'] as const;
+
+/**
+ * Which films a member's banner collage draws from: the club films they scored
+ * highest, or a handful they named themselves.
+ *
+ * Absent and null both mean `top-rated`, which is what every banner did before
+ * this field existed and what the handler stores as *no field at all* — a
+ * default written out explicitly is a default that can't be changed later
+ * without touching six records.
+ */
+export function validateBackdropMode(value: unknown, field = 'backdropMode'): BackdropMode {
+    if (value === null || value === undefined) return 'top-rated';
+    if (typeof value !== 'string' || !BACKDROP_MODES.includes(value as BackdropMode)) {
+        throw badRequest(`${field}: expected one of ${BACKDROP_MODES.join(', ')}`);
+    }
+    return value as BackdropMode;
+}
+
+/**
+ * The films a member named for their banner, in the order they picked them.
+ *
+ * Any IMDb id is allowed, not only a club film's: the whole point of the field
+ * is naming a film that means something to the member, and `enrich_list_films.py`
+ * already caches art for ids the club never watched. Duplicates collapse rather
+ * than erroring — two panels of the same film is a mistake with an obvious fix,
+ * and the editor can double-add on a double tap.
+ */
+export function validateBackdropFilms(value: unknown, field = 'backdropFilms'): string[] {
+    if (value === null || value === undefined) return [];
+    if (!Array.isArray(value)) throw badRequest(`${field}: expected an array`);
+    if (value.length > LIMITS.backdropFilms) {
+        throw badRequest(
+            `${field}: ${value.length} films exceeds the ${LIMITS.backdropFilms} limit`
+        );
+    }
+
+    const ids: string[] = [];
+    value.forEach((entry, index) => {
+        const imdbID = validateImdbId(entry, `${field}[${index}]`);
+        if (!ids.includes(imdbID)) ids.push(imdbID);
+    });
+    return ids;
+}
+
 /**
  * What a member may change about themselves.
  *
@@ -291,7 +442,15 @@ export function validateInterview(value: unknown, field = 'interview'): Intervie
  * softer reason — the selection rotation and the chart palette are club-wide
  * settings that happen to be stored per member.
  */
-const PROFILE_FIELDS = ['title', 'bio', 'url', 'image', 'interview'] as const;
+const PROFILE_FIELDS = [
+    'title',
+    'bio',
+    'url',
+    'image',
+    'interview',
+    'backdropMode',
+    'backdropFilms',
+] as const;
 
 /**
  * A partial profile update, with the same merge semantics as the other patches:
@@ -305,6 +464,9 @@ export interface ProfilePatch {
     url?: string | null;
     image?: string | null;
     interview?: InterviewItem[];
+    backdropMode?: BackdropMode;
+    /** Whole array or not at all, like {@link ProfilePatch.interview}. */
+    backdropFilms?: string[];
 }
 
 /**
@@ -324,6 +486,8 @@ export function validateProfilePatch(body: unknown): ProfilePatch {
     if ('url' in raw) patch.url = validateProfileLink(raw.url);
     if ('image' in raw) patch.image = validateProfileImage(raw.image);
     if ('interview' in raw) patch.interview = validateInterview(raw.interview);
+    if ('backdropMode' in raw) patch.backdropMode = validateBackdropMode(raw.backdropMode);
+    if ('backdropFilms' in raw) patch.backdropFilms = validateBackdropFilms(raw.backdropFilms);
 
     if (Object.keys(patch).length === 0) {
         throw badRequest(

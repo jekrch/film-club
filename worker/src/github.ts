@@ -14,6 +14,7 @@
 
 import { HttpError } from './errors';
 import type { Env } from './types';
+import { slugify } from './validate';
 
 const GITHUB_API = 'https://api.github.com';
 const USER_AGENT = 'film-club-editor';
@@ -32,6 +33,15 @@ export const WATCHED_PATH = 'src/assets/watched.json';
 export const CLUB_PATH = 'src/assets/club.json';
 /** Read-only: used to reject a rating write for a film the sheet doesn't know. */
 export const FILMS_PATH = 'src/assets/films.json';
+/**
+ * Where uploaded profile pictures land. Vite copies `public/` into the build, so
+ * a file here is served at `/images/members/…` once the Pages build finishes.
+ *
+ * The one directory this worker writes non-JSON into, and the only place a
+ * committed path has *any* input in it — the member name, slugged. See
+ * {@link memberImagePath} for what keeps that from being a path at all.
+ */
+export const MEMBER_IMAGE_DIR = 'public/images/members';
 
 interface ContentsResponse {
     content: string;
@@ -136,6 +146,87 @@ async function writeJson(
     // twice-daily sheet sync, a deploy's derived-data commit, or another member.
     if (resp.status === 409 || resp.status === 422) return false;
     throw githubError(path, resp.status, await resp.text());
+}
+
+/** The sha of a file on `main`, or null when there is no file there. */
+async function readSha(env: Env, path: string): Promise<string | null> {
+    const resp = await fetch(contentsUrl(env, path), { headers: headers(env) });
+    if (resp.status === 404) return null;
+    if (!resp.ok) throw githubError(path, resp.status, await resp.text());
+
+    const meta = (await resp.json()) as ContentsResponse;
+    return meta.sha;
+}
+
+/**
+ * Commits an already-base64 payload — an uploaded profile picture — verbatim.
+ *
+ * Separate from {@link commitJson} rather than a flag on it, because the two
+ * differ in the thing that makes `commitJson` what it is: there is no read,
+ * mutate, or sha-retry here. A path under {@link MEMBER_IMAGE_DIR} carries a
+ * hash of its own content, so a file that already exists at one is byte-identical
+ * to what is being written and the commit is skipped instead of retried.
+ *
+ * Returns false when the file was already there, which the caller reports as an
+ * unchanged save rather than an error.
+ */
+export async function commitBinary(
+    env: Env,
+    path: string,
+    base64: string,
+    message: string
+): Promise<boolean> {
+    // Belt and braces around the one path this worker builds rather than
+    // declares. `memberImagePath` already guarantees it; this is what makes a
+    // future caller that doesn't unable to reach the rest of the repo.
+    if (!path.startsWith(`${MEMBER_IMAGE_DIR}/`) || path.includes('..')) {
+        throw new HttpError(500, `Refusing to write outside ${MEMBER_IMAGE_DIR}.`);
+    }
+
+    if ((await readSha(env, path)) !== null) return false;
+
+    const resp = await fetch(contentsUrl(env, path), {
+        method: 'PUT',
+        headers: headers(env),
+        // No `sha`: the read above established there is nothing to replace, and
+        // sending none makes GitHub refuse the write if that stopped being true
+        // between the two calls.
+        body: JSON.stringify({ message, content: base64, branch: BRANCH }),
+    });
+
+    if (resp.ok) return true;
+    // Someone uploaded the identical image in the moment between the two calls —
+    // the file is there and holds exactly these bytes, which is the outcome the
+    // caller wanted.
+    if (resp.status === 409 || resp.status === 422) return false;
+    throw githubError(path, resp.status, await resp.text());
+}
+
+/**
+ * Where one member's uploaded picture lives: their slugged name, a hash of the
+ * image, and an extension the worker chose.
+ *
+ * **Nothing a client sends reaches this path.** The name comes from the resolved
+ * member rather than the body, the extension from `AVATAR_TYPES`, and the middle
+ * is a digest — so the strictest thing a caller controls is *which* member, and
+ * that is already the authorization check. Content-addressed so re-uploading the
+ * same picture costs no commit, and so a new one never has to overwrite a file
+ * the deployed site is still serving.
+ */
+export async function memberImagePath(
+    owner: string,
+    extension: string,
+    base64: string
+): Promise<string> {
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(base64));
+    const hash = Array.from(new Uint8Array(digest).slice(0, 5))
+        .map((byte) => byte.toString(16).padStart(2, '0'))
+        .join('');
+
+    // `slugify` leaves only `[a-z0-9-]`; a name that slugs to nothing at all
+    // (which no club member's does) still has to produce a filename.
+    const slug = slugify(owner) || 'member';
+    return `${MEMBER_IMAGE_DIR}/${slug}-${hash}.${extension}`;
 }
 
 /**

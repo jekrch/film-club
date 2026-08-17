@@ -17,7 +17,7 @@
 
 import { EDITOR_API_URL as API_BASE, GOOGLE_CLIENT_ID } from '../config/editorEnv';
 import type { FilmListDefinition, FilmListEntry } from '../types/list';
-import type { InterviewItem, TeamMember } from '../types/team';
+import type { BackdropMode, InterviewItem, TeamMember } from '../types/team';
 import type { WatchedEntry } from '../types/watched';
 
 export { GOOGLE_CLIENT_ID };
@@ -291,6 +291,10 @@ export interface ProfilePatch {
     /** An `https` URL or a site path like `/images/andy.jpg`; null clears it. */
     image?: string | null;
     interview?: InterviewItem[];
+    /** Where the profile banner draws its art. `top-rated` is stored as no field at all. */
+    backdropMode?: BackdropMode;
+    /** IMDb ids for the banner. Whole array or not at all, like `interview`. */
+    backdropFilms?: string[];
     /** Admins only; omitted, the worker uses the caller's own name. */
     owner?: string;
 }
@@ -303,6 +307,43 @@ export interface ProfileWriteResult {
 
 export const putProfile = (token: string, patch: ProfilePatch): Promise<ProfileWriteResult> =>
     request<ProfileWriteResult>('/api/profile', token, { method: 'PUT', body: patch });
+
+/**
+ * A profile picture sent as bytes rather than linked as a URL.
+ *
+ * The only payload on this API that isn't text somebody typed. The image is
+ * resized and base64-encoded in the browser first — `prepareAvatarUpload` in
+ * `src/utils/imageUpload.ts` — because what lands here is committed to the
+ * repository and stays there.
+ */
+export interface ProfileImageUpload {
+    /** One of `image/jpeg`, `image/png`, `image/webp`. */
+    contentType: string;
+    /** Base64, no `data:` prefix. */
+    data: string;
+    /** Admins only; omitted, the worker uses the caller's own name. */
+    owner?: string;
+}
+
+/**
+ * The result of an upload. It writes `club.json` too, so it answers with the
+ * stored member like any other profile write.
+ */
+export interface ProfileImageResult extends ProfileWriteResult {
+    /** The site path the picture now lives at, e.g. `/images/members/andy-1f4c….jpg`. */
+    image: string;
+    /**
+     * False when the repo already held this exact image — the paths are content
+     * hashes, so re-uploading the same file costs no commit.
+     */
+    uploaded: boolean;
+}
+
+export const putProfileImage = (
+    token: string,
+    upload: ProfileImageUpload
+): Promise<ProfileImageResult> =>
+    request<ProfileImageResult>('/api/profile/image', token, { method: 'PUT', body: upload });
 
 export const searchFilms = async (
     token: string,

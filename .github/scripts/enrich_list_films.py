@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Build the poster/title cache for films that appear in member-authored data.
 
-Two files reference films the club never watched: `lists.json` (personal
-rankings) and `watched.json` (what members watched on their own). Neither kind
-has a record in films.json. This script fetches a thin summary for each such
-film from OMDB and stores it in `src/assets/listFilms.json`, keyed by IMDb id;
-both sides of the frontend read that one cache.
+Three files reference films the club never watched: `lists.json` (personal
+rankings), `watched.json` (what members watched on their own), and `club.json`
+(the handful of films a member may name for their profile banner). None of those
+kinds has a record in films.json. This script fetches a thin summary for each
+such film from OMDB and stores it in `src/assets/listFilms.json`, keyed by IMDb
+id; every side of the frontend reads that one cache.
 
 **Neither kind may become a club film.** films.json drives the films page, the
 almanac, and every statistic on the site; a personal favorite or a solo watch
@@ -52,6 +53,7 @@ import requests
 
 DEFAULT_LISTS_PATH = "src/assets/lists.json"
 DEFAULT_WATCHED_PATH = "src/assets/watched.json"
+DEFAULT_CLUB_PATH = "src/assets/club.json"
 DEFAULT_FILMS_PATH = "src/assets/films.json"
 DEFAULT_LIST_FILMS_PATH = "src/assets/listFilms.json"
 
@@ -388,12 +390,30 @@ def _collect_ids(entries, source):
     return found
 
 
-def collect_referenced_ids(lists_data, watched_data):
-    """Every IMDb id referenced by any list or any member's watch log, as a set.
+def _collect_bare_ids(ids, source):
+    """The valid IMDb ids among a sequence of plain id strings.
+
+    The banner selection stores ids rather than records — there is nothing else
+    to say about a film that is only there to supply a picture — so it needs its
+    own collector rather than `_collect_ids`.
+    """
+    found = set()
+    for imdb_id in ids or []:
+        if not isinstance(imdb_id, str):
+            continue
+        if not IMDB_ID_PATTERN.match(imdb_id):
+            print(f"Skipping malformed IMDb id in {source}: {imdb_id!r}")
+            continue
+        found.add(imdb_id)
+    return found
+
+
+def collect_referenced_ids(lists_data, watched_data, club_data):
+    """Every IMDb id referenced by a list, a watch log, or a profile banner.
 
     The union across *all* of them matters for pruning: dropping a film from one
-    list must not evict a summary another list — or somebody's watch log — still
-    uses.
+    list must not evict a summary another list — or somebody's watch log, or the
+    banner on their profile — still uses.
     """
     referenced = set()
     for film_list in lists_data:
@@ -406,6 +426,13 @@ def collect_referenced_ids(lists_data, watched_data):
             print(f"Skipping watch log for {owner!r}: expected a list of entries.")
             continue
         referenced |= _collect_ids(entries, f"{owner}'s watch log")
+
+    for member in club_data:
+        if not isinstance(member, dict):
+            continue
+        referenced |= _collect_bare_ids(
+            member.get("backdropFilms"), f"{member.get('name')!r}'s banner"
+        )
 
     return referenced
 
@@ -460,19 +487,22 @@ def add_tmdb_details(summaries, tmdb_bearer_token):
         )
 
 
-def enrich_list_films(lists_path, watched_path, films_path, list_films_path, api_key, tmdb_key=None):
+def enrich_list_films(
+    lists_path, watched_path, films_path, list_films_path, api_key, tmdb_key=None, club_path=None
+):
     """Refresh the summary cache. Returns True on success (no-op included)."""
     lists_data = _load_json(lists_path, list)
     watched_data = _load_json(watched_path, dict)
     films_data = _load_json(films_path, list)
+    club_data = _load_json(club_path or DEFAULT_CLUB_PATH, list)
     cache = _load_json(list_films_path, dict)
-    if LOAD_FAILED in (lists_data, watched_data, films_data, cache):
+    if LOAD_FAILED in (lists_data, watched_data, films_data, club_data, cache):
         return False
 
-    club_ids = {f["imdbID"] for f in films_data if isinstance(f, dict) and "imdbID" in f}
-    # A list or a watch log may well contain a film the club watched; that entry
-    # resolves against films.json in the frontend and needs no summary of its own.
-    wanted = collect_referenced_ids(lists_data, watched_data) - club_ids
+    club_film_ids = {f["imdbID"] for f in films_data if isinstance(f, dict) and "imdbID" in f}
+    # A list, a watch log, or a banner may well name a film the club watched;
+    # that one resolves against films.json in the frontend and needs no summary.
+    wanted = collect_referenced_ids(lists_data, watched_data, club_data) - club_film_ids
 
     pruned = sorted(set(cache) - wanted)
     # Copied rather than aliased: the enrichment passes fill fields in place, and
@@ -544,6 +574,7 @@ def main():
         os.environ.get("LIST_FILMS_PATH", DEFAULT_LIST_FILMS_PATH),
         os.environ.get("OMDB_API_KEY"),
         os.environ.get("TMDB_KEY"),
+        os.environ.get("CLUB_PATH", DEFAULT_CLUB_PATH),
     )
 
 

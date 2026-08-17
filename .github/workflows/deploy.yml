@@ -77,12 +77,14 @@ jobs:
                   OVERRIDES_PATH: 'src/assets/overrides.json'
 
             # Step 5: Fill the poster/title cache for films the club never watched —
-            # both the ones on member lists and the ones in member watch logs.
+            # the ones on member lists, the ones in member watch logs, and the ones
+            # a member named for their profile banner.
             - name: Enrich list films
               run: python .github/scripts/enrich_list_films.py
               env:
                   LISTS_PATH: 'src/assets/lists.json'
                   WATCHED_PATH: 'src/assets/watched.json'
+                  CLUB_PATH: 'src/assets/club.json'
                   JSON_PATH: 'src/assets/films.json'
                   LIST_FILMS_PATH: 'src/assets/listFilms.json'
                   OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}

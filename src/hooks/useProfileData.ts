@@ -83,7 +83,11 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
 
             return { memberName, stats: profileStats, rankValues };
         });
-    }, [allFilmsData, allTeamMembersData]);
+        // Both inputs are module-level imports of bundled JSON. Their identity is
+        // fixed for the life of the page, so listing them here claimed a
+        // reactivity that doesn't exist — this is a compute-once, not a memo that
+        // ever re-runs.
+    }, []);
 
     // Before paint rather than after, for the same reason as useFilmDetails: the
     // work here is synchronous filtering of imported data, so deferring it past
@@ -219,11 +223,6 @@ export const useProfileData = (memberNameParam?: string): UseProfileDataReturn =
                 });
             }
         });
-        mostControversialFilms.sort(
-            (a, b) =>
-                Math.abs(b.divergence) - Math.abs(a.divergence) ||
-                new Date(b.watchDate || 0).getTime() - new Date(a.watchDate || 0).getTime()
-        );
         setMostControversialFilms(
             controversial
                 .sort((a, b) => Math.abs(b.divergence) - Math.abs(a.divergence))

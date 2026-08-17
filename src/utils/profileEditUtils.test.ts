@@ -42,6 +42,8 @@ describe('toProfileValues', () => {
             url: 'https://letterboxd.com/jacob',
             image: '/images/jacob.jpg',
             interview: [{ question: 'First film?', answer: 'Jaws.' }],
+            backdropMode: 'top-rated',
+            backdropFilms: [],
         });
     });
 
@@ -52,7 +54,19 @@ describe('toProfileValues', () => {
             url: null,
             image: null,
             interview: [],
+            backdropMode: 'top-rated',
+            backdropFilms: [],
         });
+    });
+
+    it('reads an absent banner choice as the top-rated collage', () => {
+        const picked = toProfileValues({
+            ...member,
+            backdropMode: 'selected',
+            backdropFilms: ['tt0110912'],
+        });
+        expect(picked.backdropMode).toBe('selected');
+        expect(picked.backdropFilms).toEqual(['tt0110912']);
     });
 });
 
@@ -187,5 +201,72 @@ describe('sameProfileForm', () => {
 
     it('notices a removed row', () => {
         expect(sameProfileForm(form({ interview: [] }), form())).toBe(false);
+    });
+
+    it('notices a switched banner mode', () => {
+        expect(sameProfileForm(form({ backdropMode: 'selected' }), form())).toBe(false);
+    });
+
+    it('notices a reordered banner selection', () => {
+        const picked = ['tt0110912', 'tt0068646'];
+        expect(
+            sameProfileForm(
+                form({ backdropMode: 'selected', backdropFilms: picked }),
+                form({ backdropMode: 'selected', backdropFilms: [...picked].reverse() })
+            )
+        ).toBe(false);
+    });
+});
+
+describe('the banner selection', () => {
+    it('stores the films a member picked, in order', () => {
+        const parsed = parseProfileForm(
+            form({ backdropMode: 'selected', backdropFilms: ['tt0110912', 'tt0068646'] })
+        );
+        expect(parsed).toEqual({
+            values: expect.objectContaining({
+                backdropMode: 'selected',
+                backdropFilms: ['tt0110912', 'tt0068646'],
+            }),
+        });
+    });
+
+    it('stores no films for a member back on their top-rated banner', () => {
+        // The form keeps the picks — switching modes isn't deleting them, and a
+        // member may switch back before saving — but nothing unread is stored.
+        const parsed = parseProfileForm(
+            form({ backdropMode: 'top-rated', backdropFilms: ['tt0110912'] })
+        );
+        expect(parsed).toEqual({
+            values: expect.objectContaining({ backdropMode: 'top-rated', backdropFilms: [] }),
+        });
+    });
+
+    it('refuses more films than the banner has panels', () => {
+        const parsed = parseProfileForm(
+            form({
+                backdropMode: 'selected',
+                backdropFilms: ['tt0110912', 'tt0068646', 'tt0108052', 'tt0111161'],
+            })
+        );
+        expect(parsed).toEqual({ error: expect.stringContaining('at most') });
+    });
+
+    it('patches the whole selection when one film changes', () => {
+        // An array field, like the interview: there is no merging a list of
+        // three ids down to the one that moved.
+        const next = values({ backdropMode: 'selected', backdropFilms: ['tt0110912'] });
+        expect(buildProfilePatch(next, values())).toEqual({
+            backdropMode: 'selected',
+            backdropFilms: ['tt0110912'],
+        });
+    });
+
+    it('sends an empty selection to clear one', () => {
+        const baseline = values({ backdropMode: 'selected', backdropFilms: ['tt0110912'] });
+        expect(buildProfilePatch(values(), baseline)).toEqual({
+            backdropMode: 'top-rated',
+            backdropFilms: [],
+        });
     });
 });

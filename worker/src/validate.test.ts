@@ -9,9 +9,13 @@ import { HttpError } from './errors';
 import {
     LIMITS,
     assignListId,
+    base64ByteLength,
     resolveListOwner,
     resolveOwner,
     slugify,
+    validateAvatarUpload,
+    validateBackdropFilms,
+    validateBackdropMode,
     validateImdbId,
     validateInterview,
     validateListInput,
@@ -648,6 +652,132 @@ describe('validateProfilePatch', () => {
     it('caps the bio and the title', () => {
         expectStatus(() => validateProfilePatch({ bio: 'x'.repeat(LIMITS.bio + 1) }), 400);
         expectStatus(() => validateProfilePatch({ title: 'x'.repeat(LIMITS.title + 1) }), 400);
+    });
+
+    it('carries the banner choice through', () => {
+        expect(
+            validateProfilePatch({ backdropMode: 'selected', backdropFilms: ['tt0110912'] })
+        ).toEqual({ backdropMode: 'selected', backdropFilms: ['tt0110912'] });
+    });
+});
+
+describe('validateBackdropMode', () => {
+    it('takes the two modes a banner has', () => {
+        expect(validateBackdropMode('top-rated')).toBe('top-rated');
+        expect(validateBackdropMode('selected')).toBe('selected');
+    });
+
+    it('reads absent and null as the default', () => {
+        expect(validateBackdropMode(undefined)).toBe('top-rated');
+        expect(validateBackdropMode(null)).toBe('top-rated');
+    });
+
+    it('rejects a mode nothing renders', () => {
+        expectStatus(() => validateBackdropMode('random'), 400);
+        expectStatus(() => validateBackdropMode(2), 400);
+    });
+});
+
+describe('validateBackdropFilms', () => {
+    it('keeps the order the member picked', () => {
+        expect(validateBackdropFilms(['tt0110912', 'tt0068646'])).toEqual([
+            'tt0110912',
+            'tt0068646',
+        ]);
+    });
+
+    it('collapses a double-added film rather than erroring', () => {
+        // Two panels of the same film is a double tap, not a payload to refuse.
+        expect(validateBackdropFilms(['tt0110912', 'tt0110912'])).toEqual(['tt0110912']);
+    });
+
+    it('reads absent and null as no selection', () => {
+        expect(validateBackdropFilms(undefined)).toEqual([]);
+        expect(validateBackdropFilms(null)).toEqual([]);
+    });
+
+    it('rejects anything that is not an IMDb id', () => {
+        expectStatus(() => validateBackdropFilms(['pulp-fiction']), 400);
+        expectStatus(() => validateBackdropFilms('tt0110912'), 400);
+    });
+
+    it('refuses more films than the banner has panels', () => {
+        const tooMany = Array.from({ length: LIMITS.backdropFilms + 1 }, (_, i) => `tt000000${i}`);
+        expectStatus(() => validateBackdropFilms(tooMany), 400);
+    });
+});
+
+describe('validateAvatarUpload', () => {
+    /** A base64 payload of a given byte length; the bytes themselves don't matter. */
+    const payload = (bytes: number): string => btoa('x'.repeat(bytes));
+
+    it('takes an image of a type this site can serve, and names the file for it', () => {
+        expect(validateAvatarUpload({ contentType: 'image/png', data: payload(9) })).toEqual({
+            contentType: 'image/png',
+            extension: 'png',
+            base64: payload(9),
+            bytes: 9,
+        });
+    });
+
+    it('rejects a type the site would not serve as an image', () => {
+        // The extension comes from this map, so an unlisted type has no filename
+        // to be given — which is the property that keeps a path out of the body.
+        expectStatus(
+            () => validateAvatarUpload({ contentType: 'image/svg+xml', data: 'AAAA' }),
+            400
+        );
+        expectStatus(() => validateAvatarUpload({ contentType: 'text/html', data: 'AAAA' }), 400);
+    });
+
+    it('rejects a payload that is not base64', () => {
+        // It would commit cleanly and then render as nothing at all.
+        expectStatus(
+            () => validateAvatarUpload({ contentType: 'image/jpeg', data: 'not!b64' }),
+            400
+        );
+        expectStatus(() => validateAvatarUpload({ contentType: 'image/jpeg', data: 'AAA' }), 400);
+        expectStatus(() => validateAvatarUpload({ contentType: 'image/jpeg', data: '' }), 400);
+    });
+
+    it('rejects a data URL, which carries its type twice', () => {
+        expectStatus(
+            () =>
+                validateAvatarUpload({
+                    contentType: 'image/jpeg',
+                    data: 'data:image/jpeg;base64,AAAA',
+                }),
+            400
+        );
+    });
+
+    it('caps what one upload may add to the repo forever', () => {
+        expectStatus(
+            () =>
+                validateAvatarUpload({
+                    contentType: 'image/jpeg',
+                    data: payload(LIMITS.avatarBytes + 1),
+                }),
+            400
+        );
+    });
+
+    it('measures the decoded bytes, not the base64 that carries them', () => {
+        // Base64 costs a third; a cap applied to the string would be a cap on
+        // three quarters of the image it stands for.
+        const justUnder = payload(LIMITS.avatarBytes - 3);
+        expect(justUnder.length).toBeGreaterThan(LIMITS.avatarBytes);
+        expect(
+            validateAvatarUpload({ contentType: 'image/jpeg', data: justUnder }).bytes
+        ).toBeLessThanOrEqual(LIMITS.avatarBytes);
+    });
+});
+
+describe('base64ByteLength', () => {
+    it('agrees with what the browser encoded', () => {
+        for (const text of ['a', 'ab', 'abc', 'abcd', 'a picture, roughly']) {
+            expect(base64ByteLength(btoa(text))).toBe(text.length);
+        }
     });
 });
 

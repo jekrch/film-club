@@ -15,18 +15,3 @@ package-lock.json
 # formatter in a permanent fight with the worker's own output — each edit
 # would land as a whole-file reformat.
 src/assets/
-
-# TEMPORARY — remove these two once their fixtures are fixed.
-#
-# Both files put `@ts-expect-error` above a deliberately-malformed fixture that
-# is written on a single line. `@ts-expect-error` suppresses only the *next
-# line*, so when Prettier reflows the object across several lines the directive
-# no longer covers the property that actually errors, and the file stops
-# type-checking — 33 errors, while Jest stays green because it transpiles
-# without type-checking.
-#
-# The fix is the one in the code-quality plan §4: replace the directives with
-# typed partial fixtures from `src/test-utils/factories.ts`, which are
-# reflow-proof. Delete these two lines at that point.
-src/utils/teamUtils.test.ts
-src/utils/statUtils.test.ts

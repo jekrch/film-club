@@ -135,6 +135,13 @@ export interface InterviewItem {
 }
 
 /**
+ * Where a member's profile banner gets its art. Mirrors `BackdropMode` in
+ * `src/types/team.ts`; `top-rated` is the default and is stored as an absent
+ * field rather than the string.
+ */
+export type BackdropMode = 'top-rated' | 'selected';
+
+/**
  * One club member, exactly as `club.json` stores them. Mirrors `TeamMember` in
  * `src/types/team.ts`.
  *
@@ -153,6 +160,10 @@ export interface TeamMember {
     queue?: number;
     color?: string;
     interview?: InterviewItem[];
+    /** Absent means `top-rated`, which is what every profile was before this existed. */
+    backdropMode?: BackdropMode;
+    /** IMDb ids, in the order the member chose them. Only read in `selected` mode. */
+    backdropFilms?: string[];
 }
 
 /** A single OMDB search hit, trimmed to what the add-film picker needs. */
