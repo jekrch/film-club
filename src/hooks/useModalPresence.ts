@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Duration of the modal enter/exit animations defined in `index.css`, in ms.
- * Keep this in sync with the `.animate-fadeIn` / `.animate-fadeOut` timings.
+ * How long a modal stays mounted after it closes, in ms. Must be at least as
+ * long as the exit animations in `index.css`
+ * (`.animate-modal-backdrop-out` / `.animate-modal-panel-out`), or the modal is
+ * torn out of the tree mid-fade.
  */
 export const MODAL_ANIMATION_MS = 200;
 

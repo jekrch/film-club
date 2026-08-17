@@ -1,24 +1,13 @@
 import classNames from 'classnames';
 import React from 'react';
+import { ACCENT_RAIL, type CardAccent } from './accents';
 
-/**
- * Semantic accent colors. Keep these meaningful rather than decorative:
- * emerald = member voice / reviews, blue = stats & facts, rose = divergence,
- * amber = awards and qualifiers.
- */
-export type CardAccent = 'emerald' | 'blue' | 'amber' | 'rose';
+// The accent set and the rail live in `accents.ts`, shared with Modal. Re-
+// exported here because every call site already reaches for the type through
+// this module.
+export type { CardAccent };
 
 // Tailwind can't see dynamically built class names, so accents are static maps.
-// The rail is a flat tint rather than a vertical fade — a fade reaches
-// transparent at a rate set by card height, so tall and short cards ended up
-// with visibly different rails.
-const RAIL: Record<CardAccent, string> = {
-    emerald: 'bg-emerald-400/50',
-    blue: 'bg-blue-400/50',
-    amber: 'bg-amber-400/50',
-    rose: 'bg-rose-400/50',
-};
-
 const HOVER_BORDER: Record<CardAccent, string> = {
     emerald: 'hover:border-emerald-400/30',
     blue: 'hover:border-blue-400/30',
@@ -125,7 +114,12 @@ const AccentCard: React.FC<AccentCardProps> = ({
                     />
                 )}
                 {rail && (
-                    <span className={classNames('absolute inset-y-0 left-0 w-0.5', RAIL[accent])} />
+                    <span
+                        className={classNames(
+                            'absolute inset-y-0 left-0 w-0.5',
+                            ACCENT_RAIL[accent]
+                        )}
+                    />
                 )}
             </div>
         )}

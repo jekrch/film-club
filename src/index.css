@@ -299,46 +299,78 @@ h1 {
             opacity: 1;
         }
     }
-    @keyframes scaleIn {
-        from {
-            opacity: 0;
-            transform: scale(0.95) translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0px);
-        }
-    }
-    /* Exit counterparts — mirrors of the above, used while a modal animates out.
-     Durations must stay in sync with MODAL_ANIMATION_MS in useModalPresence. */
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-    @keyframes scaleOut {
-        from {
-            opacity: 1;
-            transform: scale(1) translateY(0px);
-        }
-        to {
-            opacity: 0;
-            transform: scale(0.95) translateY(10px);
-        }
-    }
     .animate-fadeIn {
         animation: fadeIn 0.2s ease-out forwards;
     }
-    .animate-scaleIn {
-        animation: scaleIn 0.2s ease-out forwards;
+
+    /* Modal enter/exit — see Modal.tsx.
+
+     The backdrop leads and the panel follows on the longer, softer curve, so
+     the page dims first and the dialog arrives into an already-settled scrim
+     rather than the two sliding together. That curve is `page-enter`'s, on
+     purpose: a modal opening and a route arriving should read as the same
+     product doing the same thing.
+
+     Exit durations must stay at or under MODAL_ANIMATION_MS in
+     useModalPresence, which is how long the modal stays mounted after close. */
+    @keyframes modal-backdrop-in {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
     }
-    .animate-fadeOut {
-        animation: fadeOut 0.2s ease-in forwards;
+    @keyframes modal-backdrop-out {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
     }
-    .animate-scaleOut {
-        animation: scaleOut 0.2s ease-in forwards;
+    @keyframes modal-panel-in {
+        from {
+            opacity: 0;
+            transform: scale(0.97) translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+    @keyframes modal-panel-out {
+        from {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: scale(0.98) translateY(6px);
+        }
+    }
+
+    .animate-modal-backdrop-in {
+        animation: modal-backdrop-in 150ms ease-out forwards;
+    }
+    .animate-modal-backdrop-out {
+        animation: modal-backdrop-out 180ms ease-in forwards;
+    }
+    .animate-modal-panel-in {
+        animation: modal-panel-in 260ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .animate-modal-panel-out {
+        animation: modal-panel-out 180ms ease-in forwards;
+    }
+
+    /* Reduced motion keeps the fade — an opacity change is not the motion this
+     preference is about — and drops the scale/lift that is. */
+    @media (prefers-reduced-motion: reduce) {
+        .animate-modal-panel-in {
+            animation: modal-backdrop-in 150ms ease-out forwards;
+        }
+        .animate-modal-panel-out {
+            animation: modal-backdrop-out 150ms ease-in forwards;
+        }
     }
 }

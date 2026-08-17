@@ -6,11 +6,17 @@ import {
     getPersonProfileByName,
     tmdbPersonUrl,
 } from '../../utils/personUtils';
-import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
-import { useModalPresence } from '../../hooks/useModalPresence';
 import { useFilmFrames } from '../../hooks/useFilmFrames';
 import { FilmFrameImage } from './filmFrames';
-import Button from './Button';
+import Modal from './Modal';
+
+/**
+ * The still runs strongest behind the header and is gone by the time the bio
+ * starts, so the heading sits *on* the artwork rather than under a flat panel —
+ * the treatment the hero banners use, at the scale of a dialog.
+ */
+const FRAME_FADE =
+    'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0) 72%)';
 
 // Formats a TMDb date string (YYYY-MM-DD) for display, e.g. "May 14, 1944".
 const formatPersonDate = (value: string | null | undefined): string | null => {
@@ -45,8 +51,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
     filmography,
     currentFilmId,
 }) => {
-    const { isRendered, isClosing } = useModalPresence(isOpen);
-
     // Callers clear their person/filmography state as soon as `onClose` fires, so
     // hold on to the last credit we were given and keep rendering it while the
     // modal animates out — otherwise the panel would empty mid-fade.
@@ -61,10 +65,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
     const activePersonName = content?.personName ?? null;
     const activeFilmography = content?.filmography ?? null;
     const personNameLower = (activePersonName ?? '').trim().toLowerCase();
-
-    // Prevent scrolling the page behind the modal while it's open (and while it
-    // animates out, so the page doesn't jump before the modal is gone).
-    useBodyScrollLock(isRendered);
 
     // Normalized TMDb record (bio, birth/death, known-for, canonical headshot)
     // resolved from the person's name, if we have one for them.
@@ -96,7 +96,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
     );
     const [backdropFrame] = useFilmFrames(creditFilms, 1);
 
-    if (!isRendered || !activePersonName || !activeFilmography) return null;
+    if (!activePersonName || !activeFilmography) return null;
 
     const bornDate = formatPersonDate(personInfo?.birthday);
     const diedDate = formatPersonDate(personInfo?.deathday);
@@ -116,83 +116,47 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
         return (a.film.title || '').localeCompare(b.film.title || '');
     });
 
-    return (
-        // Dialog Overlay: Semi-transparent backdrop
-        <div
-            className={`fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 ${
-                isClosing ? 'animate-fadeOut pointer-events-none' : 'animate-fadeIn'
-            }`}
-            onClick={onClose} // Allow closing by clicking overlay
-        >
-            {/* Dialog Content: Modal panel. A very faint still from one of their
-          films sits in the background (their headshot when none of the credits
-          have imagery), while the sharp headshot floats at the top-left of the
-          bio so the text wraps around it. */}
-            <div
-                className={`relative bg-slate-800 text-slate-200 rounded-lg shadow-2xl max-w-xl md:max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden ${
-                    isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
-                }`}
-                onClick={(e) => e.stopPropagation()} // Prevent clicks inside modal from closing it
-            >
-                {(backdropFrame || profileUrl) && (
-                    <>
-                        {backdropFrame ? (
-                            // Stills are landscape, so they get the full panel width rather
-                            // than the right-hand column a portrait headshot needs.
-                            <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.13]">
-                                <FilmFrameImage frame={backdropFrame} />
-                            </div>
-                        ) : (
-                            <img
-                                src={profileUrl!}
-                                alt=""
-                                aria-hidden="true"
-                                className="absolute right-0 top-0 h-full w-2/3 object-cover object-top pointer-events-none opacity-10"
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).style.display = 'none';
-                                }}
-                            />
-                        )}
-                        {/* Gradient fades the photo out aggressively toward the left, keeping text legible */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-slate-800 from-40% via-slate-800/95 to-slate-800/10 pointer-events-none" />
-                    </>
-                )}
-
-                {/* Dialog Header */}
-                <div className="relative z-10 flex justify-between items-start p-4 md:p-5 border-b border-slate-700/60 flex-shrink-0">
-                    <div className="min-w-0 pr-4">
-                        <h2 className="text-lg md:text-xl font-semibold text-slate-100 truncate">
-                            {activePersonName}
-                        </h2>
-                        {personInfo?.knownForDepartment && (
-                            <p className="text-xs text-slate-400 mt-0.5">
-                                {personInfo.knownForDepartment}
-                            </p>
-                        )}
-                    </div>
-                    <Button
-                        onClick={onClose}
-                        variant="ghost"
-                        className="flex-shrink-0"
-                        aria-label="Close modal"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth={2}
-                            stroke="currentColor"
-                            className="w-5 h-5 md:w-6 md:h-6"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 18L18 6M6 6l12 12"
-                            />
-                        </svg>
-                    </Button>
+    // A still from one of their films washed behind the header — or their
+    // headshot down the right edge when none of the credits have imagery, since
+    // a portrait can't span the panel the way a landscape still can.
+    const decoration = (backdropFrame || profileUrl) && (
+        <>
+            {backdropFrame ? (
+                <div
+                    className="absolute inset-0 overflow-hidden opacity-[0.34]"
+                    style={{ WebkitMaskImage: FRAME_FADE, maskImage: FRAME_FADE }}
+                >
+                    <FilmFrameImage frame={backdropFrame} />
                 </div>
+            ) : (
+                <img
+                    src={profileUrl!}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute right-0 top-0 h-full w-2/3 object-cover object-top opacity-10"
+                    onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                />
+            )}
+            {/* Holds the left column dark enough for the heading to read against
+                whatever the frame happens to be doing up there. */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 from-25% via-slate-900/70 to-slate-900/25" />
+        </>
+    );
 
+    return (
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            eyebrow="Credits"
+            title={activePersonName}
+            subtitle={personInfo?.knownForDepartment}
+            accent="blue"
+            decoration={decoration}
+            className="max-w-xl md:max-w-2xl max-h-[88vh]"
+        >
+            <>
                 {/* Person details: bio, birth/death, and a link to the full TMDb profile. */}
                 {(hasPersonDetails || profileUrl) && (
                     <div className="relative z-10 px-4 md:px-5 py-3 border-b border-slate-700/60 flex flex-col min-h-0 space-y-2">
@@ -308,8 +272,8 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
                         })}
                     </div>
                 )}
-            </div>
-        </div>
+            </>
+        </Modal>
     );
 };
 

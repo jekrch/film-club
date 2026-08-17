@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { PlayCircleIcon } from '@heroicons/react/20/solid';
 
 import TrailerModal from './TrailerModal';
@@ -22,11 +21,10 @@ interface TrailerButtonProps {
  * the pair of things every such row needs, kept together so a row only decides
  * *where* the button goes.
  *
- * The modal is portalled to `document.body` rather than left in the row. A row
- * clips itself to its rounded corners (`overflow-hidden`, for the art washed
- * behind it) and there are dozens of them stacked down a page — both of which a
- * full-screen overlay has to escape, and neither of which is the modal's
- * business to know about.
+ * A row clips itself to its rounded corners (`overflow-hidden`, for the art
+ * washed behind it) and there are dozens of them stacked down a page — both of
+ * which a full-screen overlay has to escape. Modal portals itself to
+ * `document.body` for exactly that reason, so the row can just render it.
  */
 const TrailerButton: React.FC<TrailerButtonProps> = ({ trailerKey, title, className = '' }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -46,15 +44,12 @@ const TrailerButton: React.FC<TrailerButtonProps> = ({ trailerKey, title, classN
                 Trailer
             </button>
 
-            {createPortal(
-                <TrailerModal
-                    isOpen={isOpen}
-                    onClose={() => setIsOpen(false)}
-                    trailerKey={trailerKey}
-                    title={title}
-                />,
-                document.body
-            )}
+            <TrailerModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                trailerKey={trailerKey}
+                title={title}
+            />
         </>
     );
 };
