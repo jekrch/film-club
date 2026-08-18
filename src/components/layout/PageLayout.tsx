@@ -8,7 +8,12 @@ interface PageLayoutProps {
 
 const PageLayout: React.FC<PageLayoutProps> = ({ children, className }) => {
     return (
-        <div className={classNames(`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 pt-3 sm:pt-6 lg:pt-8`, className)}>
+        <div
+            className={classNames(
+                `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 pt-3 sm:pt-6 lg:pt-8`,
+                className
+            )}
+        >
             {children}
         </div>
     );
