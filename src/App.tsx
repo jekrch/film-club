@@ -14,6 +14,7 @@ import WatchedPage from './pages/WatchedPage';
 import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 import { OverridesProvider } from './contexts/OverridesContext';
+import { TrophiesProvider } from './contexts/TrophiesContext';
 import { ClubAuthProvider } from './auth/GoogleAuth';
 import './index.css';
 import ScrollToTop from './components/layout/ScrollToTop';
@@ -81,12 +82,16 @@ function App() {
                 {/* One fetch of `overrides.json` for the whole session, rather than
               one per film page. Inert until someone signs in. */}
                 <OverridesProvider>
-                    <Router>
-                        <ScrollToTop />
-                        <ErrorBoundary>
-                            <AppContent />
-                        </ErrorBoundary>
-                    </Router>
+                    {/* The club's trophies, serving the bundled file until a member
+                  signs in and the live one is worth fetching. */}
+                    <TrophiesProvider>
+                        <Router>
+                            <ScrollToTop />
+                            <ErrorBoundary>
+                                <AppContent />
+                            </ErrorBoundary>
+                        </Router>
+                    </TrophiesProvider>
                 </OverridesProvider>
             </ClubAuthProvider>
         </ViewSettingsProvider>

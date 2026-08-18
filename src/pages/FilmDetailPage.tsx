@@ -37,9 +37,12 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import { useFilmDetails } from '../hooks/useFilmDetails';
 import { useFilmOverrides } from '../hooks/useFilmOverrides';
+import { useFilmTrophies } from '../hooks/useFilmTrophies';
 import MyRatingEditor from '../components/films/MyRatingEditor';
-import { useClubAuth } from '../auth/GoogleAuth';
+import FilmTrophyEditor from '../components/films/FilmTrophyEditor';
+import FilmDetailsEditor from '../components/films/FilmDetailsEditor';
 import TrophyGallery from '../components/common/TrophyGallery';
+import { resolveFilmTrophies } from '../utils/trophyUtils';
 import WatchTimelineNav from '../components/common/WatchTimelineNav';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
 import { CalendarDaysIcon, UserGroupIcon } from '@heroicons/react/24/outline';
@@ -88,7 +91,10 @@ const FilmDetailPage = () => {
     // in. Empty for everyone else, which is what keeps the markers below an
     // editing affordance rather than something a visitor sees.
     const overrides = useFilmOverrides(imdbId);
-    const { member: signedInMember } = useClubAuth();
+    // The club's awards for this film. Unlike the overrides above these are page
+    // content rather than an editing affordance, so they resolve for everyone —
+    // from the bundle for a visitor, from `main` for a signed-in member.
+    const trophies = useFilmTrophies(imdbId);
 
     const capitalizeFirstLetter = (str: string): string =>
         str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
@@ -128,6 +134,13 @@ const FilmDetailPage = () => {
             };
         });
     }, [film, personAllFilmographies]);
+
+    // The shelf as it renders: the sheet's `trophyNotes` prose parsed into
+    // awards, then the ones members have handed out on the site.
+    const filmTrophies = useMemo(
+        () => (film ? resolveFilmTrophies(film, trophies.trophies) : []),
+        [film, trophies.trophies]
+    );
 
     // UI Helper function (can remain in component or be moved to utils if more broadly used)
     const renderPlotParagraphs = (plot: string | undefined) => {
@@ -795,28 +808,48 @@ const FilmDetailPage = () => {
                                     )}
                                 </div>
 
+                                {/* The film's own club record — whose pick, when
+                                the club watched it, and its two images. Club
+                                property rather than anyone's row, so any signed-in
+                                member may set it; it renders nothing for a visitor. */}
+                                <FilmDetailsEditor
+                                    film={film}
+                                    override={overrides.film}
+                                    added={overrides.added}
+                                    loading={overrides.loading}
+                                    onSaved={(record) => overrides.applyFilmLocal(record)}
+                                    onReverted={() => overrides.applyFilmLocal(null)}
+                                />
+
                                 {/* A member's own score and review, editable in place. Renders
                                 nothing at all unless a member is signed in. */}
                                 <MyRatingEditor
                                     film={film}
-                                    override={
-                                        signedInMember
-                                            ? overrides.ratings[signedInMember.toLowerCase()]
-                                            : undefined
-                                    }
+                                    ratings={overrides.ratings}
                                     overridesLoading={overrides.loading}
-                                    onSaved={(rating) =>
-                                        overrides.applyLocal(rating.updatedBy, rating)
-                                    }
-                                    onReverted={() =>
-                                        signedInMember && overrides.applyLocal(signedInMember, null)
-                                    }
+                                    // Keyed by the row's owner rather than by
+                                    // `updatedBy`: an admin filling in the
+                                    // evening's scores is the one who typed it,
+                                    // not the one it belongs to.
+                                    onSaved={(owner, rating) => overrides.applyLocal(owner, rating)}
+                                    onReverted={(owner) => overrides.applyLocal(owner, null)}
                                 />
 
-                                {/* Trophy Gallery Section */}
-                                {film.movieClubInfo.trophyNotes && (
-                                    <TrophyGallery trophyNotes={film.movieClubInfo.trophyNotes} />
-                                )}
+                                {/* The club's awards for this film — the sheet's
+                                `trophyNotes` prose and the ones members hand out
+                                here, resolved into one shelf. The editor renders
+                                nothing at all unless a member is signed in, so the
+                                gallery appears for a visitor only when there is
+                                something in it. */}
+                                <TrophyGallery trophies={filmTrophies}>
+                                    <FilmTrophyEditor
+                                        film={film}
+                                        trophies={trophies.trophies}
+                                        loading={trophies.loading}
+                                        onSaved={(trophy) => trophies.applyLocal(trophy.id, trophy)}
+                                        onWithdrawn={(id) => trophies.applyLocal(id, null)}
+                                    />
+                                </TrophyGallery>
 
                                 {/* Trophy Info (if separate from notes) */}
                                 {film.movieClubInfo.trophyInfo &&

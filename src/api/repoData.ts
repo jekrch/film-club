@@ -1,7 +1,7 @@
 /**
- * The live copies of the four editable JSON files, read straight from the repo.
+ * The live copies of the editable JSON files, read straight from the repo.
  *
- * These used to be worker endpoints (`GET /api/overrides`, `/api/lists`,
+ * Four of these used to be worker endpoints (`GET /api/overrides`, `/api/lists`,
  * `/api/watched`, `/api/club`), which read `main` through the GitHub API and
  * spent a Workers request each time. They don't need to: the repository is
  * public, so `raw.githubusercontent.com` serves the same bytes to an
@@ -25,9 +25,11 @@
 import { DATA_BRANCH, DATA_REPO } from '../config/editorEnv';
 import type { FilmListDefinition } from '../types/list';
 import type { TeamMember } from '../types/team';
+import type { TrophiesFile, Trophy } from '../types/trophy';
 import type { WatchedEntry, WatchedLog } from '../types/watched';
+import { compareTrophies } from '../utils/trophyUtils';
 import { compareWatched } from '../utils/watchedUtils';
-import type { OverridesFile, RatingOverride } from './clubApi';
+import type { FilmRecordPatch, OverridesFile, RatingOverride } from './clubApi';
 import { pendingWrites, reconcile, splitKey } from './writeCache';
 
 const RAW_BASE = `https://raw.githubusercontent.com/${DATA_REPO}/${DATA_BRANCH}/src/assets`;
@@ -61,19 +63,25 @@ async function fetchAsset<T>(file: string, signal?: AbortSignal): Promise<T> {
 }
 
 /**
- * `overrides.json` — member-authored score/review edits, keyed by IMDb id then
- * by lowercased member name.
+ * `overrides.json` — everything members have edited about a club film: their own
+ * scores and reviews, keyed by lowercased member name, and the film's own club
+ * record beside them.
+ *
+ * Two overlays rather than one, on two independent write kinds, because the two
+ * halves of a film's record have different writers: an admin filling in scores
+ * and a member fixing the cover must not overwrite each other's pending state
+ * just because their saves landed on the same film.
  */
 export async function fetchOverrides(signal?: AbortSignal): Promise<OverridesFile> {
     const file = await fetchAsset<OverridesFile>('overrides.json', signal);
     const films = file.films ?? {};
 
-    const pending = pendingWrites<RatingOverride>('rating');
-    const source = new Map<string, unknown>();
+    const pendingRatings = pendingWrites<RatingOverride>('rating');
+    const ratingSource = new Map<string, unknown>();
 
-    for (const [key, value] of pending) {
+    for (const [key, value] of pendingRatings) {
         const { imdbId, owner } = splitKey(key);
-        source.set(key, films[imdbId]?.ratings?.[owner] ?? null);
+        ratingSource.set(key, films[imdbId]?.ratings?.[owner] ?? null);
 
         const ratings = { ...(films[imdbId]?.ratings ?? {}) };
         if (value) ratings[owner] = value;
@@ -81,7 +89,29 @@ export async function fetchOverrides(signal?: AbortSignal): Promise<OverridesFil
         films[imdbId] = { ...films[imdbId], ratings };
     }
 
-    reconcile('rating', source);
+    reconcile('rating', ratingSource);
+
+    const pendingFilms = pendingWrites<FilmRecordPatch>('film');
+    const filmSource = new Map<string, unknown>();
+
+    for (const [imdbId, value] of pendingFilms) {
+        const stored = films[imdbId];
+        // Compared on the pair rather than on `film` alone: a film added here
+        // and one merely edited differ only by the `added` marker, and the
+        // entry has to clear once the CDN is serving both.
+        filmSource.set(
+            imdbId,
+            stored?.film || stored?.added ? { film: stored.film, added: stored.added } : null
+        );
+
+        // The ratings stay whatever the fetch (and the overlay above) made them:
+        // this write knew nothing about them.
+        const ratings = films[imdbId]?.ratings ?? {};
+        if (value) films[imdbId] = { ...value, ratings };
+        else if (stored) films[imdbId] = { ratings };
+    }
+
+    reconcile('film', filmSource);
     return { films };
 }
 
@@ -136,6 +166,38 @@ export async function fetchWatched(signal?: AbortSignal): Promise<WatchedLog> {
 
     reconcile('watched', source);
     return log;
+}
+
+/**
+ * `trophies.json` — every award the club has given on the site, keyed by film.
+ *
+ * The overlay is per-award rather than per-film: two members can hand out
+ * trophies on the same film in the same minute, and replacing the film's whole
+ * array with this tab's copy would drop the other's.
+ */
+export async function fetchTrophies(signal?: AbortSignal): Promise<Record<string, Trophy[]>> {
+    const file = await fetchAsset<TrophiesFile>('trophies.json', signal);
+    const films = { ...(file?.films ?? {}) };
+
+    const pending = pendingWrites<Trophy>('trophy');
+    const source = new Map<string, unknown>();
+
+    for (const [key, value] of pending) {
+        const { imdbId, owner: id } = splitKey(key);
+        const trophies = films[imdbId] ?? [];
+
+        source.set(key, trophies.find((trophy) => trophy.id === id) ?? null);
+
+        const without = trophies.filter((trophy) => trophy.id !== id);
+        const next = value ? [...without, value].sort(compareTrophies) : without;
+        // Keep the film key only while it has awards, so the overlaid shape
+        // matches what the worker commits.
+        if (next.length === 0) delete films[imdbId];
+        else films[imdbId] = next;
+    }
+
+    reconcile('trophy', source);
+    return films;
 }
 
 /** `club.json` — every member's profile record. */

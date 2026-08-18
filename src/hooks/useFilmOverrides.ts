@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import type { RatingOverride } from '../api/clubApi';
+import type { FilmOverride, FilmRecordPatch, FilmSubmission, RatingOverride } from '../api/clubApi';
 import { useOverrides } from '../contexts/OverridesContext';
 
 /**
@@ -16,6 +16,10 @@ import { useOverrides } from '../contexts/OverridesContext';
 export interface FilmOverridesState {
     /** Keyed by lowercased member name, as `overrides.json` stores them. */
     ratings: Record<string, RatingOverride>;
+    /** The film's own club record, if any member has set one. */
+    film?: FilmOverride;
+    /** Present when the film was added on the site rather than through the sheet. */
+    added?: FilmSubmission;
     loading: boolean;
     error: string | null;
     /**
@@ -23,12 +27,15 @@ export interface FilmOverridesState {
      * survives a reload while the CDN catches up. `null` removes the row.
      */
     applyLocal: (user: string, rating: RatingOverride | null) => void;
+    /** The same for the film's own record; `null` reverts it to the sheet. */
+    applyFilmLocal: (record: FilmRecordPatch | null) => void;
 }
 
 export function useFilmOverrides(imdbId: string | undefined): FilmOverridesState {
-    const { films, loading, error, applyRating } = useOverrides();
+    const { films, loading, error, applyRating, applyFilm } = useOverrides();
 
     const ratings = useMemo(() => (imdbId ? (films[imdbId]?.ratings ?? {}) : {}), [films, imdbId]);
+    const record = imdbId ? films[imdbId] : undefined;
 
     const applyLocal = useCallback(
         (user: string, rating: RatingOverride | null) => {
@@ -37,5 +44,20 @@ export function useFilmOverrides(imdbId: string | undefined): FilmOverridesState
         [applyRating, imdbId]
     );
 
-    return { ratings, loading, error, applyLocal };
+    const applyFilmLocal = useCallback(
+        (next: FilmRecordPatch | null) => {
+            if (imdbId) applyFilm(imdbId, next);
+        },
+        [applyFilm, imdbId]
+    );
+
+    return {
+        ratings,
+        film: record?.film,
+        added: record?.added,
+        loading,
+        error,
+        applyLocal,
+        applyFilmLocal,
+    };
 }

@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
-"""Overlay member-authored score/review edits onto the sheet-derived films.json.
+"""Overlay member-authored edits onto the sheet-derived films.json.
 
-Members edit their own scores and reviews on the site; a Cloudflare Worker
-commits those edits to `src/assets/overrides.json` and never touches
-`films.json`. This script folds one file into the other, which is what keeps the
-two writers — the Google Sheet sync and the worker — off the same file.
+Members edit scores, reviews, and a film's own club record on the site; a
+Cloudflare Worker commits those edits to `src/assets/overrides.json` and never
+touches `films.json`. This script folds one file into the other, which is what
+keeps the two writers — the Google Sheet sync and the worker — off the same file.
+
+Two kinds of edit live in that file and both are applied here:
+
+- **Per-member**, under `films.<id>.ratings.<user>` — a score, a qualifier, a
+  review. One row of one film, belonging to one person.
+- **Per-film**, under `films.<id>.film` — whose pick it was, when the club
+  watched it, and the two images the site cannot source for itself. Club
+  property rather than anyone's row, and the fields the Google Sheet used to be
+  the only way to set.
 
 The precedence rule is deliberately unconditional: **the override wins**. There
 is no timestamp comparison and no "most recent writer", because reasoning about
@@ -38,6 +47,18 @@ DEFAULT_OVERRIDES_PATH = "src/assets/overrides.json"
 # never reach films.json, so this list is a whitelist rather than a skip-list.
 OVERRIDABLE_RATING_FIELDS = ("score", "scoreQualifier", "blurb")
 
+# The club-record fields a member may set on the film itself, mapped to where
+# they live in a film entry. `selector` and `watchDate` sit inside
+# `movieClubInfo`; the two images are top-level, beside OMDb's own `poster`.
+# A whitelist for the same reason as the tuple above: `updatedBy`/`updatedAt` are
+# provenance for humans reading overrides.json and must never reach films.json.
+OVERRIDABLE_FILM_FIELDS = {
+    "selector": ("movieClubInfo", "selector"),
+    "watchDate": ("movieClubInfo", "watchDate"),
+    "poster": (None, "poster"),
+    "backdropImage": (None, "backdropImage"),
+}
+
 
 def _find_or_create_rating(film, user):
     """Returns the film's clubRatings entry for `user`, creating it if absent.
@@ -57,6 +78,41 @@ def _find_or_create_rating(film, user):
     return rating
 
 
+def _apply_film_fields(film, film_fields, imdb_id, divergences):
+    """Overlays the per-film club record — selector, watch date, cover, backdrop.
+
+    Same presence rule as a rating: only keys the override actually carries are
+    touched, so setting a backdrop leaves the sheet's selector alone. `None` is
+    an explicit "deliberately blank" and is written as `null` rather than
+    dropping the key, because every reader of `movieClubInfo` already handles a
+    null `watchDate` (a film the club has scheduled but not yet watched) and a
+    missing key would be a third state nothing expects.
+
+    The two image fields are the exception: they are *optional* on a film entry
+    and most films have neither, so a cleared one is removed rather than left as
+    `poster: null`, which the site would render as a broken image.
+    """
+    for field, (container, key) in OVERRIDABLE_FILM_FIELDS.items():
+        if field not in film_fields:
+            continue
+
+        value = film_fields[field]
+        target = film.setdefault("movieClubInfo", {}) if container == "movieClubInfo" else film
+        sheet_value = target.get(key)
+
+        if value is None and container is None:
+            # An absent image is how a film without curated art is already
+            # stored; a null one would reach an <img src>.
+            target.pop(key, None)
+        else:
+            target[key] = value
+
+        if sheet_value is not None and sheet_value != value:
+            divergences.append(
+                f"{imdb_id} film.{field}: sheet={sheet_value!r} override={value!r}"
+            )
+
+
 def apply_overrides(films_data, overrides):
     """Overlay member-authored fields onto sheet-derived film records.
 
@@ -67,7 +123,8 @@ def apply_overrides(films_data, overrides):
     Only keys that are *present* in an override are applied. An absent `blurb`
     means "no opinion — whatever the sheet says stands"; an explicit `null`
     means "deliberately blank, ignore the sheet". That distinction is what lets
-    a member fix their score without wiping a blurb the sheet supplied.
+    a member fix their score without wiping a blurb the sheet supplied, and it
+    holds for the per-film block as much as for a rating.
     """
     films_by_id = {f["imdbID"]: f for f in films_data if isinstance(f, dict) and "imdbID" in f}
     divergences = []
@@ -75,10 +132,20 @@ def apply_overrides(films_data, overrides):
     for imdb_id, film_override in (overrides.get("films") or {}).items():
         film = films_by_id.get(imdb_id)
         if film is None:
-            # The worker refuses to write an override for an unknown film, so
-            # this means the sheet dropped a film out from under one.
-            print(f"Warning: override references unknown film {imdb_id}; skipping.")
+            # Normally impossible: the worker refuses an override for a film it
+            # doesn't know, and `create_submitted_films.py` runs before this to
+            # build the ones members added. Reaching here means that step could
+            # not fetch the film (OMDB down) and it is still pending, or the
+            # sheet dropped a film out from under an override.
+            if isinstance(film_override.get("added"), dict):
+                print(f"Film {imdb_id} was added on the site but isn't built yet; skipping.")
+            else:
+                print(f"Warning: override references unknown film {imdb_id}; skipping.")
             continue
+
+        film_fields = film_override.get("film") or {}
+        if film_fields:
+            _apply_film_fields(film, film_fields, imdb_id, divergences)
 
         for raw_user, fields in (film_override.get("ratings") or {}).items():
             user = str(raw_user).lower()

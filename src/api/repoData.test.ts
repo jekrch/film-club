@@ -12,7 +12,7 @@
 
 import { fetchClub, fetchLists, fetchOverrides, fetchWatched } from './repoData';
 import { recordWrite, writeKeys } from './writeCache';
-import type { RatingOverride } from './clubApi';
+import type { FilmOverride, RatingOverride } from './clubApi';
 import type { FilmListDefinition } from '../types/list';
 import type { TeamMember } from '../types/team';
 import type { WatchedEntry } from '../types/watched';
@@ -124,6 +124,83 @@ describe('fetchOverrides', () => {
         const { films } = await fetchOverrides();
 
         expect(films.tt1.ratings.mark.score).toBe(4);
+    });
+
+    /**
+     * A film's own record is a second, independent overlay on the same file.
+     * The two must not stand on each other: an admin entering scores and a
+     * member fixing the cover are separate saves against the same key.
+     */
+    describe('the film record beside the ratings', () => {
+        const filmOverride = (backdropImage: string): FilmOverride => ({
+            backdropImage,
+            updatedBy: 'Jacob',
+            updatedAt: '2026-08-16T12:00:00Z',
+        });
+
+        it('overlays a film save the file has not caught up with', async () => {
+            mockFetch.mockResolvedValue(
+                respond(200, { films: { tt1: { ratings: {}, film: filmOverride('old.jpg') } } })
+            );
+            recordWrite('film', writeKeys.film('tt1'), { film: filmOverride('new.jpg') });
+
+            const { films } = await fetchOverrides();
+
+            expect(films.tt1.film?.backdropImage).toBe('new.jpg');
+        });
+
+        it('keeps a rating the film write knew nothing about', async () => {
+            mockFetch.mockResolvedValue(
+                respond(200, { films: { tt1: { ratings: { andy: override(7) } } } })
+            );
+            recordWrite('film', writeKeys.film('tt1'), { film: filmOverride('new.jpg') });
+
+            const { films } = await fetchOverrides();
+
+            expect(films.tt1.ratings.andy.score).toBe(7);
+            expect(films.tt1.film?.backdropImage).toBe('new.jpg');
+        });
+
+        it('shows a film added a moment ago and absent from the file', async () => {
+            mockFetch.mockResolvedValue(respond(200, { films: {} }));
+            recordWrite('film', writeKeys.film('tt9'), {
+                film: filmOverride('hero.jpg'),
+                added: { addedBy: 'Jacob', addedAt: 'x', title: 'Suspiria', year: '1977' },
+            });
+
+            const { films } = await fetchOverrides();
+
+            expect(films.tt9.added?.addedBy).toBe('Jacob');
+            // Always present, even on a film nobody has scored yet, so every
+            // reader can index it without a guard.
+            expect(films.tt9.ratings).toEqual({});
+        });
+
+        it('hides a withdrawn film the file still carries', async () => {
+            mockFetch.mockResolvedValue(
+                respond(200, {
+                    films: { tt1: { ratings: {}, film: filmOverride('old.jpg'), added: {} } },
+                })
+            );
+            recordWrite('film', writeKeys.film('tt1'), null);
+
+            const { films } = await fetchOverrides();
+
+            expect(films.tt1.film).toBeUndefined();
+            expect(films.tt1.added).toBeUndefined();
+        });
+
+        it('forgets the overlay once the file agrees', async () => {
+            const stored = filmOverride('new.jpg');
+            mockFetch.mockResolvedValue(
+                respond(200, { films: { tt1: { ratings: {}, film: stored } } })
+            );
+            recordWrite('film', writeKeys.film('tt1'), { film: stored });
+
+            await fetchOverrides();
+
+            expect(sessionStorage.getItem('cc.editor.writes') ?? '').not.toContain('tt1');
+        });
     });
 
     /** Once the deploy lands, the overlay has to stop applying itself. */

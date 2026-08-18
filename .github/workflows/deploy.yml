@@ -40,7 +40,7 @@ jobs:
                   # Everything the app imports at build time, plus overrides.json, which
                   # the derived-data steps below read. Validating first means a bad file
                   # fails here with its own name rather than deep inside a Python step.
-                  for file in club.json films.json lists.json listFilms.json overrides.json; do
+                  for file in club.json films.json lists.json listFilms.json overrides.json trophies.json watched.json; do
                     path="src/assets/$file"
                     if [ -f "$path" ]; then
                       echo "Validating $file..."
@@ -69,14 +69,30 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install requests
 
-            # Step 4: Fold member edits into films.json (deterministic; no network)
+            # Step 4: Build the films members added on the site.
+            #
+            # Before the overlay below, and that order is the design: this step
+            # creates the entry from OMDb and TMDb, the next one fills in its
+            # selector, watch date, art, and scores from the same file that asked
+            # for it. A no-op unless someone added a film.
+            - name: Create submitted films
+              run: python .github/scripts/create_submitted_films.py
+              env:
+                  JSON_PATH: 'src/assets/films.json'
+                  OVERRIDES_PATH: 'src/assets/overrides.json'
+                  OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+                  # Unset, a new film lands with OMDb data alone and a later
+                  # sheet sync backfills the crew; nothing fails for want of it.
+                  TMDB_KEY: ${{ secrets.TMDB_KEY }}
+
+            # Step 5: Fold member edits into films.json (deterministic; no network)
             - name: Apply member overrides
               run: python .github/scripts/apply_overrides.py
               env:
                   JSON_PATH: 'src/assets/films.json'
                   OVERRIDES_PATH: 'src/assets/overrides.json'
 
-            # Step 5: Fill the poster/title cache for films the club never watched —
+            # Step 6: Fill the poster/title cache for films the club never watched —
             # the ones on member lists, the ones in member watch logs, and the ones
             # a member named for their profile banner.
             - name: Enrich list films
@@ -93,35 +109,39 @@ jobs:
                   # and a later deploy fills them in; nothing fails for want of it.
                   TMDB_KEY: ${{ secrets.TMDB_KEY }}
 
-            # Step 6: Commit whatever those two steps derived, before the build, so
-            # the deployed site never shows a half-applied state. Both steps are
+            # Step 7: Commit whatever those three steps derived, before the build,
+            # so the deployed site never shows a half-applied state. All three are
             # no-ops on the source-only pushes that make up most deploys.
+            #
+            # `persons.json` rides along because a newly created film references
+            # TMDb people nobody has a record for yet; without it the credits on
+            # the film that was just added would link to nothing.
             - name: Commit derived data
               run: |
-                  git add src/assets/films.json src/assets/listFilms.json
+                  git add src/assets/films.json src/assets/listFilms.json src/assets/persons.json
                   if git diff --staged --quiet; then
                     echo "No derived data changes to commit."
                     exit 0
                   fi
                   git config --local user.email "github-actions[bot]@users.noreply.github.com"
                   git config --local user.name "github-actions[bot]"
-                  git commit -m "Apply member overrides and enrich list films"
+                  git commit -m "Add submitted films, apply member overrides, enrich list films"
                   # The worker commits to main while this runs, so rebase onto whatever
                   # landed in the meantime rather than failing the deploy on a stale ref.
                   git pull --rebase --autostash
                   git push
 
-            # Step 7: Setup Bun
+            # Step 8: Setup Bun
             - name: Setup Bun
               uses: oven-sh/setup-bun@v2
               with:
                   bun-version: latest
 
-            # Step 8: Install dependencies
+            # Step 9: Install dependencies
             - name: Install dependencies
               run: bun install
 
-            # Step 9: Build the project
+            # Step 10: Build the project
             #
             # The two editing settings are repository *variables*, not secrets: both
             # are public by design (the client ID is sent by the browser, the worker
@@ -133,7 +153,7 @@ jobs:
                   VITE_GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
                   VITE_EDITOR_API_URL: ${{ vars.EDITOR_API_URL }}
 
-            # Step 10: Verify build output
+            # Step 11: Verify build output
             - name: Verify build output
               run: |
                   echo "Checking build output directory..."
@@ -146,7 +166,7 @@ jobs:
                     exit 1
                   fi
 
-            # Step 11: Deploy to GitHub Pages
+            # Step 12: Deploy to GitHub Pages
             - name: Deploy to GitHub Pages
               uses: peaceiris/actions-gh-pages@v4
               with:

@@ -1,3 +1,4 @@
+import AddClubFilmPanel from '../components/films/AddClubFilmPanel';
 import FilmList from '../components/films/FilmList';
 import { filmData as initialFilmData } from '../types/film';
 import { teamMembers } from '../types/team';
@@ -156,6 +157,10 @@ const FilmsPage = () => {
                     </div>
                 </div>
             </AccentCard>
+
+            {/* Adding a film used to mean opening the Google Sheet. Renders
+                nothing at all unless a member is signed in. */}
+            <AddClubFilmPanel />
 
             <div className="mb-4 text-sm text-slate-300">{resultsText}</div>
 

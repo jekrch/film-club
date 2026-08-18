@@ -29,16 +29,22 @@
 
 import type * as Worker from '../../worker/src/types';
 import type {
+    FilmOverride,
+    FilmOverrideRecord,
+    FilmPatch,
     FilmSearchResult,
+    FilmSubmission,
     ListInput,
     OverridesFile,
     ProfilePatch,
     RatingOverride,
     RatingPatch,
+    TrophyInput,
     WatchedPatch,
 } from '../api/clubApi';
 import type { FilmListDefinition, FilmListEntry } from './list';
 import type { InterviewItem, TeamMember } from './team';
+import type { TrophiesFile, Trophy } from './trophy';
 import type { WatchedEntry, WatchedLog } from './watched';
 
 /**
@@ -94,6 +100,11 @@ export type StoredFileContract = {
         WriterFitsReader<Worker.TeamMember, TeamMember>,
         Assert<SameKeys<Worker.TeamMember, TeamMember>>,
     ];
+    Trophy: [WriterFitsReader<Worker.Trophy, Trophy>, Assert<SameKeys<Worker.Trophy, Trophy>>];
+    TrophiesFile: [
+        WriterFitsReader<Worker.TrophiesFile, TrophiesFile>,
+        Assert<SameKeys<Worker.TrophiesFile, TrophiesFile>>,
+    ];
     InterviewItem: [
         WriterFitsReader<Worker.InterviewItem, InterviewItem>,
         Assert<SameKeys<Worker.InterviewItem, InterviewItem>>,
@@ -112,6 +123,18 @@ export type ApiResponseContract = {
     RatingOverride: [
         WriterFitsReader<Worker.RatingOverride, RatingOverride>,
         Assert<SameKeys<Worker.RatingOverride, RatingOverride>>,
+    ];
+    FilmOverride: [
+        WriterFitsReader<Worker.FilmOverride, FilmOverride>,
+        Assert<SameKeys<Worker.FilmOverride, FilmOverride>>,
+    ];
+    FilmSubmission: [
+        WriterFitsReader<Worker.FilmSubmission, FilmSubmission>,
+        Assert<SameKeys<Worker.FilmSubmission, FilmSubmission>>,
+    ];
+    FilmOverrideRecord: [
+        WriterFitsReader<Worker.FilmOverrideRecord, FilmOverrideRecord>,
+        Assert<SameKeys<Worker.FilmOverrideRecord, FilmOverrideRecord>>,
     ];
     OverridesFile: [
         WriterFitsReader<Worker.OverridesFile, OverridesFile>,
@@ -136,7 +159,15 @@ export type ApiResponseContract = {
  * than a field it stores.
  */
 export type RequestContract = {
-    RatingPatch: Assert<FieldsTheWorkerStores<keyof RatingPatch, Worker.RatingOverride>>;
+    RatingPatch: Assert<
+        FieldsTheWorkerStores<Exclude<keyof RatingPatch, 'owner'>, Worker.RatingOverride>
+    >;
+    /**
+     * A film patch carries no `owner`: a film's record belongs to the club
+     * rather than to a member, so there is no row to route it to — which is why
+     * every member may write one and why nothing here needs excluding.
+     */
+    FilmPatch: Assert<FieldsTheWorkerStores<keyof FilmPatch, Worker.FilmOverride>>;
     WatchedPatch: Assert<
         FieldsTheWorkerStores<Exclude<keyof WatchedPatch, 'owner'>, Worker.WatchedEntry>
     >;
@@ -152,4 +183,10 @@ export type RequestContract = {
             Worker.FilmListDefinition
         >
     >;
+    /**
+     * A trophy write carries no `owner`: the field that decides who may change
+     * an award is `awardedBy`, and the worker takes that from the token rather
+     * than the body — so unlike the writes above there is nothing to exclude.
+     */
+    TrophyInput: Assert<FieldsTheWorkerStores<keyof TrophyInput, Worker.Trophy>>;
 };

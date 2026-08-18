@@ -18,6 +18,7 @@
 import { EDITOR_API_URL as API_BASE, GOOGLE_CLIENT_ID } from '../config/editorEnv';
 import type { FilmListDefinition, FilmListEntry } from '../types/list';
 import type { BackdropMode, InterviewItem, TeamMember } from '../types/team';
+import type { Trophy } from '../types/trophy';
 import type { WatchedEntry } from '../types/watched';
 
 export { GOOGLE_CLIENT_ID };
@@ -64,9 +65,58 @@ export interface RatingOverride {
     updatedAt: string;
 }
 
-/** The shape of `overrides.json`, keyed by IMDb id then by lowercased member name. */
+/**
+ * A film's own club record as members have edited it, mirroring the worker's
+ * type of the same name.
+ *
+ * Presence is meaningful here too: an absent key defers to the sheet, an
+ * explicit `null` is a deliberate blank. `poster` and `backdropImage` are the
+ * two images the site can't source for itself — OMDb's cover is often the wrong
+ * edition, and the wide still behind the selection committee was a hand-edit to
+ * `films.json` until now.
+ */
+export interface FilmOverride {
+    /** A club member's name — whose pick it was. */
+    selector?: string | null;
+    /** `MM/DD/YYYY`, the form `films.json` stores. */
+    watchDate?: string | null;
+    /** An `https` cover to use in place of OMDb's. */
+    poster?: string | null;
+    /** An `https` wide still for the hero background. */
+    backdropImage?: string | null;
+    updatedBy: string;
+    updatedAt: string;
+}
+
+/**
+ * The marker on a film that entered the club here rather than through the
+ * sheet. Written once, when the film is added; CI reads it to know which films
+ * it still has to fetch from OMDb and TMDb.
+ */
+export interface FilmSubmission {
+    addedBy: string;
+    addedAt: string;
+    /** OMDb's title, so the pending state can name the film rather than an id. */
+    title: string;
+    year: string | null;
+}
+
+/** Everything recorded against one film in `overrides.json`. */
+export interface FilmOverrideRecord {
+    ratings: Record<string, RatingOverride>;
+    film?: FilmOverride;
+    added?: FilmSubmission;
+}
+
+/**
+ * The half of a film's record a film write touches — everything but the ratings,
+ * which belong to their members and are written one row at a time.
+ */
+export type FilmRecordPatch = Pick<FilmOverrideRecord, 'film' | 'added'>;
+
+/** The shape of `overrides.json`, keyed by IMDb id. */
 export interface OverridesFile {
-    films: Record<string, { ratings: Record<string, RatingOverride> }>;
+    films: Record<string, FilmOverrideRecord>;
 }
 
 /**
@@ -78,7 +128,28 @@ export type RatingPatch = {
     score?: number | null;
     scoreQualifier?: string | null;
     blurb?: string | null;
+    /** Admins only; omitted, the worker uses the caller's own name. */
+    owner?: string;
 };
+
+/**
+ * A film's club details, as they go to the worker. Only the keys present are
+ * applied, the same field-level merge every other write here uses.
+ *
+ * An empty patch is meaningful on one path and one only: `PUT /api/films/:id`
+ * for an id the club doesn't have yet *adds the film*, and adding one before
+ * anything is known about the evening is a legitimate thing to do.
+ */
+export interface FilmPatch {
+    /** A club member's name, or null to leave it unrecorded. */
+    selector?: string | null;
+    /** `YYYY-MM-DD` or `MM/DD/YYYY`; the worker normalizes and stores the latter. */
+    watchDate?: string | null;
+    /** An `https` URL for the cover art, or null for OMDb's. */
+    poster?: string | null;
+    /** An `https` URL for the hero background, or null for TMDb's stills. */
+    backdropImage?: string | null;
+}
 
 /** The list fields a client supplies. `id` and `rank` are the worker's to assign. */
 export interface ListInput {
@@ -166,6 +237,13 @@ export const getSession = (token: string, signal?: AbortSignal): Promise<Session
 /** The result of a rating write. `changed: false` means the save was a no-op. */
 export interface RatingWriteResult {
     imdbID: string;
+    /**
+     * Whose row was written, resolved by the worker. Not always the caller: an
+     * admin filling in the evening's scores writes rows that aren't theirs, and
+     * `rating.updatedBy` names the person who typed it rather than the person
+     * it belongs to — so this is the field to key a local update by.
+     */
+    owner: string;
     rating: RatingOverride;
     changed: boolean;
 }
@@ -180,11 +258,67 @@ export const putRating = (
         body: patch,
     });
 
+/**
+ * Drops an override and hands the row back to the sheet. `owner` is for admins
+ * acting on someone else's row and rides in the query string, like the watch
+ * log's — a DELETE body is poorly supported by intermediaries.
+ */
 export const deleteRating = (
     token: string,
-    imdbId: string
-): Promise<{ imdbID: string; reverted: boolean }> =>
-    request(`/api/films/${encodeURIComponent(imdbId)}/rating`, token, { method: 'DELETE' });
+    imdbId: string,
+    owner?: string
+): Promise<{ imdbID: string; owner: string; reverted: boolean }> =>
+    request(
+        `/api/films/${encodeURIComponent(imdbId)}/rating${owner ? `?owner=${encodeURIComponent(owner)}` : ''}`,
+        token,
+        { method: 'DELETE' }
+    );
+
+/** The result of a film write. `created` is true when this added the film. */
+export interface FilmWriteResult {
+    imdbID: string;
+    film: FilmOverride;
+    /** Present on any film added here, whether or not this call is what added it. */
+    added?: FilmSubmission;
+    created: boolean;
+    changed?: boolean;
+}
+
+/**
+ * Records a film's club details, and adds the film when the club doesn't have it.
+ *
+ * One call for both because they are the same write against the same record;
+ * what separates them is whether `films.json` already knows the id, which the
+ * worker checks against the repo rather than trusting a client to have read
+ * correctly. `created` in the response says which happened.
+ *
+ * A film added here is on the site after the next deploy — about a minute —
+ * because building its record takes OMDb and TMDb and happens in CI.
+ */
+export const putFilm = (
+    token: string,
+    imdbId: string,
+    patch: FilmPatch
+): Promise<FilmWriteResult> =>
+    request<FilmWriteResult>(`/api/films/${encodeURIComponent(imdbId)}`, token, {
+        method: 'PUT',
+        body: patch,
+    });
+
+/**
+ * The result of a revert. `withdrawn` is true when the film itself was removed,
+ * which is only possible before CI has built it — after that the entry is in
+ * `films.json`, which no worker may write, and the revert gives the fields back
+ * to the sheet instead.
+ */
+export interface FilmDeleteResult {
+    imdbID: string;
+    withdrawn: boolean;
+    reverted: boolean;
+}
+
+export const deleteFilm = (token: string, imdbId: string): Promise<FilmDeleteResult> =>
+    request(`/api/films/${encodeURIComponent(imdbId)}`, token, { method: 'DELETE' });
 
 /** The result of a list write; `list.id` is authoritative and may be worker-assigned. */
 export interface ListWriteResult {
@@ -271,6 +405,61 @@ export const deleteWatched = (
         token,
         { method: 'DELETE' }
     );
+
+/**
+ * One award, as it goes to the worker. Whole-record rather than a merge: the
+ * editor shows all three fields, so there is no partial write to express.
+ *
+ * `awardedBy` is deliberately absent — the worker takes it from the token. It is
+ * the field that decides who may later change the award, so a client that could
+ * set it could hand out trophies nobody can withdraw.
+ */
+export interface TrophyInput {
+    /** A club member's name. Any member may be named; this is data, not a claim. */
+    recipient: string;
+    /** What the award is called, e.g. `Togetherness Trophy`. */
+    award: string;
+    /** Why they got it, or null. */
+    note?: string | null;
+}
+
+/** The result of a trophy write. `changed: false` means the save was a no-op. */
+export interface TrophyWriteResult {
+    trophy: Trophy;
+    created: boolean;
+    changed?: boolean;
+}
+
+/**
+ * Awards a trophy, or edits one already given.
+ *
+ * `id` is only a lookup key, exactly as it is for a list: an unmatched one
+ * creates and the worker assigns the permanent id itself. Pass
+ * {@link NEW_TROPHY_ID} when awarding.
+ */
+export const putTrophy = (
+    token: string,
+    imdbId: string,
+    id: string,
+    input: TrophyInput
+): Promise<TrophyWriteResult> =>
+    request<TrophyWriteResult>(
+        `/api/films/${encodeURIComponent(imdbId)}/trophies/${encodeURIComponent(id)}`,
+        token,
+        { method: 'PUT', body: input }
+    );
+
+/** The documented placeholder id for a new award. Any unmatched id behaves the same. */
+export const NEW_TROPHY_ID = 'new';
+
+export const deleteTrophy = (
+    token: string,
+    imdbId: string,
+    id: string
+): Promise<{ imdbID: string; id: string; deleted: boolean }> =>
+    request(`/api/films/${encodeURIComponent(imdbId)}/trophies/${encodeURIComponent(id)}`, token, {
+        method: 'DELETE',
+    });
 
 /**
  * The fields of their own profile a member may change.

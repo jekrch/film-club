@@ -3,9 +3,11 @@ import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import AccentCard from '../common/AccentCard';
 import Button from '../common/Button';
+import Select from '../common/Select';
 import { useClubAuth } from '../../auth/GoogleAuth';
 import { deleteRating, putRating, type RatingOverride } from '../../api/clubApi';
 import type { Film } from '../../types/film';
+import { teamMembers } from '../../types/team';
 import {
     BLURB_LIMIT,
     MAX_SCORE,
@@ -19,11 +21,18 @@ import {
 } from '../../utils/ratingEditUtils';
 
 /**
- * The signed-in member's own row on a film, made editable (§8.9).
+ * The signed-in member's own row on a film, made editable (§8.9) — and, for an
+ * admin, anyone else's.
  *
  * Rendered only for a signed-in member, and collapsed until asked for: someone
  * reading the page is never offered an editor, and never told how to sign in —
  * the nav's account control is the one place that happens.
+ *
+ * The member picker appears for admins only, and exists because the club enters
+ * an evening's scores together: five people say a number, one person types them
+ * in. That used to be a row of the Google Sheet. Everyone else sees exactly what
+ * they saw before — their own row, no picker — and the worker enforces the same
+ * rule again on the way in.
  *
  * A save commits to the repo and is live after the next Pages build — about a
  * minute. The panel therefore shows the value from its own state with a note
@@ -33,12 +42,16 @@ import {
 
 interface MyRatingEditorProps {
     film: Film;
-    /** The caller's stored override, read live from `main`; absent if they have none. */
-    override?: RatingOverride;
+    /**
+     * The film's stored overrides, keyed by lowercased member name and read live
+     * from `main`. The whole map rather than one row, because an admin can move
+     * the picker to a member whose override the parent would have to guess at.
+     */
+    ratings?: Record<string, RatingOverride>;
     /** True while that read is in flight, so the form doesn't offer stale values. */
     overridesLoading: boolean;
-    onSaved: (rating: RatingOverride) => void;
-    onReverted: () => void;
+    onSaved: (owner: string, rating: RatingOverride) => void;
+    onReverted: (owner: string) => void;
 }
 
 const FIELD_CLASS =
@@ -54,27 +67,51 @@ const REVIEW_CLASS = `${FIELD_CLASS} min-h-56 resize-y leading-relaxed`;
 
 const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
     film,
-    override,
+    ratings,
     overridesLoading,
     onSaved,
     onReverted,
 }) => {
-    const { configured, status, member, signOut, withToken, error: authError } = useClubAuth();
+    const {
+        configured,
+        status,
+        member,
+        admin,
+        signOut,
+        withToken,
+        error: authError,
+    } = useClubAuth();
     const [open, setOpen] = useState(false);
+    /**
+     * Whose row the form is showing. Always the caller for a non-admin — the
+     * picker that changes it is not rendered — and the caller by default for an
+     * admin, since editing your own rating is still the common case.
+     */
+    const [editing, setEditing] = useState<string | null>(null);
     const [form, setForm] = useState<RatingFormValues>({ score: '', qualifier: '', blurb: '' });
     const [saving, setSaving] = useState(false);
     const [saveError, setSaveError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
     const [confirmingRevert, setConfirmingRevert] = useState(false);
 
+    // A non-admin's `editing` is ignored entirely rather than merely unset, so
+    // no stale selection can outlive a sign-out and a sign-in as someone else.
+    const owner = (admin ? (editing ?? member) : member) ?? null;
+    const isSelf = owner !== null && owner.toLowerCase() === (member ?? '').toLowerCase();
+
+    const override = useMemo(
+        () => (owner ? ratings?.[owner.toLowerCase()] : undefined),
+        [ratings, owner]
+    );
+
     const clubRating = useMemo(
         () =>
-            member
+            owner
                 ? film.movieClubInfo?.clubRatings.find(
-                      (rating) => rating.user.toLowerCase() === member.toLowerCase()
+                      (rating) => rating.user.toLowerCase() === owner.toLowerCase()
                   )
                 : undefined,
-        [film, member]
+        [film, owner]
     );
 
     const baseline = useMemo(() => baselineRating(override, clubRating), [override, clubRating]);
@@ -92,20 +129,30 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
     // as member input and leaves the form stuck on its empty initial values.
     const formRef = useRef(form);
     formRef.current = form;
-    const seededRef = useRef<RatingFormValues | null>(null);
+    const seededRef = useRef<{ owner: string | null; values: RatingFormValues } | null>(null);
     useEffect(() => {
         const current = formRef.current;
         const seeded = seededRef.current;
-        const typedIn = seeded !== null && !sameFormValues(current, seeded);
+
+        // Moving the picker to another member discards the form outright.
+        // What is in it is the previous member's rating, and carrying it over
+        // is the one mistake this panel must not make — it would write Andy's
+        // 9 onto Gabe's row and look like a successful save.
+        const switched = seeded !== null && seeded.owner !== owner;
+        const typedIn = !switched && seeded !== null && !sameFormValues(current, seeded.values);
         // Reaching the new baseline by hand counts as untouched: there is
         // nothing of the member's to protect, and the seed stays in step.
         if (typedIn && !sameFormValues(current, baselineForm)) return;
 
-        seededRef.current = baselineForm;
+        seededRef.current = { owner, values: baselineForm };
         if (!sameFormValues(current, baselineForm)) setForm(baselineForm);
-    }, [baselineForm]);
+    }, [baselineForm, owner]);
 
     if (!configured || status !== 'signed-in') return null;
+
+    const memberOptions = teamMembers
+        .filter((entry) => entry.name)
+        .map((entry) => ({ value: entry.name, label: entry.name }));
 
     const update = (field: keyof RatingFormValues, value: string) => {
         setForm((current) => ({ ...current, [field]: value }));
@@ -122,7 +169,11 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
 
         const patch = buildRatingPatch(parsed.values, baseline);
         if (Object.keys(patch).length === 0) {
-            setNotice('Nothing to save — this already matches what you have.');
+            setNotice(
+                isSelf
+                    ? 'Nothing to save — this already matches what you have.'
+                    : `Nothing to save — this already matches ${owner}'s row.`
+            );
             return;
         }
 
@@ -130,8 +181,13 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
         setSaveError(null);
         setNotice(null);
         try {
-            const result = await withToken((token) => putRating(token, film.imdbID, patch));
-            onSaved(result.rating);
+            const result = await withToken((token) =>
+                // `owner` is sent only when it isn't the caller: the worker
+                // defaults to the token's member, and an admin editing their
+                // own row should take the same path everyone else does.
+                putRating(token, film.imdbID, isSelf ? patch : { ...patch, owner: owner ?? '' })
+            );
+            onSaved(result.owner, result.rating);
             setNotice(
                 result.changed
                     ? 'Saved — live on the site in about a minute.'
@@ -149,8 +205,10 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
         setSaveError(null);
         setNotice(null);
         try {
-            await withToken((token) => deleteRating(token, film.imdbID));
-            onReverted();
+            await withToken((token) =>
+                deleteRating(token, film.imdbID, isSelf ? undefined : (owner ?? undefined))
+            );
+            onReverted(owner ?? '');
             setConfirmingRevert(false);
             setNotice('Reverted — the sheet controls this row again.');
         } catch (err) {
@@ -181,7 +239,7 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
         <AccentCard accent="blue" surface="inset" className="mt-6 p-4 sm:p-5">
             <div className="mb-4 flex items-center gap-3">
                 <h4 className="text-sm font-semibold uppercase tracking-wider text-blue-400">
-                    {member ? `${member}'s rating` : 'Edit my rating'}
+                    {owner ? `${owner}'s rating` : 'Edit my rating'}
                 </h4>
                 <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
                 <Button
@@ -196,6 +254,32 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
             </div>
 
             <div className="space-y-4">
+                {/* Admins only. Everyone else edits one row — their own — and a
+                    control offering otherwise would be a 403 waiting to happen. */}
+                {admin && (
+                    <div className="flex flex-wrap items-end gap-4">
+                        <Select
+                            label="Whose rating"
+                            value={owner ?? ''}
+                            onChange={(value) => {
+                                setEditing(value === '' ? null : value);
+                                setConfirmingRevert(false);
+                                setNotice(null);
+                                setSaveError(null);
+                            }}
+                            options={memberOptions}
+                            placeholder={member ?? 'Pick a member'}
+                            className="w-44"
+                        />
+                        {!isSelf && (
+                            <p className="max-w-xs self-end pb-2 text-xs italic text-slate-500">
+                                You're editing {owner}'s row. It is recorded as theirs, with you as
+                                the last person to touch it.
+                            </p>
+                        )}
+                    </div>
+                )}
+
                 <div className="flex flex-wrap gap-4">
                     <label className="block w-28">
                         <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
@@ -295,7 +379,9 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
                     )}
                     {override && confirmingRevert && (
                         <span className="ml-auto flex items-center gap-3 text-sm text-slate-400">
-                            Drop your edits and use the sheet's value?
+                            {isSelf
+                                ? "Drop your edits and use the sheet's value?"
+                                : `Drop ${owner}'s edits and use the sheet's value?`}
                             <Button
                                 type="button"
                                 variant="link"

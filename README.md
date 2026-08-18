@@ -41,29 +41,47 @@ bun install
 
 ## Data Sources
 
-Film and club data is managed through a combination of JSON files, a Google Sheet, and external APIs:
+Film and club data lives in JSON files under `src/assets/`. Some of it is written by members on the site, the rest by CI from external APIs:
 
-- `src/assets/films.json`: Film data, including details fetched from OMDb (plot, poster, ratings, awards, box office), extended data from TMDb (crew — cinematographer, editor, production designer, composer, costume designer; plus tagline, budget, revenue, keywords, trailer, and top-billed cast with headshots), and club-specific fields such as member reviews, watch dates, and selectors.
+- `src/assets/films.json`: Film data, including details fetched from OMDb (plot, poster, ratings, awards, box office), extended data from TMDb (crew, meaning cinematographer, editor, production designer, composer, and costume designer, plus tagline, budget, revenue, keywords, trailer, and top-billed cast with headshots), and club-specific fields such as member reviews, watch dates, and selectors.
 - `src/assets/club.json`: Club member information.
-- [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing): The source of truth for member ratings, blurbs, watch metadata, and new film entries (added by IMDb ID).
+- `src/assets/trophies.json`: Club awards, recording who won what on which film. These are added by members on the film page rather than in the sheet, so the recipient is a structured field rather than free text. See [Awarding a trophy](#awarding-a-trophy).
+- `src/assets/overrides.json`: Edits made by members on the site. This covers their own ratings and reviews, along with the film's shared fields (selector, watch date, alternate cover, hero background). CI merges it into `films.json` at build time. A film added on the site starts out as an entry here.
+- [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing): The club's historical data, still read by the sync. New content doesn't need to be added here (see [Adding a new film](#adding-a-new-film)), but existing rows still work, and any field that hasn't been set on the site is still taken from the sheet.
 - Profile pictures live in `public/images/` and follow the `[firstname].jpg` convention (e.g., `jacob.jpg`).
 
 Two repository secrets support the automated sync: `OMDB_API_KEY` for film details and `TMDB_KEY` (a bearer token) for extended crew data.
 
 ## Managing Content
 
-Most content is managed through the Google Sheet and synced automatically. See [Automated Workflows](#automated-workflows) for how the sync runs.
+Content is managed on the site after signing in with Google. The Google Sheet still works and still feeds the sync, and nothing was migrated out of it, but new content doesn't need to go there.
 
 ### Adding a new film
 
-1. Open the [Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing) and add a row for the film.
-2. Enter the film's IMDb ID (e.g., `tt0036342`) in the `imdb_id` column. This is how the sync identifies the film and fetches its data from OMDb and TMDb.
+1. Sign in and open [Films](https://criterionclub.org/#/films).
+2. **Add a club film**, then search for it by title and pick it.
+3. Enter whose pick it was and, if the club has already watched it, the watch date. Optionally paste an alternate cover and a wide image for the selection committee card.
+4. **Add the film.**
 
-The IMDb ID is all that's needed to add the film. Club-specific fields (`watch_date`, `selected_by`, `trophy_notes`, and per-member ratings and blurbs such as `andy_rating` and `jacob_blurb`) are filled in after we meet to discuss the film.
+The film shows up on the site a minute or two later. The site only records which film was added; the rest of the entry (plot, poster, crew, cast, keywords, stills) is fetched from OMDb and TMDb by the next deploy. Until then the picker lists it as already in the club, so it can't be added twice.
+
+Ratings, reviews, and trophies are added on the film's own page once it appears.
 
 ### Updating an existing film
 
-Edit the relevant row in the Google Sheet. The sync picks up changes to any `[name]_rating`, `[name]_blurb`, `watch_date`, `selected_by`, `trophy_notes`, and `stream_url` field and writes them back to `films.json`.
+Open the film's page and use **Edit film details** to change the selector, watch date, cover, or hero background. Any member can edit these, since they describe the film itself rather than one person's rating.
+
+**Edit my rating** covers your own score and review. Admins also get a member picker there, which is useful for entering everyone's scores during a call. Either way, the rating is recorded under that member's name.
+
+Fields that nobody has set on the site are still read from the sheet, field by field, and editing a sheet row still works for films that came from it. Where the two disagree, the site's value wins and the sync logs the difference.
+
+### Awarding a trophy
+
+Trophies are awarded on the film's page rather than in the sheet. Sign in, open **Award a trophy** under the trophy gallery, pick the recipient, name the award, and add a note if there's a reason worth recording. It appears on the site about a minute later.
+
+Any member can award a trophy to any member. Removing one is more restricted: the member who gave it, or an admin, can edit or withdraw it, but the recipient can't.
+
+The sheet's `trophy_notes` column still works and still renders. Awards from both sources appear together on the film page and on the recipient's profile.
 
 ### Member data
 
@@ -85,10 +103,18 @@ On each run, the workflow:
 4. Commits any changes to `films.json` back to `main`.
 5. Builds the app and deploys to GitHub Pages if changes were committed or the run was triggered manually.
 
+The **Deploy to GitHub Pages** workflow runs on every push to `main`, including the commit created by an edit made on the site. Before building, it:
+
+1. Creates a `films.json` entry for each film added on the site, using OMDb and TMDb (`create_submitted_films.py`). This is why a new film takes a minute to show up.
+2. Merges `overrides.json` into `films.json` (`apply_overrides.py`), which is where a new film picks up its selector, watch date, artwork, and ratings.
+3. Fills the poster/title cache for films the club never watched (`enrich_list_films.py`).
+
+All three steps are no-ops unless something changed. Step 1 uses the same fetching code as the sheet sync (`film_fetch.py`), so a film's record ends up the same either way.
+
 Empty cells in the sheet are written as `null`, and special characters and formatting from the sheet are preserved.
 
 ## Contributing
 
 For code changes, branch from `main`, make your changes, and open a pull request. Merged changes are deployed by the Sync and Deploy workflow.
 
-Content changes (films, ratings, member info) should go through the Google Sheet or `club.json` as described in [Managing Content](#managing-content) rather than through code.
+Content changes (films, ratings, member info) should go through the site as described in [Managing Content](#managing-content) rather than through code.

@@ -8,13 +8,13 @@ import React, {
     useState,
 } from 'react';
 
-import type { OverridesFile, RatingOverride } from '../api/clubApi';
+import type { FilmRecordPatch, OverridesFile, RatingOverride } from '../api/clubApi';
 import { fetchOverrides } from '../api/repoData';
 import { recordWrite, writeKeys } from '../api/writeCache';
 import { useClubAuth } from '../auth/GoogleAuth';
 
 /**
- * Every member-authored rating edit, fetched once per session.
+ * Every member-authored edit to a club film, fetched once per session.
  *
  * This used to be per-film: `useFilmOverrides` fetched the whole of
  * `overrides.json` on every film-detail page view and then used one film's
@@ -47,6 +47,12 @@ interface OverridesValue {
      * before the save.
      */
     applyRating: (imdbId: string, member: string, rating: RatingOverride | null) => void;
+    /**
+     * The same, for a film's own club record — whose pick it was, when the club
+     * watched it, and its two images. `null` removes it, which is what a revert
+     * or a withdrawn submission does.
+     */
+    applyFilm: (imdbId: string, record: FilmRecordPatch | null) => void;
 }
 
 const OverridesContext = createContext<OverridesValue | undefined>(undefined);
@@ -101,9 +107,25 @@ export const OverridesProvider: React.FC<{ children: ReactNode }> = ({ children 
         []
     );
 
+    const applyFilm = useCallback((imdbId: string, record: FilmRecordPatch | null) => {
+        recordWrite('film', writeKeys.film(imdbId), record);
+
+        setFilms((current) => {
+            // The ratings are untouched by a film write and must survive it —
+            // an admin's scores and a member's cover edit are independent saves
+            // against the same key.
+            const ratings = current[imdbId]?.ratings ?? {};
+            if (!record) {
+                if (!current[imdbId]) return current;
+                return { ...current, [imdbId]: { ratings } };
+            }
+            return { ...current, [imdbId]: { ...record, ratings } };
+        });
+    }, []);
+
     const value = useMemo<OverridesValue>(
-        () => ({ films, loading, error, applyRating }),
-        [films, loading, error, applyRating]
+        () => ({ films, loading, error, applyRating, applyFilm }),
+        [films, loading, error, applyRating, applyFilm]
     );
 
     return <OverridesContext.Provider value={value}>{children}</OverridesContext.Provider>;

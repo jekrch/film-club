@@ -4,8 +4,9 @@
  * Ported from `comic-snaps/worker/src/github.ts`, narrowed to the files this
  * worker owns. The invariant that makes this safe is §8.1's **one writer per
  * file**: CI owns `films.json` and `listFilms.json`, the worker owns
- * `overrides.json`, `lists.json`, `watched.json`, and `club.json`, and nothing
- * writes both sides. There is no merge to get wrong — only the sha to respect.
+ * `overrides.json`, `lists.json`, `watched.json`, `club.json`, and
+ * `trophies.json`, and nothing writes both sides. There is no merge to get wrong
+ * — only the sha to respect.
  *
  * Paths are constants in this module. The worker never derives a path from
  * request input; that is the rule that keeps a stolen token's blast radius to
@@ -20,10 +21,16 @@ const GITHUB_API = 'https://api.github.com';
 const USER_AGENT = 'film-club-editor';
 const BRANCH = 'main';
 
-/** The only four paths this worker will ever write. */
+/** The only five paths this worker will ever write. */
 export const LISTS_PATH = 'src/assets/lists.json';
 export const OVERRIDES_PATH = 'src/assets/overrides.json';
 export const WATCHED_PATH = 'src/assets/watched.json';
+/**
+ * Club awards on club films. Owned here for the same reason as the rest: the
+ * sheet's `trophyNotes` column is a *different* field, read into `films.json` by
+ * the sync and never written by this worker, so the two never contend.
+ */
+export const TROPHIES_PATH = 'src/assets/trophies.json';
 /**
  * Member profiles. Safe to own for the same reason as the other three: nothing
  * else writes it. CI only *validates* it (`deploy.yml`, `sync-google-sheet.yml`

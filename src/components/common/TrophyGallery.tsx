@@ -1,91 +1,27 @@
 import { Link } from 'react-router-dom';
 import { TrophyIcon } from '@heroicons/react/24/outline';
-import { teamMembers } from '../../types/team';
+import type { ResolvedTrophy } from '../../utils/trophyUtils';
 import CircularImage from './CircularImage';
 import { resolveTrophyIcon, TrophyWatermark } from './trophyIcons';
 
+/**
+ * A film's trophy shelf.
+ *
+ * Renders whatever `resolveFilmTrophies` produced, which means the sheet's prose
+ * and the site's structured awards land in the same rows and look alike. The
+ * recipient is a chip linking to their profile — the one piece of an award that
+ * was always the point, and that used to be recovered by running six regexes
+ * over a sentence at render time.
+ */
+
 interface TrophyGalleryProps {
-    trophyNotes: string;
+    trophies: ResolvedTrophy[];
+    /** The editing surface, rendered under the shelf. Absent for a signed-out visitor. */
+    children?: React.ReactNode;
 }
 
-const capitalizeFirstLetter = (str: string): string =>
-    str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
-
-const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
-    const renderTrophyContent = (trophyText: string) => {
-        // Find all member names in the trophy text (case-insensitive)
-        const memberMatches: { name: string; start: number; end: number }[] = [];
-
-        teamMembers.forEach((member) => {
-            const regex = new RegExp(`\\b${member.name}\\b`, 'gi');
-            let match;
-            while ((match = regex.exec(trophyText)) !== null) {
-                memberMatches.push({
-                    name: member.name!,
-                    start: match.index,
-                    end: match.index + member.name!.length,
-                });
-            }
-        });
-
-        // Sort matches by position
-        memberMatches.sort((a, b) => a.start - b.start);
-
-        if (memberMatches.length === 0) {
-            return <span className="text-slate-300">{trophyText.trim()}</span>;
-        }
-
-        // Render text with inline member chips
-        const parts: React.ReactNode[] = [];
-        let lastIndex = 0;
-
-        memberMatches.forEach((match, matchIndex) => {
-            // Add text before this match
-            if (match.start > lastIndex) {
-                parts.push(
-                    <span key={`text-${matchIndex}`} className="text-slate-400">
-                        {trophyText.slice(lastIndex, match.start)}
-                    </span>
-                );
-            }
-
-            // Add the member name as an avatar chip
-            const displayName = capitalizeFirstLetter(match.name);
-            parts.push(
-                <Link
-                    key={`member-${matchIndex}`}
-                    to={`/profile/${encodeURIComponent(displayName)}`}
-                    className="group/member inline-flex items-center gap-1.5 align-middle pl-0.5 pr-2 py-0.5 mr-1 rounded-md bg-slate-700/50 ring-1 ring-amber-400/15 hover:ring-amber-400/40 hover:bg-slate-700/80 transition-all duration-150"
-                    title={`View ${displayName}'s profile`}
-                >
-                    <span className="ring-1 ring-amber-400/30 rounded-full">
-                        <CircularImage alt={displayName} size="w-5 h-5" />
-                    </span>
-                    <span className="text-amber-200/90 group-hover/member:text-amber-100 font-medium text-sm">
-                        {trophyText.slice(match.start, match.end)}
-                    </span>
-                </Link>
-            );
-
-            lastIndex = match.end;
-        });
-
-        // Add remaining text (drop the connecting "gets"/"gets a" for a cleaner read)
-        if (lastIndex < trophyText.length) {
-            parts.push(
-                <span key="text-end" className="text-slate-300">
-                    {trophyText.slice(lastIndex).replace('gets a', '').replace('gets ', '')}
-                </span>
-            );
-        }
-
-        return parts;
-    };
-
-    const trophies = trophyNotes
-        .split(',')
-        .map((t) => t.trim())
-        .filter((t) => t !== '');
+const TrophyGallery = ({ trophies, children }: TrophyGalleryProps) => {
+    if (trophies.length === 0 && !children) return null;
 
     return (
         <div className="mt-8 pt-6 border-t border-slate-700">
@@ -98,11 +34,11 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
             </div>
 
             <div className="space-y-1.5">
-                {trophies.map((trophy, index) => {
-                    const Icon = resolveTrophyIcon(trophy);
+                {trophies.map((trophy) => {
+                    const Icon = resolveTrophyIcon(trophy.award);
                     return (
                         <div
-                            key={index}
+                            key={trophy.key}
                             className="group relative overflow-hidden flex items-start gap-3.5 rounded-xl border border-slate-700/40 bg-slate-800/30 px-4 py-3 transition-all duration-200 hover:border-amber-500/25 hover:bg-slate-800/60"
                         >
                             <TrophyWatermark className="-right-5 -bottom-7 h-32 w-32 transition-colors duration-200 group-hover:text-amber-400/[0.1]" />
@@ -111,12 +47,33 @@ const TrophyGallery = ({ trophyNotes }: TrophyGalleryProps) => {
                             </span>
 
                             <p className="relative leading-relaxed flex flex-wrap items-center gap-y-1.5">
-                                {renderTrophyContent(trophy)}
+                                {trophy.recipient && (
+                                    <Link
+                                        to={`/profile/${encodeURIComponent(trophy.recipient)}`}
+                                        className="group/member inline-flex items-center gap-1.5 align-middle pl-0.5 pr-2 py-0.5 mr-2 rounded-md bg-slate-700/50 ring-1 ring-amber-400/15 hover:ring-amber-400/40 hover:bg-slate-700/80 transition-all duration-150"
+                                        title={`View ${trophy.recipient}'s profile`}
+                                    >
+                                        <span className="ring-1 ring-amber-400/30 rounded-full">
+                                            <CircularImage alt={trophy.recipient} size="w-5 h-5" />
+                                        </span>
+                                        <span className="text-amber-200/90 group-hover/member:text-amber-100 font-medium text-sm">
+                                            {trophy.recipient}
+                                        </span>
+                                    </Link>
+                                )}
+                                <span className="text-slate-300">{trophy.award}</span>
+                                {trophy.note && (
+                                    <span className="ml-1.5 text-slate-400 italic">
+                                        {trophy.note}
+                                    </span>
+                                )}
                             </p>
                         </div>
                     );
                 })}
             </div>
+
+            {children}
         </div>
     );
 };

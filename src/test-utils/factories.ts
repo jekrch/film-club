@@ -1,5 +1,6 @@
 import { ClubRating, Film, MovieClubDetails } from '../types/film';
 import { TeamMember } from '../types/team';
+import { Trophy } from '../types/trophy';
 
 /**
  * Typed fixture factories for tests.
@@ -59,3 +60,22 @@ export const makeMember = (overrides: Partial<TeamMember> = {}): TeamMember => (
     image: '',
     ...overrides,
 });
+
+/**
+ * Builds a {@link Trophy} as the worker would have stored it. The default `id`
+ * follows the worker's own rule — `slugify(recipient + "-" + award)` — so a
+ * fixture reads like a real row rather than one with an arbitrary handle.
+ */
+export const makeTrophy = (overrides: Partial<Trophy> = {}): Trophy => {
+    const recipient = overrides.recipient ?? 'Andy';
+    const award = overrides.award ?? 'Togetherness Trophy';
+    return {
+        id: `${recipient}-${award}`.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        recipient,
+        award,
+        note: null,
+        awardedBy: 'Jacob',
+        awardedAt: '2026-08-16T19:04:11Z',
+        ...overrides,
+    };
+};

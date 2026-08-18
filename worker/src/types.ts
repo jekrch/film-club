@@ -108,6 +108,43 @@ export interface WatchedEntry {
 export type WatchedLog = Record<string, WatchedEntry[]>;
 
 /**
+ * One award the club handed a member for one film, as stored in `trophies.json`.
+ *
+ * Unlike a rating or a watch-log entry this is not a record of the caller's own
+ * contribution: a trophy is something members give *each other*, so `recipient`
+ * and `awardedBy` are different people in the ordinary case. That is why the
+ * ownership check on this write is not the usual "you may only edit your own" —
+ * see `resolveTrophyEditor` in `validate.ts` for the rule that replaces it.
+ *
+ * `id` is assigned by the worker on create and immutable afterwards, so an award
+ * can be renamed without the client losing its handle on the row.
+ */
+export interface Trophy {
+    id: string;
+    /** A `club.json` display name, e.g. `Andy`. */
+    recipient: string;
+    /** What the award is called, e.g. `Togetherness Trophy`. */
+    award: string;
+    /** Why they got it, e.g. `for having a lot of work to do`. Null when unsaid. */
+    note: string | null;
+    /** Provenance: the member who handed it out. Fixed at create. */
+    awardedBy: string;
+    awardedAt: string;
+}
+
+/**
+ * The shape of `src/assets/trophies.json`: IMDb id → the awards on that film.
+ *
+ * Keyed by film rather than by member — the mirror image of {@link WatchedLog} —
+ * because a trophy belongs to a screening. Every surface that shows one starts
+ * from a film, and a member's shelf is a filter across the whole set rather than
+ * a key lookup.
+ */
+export interface TrophiesFile {
+    films: Record<string, Trophy[]>;
+}
+
+/**
  * One member's edits to their rating of one film.
  *
  * Presence is meaningful: a key that is absent means "the sheet's value stands",
@@ -122,9 +159,76 @@ export interface RatingOverride {
     updatedAt: string;
 }
 
+/**
+ * The club-level and presentation fields members edit on a film.
+ *
+ * Presence is meaningful here for the same reason it is on {@link RatingOverride}:
+ * `films.json` has two writers behind it — the sheet and this worker — so an
+ * absent key means "whatever the sheet says stands" and an explicit `null` means
+ * "deliberately blank". A member fixing a film's cover must not blank the
+ * selector the sheet supplied.
+ *
+ * `poster` and `backdropImage` are presentation rather than club record: the
+ * first replaces OMDb's cover art, which is frequently the wrong edition or a
+ * washed-out scan, and the second is the wide still behind the selection
+ * committee and the film's own page. Both were hand-edits to `films.json` until
+ * now, which is why 23 films have a `backdropImage` and nobody could add the
+ * 24th without a commit.
+ */
+export interface FilmOverride {
+    /** A `club.json` display name — whose pick it was. Null when unrecorded. */
+    selector?: string | null;
+    /** `MM/DD/YYYY`, the form `films.json` already stores. Null when unwatched. */
+    watchDate?: string | null;
+    /** An `https` cover to use in place of OMDb's, or null for OMDb's. */
+    poster?: string | null;
+    /** An `https` wide still for the hero background, or null for TMDb's. */
+    backdropImage?: string | null;
+    /** Provenance only — `apply_overrides.py` whitelists the four fields above. */
+    updatedBy: string;
+    updatedAt: string;
+}
+
+/**
+ * The marker that says a film entered the club on the site rather than through
+ * the Google Sheet.
+ *
+ * It is what `create_submitted_films.py` looks for: an id carrying this and
+ * absent from `films.json` is one CI still has to fetch from OMDb and TMDb. The
+ * worker cannot write `films.json` (§8.1) and would have to hold OMDb's whole
+ * response to try, so what it commits is this — the intent — and CI builds the
+ * record on the next deploy, about a minute later.
+ *
+ * `title` and `year` are OMDb's, read once when the submission is accepted. They
+ * are not club data and nothing renders them once the film lands; they exist so
+ * the pending state can name the film rather than an id, in the editor and in
+ * the CI log.
+ */
+export interface FilmSubmission {
+    /** The member who added it. */
+    addedBy: string;
+    addedAt: string;
+    /** OMDb's title at submission time. */
+    title: string;
+    /** OMDb's release year, or null when it had none. */
+    year: string | null;
+}
+
+/**
+ * Everything recorded against one film in `overrides.json`.
+ *
+ * `ratings` is always present, `{}` included, so a film added for its art alone
+ * still has the shape every reader expects.
+ */
+export interface FilmOverrideRecord {
+    ratings: Record<string, RatingOverride>;
+    film?: FilmOverride;
+    added?: FilmSubmission;
+}
+
 /** The shape of `src/assets/overrides.json`. */
 export interface OverridesFile {
-    films: Record<string, { ratings: Record<string, RatingOverride> }>;
+    films: Record<string, FilmOverrideRecord>;
 }
 
 /** One question and answer on a member's profile interview. */

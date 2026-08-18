@@ -74,6 +74,15 @@ export const LIMITS = {
      * and a fourth would never be drawn.
      */
     backdropFilms: 3,
+    /** What an award is called — "Togetherness Trophy", "Bad Boy". A label, not a sentence. */
+    award: 80,
+    /** Why it was given. A clause appended to the award, not a review. */
+    trophyNote: 300,
+    /**
+     * Awards on one film. The club hands out one or two a night and there are
+     * six members, so this is a runaway-client bound rather than a house rule.
+     */
+    trophiesPerFilm: 24,
 } as const;
 
 /** Fields a member may set on their own rating. Anything else in a body is ignored. */
@@ -564,6 +573,141 @@ export function validateRatingPatch(body: unknown): RatingPatch {
     return patch;
 }
 
+// --- Club films ---------------------------------------------------------
+
+/**
+ * Fields a member may set on a club film itself, as opposed to on their own row
+ * of it. Anything else in a body is ignored.
+ */
+const FILM_FIELDS = ['selector', 'watchDate', 'poster', 'backdropImage'] as const;
+
+/**
+ * A partial update to a film's club record, with the same merge semantics as
+ * {@link RatingPatch}: only the keys the body carried are touched, so fixing the
+ * cover leaves the selector alone and an absent key still defers to the sheet.
+ */
+export interface FilmPatch {
+    selector?: string | null;
+    watchDate?: string | null;
+    poster?: string | null;
+    backdropImage?: string | null;
+}
+
+/**
+ * Resolves whose pick a film was, or `null` to leave it unrecorded.
+ *
+ * Not {@link resolveOwner}: naming the selector is not a claim to write as them.
+ * A member adding the film someone else picked is the ordinary case — one person
+ * usually enters the whole evening — so this is the {@link resolveRecipient}
+ * rule instead, a plain data field checked only for being a real member.
+ */
+export function resolveSelector(value: unknown, memberNames: readonly string[]): string | null {
+    if (value === null || value === undefined || value === '') return null;
+    if (typeof value !== 'string') throw badRequest('selector: expected a member name or null');
+
+    const wanted = value.trim().toLowerCase();
+    if (wanted === '') return null;
+    const match = memberNames.find((name) => name.toLowerCase() === wanted);
+    if (!match) throw badRequest(`selector: "${value.trim()}" is not a club member`);
+    return match;
+}
+
+/**
+ * How far ahead a club watch date may sit. The club schedules the next film
+ * before watching it, so unlike a personal watch log (which records the past and
+ * caps at tomorrow) a date here is legitimately in the future — but a
+ * fat-fingered year should not park a film at the end of the timeline forever.
+ */
+const WATCH_DATE_HORIZON_DAYS = 366;
+
+/**
+ * A club watch date as `films.json` stores it, with a two- or four-digit year.
+ *
+ * Both are in the column — 42 rows of `08/12/2020` and 30 of `3/14/23`, typed
+ * into a spreadsheet over five years — and `parseWatchDate` on the site accepts
+ * either. Taking both here and emitting the long form is what lets the editor
+ * round-trip an old row without rewriting it into a shape nothing else uses.
+ */
+const US_DATE = /^(\d{1,2})\/(\d{1,2})\/(\d{2}|\d{4})$/;
+const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/**
+ * A club watch date, normalized to the `MM/DD/YYYY` form `films.json` stores.
+ *
+ * Takes either that form or the `YYYY-MM-DD` an `<input type="date">` produces,
+ * because the editor uses the native picker and every existing row uses the
+ * other one. Normalizing on the way in is what keeps the column single-format:
+ * `parseWatchDate` in `src/utils/filmUtils.ts` reads `MM/DD/YYYY` only, and a
+ * stray ISO date would render as the raw string and sort nowhere.
+ *
+ * `null` clears the date, which is a film the club has scheduled but not watched.
+ */
+export function validateClubWatchDate(value: unknown, field = 'watchDate'): string | null {
+    if (value === null || value === undefined) return null;
+    if (typeof value !== 'string') throw badRequest(`${field}: expected a date or null`);
+
+    const text = value.trim();
+    if (text === '') return null;
+
+    let year: number, month: number, day: number;
+    const us = US_DATE.exec(text);
+    const iso = ISO_DATE.exec(text);
+    // `23` means 2023, the same pivot `parseWatchDate` applies.
+    if (us) {
+        [month, day, year] = [Number(us[1]), Number(us[2]), Number(us[3])];
+        if (us[3].length <= 2) year += 2000;
+    } else if (iso) [year, month, day] = [Number(iso[1]), Number(iso[2]), Number(iso[3])];
+    else throw badRequest(`${field}: expected a date like 08/12/2020`);
+
+    // Round-tripped rather than range-checked, so 02/31 is rejected as the
+    // non-date it is instead of silently becoming March 3rd.
+    const parsed = new Date(Date.UTC(year, month - 1, day));
+    if (
+        parsed.getUTCFullYear() !== year ||
+        parsed.getUTCMonth() !== month - 1 ||
+        parsed.getUTCDate() !== day
+    ) {
+        throw badRequest(`${field}: ${text} is not a real date`);
+    }
+
+    // `parseWatchDate` treats anything before 2000 as a typo and renders nothing,
+    // so a date it would silently drop is refused here where it can be explained.
+    if (year < 2000) throw badRequest(`${field}: ${text} is before the club existed`);
+
+    const horizon = Date.now() + WATCH_DATE_HORIZON_DAYS * 24 * 60 * 60 * 1000;
+    if (parsed.getTime() > horizon) throw badRequest(`${field}: ${text} is too far ahead`);
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${pad(month)}/${pad(day)}/${year}`;
+}
+
+/**
+ * Builds a film patch, keeping only the fields the body actually carried.
+ *
+ * An empty patch is allowed here, unlike {@link validateRatingPatch}, because
+ * the route it serves has a second job: adding a film the club has never watched
+ * is a legitimate write with no fields at all, and refusing one would mean a
+ * member could not record "we're watching this" before they know anything else
+ * about the evening. The route rejects an empty body on an *existing* film,
+ * where it really would be a client sending something this worker can't read.
+ */
+export function validateFilmPatch(body: unknown, memberNames: readonly string[]): FilmPatch {
+    const raw = asRecord(body, 'film');
+    const patch: FilmPatch = {};
+
+    if ('selector' in raw) patch.selector = resolveSelector(raw.selector, memberNames);
+    if ('watchDate' in raw) patch.watchDate = validateClubWatchDate(raw.watchDate);
+    if ('poster' in raw) patch.poster = validateImageUrl(raw.poster, 'poster');
+    if ('backdropImage' in raw) {
+        patch.backdropImage = validateImageUrl(raw.backdropImage, 'backdropImage');
+    }
+
+    return patch;
+}
+
+/** Names the fields a film patch understands, for the route's empty-body refusal. */
+export const FILM_PATCH_FIELDS = FILM_FIELDS.join(', ');
+
 /** Fields a member may set on a watch-log entry. `imdbID` comes from the path, never the body. */
 const WATCHED_FIELDS = [
     'watchDate',
@@ -798,6 +942,90 @@ export function slugify(value: string): string {
 export function assignListId(owner: string, name: string, taken: Iterable<string>): string {
     const existing = new Set(taken);
     const base = slugify(`${owner}-${name}`) || 'list';
+    if (!existing.has(base)) return base;
+    for (let suffix = 2; ; suffix++) {
+        const candidate = `${base}-${suffix}`;
+        if (!existing.has(candidate)) return candidate;
+    }
+}
+
+// --- Trophies -----------------------------------------------------------
+
+/** What a client supplies for one award. `id`, `awardedBy`, and `awardedAt` are the worker's. */
+export interface TrophyInput {
+    recipient: string;
+    award: string;
+    note: string | null;
+}
+
+/**
+ * Resolves the member an award is *for*.
+ *
+ * Deliberately not {@link resolveOwner}: that function answers "may you write
+ * this?" and answers it with "only for yourself, unless you're an admin". A
+ * trophy is the one thing on this site a member does not give themselves, so the
+ * recipient is a plain data field — any member, no privilege attached. The check
+ * that remains is that they exist: an award for someone who isn't in the club
+ * would render as a name with no profile behind it.
+ */
+export function resolveRecipient(value: unknown, memberNames: readonly string[]): string {
+    if (typeof value !== 'string' || value.trim() === '') {
+        throw badRequest('recipient: a trophy needs a club member to give it to');
+    }
+    const wanted = value.trim().toLowerCase();
+    const match = memberNames.find((name) => name.toLowerCase() === wanted);
+    if (!match) throw badRequest(`recipient: "${value.trim()}" is not a club member`);
+    return match;
+}
+
+/**
+ * Decides whether the caller may change an award that already exists.
+ *
+ * Awarding is open to every member — that is the point of the feature — but
+ * *un*awarding is not, or one member could quietly strip the shelf of another's
+ * jokes at their expense. The rule is therefore provenance-based rather than
+ * recipient-based: whoever handed the trophy out may edit or withdraw it, and so
+ * may an admin. Notably the recipient may **not** delete their own trophy, which
+ * is what stops the "Bad Boy" award from having a shorter half-life than the
+ * evening it was given on.
+ */
+export function assertMayEditTrophy(
+    trophy: { awardedBy: string; award: string },
+    caller: { name: string; admin: boolean }
+): void {
+    if (caller.admin) return;
+    if (trophy.awardedBy.toLowerCase() === caller.name.toLowerCase()) return;
+    throw forbidden(`${trophy.awardedBy} handed out the ${trophy.award}. Only they can change it.`);
+}
+
+/**
+ * Validates one award. Whole-record, not a merge: there are three fields and an
+ * editor that shows all of them, so a partial write would only add a mode for
+ * clients to get wrong.
+ */
+export function validateTrophyInput(body: unknown, memberNames: readonly string[]): TrophyInput {
+    const raw = asRecord(body, 'trophy');
+
+    const recipient = resolveRecipient(raw.recipient, memberNames);
+
+    const award = optionalText(raw.award, LIMITS.award, 'award');
+    if (award === null) throw badRequest('award: a trophy needs a name');
+
+    return { recipient, award, note: optionalText(raw.note, LIMITS.trophyNote, 'note') };
+}
+
+/**
+ * Assigns an award's permanent id: `slugify(recipient + "-" + award)`, with a
+ * numeric suffix on collision.
+ *
+ * Same contract as {@link assignListId} — assigned once, immutable after, so a
+ * typo in the award's name can be fixed without the row changing identity. The
+ * collision suffix is what allows the club to give one member the same award
+ * twice for the same film, which is silly and therefore certain to happen.
+ */
+export function assignTrophyId(recipient: string, award: string, taken: Iterable<string>): string {
+    const existing = new Set(taken);
+    const base = slugify(`${recipient}-${award}`) || 'trophy';
     if (!existing.has(base)) return base;
     for (let suffix = 2; ; suffix++) {
         const candidate = `${base}-${suffix}`;

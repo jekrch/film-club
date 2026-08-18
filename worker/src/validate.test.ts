@@ -8,10 +8,13 @@
 import { HttpError } from './errors';
 import {
     LIMITS,
+    assertMayEditTrophy,
     assignListId,
+    assignTrophyId,
     base64ByteLength,
     resolveListOwner,
     resolveOwner,
+    resolveRecipient,
     slugify,
     validateAvatarUpload,
     validateBackdropFilms,
@@ -22,8 +25,12 @@ import {
     validateProfileImage,
     validateProfileLink,
     validateProfilePatch,
+    validateClubWatchDate,
+    validateFilmPatch,
     validateRatingPatch,
+    resolveSelector,
     validateTrailerKey,
+    validateTrophyInput,
     validateWatchDate,
     validateWatchedPatch,
 } from './validate';
@@ -864,5 +871,274 @@ describe('slugify / assignListId', () => {
 
     it('falls back to a usable id when the name slugs to nothing', () => {
         expect(assignListId('!!', '???', [])).toBe('list');
+    });
+});
+
+describe('validateTrophyInput', () => {
+    const members = ['Andy', 'Jacob', 'Mark'];
+
+    it('accepts an award for another member', () => {
+        // The whole point of the feature, and the one place on this API where
+        // naming someone else is not a privilege escalation: a trophy is given,
+        // not claimed.
+        expect(
+            validateTrophyInput(
+                { recipient: 'andy', award: '  Togetherness Trophy  ', note: '' },
+                members
+            )
+        ).toEqual({ recipient: 'Andy', award: 'Togetherness Trophy', note: null });
+    });
+
+    it('stores the recipient in club.json casing, whatever the client sent', () => {
+        expect(validateTrophyInput({ recipient: 'MARK', award: 'Helmet' }, members).recipient).toBe(
+            'Mark'
+        );
+    });
+
+    it('keeps a note when there is one', () => {
+        expect(
+            validateTrophyInput(
+                { recipient: 'Andy', award: 'Bad Boy', note: ' for the group chat ' },
+                members
+            ).note
+        ).toBe('for the group chat');
+    });
+
+    it('refuses an award for someone who is not in the club', () => {
+        expectStatus(() => validateTrophyInput({ recipient: 'Nobody', award: 'X' }, members), 400);
+    });
+
+    it('refuses an award with no recipient at all', () => {
+        expectStatus(() => validateTrophyInput({ award: 'Helmet' }, members), 400);
+        expectStatus(
+            () => validateTrophyInput({ recipient: '   ', award: 'Helmet' }, members),
+            400
+        );
+    });
+
+    it('refuses an award with no name', () => {
+        expectStatus(() => validateTrophyInput({ recipient: 'Andy' }, members), 400);
+        expectStatus(() => validateTrophyInput({ recipient: 'Andy', award: '  ' }, members), 400);
+    });
+
+    it('enforces the length caps', () => {
+        expectStatus(
+            () =>
+                validateTrophyInput(
+                    { recipient: 'Andy', award: 'x'.repeat(LIMITS.award + 1) },
+                    members
+                ),
+            400
+        );
+        expectStatus(
+            () =>
+                validateTrophyInput(
+                    { recipient: 'Andy', award: 'Helmet', note: 'x'.repeat(LIMITS.trophyNote + 1) },
+                    members
+                ),
+            400
+        );
+    });
+
+    it('drops anything else the client sent', () => {
+        const input = validateTrophyInput(
+            { recipient: 'Andy', award: 'Helmet', awardedBy: 'Andy', id: 'forged' },
+            members
+        );
+
+        // `awardedBy` decides who may later withdraw the award, so a client that
+        // could set it could hand out trophies nobody is able to take back.
+        expect(input).toEqual({ recipient: 'Andy', award: 'Helmet', note: null });
+    });
+
+    it('refuses a body that is not an object', () => {
+        expectStatus(() => validateTrophyInput('Andy gets helmet', members), 400);
+        expectStatus(() => validateTrophyInput([{ recipient: 'Andy' }], members), 400);
+    });
+});
+
+describe('resolveRecipient', () => {
+    const members = ['Andy', 'Jacob'];
+
+    it('matches a member under any casing', () => {
+        expect(resolveRecipient('  aNdY ', members)).toBe('Andy');
+    });
+
+    it('refuses a stranger', () => {
+        expectStatus(() => resolveRecipient('Werner', members), 400);
+    });
+
+    it('refuses a non-string', () => {
+        expectStatus(() => resolveRecipient(7, members), 400);
+        expectStatus(() => resolveRecipient(null, members), 400);
+    });
+});
+
+describe('assertMayEditTrophy', () => {
+    const trophy = { awardedBy: 'Jacob', award: 'Bad Boy' };
+
+    it('lets the member who gave it change it', () => {
+        expect(() => assertMayEditTrophy(trophy, { name: 'jacob', admin: false })).not.toThrow();
+    });
+
+    it('lets an admin change anyone’s', () => {
+        expect(() => assertMayEditTrophy(trophy, { name: 'Mark', admin: true })).not.toThrow();
+    });
+
+    it('forbids everyone else, the recipient included', () => {
+        // A trophy the recipient could delete is not a trophy.
+        expectStatus(() => assertMayEditTrophy(trophy, { name: 'Andy', admin: false }), 403);
+    });
+
+    it('names the giver in the refusal, so the caller knows who to ask', () => {
+        try {
+            assertMayEditTrophy(trophy, { name: 'Andy', admin: false });
+        } catch (err) {
+            expect((err as HttpError).message).toContain('Jacob');
+            return;
+        }
+        throw new Error('expected the call to throw');
+    });
+});
+
+describe('assignTrophyId', () => {
+    it('slugs the recipient and the award together', () => {
+        expect(assignTrophyId('Andy', 'Togetherness Trophy', [])).toBe('andy-togetherness-trophy');
+    });
+
+    it('suffixes on collision, so one member can win the same award twice', () => {
+        expect(assignTrophyId('Andy', 'Helmet', ['andy-helmet'])).toBe('andy-helmet-2');
+        expect(assignTrophyId('Andy', 'Helmet', ['andy-helmet', 'andy-helmet-2'])).toBe(
+            'andy-helmet-3'
+        );
+    });
+
+    it('falls back to a usable id when the award slugs to nothing', () => {
+        expect(assignTrophyId('!!', '???', [])).toBe('trophy');
+    });
+});
+
+describe('resolveSelector', () => {
+    const members = ['Andy', 'Gabe', 'Jacob'];
+
+    it('resolves a member to their canonical casing', () => {
+        expect(resolveSelector('jacob', members)).toBe('Jacob');
+        expect(resolveSelector('  GABE ', members)).toBe('Gabe');
+    });
+
+    it('treats blank and absent alike as "not recorded"', () => {
+        expect(resolveSelector('', members)).toBeNull();
+        expect(resolveSelector('   ', members)).toBeNull();
+        expect(resolveSelector(null, members)).toBeNull();
+        expect(resolveSelector(undefined, members)).toBeNull();
+    });
+
+    it('refuses a selector who is not in the club', () => {
+        expectStatus(() => resolveSelector('Werner', members), 400);
+    });
+
+    it('lets any member name any other, since this is data and not a claim', () => {
+        // Deliberately not `resolveOwner`: one person usually enters the whole
+        // evening, including whose pick it was.
+        expect(resolveSelector('Andy', members)).toBe('Andy');
+    });
+});
+
+describe('validateClubWatchDate', () => {
+    it('keeps the MM/DD/YYYY form films.json already stores', () => {
+        expect(validateClubWatchDate('08/12/2020')).toBe('08/12/2020');
+    });
+
+    it('pads a single-digit month or day, so the column stays one shape', () => {
+        expect(validateClubWatchDate('8/2/2020')).toBe('08/02/2020');
+    });
+
+    it('takes the two-digit years the column is half full of', () => {
+        // `parseWatchDate` on the site applies the same 2000 pivot.
+        expect(validateClubWatchDate('3/14/23')).toBe('03/14/2023');
+        expect(validateClubWatchDate('12/20/23')).toBe('12/20/2023');
+    });
+
+    it('converts what a date input produces', () => {
+        // The editor uses `<input type="date">`, which speaks ISO and nothing
+        // else; `parseWatchDate` on the site reads MM/DD/YYYY and nothing else.
+        expect(validateClubWatchDate('2026-02-03')).toBe('02/03/2026');
+    });
+
+    it('treats blank and null as a film the club has not watched yet', () => {
+        expect(validateClubWatchDate(null)).toBeNull();
+        expect(validateClubWatchDate('')).toBeNull();
+        expect(validateClubWatchDate(undefined)).toBeNull();
+    });
+
+    it('rejects a date that does not exist', () => {
+        // `new Date` would turn this into March 3rd without complaint.
+        expectStatus(() => validateClubWatchDate('02/31/2026'), 400);
+        expectStatus(() => validateClubWatchDate('2026-02-31'), 400);
+    });
+
+    it('rejects a year before the club existed', () => {
+        // `parseWatchDate` drops anything before 2000 silently; refusing it here
+        // is what turns that into something a member can read.
+        expectStatus(() => validateClubWatchDate('08/12/1999'), 400);
+    });
+
+    it('rejects a date too far ahead to be a scheduled film', () => {
+        const farOff = new Date(Date.now() + 400 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        expectStatus(() => validateClubWatchDate(farOff), 400);
+    });
+
+    it('accepts a date next month, since the club schedules ahead', () => {
+        const soon = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        expect(validateClubWatchDate(soon)).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+    });
+
+    it('rejects text that is not a date at all', () => {
+        expectStatus(() => validateClubWatchDate('August 2020'), 400);
+        expectStatus(() => validateClubWatchDate(20200812), 400);
+    });
+});
+
+describe('validateFilmPatch', () => {
+    const members = ['Andy', 'Jacob'];
+
+    it('keeps only the fields the body carried', () => {
+        // Presence is the whole mechanism: a key that isn't here defers to the
+        // sheet, and one that is — even as null — takes the field over.
+        expect(validateFilmPatch({ selector: 'Jacob' }, members)).toEqual({ selector: 'Jacob' });
+        expect(validateFilmPatch({ backdropImage: null }, members)).toEqual({
+            backdropImage: null,
+        });
+    });
+
+    it('accepts an empty patch, which is how a film is added with nothing known', () => {
+        // Unlike a rating patch. The route refuses an empty body for a film the
+        // club already has, where it really would mean a confused client.
+        expect(validateFilmPatch({}, members)).toEqual({});
+    });
+
+    it('ignores fields a member may not set on a film', () => {
+        expect(validateFilmPatch({ title: 'Renamed', imdbRating: '9.9' }, members)).toEqual({});
+    });
+
+    it('normalizes the watch date on the way in', () => {
+        expect(validateFilmPatch({ watchDate: '2026-02-03' }, members)).toEqual({
+            watchDate: '02/03/2026',
+        });
+    });
+
+    it('requires both images to be https, since an http one renders as nothing', () => {
+        expectStatus(() => validateFilmPatch({ poster: 'http://insecure.jpg' }, members), 400);
+        expectStatus(() => validateFilmPatch({ backdropImage: 'not a url' }, members), 400);
+    });
+
+    it('names the field that failed, so the form can point at it', () => {
+        try {
+            validateFilmPatch({ backdropImage: 'http://insecure.jpg' }, members);
+        } catch (err) {
+            expect((err as HttpError).message).toContain('backdropImage');
+            return;
+        }
+        throw new Error('expected the call to throw');
     });
 });

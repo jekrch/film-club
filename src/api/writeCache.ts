@@ -32,7 +32,7 @@ const KEY = 'cc.editor.writes';
 const TTL_MS = 24 * 60 * 60 * 1000;
 
 /** Which file an entry belongs to. One namespace per file keeps keys short. */
-export type WriteKind = 'rating' | 'list' | 'watched' | 'profile';
+export type WriteKind = 'rating' | 'list' | 'watched' | 'profile' | 'trophy' | 'film';
 
 /** A recorded write. `value: null` is a delete — the row should be absent. */
 interface CachedWrite<T> {
@@ -175,9 +175,22 @@ export const writeKeys = {
     list: (id: string) => id,
     watched: (owner: string, imdbId: string) => `${imdbId} ${owner.toLowerCase()}`,
     profile: (name: string) => name.toLowerCase(),
+    /**
+     * The second part is the award's id rather than a member: a trophy is keyed
+     * by which award it is, not by whose it is, since one member can hold two on
+     * the same film. Slugs contain no spaces, so {@link splitKey} takes it apart
+     * on the same rule as the others.
+     */
+    trophy: (imdbId: string, id: string) => `${imdbId} ${id}`,
+    /**
+     * One key per film, with no second part: a film's club record belongs to
+     * the film rather than to a member, so there is nothing to key it by but
+     * the id.
+     */
+    film: (imdbId: string) => imdbId,
 };
 
-/** Splits a two-part key back into its IMDb id and its lowercased owner. */
+/** Splits a two-part key back into its IMDb id and its second part. */
 export function splitKey(key: string): { imdbId: string; owner: string } {
     const at = key.indexOf(' ');
     return at === -1
