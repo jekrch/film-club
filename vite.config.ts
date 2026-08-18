@@ -94,21 +94,23 @@ export default defineConfig({
                 short_name: 'FilmClub',
                 description:
                     'A web application for tracking films watched and reviewed by the Criterion Club.',
-                theme_color: '#1e293b',
-                background_color: '#0f172a',
+                // The page colour, matching index.html's theme-color and the
+                // field the icons are drawn on.
+                theme_color: '#0f172b',
+                background_color: '#0f172b',
                 icons: [
                     {
-                        src: '/film-192x192.png',
+                        src: '/pillar-192x192.png',
                         sizes: '192x192',
                         type: 'image/png',
                     },
                     {
-                        src: '/film-512x512.png',
+                        src: '/pillar-512x512.png',
                         sizes: '512x512',
                         type: 'image/png',
                     },
                     {
-                        src: '/film-maskable-512x512.png', // A maskable icon
+                        src: '/pillar-maskable-512x512.png', // A maskable icon
                         sizes: '512x512',
                         type: 'image/png',
                         purpose: 'maskable',
