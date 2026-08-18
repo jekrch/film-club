@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import FilmList from '../components/films/FilmList';
 import { Film, filmData } from '../types/film';
 import { TeamMember, teamMembers as teamMembersData } from '../types/team';
 import { calculateClubAverage } from '../utils/ratingUtils';
-import CircularImage from '../components/common/CircularImage';
-import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import { getFilmBackdrop, parseWatchDate } from '../utils/filmUtils';
+import SelectionCommitteeHero from '../components/home/SelectionCommitteeHero';
+import { parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
 import PageLayout from '../components/layout/PageLayout';
 import CorinthianPillar from '../components/layout/CorinthianPillar';
@@ -29,27 +26,19 @@ const formatTotalMinutes = (totalMinutes: number): string => {
     return `${days} ${dayLabel} : ${pad(hours)} hrs : ${pad(minutes)} m`;
 };
 
-// --- Array of Brown Gradients for Inactive Stripes ---
-const inactiveStripeGradients = [
-    'bg-gradient-to-t from-amber-900 via-orange-700 to-yellow-600',
-    'bg-gradient-to-t from-yellow-900 via-amber-700 to-orange-800',
-    'bg-gradient-to-t from-orange-900 via-yellow-700 to-amber-600',
-];
-
-// Fades the trailing pillars as they run down the page: full strength through the
-// hero (where they're hidden behind its background anyway), dimmer below it, and
-// only fading out over the last stretch so they carry past the bottom section.
+// Fades the colonnade as it runs down the page: full strength behind the banner,
+// dimmer below it, and only fading out over the last stretch so the pillars carry
+// past the bottom section.
 const PILLAR_TRAIL_MASK =
     'linear-gradient(to bottom, rgba(0,0,0,1) 0px, rgba(0,0,0,1) 280px, rgba(0,0,0,0.6) 440px, rgba(0,0,0,0.5) 90%, rgba(0,0,0,0.35) 97%, rgba(0,0,0,0) 100%)';
 
-// The hero fades from slate-700 on the left to gray-900 on the right, so an identical
-// pillar reads brighter on the dark side. The right pillar is dialled back to match.
-const PILLAR_OPACITY_LEFT = 0.15;
-const PILLAR_OPACITY_RIGHT = 0.1;
+// One value for both sides. They used to differ because the banner behind the left
+// pillar was a lighter slate than the one behind the right; it carries no fill of its
+// own now, so the two stand on the same ground and read identically.
+const PILLAR_OPACITY = 0.14;
 
 // The pillars scale up with the viewport. The SVG geometry is derived from a pixel
-// width, so this has to be a JS value rather than responsive classes - and the hero
-// and trailing pillars must share it to stay aligned across the hero's bottom edge.
+// width, so this has to be a JS value rather than responsive classes.
 const usePillarWidth = (): number => {
     const isXl = useMediaQuery('(min-width: 1280px)');
     const isLg = useMediaQuery('(min-width: 1024px)');
@@ -198,10 +187,12 @@ const HomePage = () => {
 
     // --- Render Logic ---
     return (
-        <PageLayout className="">
-            <div className="relative mt-2">
-                {/* Background pillars - aligned with the hero pillars, continuing down the page.
-          Sits behind the page content and is hidden behind the hero's own background. */}
+        <PageLayout>
+            <div className="relative">
+                {/* The colonnade: one continuous run of pillars down the whole page, behind
+          the content. The banner carries no fill, so these show through it rather
+          than stopping at its top edge and starting again below - which is what a
+          second, banner-local set of pillars used to do, seam and all. */}
                 <div
                     className="absolute inset-x-0 top-0 -bottom-8 -z-10 pointer-events-none"
                     style={{
@@ -214,164 +205,23 @@ const HomePage = () => {
                         side="left"
                         flipped
                         width={pillarWidth}
-                        opacity={PILLAR_OPACITY_LEFT}
+                        opacity={PILLAR_OPACITY}
                     />
                     <CorinthianPillar
                         side="right"
                         flipped
                         width={pillarWidth}
-                        opacity={PILLAR_OPACITY_RIGHT}
+                        opacity={PILLAR_OPACITY}
                     />
                 </div>
-                {/* Hero section */}
-                <div className="relative overflow-hidden py-10 md:py-16 bg-gradient-to-r from-slate-700 to-gray-900 rounded-lg mb-8 text-center px-4 sm:px-6 lg:px-10">
-                    {/* Background poster image */}
-                    <SelectionCommitteeBackground
-                        imageUrl={(upNextFilm && getFilmBackdrop(upNextFilm)) ?? upNextFilm?.poster}
-                        scale={1}
-                        opacity={0.35}
-                    />
-
-                    {/* Corinthian Pillars */}
-                    <CorinthianPillar
-                        side="left"
-                        flipped
-                        width={pillarWidth}
-                        opacity={PILLAR_OPACITY_LEFT}
-                    />
-                    <CorinthianPillar
-                        side="right"
-                        flipped
-                        width={pillarWidth}
-                        opacity={PILLAR_OPACITY_RIGHT}
-                    />
-
-                    {/* --- Display Cycle Order with Profile Pics and Responsive Arrows --- */}
-                    {activeCycleMembersList.length > 0 && (
-                        <div className="mb-6 relative z-10">
-                            <p className="text-xs uppercase tracking-widest text-slate-300 font-semibold mb-4">
-                                Selection Committee
-                            </p>
-                            {/* Flex container for members and inline arrows */}
-                            <div className="flex flex-wrap justify-center items-center gap-x-2 sm:gap-x-3 gap-y-6">
-                                {activeCycleMembersList.map((member, index) => {
-                                    const isActive = member.name === currentSelectorName;
-                                    const isNotLast = index < activeCycleMembersList.length - 1;
-                                    const inactiveGradientClass =
-                                        inactiveStripeGradients[
-                                            index % inactiveStripeGradients.length
-                                        ];
-
-                                    return (
-                                        <React.Fragment key={member.name}>
-                                            {/* Link container for profile pic and name */}
-                                            <Link
-                                                to={`/profile/${encodeURIComponent(member.name)}`}
-                                                className={`
-                                group text-center flex flex-col items-center transition-all duration-200 ease-in-out relative
-                                ${isActive ? 'transform scale-105 z-10' : 'opacity-70 hover:opacity-100'}
-                                `}
-                                                title={
-                                                    isActive
-                                                        ? `${member.name} (Up Next!)`
-                                                        : member.name
-                                                }
-                                            >
-                                                {/* Small screen arrow */}
-                                                <ArrowRightIcon className="sm:hidden inline-block w-3 h-3 mx-1 text-slate-500 flex-shrink-0 self-center mb-1" />
-
-                                                {/* Image container */}
-                                                <div
-                                                    className={`relative rounded-full p-0.5 ${isActive ? 'bg-gradient-to-tr from-emerald-700 via-emerald-600 to-emerald-600 shadow-lg' : ''}`}
-                                                >
-                                                    {/* ACTIVE STRIPE */}
-                                                    {isActive && (
-                                                        <div className="w-full rounded-t-full sm:w-25 h-[200vh] h-[20em] -top-[100vh]x left-1/2 -translate-x-1/2 absolute opacity-10 bg-gradient-to-t from-emerald-900 via-emerald-600 to-emerald-700 pointer-events-none"></div>
-                                                    )}
-
-                                                    {/* INACTIVE STRIPE */}
-                                                    {!isActive && (
-                                                        <div
-                                                            className={`w-full rounded-t-full sm:w-25 h-[30em] h-min-full -top-[100vh]x left-1/2 -translate-x-1/2 absolute opacity-10 ${inactiveGradientClass} pointer-events-none`}
-                                                        ></div>
-                                                    )}
-
-                                                    <CircularImage
-                                                        alt={member.name}
-                                                        size="w-14 h-14 sm:w-16 sm:h-16"
-                                                        className={`transition-all duration-200 ease-in-out border-2 ${isActive ? 'border-slate-700' : 'border-slate-600 group-hover:border-slate-400'}`}
-                                                    />
-                                                    {/* Static Active Indicator */}
-                                                    {isActive && (
-                                                        <span className="absolute -top-0.5 -right-0.5 block h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-slate-800 ring-1 ring-slate-900"></span>
-                                                    )}
-                                                </div>
-                                                {/* Member Name */}
-                                                <span
-                                                    className={`block text-xs mt-1.5 font-medium transition-colors duration-200 ${isActive ? 'text-emerald-400' : 'text-slate-300 group-hover:text-slate-200'}`}
-                                                >
-                                                    {member.name}
-                                                </span>
-                                            </Link>
-
-                                            {/* Inline Arrow Separator */}
-                                            {isNotLast && (
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="h-5 w-5 mx-1 text-slate-500 flex-shrink-0 hidden sm:inline-block"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                    strokeWidth={1.5}
-                                                    aria-hidden="true"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                                    />
-                                                </svg>
-                                            )}
-                                        </React.Fragment>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-                    {/* --- End Display Cycle Order --- */}
-
-                    {/* --- Display Total Runtime --- intentionally disabled toggle */}
-                    {/* eslint-disable-next-line no-constant-binary-expression */}
-                    {false && totalRuntimeString && (
-                        <div
-                            className={`max-w-md mx-auto relative z-10 ${activeCycleMembersList.length > 0 ? 'border-t border-slate-600 pt-4 mt-6' : 'pt-0 mt-0'}`}
-                        >
-                            <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">
-                                Total Film Runtime Watched
-                            </p>
-                            <p className="font-mono text-slate-300 tracking-tight text-sm">
-                                {totalRuntimeString}
-                            </p>
-                        </div>
-                    )}
-                    {/* --- End Display Total Runtime --- */}
-
-                    {/* --- Display the timer --- */}
-                    {timeSinceLastMeeting && (
-                        <div
-                            className={`pt-4 max-w-md mx-auto relative z-10 ${totalRuntimeString || activeCycleMembersList.length > 0 ? 'mt-4 border-t border-slate-600' : 'mt-6 pt-6 border-t border-slate-600'}`}
-                        >
-                            <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-1">
-                                Time Since Last Meeting
-                            </p>
-                            <p className="font-mono text-slate-300 tracking-tight text-sm">
-                                {timeSinceLastMeeting}
-                            </p>
-                        </div>
-                    )}
-                    {/* --- End Display Timer --- */}
-                </div>{' '}
-                {/* End Hero Section Div */}
+                <SelectionCommitteeHero
+                    members={activeCycleMembersList}
+                    currentSelectorName={currentSelectorName}
+                    upNextFilm={upNextFilm}
+                    fallbackFilms={recentClubPicks}
+                    timeSinceLastMeeting={timeSinceLastMeeting}
+                    totalRuntime={totalRuntimeString}
+                />
                 {/* Film Lists Section */}
                 {recentClubPicks.length > 0 && (
                     <FilmList

@@ -39,7 +39,7 @@ const FilmsPage = () => {
     ];
 
     return (
-        <PageLayout className="pt-4">
+        <PageLayout>
             <div className="text-3xl text-slate-300 mb-8">Film Collection</div>
 
             <AccentCard key={'search-card'} accent="blue" className="p-6 mb-8 text-sm">

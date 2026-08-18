@@ -17,6 +17,13 @@ interface SelectionCommitteeBackgroundProps {
      * 'right': image mirrored on the right, fades out to the left.
      */
     align?: 'left' | 'right';
+    /**
+     * Tailwind width class for the panel, which is also the distance the fade
+     * has to travel. `w-2/3` suits a lone panel washing most of a surface; a
+     * layout running one of these from each side wants them at `w-1/2` or less,
+     * or the two images cross in the middle.
+     */
+    panelWidth?: string;
 }
 
 const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> = ({
@@ -27,6 +34,7 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
     scale = 1.8,
     opacity = 0.25,
     align = 'left',
+    panelWidth = 'w-2/3',
 }) => {
     const segment = useMemo(() => {
         if (!imageUrl || imageUrl.includes('N/A')) return null;
@@ -56,7 +64,7 @@ const SelectionCommitteeBackground: React.FC<SelectionCommitteeBackgroundProps> 
             className={`absolute inset-0 overflow-hidden pointer-events-none rounded-lg ${className}`}
         >
             <div
-                className={`absolute top-0 bottom-0 w-2/3 h-full ${isRight ? 'right-0' : 'left-0'}`}
+                className={`absolute top-0 bottom-0 h-full ${panelWidth} ${isRight ? 'right-0' : 'left-0'}`}
                 style={{
                     maskImage: maskGradient,
                     WebkitMaskImage: maskGradient,

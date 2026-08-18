@@ -22,6 +22,14 @@ interface HeroBannerProps {
      * the centered prose default.
      */
     contentClassName?: string;
+    /**
+     * Art to use in place of the collage. For a banner standing for one film
+     * that somebody deliberately chose - the home page's up-next pick - the
+     * collage is the wrong instrument: it shuffles a different cut of the
+     * artwork on every load, and the whole point of that backdrop is that it
+     * is the one they picked.
+     */
+    background?: React.ReactNode;
 }
 
 /** Centered prose column: the treatment the About and Almanac banners use. */
@@ -42,9 +50,10 @@ const HeroBanner: React.FC<HeroBannerProps> = ({
     children,
     className,
     contentClassName = DEFAULT_CONTENT,
+    background,
 }) => (
     <BaseCard className={classNames('banner-bleed overflow-hidden relative', className)}>
-        <HeroCollageBackground films={films} sources={sources} />
+        {background ?? <HeroCollageBackground films={films} sources={sources} />}
         <div className={classNames('relative z-30', contentClassName)}>{children}</div>
     </BaseCard>
 );
