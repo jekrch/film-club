@@ -3,46 +3,51 @@
     <head>
         <meta charset="UTF-8" />
         <link rel="icon" type="image/svg+xml" href="/pillar.svg" />
-        <link rel="apple-touch-icon" href="/film-192x192.png" />
+        <link rel="apple-touch-icon" href="/pillar-180x180.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#0f172b" />
 
         <!-- Primary SEO -->
-        <title>Criterion Club — Films watched & reviewed by our film club</title>
+        <title>Criterion Club — Films we watch, rate, and review</title>
         <meta
             name="description"
-            content="The Criterion Club tracks the films we watch, rate, and review together. Browse our growing catalog of films, member ratings, an almanac of stats, and reviews."
+            content="Four friends working through the Criterion Channel. Browse the catalog, every member rating and review, and an almanac of club statistics."
         />
         <link rel="canonical" href="https://criterionclub.org/" />
         <meta name="robots" content="index, follow" />
 
-        <!-- Open Graph (Facebook, iMessage, Slack, etc.) -->
+        <!-- Open Graph (Facebook, iMessage, Slack, etc.). The card is generated
+             from the site's own pillar motif — see scripts/generate_brand_assets.py. -->
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Criterion Club" />
-        <meta
-            property="og:title"
-            content="Criterion Club — Films watched & reviewed by our film club"
-        />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:title" content="Criterion Club — Films we watch, rate, and review" />
         <meta
             property="og:description"
-            content="The Criterion Club tracks the films we watch, rate, and review together. Browse our catalog, member ratings, an almanac of stats, and reviews."
+            content="Four friends working through the Criterion Channel. Browse the catalog, every member rating and review, and an almanac of club statistics."
         />
         <meta property="og:url" content="https://criterionclub.org/" />
-        <meta property="og:image" content="https://criterionclub.org/film-512x512.png" />
-        <meta property="og:image:width" content="512" />
-        <meta property="og:image:height" content="512" />
+        <meta property="og:image" content="https://criterionclub.org/og-card.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+            property="og:image:alt"
+            content="Criterion Club — an Ionic pillar over the club's name on a dark slate field"
+        />
 
         <!-- Twitter / X Card -->
-        <meta name="twitter:card" content="summary" />
-        <meta
-            name="twitter:title"
-            content="Criterion Club — Films watched & reviewed by our film club"
-        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Criterion Club — Films we watch, rate, and review" />
         <meta
             name="twitter:description"
-            content="The Criterion Club tracks the films we watch, rate, and review together. Browse our catalog, member ratings, an almanac of stats, and reviews."
+            content="Four friends working through the Criterion Channel. Browse the catalog, every member rating and review, and an almanac of club statistics."
         />
-        <meta name="twitter:image" content="https://criterionclub.org/film-512x512.png" />
+        <meta name="twitter:image" content="https://criterionclub.org/og-card.png" />
+        <meta
+            name="twitter:image:alt"
+            content="Criterion Club — an Ionic pillar over the club's name on a dark slate field"
+        />
 
         <!-- Structured data -->
         <script type="application/ld+json">
@@ -51,7 +56,8 @@
                 "@type": "WebSite",
                 "name": "Criterion Club",
                 "url": "https://criterionclub.org/",
-                "description": "The Criterion Club tracks the films we watch, rate, and review together. Browse our catalog, member ratings, an almanac of stats, and reviews."
+                "description": "Four friends working through the Criterion Channel. Browse the catalog, every member rating and review, and an almanac of club statistics.",
+                "image": "https://criterionclub.org/og-card.png"
             }
         </script>
 
