@@ -93,7 +93,7 @@ export default defineConfig({
                 name: 'Criterion Club',
                 short_name: 'FilmClub',
                 description:
-                    'A web application for tracking films watched and reviewed by the Criterion Club.',
+                    '4-5 friends who watch Criterion Channel films and rate them on a 9-point scale. Is this a podcast?',
                 // The page colour, matching index.html's theme-color and the
                 // field the icons are drawn on.
                 theme_color: '#0f172b',
