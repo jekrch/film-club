@@ -28,8 +28,8 @@ const Footer = () => {
                     <div>
                         <h3 className={HEADING_CLASS}>About Criterion Club</h3>
                         <p className="text-sm leading-relaxed text-slate-400">
-                            4-5 friends who watch Criterion Channel films and rate them on a
-                            9-point scale. Is this a podcast?
+                            4-5 friends who watch Criterion Channel films and rate them on a 9-point
+                            scale. Is this a podcast?
                         </p>
                     </div>
 
