@@ -4,6 +4,7 @@ import { NavLink, Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { Cross as Hamburger } from 'hamburger-react';
 import NavAuthControl from '../../auth/NavAuthControl';
+import { PillarMark } from './CorinthianPillar';
 
 const links = [
     { to: '/', label: 'Home' },
@@ -60,11 +61,7 @@ const Navbar = () => {
                             className="group flex items-center text-slate-300 hover:text-slate-100 transition-colors duration-200"
                         >
                             <span className="text-xl font-bold tracking-tight">Criterion Club</span>
-                            <img
-                                src="/images/cc-icon.PNG"
-                                alt=""
-                                className="ml-3 h-[1.4em] w-auto opacity-60 transition-opacity duration-200 group-hover:opacity-100"
-                            />
+                            <PillarMark className="ml-3 h-[1.22em] w-auto opacity-60 transition-opacity duration-200 group-hover:opacity-100" />
                         </Link>
                     </div>
                     {/* Desktop menu. The sign-in control sits past the links with more

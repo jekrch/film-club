@@ -58,6 +58,14 @@ const volutePath = (cx: number, cy: number, r: number, clockwise: boolean): stri
 };
 
 const VOLUTE = { cy: 10.9, r: 5, cx: [7, 43] };
+
+// The coils are the only part of the drawing with real work behind them (two
+// 57-step spines, normals and all), and their geometry lives in the 50-unit
+// space rather than in pixels — `scale` is applied as a transform, not baked in.
+// So they are the same two strings for every pillar on the page, at every width,
+// for the life of the tab: build them once at module load.
+const VOLUTE_PATHS = VOLUTE.cx.map((cx, i) => volutePath(cx, VOLUTE.cy, VOLUTE.r, i === 1));
+
 const MOTIF_TOP = 6.4;
 const MOTIF_BOTTOM = 12.6;
 
@@ -99,14 +107,75 @@ const IonicCapital: React.FC<{ scale: number }> = ({ scale }) => (
             <rect x={10.1} y={14.4} width={29.8} height={1.6} rx={0.4} />
 
             {/* The scrolls, and the eye each one tapers into */}
-            {VOLUTE.cx.map((cx, i) => (
-                <path key={cx} d={volutePath(cx, VOLUTE.cy, VOLUTE.r, i === 1)} />
+            {VOLUTE_PATHS.map((d, i) => (
+                <path key={VOLUTE.cx[i]} d={d} />
             ))}
             {VOLUTE.cx.map((cx) => (
                 <circle key={cx} cx={cx} cy={VOLUTE.cy} r={0.75} />
             ))}
         </g>
     </g>
+);
+
+// The small mark that stands beside the wordmark in the navbar — the same
+// capital as the page colonnade, over a stub of fluted shaft, so the nav, the
+// tab icon and the pillars behind the pages are all one drawing.
+//
+// Framed tight on the ink rather than on the pillar's 50-unit box: the capital
+// draws from x 1.7 to 48.3 (the volute coils overhang the cornice) and from
+// y 0.5 to 16, and the stub runs on to 23.6, which is the 2:1 ink proportion the
+// mark has always had. So `height` sets the drawn mark's height directly, with
+// no transparent margin baked in the way the PNG had.
+const MARK_INK = { x: 1.7, y: 0.5, w: 46.6, h: 23.14 };
+const MARK_SHAFT_TOP = 16; // the underside of the plate the shaft rises into
+
+// At nav size the pillar's fluting — hairlines drawn over a filled shaft — reads
+// as a grooved slab rather than as a colonnade. The old PNG got its shaft from
+// six separate columns with daylight between them, so here the flutes are cut
+// out as real gaps instead of stroked on: the same five flute positions the
+// pillar uses, widened into voids, which leaves six bars. Nothing to stroke
+// afterwards, so the mark's shaft is all one colour.
+//
+// Widen MARK_FLUTE_GAP to open the colonnade up; at 2 the bars and the gaps are
+// equal, and past ~2.6 the outer bars start to look starved next to the plate.
+const MARK_FLUTE_GAP = 1.8;
+const MARK_SHAFT = { x: 14, w: 22 };
+
+// Flute centres -> the bars left standing between them, as [x, width] pairs.
+const MARK_SHAFT_BARS = ((): Array<[number, number]> => {
+    const right = MARK_SHAFT.x + MARK_SHAFT.w;
+    const edges = [
+        MARK_SHAFT.x,
+        ...[17, 21, 25, 29, 33].flatMap((f) => [f - MARK_FLUTE_GAP / 2, f + MARK_FLUTE_GAP / 2]),
+        right,
+    ];
+    return Array.from({ length: edges.length / 2 }, (_, i) => [
+        edges[i * 2],
+        edges[i * 2 + 1] - edges[i * 2],
+    ]);
+})();
+
+export const PillarMark: React.FC<{ className?: string }> = ({ className = '' }) => (
+    <svg
+        viewBox={`${MARK_INK.x} ${MARK_INK.y} ${MARK_INK.w} ${MARK_INK.h}`}
+        className={className}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+    >
+        <IonicCapital scale={1} />
+        <g fill="currentColor" className="text-slate-200">
+            {MARK_SHAFT_BARS.map(([x, w]) => (
+                <rect
+                    key={x}
+                    x={x}
+                    y={MARK_SHAFT_TOP}
+                    width={w}
+                    height={MARK_INK.y + MARK_INK.h - MARK_SHAFT_TOP}
+                />
+            ))}
+        </g>
+    </svg>
 );
 
 const CorinthianPillar: React.FC<{
