@@ -329,6 +329,114 @@
       }
     ]
   },
+  "tt0080360": {
+    "imdbID": "tt0080360",
+    "title": "Altered States",
+    "year": "1980",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjA3ZmU3ZjEtMmJkNC00MzZjLWEzZTEtZDdmN2Y3OWJhMmFjXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "102 min",
+    "genre": "Horror, Sci-Fi, Thriller",
+    "director": "Ken Russell",
+    "writer": "Paddy Chayefsky",
+    "imdbRating": "6.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "87%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "58/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "0XNVQ4ILPBA",
+    "tagline": "In the basement of a university medical school, Dr. Jessup floats naked in total darkness. The most terrifying experiment in the history of science is out of control... and the subject is himself.",
+    "plot": "A research scientist explores the boundaries and frontiers of human consciousness. Using sensory deprivation and hallucinogenic mixtures from Native American shamans, he explores these altered states of cognizance and finds that memory, time, and reality itself are states of mind.",
+    "cast": [
+      {
+        "name": "William Hurt",
+        "character": "Professor Eddie Jessup",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/j3mjmuHLBW4XQSw53C8Sh0Lh3ZQ.jpg",
+        "tmdbId": 227
+      },
+      {
+        "name": "Blair Brown",
+        "character": "Emily Jessup",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hnVybZLBUJNr93gCTwgRQRCkjpm.jpg",
+        "tmdbId": 7571
+      },
+      {
+        "name": "Bob Balaban",
+        "character": "Arthur Rosenberg",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qceORed11dvRnxQjVGexPvgF5Xu.jpg",
+        "tmdbId": 12438
+      },
+      {
+        "name": "Charles Haid",
+        "character": "Mason Parrish",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6X2iBOvxH9ud6XFgMwNycFnfVqh.jpg",
+        "tmdbId": 69791
+      },
+      {
+        "name": "Thaao Penghlis",
+        "character": "Echeverria",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vNHYrgo9GetIhiHf2jBKWKYsebz.jpg",
+        "tmdbId": 160301
+      },
+      {
+        "name": "Miguel Godreau",
+        "character": "Primal Man",
+        "profileUrl": null,
+        "tmdbId": 1048615
+      },
+      {
+        "name": "Dori Brenner",
+        "character": "Sylvia Rosenberg",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yO67n33e8VnhBCxjE3agUk7F9jq.jpg",
+        "tmdbId": 157531
+      },
+      {
+        "name": "Peter Brandon",
+        "character": "Hobart",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ab2xdAoZcA8pjcjyEd0DGcUizPd.jpg",
+        "tmdbId": 161448
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/4iJQItnH2qmV7fZVDGvdE4XyxcO.jpg",
+      "https://image.tmdb.org/t/p/w1280/qKmnP5HbHJWpkLpFZRGjhyGRNA8.jpg",
+      "https://image.tmdb.org/t/p/w1280/ivgNm4ICvwbrlV6crntR4F7lKgL.jpg",
+      "https://image.tmdb.org/t/p/w1280/dLsn90Xrz4ha24Zez8N2eCuAKfR.jpg",
+      "https://image.tmdb.org/t/p/w1280/5g1ZV9LuQ9vzaxcNBFfhxL0RkIA.jpg",
+      "https://image.tmdb.org/t/p/w1280/4DWaOdZYuMQtLw21Iva6jsLAXEL.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Ken Russell",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hM5kaWhCsdZbl2NsHES3rWzt8xa.jpg",
+        "tmdbId": 32327
+      },
+      {
+        "name": "Paddy Chayefsky",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zrbeJrCDlfI4ZNFUxXmW6lnnf5i.jpg",
+        "tmdbId": 31498
+      },
+      {
+        "name": "Jordan Cronenweth",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kEZFQZKU5mRjDK2zi5ZjXVFgofj.jpg",
+        "tmdbId": 594
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0098354": {
     "imdbID": "tt0098354",
     "title": "Society",
