@@ -551,6 +551,116 @@
       }
     ]
   },
+  "tt35519455": {
+    "imdbID": "tt35519455",
+    "title": "It Ends",
+    "year": "2025",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjI5MDU4YjktNDkwYi00ODk4LThiY2ItMDE5ZjdhZjIzNzkzXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "runtime": "89 min",
+    "genre": "Drama, Fantasy, Horror",
+    "director": "Alex Ullom",
+    "writer": "Alex Ullom",
+    "imdbRating": "5.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "5.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "96%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "9k7jckaHeuA",
+    "tagline": "Some wrong turns last forever.",
+    "plot": "A group of recent grads head out on a late night drive for grub, hoping to enjoy one final hangout before their paths diverge. Instead, they accidentally turn onto a never-ending, two-lane hellscape surrounded by untold horrors and cosmic forces beyond their understanding. Cramped together inside a Jeep Cherokee and with the miles stretching infinitely ahead, they face a choice: embrace their new existence or fight to escape it.",
+    "cast": [
+      {
+        "name": "Phinehas Yoon",
+        "character": "James",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4QPjUk5XRcK31hq5sfeuS1MjL1I.jpg",
+        "tmdbId": 4004128
+      },
+      {
+        "name": "Akira Jackson",
+        "character": "Day",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6rTQ373bfj3TvPigeciCqteEPZg.jpg",
+        "tmdbId": 5197161
+      },
+      {
+        "name": "Noah Toth",
+        "character": "Fisher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cj6dL9qUnrSVOlaQBOvLiGzjdEk.jpg",
+        "tmdbId": 2973589
+      },
+      {
+        "name": "Mitchell Cole",
+        "character": "Tyler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zsnkkaOPiBgLmQODpAE8GBcE0YT.jpg",
+        "tmdbId": 3830116
+      },
+      {
+        "name": "Jenny Doyle",
+        "character": "Fisher's Mom (voice)",
+        "profileUrl": null,
+        "tmdbId": 5874805
+      },
+      {
+        "name": "Jon Linstad",
+        "character": "Interrogated Man",
+        "profileUrl": null,
+        "tmdbId": 5874804
+      },
+      {
+        "name": "Ian Weir",
+        "character": "Lost Man",
+        "profileUrl": null,
+        "tmdbId": 5874809
+      },
+      {
+        "name": "Alexander Ullom",
+        "character": "Passenger",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/neVbiMVlEks9TkChp5qmhS65wiB.jpg",
+        "tmdbId": 5197159
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/9Wf1xwPOycnxvdVnpr6Di381Zf.jpg",
+      "https://image.tmdb.org/t/p/w1280/4oPUinF3kg64y2RGH3JkZevVF5r.jpg",
+      "https://image.tmdb.org/t/p/w1280/92go2eC1XB8RIf0uLy844ruxB9L.jpg",
+      "https://image.tmdb.org/t/p/w1280/tMcdOpssdNMnUBZLVkCLRKUNMET.jpg",
+      "https://image.tmdb.org/t/p/w1280/pYMTv7MSRRgVCDJrqHAmdRzIDAA.jpg",
+      "https://image.tmdb.org/t/p/w1280/rAuoi863HxNEsaviePvpBxGxBgC.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Alexander Ullom",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/neVbiMVlEks9TkChp5qmhS65wiB.jpg",
+        "tmdbId": 5197159
+      },
+      {
+        "name": "Alexander Ullom",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/neVbiMVlEks9TkChp5qmhS65wiB.jpg",
+        "tmdbId": 5197159
+      },
+      {
+        "name": "Evan Draper",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 5464605
+      },
+      {
+        "name": "Jazleana Jones",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 3443849
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt37287335": {
     "imdbID": "tt37287335",
     "title": "Obsession",
