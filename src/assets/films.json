@@ -16592,7 +16592,13 @@
     "movieClubInfo": {
       "selector": "Joey",
       "watchDate": null,
-      "clubRatings": [],
+      "clubRatings": [
+        {
+          "user": "andy",
+          "score": 5,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
