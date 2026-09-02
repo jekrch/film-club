@@ -1,3 +1,13 @@
 {
-  "films": {}
+  "films": {
+    "tt0058006": {
+      "ratings": {
+        "andy": {
+          "score": 5,
+          "updatedBy": "Andy",
+          "updatedAt": "2026-09-02T03:51:27Z"
+        }
+      }
+    }
+  }
 }
