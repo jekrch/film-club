@@ -16591,7 +16591,7 @@
     ],
     "movieClubInfo": {
       "selector": "Joey",
-      "watchDate": null,
+      "watchDate": "09/01/2026",
       "clubRatings": [
         {
           "user": "andy",
