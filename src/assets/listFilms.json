@@ -1,4 +1,124 @@
 {
+  "tt0046126": {
+    "imdbID": "tt0046126",
+    "title": "Niagara",
+    "year": "1953",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYTJiODA4ZmItZDE1MS00ODk4LTkyODYtNTk5ODdhY2Q4MTFhXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "92 min",
+    "genre": "Film-Noir, Thriller",
+    "director": "Henry Hathaway",
+    "writer": "Charles Brackett, Walter Reisch, Richard L. Breen",
+    "imdbRating": "7.0",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "78%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "70/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "NHUOyB1TB3c",
+    "tagline": "A raging torrent of emotion that even nature can't control!",
+    "plot": "Rose Loomis and her older, gloomier husband, George, are vacationing at a cabin in Niagara Falls. The couple befriend Polly and Ray Cutler, who are honeymooning in the area. Polly begins to suspect that something is amiss between Rose and George, and her suspicions grow when she sees Rose in the arms of another man. While Ray initially thinks Polly is overreacting, things between George and Rose soon take a shockingly dark turn.",
+    "cast": [
+      {
+        "name": "Marilyn Monroe",
+        "character": "Rose Loomis",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vcp6rHL2sZWdlJQDEWsEe0jAAe1.jpg",
+        "tmdbId": 3149
+      },
+      {
+        "name": "Joseph Cotten",
+        "character": "George Loomis",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/djfCB0jPOgmq3w7RD3BMLzWsAu8.jpg",
+        "tmdbId": 7664
+      },
+      {
+        "name": "Jean Peters",
+        "character": "Polly Cutler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mk3xJ6KblAMFPaOSNmUU1MK1N1q.jpg",
+        "tmdbId": 19216
+      },
+      {
+        "name": "Max Showalter",
+        "character": "Ray Cutler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gJC4I86lhX2TWP1qWYRg6f1oe4B.jpg",
+        "tmdbId": 85409
+      },
+      {
+        "name": "Denis O'Dea",
+        "character": "Inspector Starkey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mhyjUYe6HmplMdmdYdtwYDnorEA.jpg",
+        "tmdbId": 85410
+      },
+      {
+        "name": "Richard Allan",
+        "character": "Patrick",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wmawu1C9QElOSdqALhFtNjYHGbZ.jpg",
+        "tmdbId": 38238
+      },
+      {
+        "name": "Don Wilson",
+        "character": "Mr. J.C. Kettering",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dMvYiY3Mv5wXdXtgGIDZx7vdS9q.jpg",
+        "tmdbId": 45582
+      },
+      {
+        "name": "Lurene Tuttle",
+        "character": "Mrs. Kettering",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t0dLpAfrSECNGjtGsGiO4SQquVW.jpg",
+        "tmdbId": 19781
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/ctUWlPJ0jLYkwyXjvofdQjtRdgu.jpg",
+      "https://image.tmdb.org/t/p/w1280/TNfPn4Fwi0Fqx4BsjxOL3Tmscw.jpg",
+      "https://image.tmdb.org/t/p/w1280/pHqBQanr9e36y153SFCHVv53pSd.jpg",
+      "https://image.tmdb.org/t/p/w1280/4wKABIFWMrcFfK7n6JCDZM9Gcp8.jpg",
+      "https://image.tmdb.org/t/p/w1280/1jTbB8AHY0vEWtLqWt0L61P9Dt9.jpg",
+      "https://image.tmdb.org/t/p/w1280/hlVP0NpUDLlj0evF3BIbrsXEJTy.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Henry Hathaway",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/evp15Bzb8mC2rLU774Nz7xKYLjN.jpg",
+        "tmdbId": 37360
+      },
+      {
+        "name": "Charles Brackett",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iIRQ5sTZTMgTTuMKlmetxO53tVS.jpg",
+        "tmdbId": 8617
+      },
+      {
+        "name": "Walter Reisch",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iLV9AhnkUUchlfjujSIB8q5y2TH.jpg",
+        "tmdbId": 12362
+      },
+      {
+        "name": "Richard L. Breen",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1YXQil1BfF5jsdMp4r2LeOVSznT.jpg",
+        "tmdbId": 80601
+      },
+      {
+        "name": "Joseph MacDonald",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 30288
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0049966": {
     "imdbID": "tt0049966",
     "title": "Written on the Wind",
@@ -220,6 +340,126 @@
         "tmdbId": 5806
       }
     ]
+  },
+  "tt0061512": {
+    "imdbID": "tt0061512",
+    "title": "Cool Hand Luke",
+    "year": "1967",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYzI1NzBkNmMtOWRmMS00YmY2LTk5MjQtZjAzMmIwZDQ2M2UwXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "127 min",
+    "genre": "Crime, Drama",
+    "director": "Stuart Rosenberg",
+    "writer": "Donn Pearce, Frank Pierson, Hal Dresner",
+    "imdbRating": "8.0",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "92/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "cxKUupk0kbY",
+    "tagline": "The man... and the motion picture that simply do not conform.",
+    "plot": "When petty criminal Luke Jackson is sentenced to two years in a Florida prison farm, he doesn't play by the rules of either the sadistic warden or the yard's resident heavy, Dragline, who ends up admiring the new guy's unbreakable will. Luke's bravado, even in the face of repeated stints in the prison's dreaded solitary confinement cell, \"the box,\" make him a rebel hero to his fellow convicts and a thorn in the side of the prison officers.",
+    "cast": [
+      {
+        "name": "Paul Newman",
+        "character": "Luke Jackson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bP2fByqNR7BorsUNuD6nSm0u2vJ.jpg",
+        "tmdbId": 3636
+      },
+      {
+        "name": "George Kennedy",
+        "character": "Dragline",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fIVmcPEcPmh0Rbx4mYf9aneCmDe.jpg",
+        "tmdbId": 12950
+      },
+      {
+        "name": "Luke Askew",
+        "character": "Boss Paul",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fZnBGTtY24YAaebGdlRA2gMeYS.jpg",
+        "tmdbId": 8962
+      },
+      {
+        "name": "Morgan Woodward",
+        "character": "Boss Godfrey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/upoxqlTc8GrADyxQxXIrkcZlfWf.jpg",
+        "tmdbId": 13869
+      },
+      {
+        "name": "Harry Dean Stanton",
+        "character": "Tramp",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9zOTpVMwMHNjPFBNoPy9vOBT1NC.jpg",
+        "tmdbId": 5048
+      },
+      {
+        "name": "Dennis Hopper",
+        "character": "Babalugats",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kqyNvLHi5RZGZcZMxl7e6XvoB5U.jpg",
+        "tmdbId": 2778
+      },
+      {
+        "name": "Lou Antonio",
+        "character": "Koko",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/haFl4RA0SBghwq7uf9qpF3jbqRj.jpg",
+        "tmdbId": 13871
+      },
+      {
+        "name": "Robert Drivas",
+        "character": "Loudmouth Steve",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bi1ivZ8DphZRk11MT614ovekmUE.jpg",
+        "tmdbId": 13872
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/9TDi0FPOSAePfVLZXAUgFZhiMLf.jpg",
+      "https://image.tmdb.org/t/p/w1280/eXD7iaPDYjYX6IGvqzqBmfMf0qi.jpg",
+      "https://image.tmdb.org/t/p/w1280/syGjgODx7pJb4tF1ipwTwrRdJxm.jpg",
+      "https://image.tmdb.org/t/p/w1280/yW9mPUhrsIzKvogNJKQKuWO8fJO.jpg",
+      "https://image.tmdb.org/t/p/w1280/1SabxMumRe3IT0cPGN3rXjEycyJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/xjmCZN6mH6yH8LxQZegBr06LPb.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Stuart Rosenberg",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qjNNkjniH2Y108Ys20hfpcY90a7.jpg",
+        "tmdbId": 13859
+      },
+      {
+        "name": "Hal Dresner",
+        "job": "Writer",
+        "profileUrl": null,
+        "tmdbId": 55451
+      },
+      {
+        "name": "Donn Pearce",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 13860
+      },
+      {
+        "name": "Frank Pierson",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qB5v6C0gt4wa8tlxcuG90fF0Ye9.jpg",
+        "tmdbId": 13861
+      },
+      {
+        "name": "Conrad Hall",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rMg7swA9zsiYWzajsg3eDaDAlku.jpg",
+        "tmdbId": 8217
+      }
+    ],
+    "tmdbVersion": 4
   },
   "tt0063522": {
     "imdbID": "tt0063522",
