@@ -329,6 +329,114 @@
       }
     ]
   },
+  "tt0073540": {
+    "imdbID": "tt0073540",
+    "title": "Picnic at Hanging Rock",
+    "year": "1975",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZDg0ZWUyMGYtMmY5NC00MmYzLTkyYjUtYWJmYmRiOTZhZjVkXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "115 min",
+    "genre": "Drama, Mystery",
+    "director": "Peter Weir",
+    "writer": "Cliff Green, Joan Lindsay",
+    "imdbRating": "7.4",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "81/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "CFtQMzXZZQs",
+    "tagline": "On St. Valentine's Day in 1900 a party of schoolgirls set out to picnic at Hanging Rock…Some were never to return.",
+    "plot": "In the early 1900s, Miranda attends a girls boarding school in Australia. One Valentine's Day, the school's typically strict headmistress treats the girls to a picnic field trip to an unusual but scenic volcanic formation called Hanging Rock. Despite rules against it, Miranda and several other girls venture off. It's not until the end of the day that the faculty realizes the girls and one of the teachers have disappeared mysteriously.",
+    "cast": [
+      {
+        "name": "Rachel Roberts",
+        "character": "Mrs. Appleyard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1nDy90bkMIK2LfqU5KWBumbciDn.jpg",
+        "tmdbId": 82495
+      },
+      {
+        "name": "Vivean Gray",
+        "character": "Miss Greta McCraw",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hIGxRT0nd1hABpD6ddc0DfrK0ie.jpg",
+        "tmdbId": 67829
+      },
+      {
+        "name": "Helen Morse",
+        "character": "Mlle. Dianne de Poitiers",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kyTVpm3TuIuLPJwscIzjaTVIp9K.jpg",
+        "tmdbId": 67835
+      },
+      {
+        "name": "Kirsty Child",
+        "character": "Miss Dora Lumley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uYC69RONSOUokNVd86jXay1Fpfj.jpg",
+        "tmdbId": 67836
+      },
+      {
+        "name": "Tony Llewellyn-Jones",
+        "character": "Tom",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hYXF3qQTpKA4j0GbNO9qGMN27We.jpg",
+        "tmdbId": 79090
+      },
+      {
+        "name": "Jacki Weaver",
+        "character": "Minnie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zalCqZnNQMKseFmwQwOlLrl3w2P.jpg",
+        "tmdbId": 67837
+      },
+      {
+        "name": "Anne-Louise Lambert",
+        "character": "Miranda St. Clare",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/soP0Pj3TJnjEUfpeILwuxP0IILS.jpg",
+        "tmdbId": 67027
+      },
+      {
+        "name": "Karen Robson",
+        "character": "Irma Leopold",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/w0dr4Ew4jnafRYmrU46ewxXGBrs.jpg",
+        "tmdbId": 1199222
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/41Mlaj6wfjlF4wQaVH0tjfDXvMi.jpg",
+      "https://image.tmdb.org/t/p/w1280/nCOKgcuM0xkclpyQm1mfyMT55iN.jpg",
+      "https://image.tmdb.org/t/p/w1280/sogEXuabmoOhPZLnbxFgl3WHbAK.jpg",
+      "https://image.tmdb.org/t/p/w1280/z0kPpAAOpq2987oVKU5FeC9wzmU.jpg",
+      "https://image.tmdb.org/t/p/w1280/gOv2Rj7UDlyTehEq1sOrWjcg7Qa.jpg",
+      "https://image.tmdb.org/t/p/w1280/kgPhjsVnYoYsXbWLcOUcYMb4Fdj.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Peter Weir",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4GxIZX5gtbMpW4ZgHwvGmLSIHOE.jpg",
+        "tmdbId": 2690
+      },
+      {
+        "name": "Cliff Green",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 1430275
+      },
+      {
+        "name": "Russell Boyd",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k0FBunMqJiPUpyHV2rs5wes4NrH.jpg",
+        "tmdbId": 31027
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0077745": {
     "imdbID": "tt0077745",
     "title": "Invasion of the Body Snatchers",
