@@ -119,6 +119,112 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0048119": {
+    "imdbID": "tt0048119",
+    "title": "The Girl in the Red Velvet Swing",
+    "year": "1955",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNGI3NzFmNzUtODVjZS00Mzk4LWFkNGEtYTI2MDQyNjBiMjE1XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "109 min",
+    "genre": "Biography, Crime, Drama",
+    "director": "Richard Fleischer",
+    "writer": "Walter Reisch, Charles Brackett",
+    "imdbRating": "6.5",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.5/10"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "ARhXJas59YQ",
+    "tagline": "THE RISE - THE FALL of the most beautiful Floradora chorine from penniless model to mistress of $40,000,000",
+    "plot": "Broadway showgirl Evelyn Nesbit is the object of affection of two men: playboy architect Stanford White and the wealthy but unstable Harry Thaw. Nesbit marries Thaw, but White’s continued pursuit puts him in the path of Thaw’s volatile temper. A fictionalized account of true events that occurred at the turn of the 20th century.",
+    "cast": [
+      {
+        "name": "Ray Milland",
+        "character": "Stanford White",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nqZGSLa9jS92hYlmkacFXxYwB2Y.jpg",
+        "tmdbId": 7124
+      },
+      {
+        "name": "Joan Collins",
+        "character": "Evelyn Nesbit Thaw",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jmXqOnp2xBDl2EMuU5Rj39uHzUQ.jpg",
+        "tmdbId": 13637
+      },
+      {
+        "name": "Farley Granger",
+        "character": "Harry Kendall Thaw",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4Tqi22qSxBdeWGDAOVvfa8pDX8E.jpg",
+        "tmdbId": 12497
+      },
+      {
+        "name": "Luther Adler",
+        "character": "Delphin Delmas",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kpN6ObaFLQUzBe7STFIPnY0UB7i.jpg",
+        "tmdbId": 55821
+      },
+      {
+        "name": "Cornelia Otis Skinner",
+        "character": "Mrs. Thaw",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wOYRIFNIUhDJ1Q1rFNEMnhInuU.jpg",
+        "tmdbId": 80467
+      },
+      {
+        "name": "Glenda Farrell",
+        "character": "Mrs. Nesbit",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xBaAWMgCzVpzMzK2bmA8bkmSGm2.jpg",
+        "tmdbId": 29315
+      },
+      {
+        "name": "Frances Fuller",
+        "character": "Mrs. Elizabeth White",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9ZDlbAK9LxTyTJAclVUCm0txVRt.jpg",
+        "tmdbId": 1039453
+      },
+      {
+        "name": "Phillip Reed",
+        "character": "Robert Collier",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7KiNR0zuBmPfacXq5znhiGPEWKZ.jpg",
+        "tmdbId": 52756
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/DoSgcJiIn936eYmhubc4lYWjX8.jpg",
+      "https://image.tmdb.org/t/p/w1280/yNwsxwfPpxpaZZZNz0QhPpj7dnY.jpg",
+      "https://image.tmdb.org/t/p/w1280/2XeoNwSLTkkUyRmLM1BL46az5eF.jpg",
+      "https://image.tmdb.org/t/p/w1280/eIALBZVxOlzoiLJbH52pNvvkfZx.jpg",
+      "https://image.tmdb.org/t/p/w1280/dUoKsueOilW2UqmHIBlAkUIznBc.jpg",
+      "https://image.tmdb.org/t/p/w1280/gVuzHmW4xAUPWFzXPB0k3BnNJIv.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Richard Fleischer",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vAPv1aa28u12zcq8YMvuwZu1hhC.jpg",
+        "tmdbId": 2087
+      },
+      {
+        "name": "Charles Brackett",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iIRQ5sTZTMgTTuMKlmetxO53tVS.jpg",
+        "tmdbId": 8617
+      },
+      {
+        "name": "Walter Reisch",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iLV9AhnkUUchlfjujSIB8q5y2TH.jpg",
+        "tmdbId": 12362
+      },
+      {
+        "name": "Evelyn Nesbit",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uF3BAWctAfsTf8pusGwno7VHWUN.jpg",
+        "tmdbId": 1524826
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0048527": {
     "imdbID": "tt0048527",
     "title": "Queen Bee",
