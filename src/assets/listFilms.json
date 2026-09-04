@@ -119,6 +119,106 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0048527": {
+    "imdbID": "tt0048527",
+    "title": "Queen Bee",
+    "year": "1955",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNThjNWQzYTEtYjllNS00N2U1LTllMzUtNjI4NDFmNWM0MjYwXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "95 min",
+    "genre": "Drama, Film-Noir, Romance",
+    "director": "Ranald MacDougall",
+    "writer": "Ranald MacDougall, Edna L. Lee",
+    "imdbRating": "6.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.7/10"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "hUWLd79aATU",
+    "tagline": "She's so excitingly good . . . when she's so wonderfully bad!",
+    "plot": "A wicked Southern woman ruthlessly manipulates her family.",
+    "cast": [
+      {
+        "name": "Joan Crawford",
+        "character": "Eva Phillips",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r37awXZaJWCBjMA56kxcN5xiIBE.jpg",
+        "tmdbId": 31550
+      },
+      {
+        "name": "Barry Sullivan",
+        "character": "Avery \"Beauty\" Phillips",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/71pEfOnI9YbMyBSni6grc6yJLCZ.jpg",
+        "tmdbId": 40433
+      },
+      {
+        "name": "John Ireland",
+        "character": "Judson Prentiss",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bvwphkKbqBzAYopNBTdzrbkPRmF.jpg",
+        "tmdbId": 14502
+      },
+      {
+        "name": "Lucy Marlow",
+        "character": "Jennifer Stewart",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8NEJQVX3FJr3yrzVBze2VKBw4uB.jpg",
+        "tmdbId": 30528
+      },
+      {
+        "name": "Betsy Palmer",
+        "character": "Carol Lee Phillips",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/isZD80T79h8xptSI91sQM69lZVi.jpg",
+        "tmdbId": 37469
+      },
+      {
+        "name": "William Leslie",
+        "character": "Ty McKinnon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pUyOo9lwpVW5keHdJNpHb9yMIBr.jpg",
+        "tmdbId": 91708
+      },
+      {
+        "name": "Fay Wray",
+        "character": "Sue McKinnon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zE36ekZdFQ53Bvk5JauwIeOeKlR.jpg",
+        "tmdbId": 3242
+      },
+      {
+        "name": "Katherine Anderson",
+        "character": "Miss Breen",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y2ClMCNxV5oNTljMXd81PYVE5ya.jpg",
+        "tmdbId": 129998
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/x7ZaqemK7b8BcH2SldsbAiqKIkN.jpg",
+      "https://image.tmdb.org/t/p/w1280/vMNPydRAFUQP8rjRArjjixcCuKJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/yUDz9A0Clx7ewqOJf1Vh87iGLZg.jpg",
+      "https://image.tmdb.org/t/p/w1280/xNuC3PkniqAzgLvDiWiSAMPDuKy.jpg",
+      "https://image.tmdb.org/t/p/w1280/1J6GX3xkKUvURy4VWkrLGNEiXPs.jpg",
+      "https://image.tmdb.org/t/p/w1280/ygOcyIOSeVjfoq3pYDTH61BYyj2.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Ranald MacDougall",
+        "job": "Director",
+        "profileUrl": null,
+        "tmdbId": 31843
+      },
+      {
+        "name": "Ranald MacDougall",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 31843
+      },
+      {
+        "name": "Charles Lang",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gSPlvM65CY8WITIugbO2PyKMDaU.jpg",
+        "tmdbId": 3148
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0048790": {
     "imdbID": "tt0048790",
     "title": "Violent Saturday",
