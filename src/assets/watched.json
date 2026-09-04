@@ -1,18 +1,6 @@
 {
   "Gabe": [
     {
-      "imdbID": "tt0037865",
-      "watchDate": "2026-09-03",
-      "score": null,
-      "scoreQualifier": null,
-      "blurb": null,
-      "image": null,
-      "posterImage": null,
-      "trailerKey": null,
-      "hideTrailer": false,
-      "updatedAt": "2026-09-04T03:32:07Z"
-    },
-    {
       "imdbID": "tt0049966",
       "watchDate": "2026-08-22",
       "score": 6.5,
@@ -107,6 +95,18 @@
       "trailerKey": null,
       "hideTrailer": false,
       "updatedAt": "2026-09-04T03:31:05Z"
+    },
+    {
+      "imdbID": "tt0037865",
+      "watchDate": "2026-07-04",
+      "score": 7,
+      "scoreQualifier": null,
+      "blurb": "You know, I was kind of with Ellen until the lake scene. Then relationships got a little out of hand.",
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-09-04T03:33:22Z"
     }
   ],
   "Jacob": [
