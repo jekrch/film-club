@@ -1,18 +1,6 @@
 {
   "Gabe": [
     {
-      "imdbID": "tt0048119",
-      "watchDate": "2026-09-03",
-      "score": null,
-      "scoreQualifier": null,
-      "blurb": null,
-      "image": null,
-      "posterImage": null,
-      "trailerKey": null,
-      "hideTrailer": false,
-      "updatedAt": "2026-09-04T03:29:49Z"
-    },
-    {
       "imdbID": "tt0049966",
       "watchDate": "2026-08-22",
       "score": 6.5,
@@ -95,6 +83,18 @@
       "trailerKey": null,
       "hideTrailer": false,
       "updatedAt": "2026-09-04T03:28:48Z"
+    },
+    {
+      "imdbID": "tt0048119",
+      "watchDate": "2026-07-10",
+      "score": 5.5,
+      "scoreQualifier": null,
+      "blurb": "Remake this but lean harder into the neurotic elements. Such a strange true story but this film is too demure.",
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-09-04T03:31:05Z"
     }
   ],
   "Jacob": [
