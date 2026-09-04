@@ -1115,6 +1115,120 @@
       }
     ]
   },
+  "tt32916440": {
+    "imdbID": "tt32916440",
+    "title": "Marty Supreme",
+    "year": "2025",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZTRhYjI1MTItMWYwMi00MjY5LWI1OTktMzQwNzA3MWJlN2QyXkEyXkFqcGc@._V1_QL75_UY562_CR35,0,380,562_.jpg",
+    "runtime": "149 min",
+    "genre": "Drama, Sport",
+    "director": "Josh Safdie",
+    "writer": "Ronald Bronstein, Josh Safdie",
+    "imdbRating": "7.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "89/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "s9gSuKaKcqM",
+    "tagline": "Dream big.",
+    "plot": "Marty Mauser, a young man with a dream no one respects, goes to hell and back in pursuit of greatness.",
+    "cast": [
+      {
+        "name": "Timothée Chalamet",
+        "character": "Marty Mauser",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dFxpwRpmzpVfP1zjluH68DeQhyj.jpg",
+        "tmdbId": 1190668
+      },
+      {
+        "name": "Gwyneth Paltrow",
+        "character": "Kay Stone",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r4wbWWEEjmtRFZ0GU10XbLTgp47.jpg",
+        "tmdbId": 12052
+      },
+      {
+        "name": "Odessa A'zion",
+        "character": "Rachel Mizler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5Q0Z5O3nkZH5JvueTyc2q0anw2B.jpg",
+        "tmdbId": 1972166
+      },
+      {
+        "name": "Kevin O'Leary",
+        "character": "Milton Rockwell",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eUDfTddvXHOAZR5Sh1hs3IVF5mb.jpg",
+        "tmdbId": 1240877
+      },
+      {
+        "name": "Tyler, The Creator",
+        "character": "Wally",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1jr8XMXd9C6yRk2VitXIum0FGSy.jpg",
+        "tmdbId": 1133834
+      },
+      {
+        "name": "Fran Drescher",
+        "character": "Rebecca Mauser",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6IQlygYDyxuIRD5j9lPluknYoJp.jpg",
+        "tmdbId": 53122
+      },
+      {
+        "name": "Abel Ferrara",
+        "character": "Ezra Mishkin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wdOxXWyxE3HjrtdeOJvc9xB5eUv.jpg",
+        "tmdbId": 39104
+      },
+      {
+        "name": "Emory Cohen",
+        "character": "Ira Mizler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mtummZcNxmcJQ1JIoQUcV3Fwb3.jpg",
+        "tmdbId": 1041440
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/6h7w8R4BA7vubEmEEW5vYEjuoz6.jpg",
+      "https://image.tmdb.org/t/p/w1280/qKWDHofjMHPSEOTLaixkC9ZmjTT.jpg",
+      "https://image.tmdb.org/t/p/w1280/bHtlDAORBQiYKCJMwDP9WBgcQHM.jpg",
+      "https://image.tmdb.org/t/p/w1280/3iMoYSbI72Nwsvi7uSpqReLJVa6.jpg",
+      "https://image.tmdb.org/t/p/w1280/jBOhqsbzEL7Ks3NWy98iI7YDzBh.jpg",
+      "https://image.tmdb.org/t/p/w1280/jT8P4cc3C4Tm1vDz9DfPkvPSajo.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Josh Safdie",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jrTdXoo1NWxG2t0iFwdP5LLbJNV.jpg",
+        "tmdbId": 129561
+      },
+      {
+        "name": "Ronald Bronstein",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bJMZgSCdMdjQ2cojJagewm963aT.jpg",
+        "tmdbId": 227565
+      },
+      {
+        "name": "Josh Safdie",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jrTdXoo1NWxG2t0iFwdP5LLbJNV.jpg",
+        "tmdbId": 129561
+      },
+      {
+        "name": "Darius Khondji",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4UEPDPLbcvpkY2xG6PZM9D149dA.jpg",
+        "tmdbId": 2240
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt35519455": {
     "imdbID": "tt35519455",
     "title": "It Ends",
