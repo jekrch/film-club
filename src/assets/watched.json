@@ -1,18 +1,6 @@
 {
   "Gabe": [
     {
-      "imdbID": "tt0048527",
-      "watchDate": "2026-09-03",
-      "score": null,
-      "scoreQualifier": null,
-      "blurb": null,
-      "image": null,
-      "posterImage": null,
-      "trailerKey": null,
-      "hideTrailer": false,
-      "updatedAt": "2026-09-04T03:27:44Z"
-    },
-    {
       "imdbID": "tt0049966",
       "watchDate": "2026-08-22",
       "score": 6.5,
@@ -83,6 +71,18 @@
       "trailerKey": null,
       "hideTrailer": false,
       "updatedAt": "2026-09-04T03:26:25Z"
+    },
+    {
+      "imdbID": "tt0048527",
+      "watchDate": "2026-07-19",
+      "score": 5,
+      "scoreQualifier": null,
+      "blurb": "Everyone shrinks away from Eva except for Jennifer. She wasn't so tough!",
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-09-04T03:28:48Z"
     }
   ],
   "Jacob": [
