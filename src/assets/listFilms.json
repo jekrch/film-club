@@ -119,6 +119,110 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0048790": {
+    "imdbID": "tt0048790",
+    "title": "Violent Saturday",
+    "year": "1955",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYjllM2QyZjctNDNkNi00NWExLWE3MjYtYmZmMDA1YmEyZTYxXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "90 min",
+    "genre": "Crime, Drama, Film-Noir",
+    "director": "Richard Fleischer",
+    "writer": "Sydney Boehm, William L. Heath",
+    "imdbRating": "6.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "80%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "4kwgN7IaSZg",
+    "tagline": "The day all Hell broke loose !",
+    "plot": "Three men case a small town very carefully, with plans to rob the bank on the upcoming Saturday, which turns violent and deadly.",
+    "cast": [
+      {
+        "name": "Victor Mature",
+        "character": "Shelley Martin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/trTvjfUNOFxYL0Se70ZJMYKUsqS.jpg",
+        "tmdbId": 30290
+      },
+      {
+        "name": "Richard Egan",
+        "character": "Boyd Fairchild",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bPbmahXgD1FWuvg9htLtKF9kdWd.jpg",
+        "tmdbId": 93105
+      },
+      {
+        "name": "Stephen McNally",
+        "character": "Harper (bank robber)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hh7uuME00QwzrPfj3OztsqWHGrN.jpg",
+        "tmdbId": 37448
+      },
+      {
+        "name": "Virginia Leith",
+        "character": "Linda Sherman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cMZ7Cqx6wohiKd2cR0VjwXLQIeZ.jpg",
+        "tmdbId": 110727
+      },
+      {
+        "name": "Tommy Noonan",
+        "character": "Harry Reeves, Bank Manager",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5UppgieZgwF2LimxjUM5ml0bTgB.jpg",
+        "tmdbId": 11170
+      },
+      {
+        "name": "Lee Marvin",
+        "character": "Dill, Bank Robber",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bXVCrjGbGhPg6mgDi9OIrp5jK9b.jpg",
+        "tmdbId": 18391
+      },
+      {
+        "name": "Margaret Hayes",
+        "character": "Mrs. Emily Fairchild",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2ti6Us5YV18EGL8TstIc5Mhl8Bb.jpg",
+        "tmdbId": 81283
+      },
+      {
+        "name": "J. Carrol Naish",
+        "character": "Chapman, Bank Robber",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eTQ39RkhwYnLDKQyqjXkliov537.jpg",
+        "tmdbId": 30686
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/tYt6qg8fShgf8Pa2f1ac8wfuypF.jpg",
+      "https://image.tmdb.org/t/p/w1280/oQOjdtRUeSDy137sQi58R7s5Gcp.jpg",
+      "https://image.tmdb.org/t/p/w1280/4VKgP4dyyjUeZdlMBv3mmnCF7o0.jpg",
+      "https://image.tmdb.org/t/p/w1280/9tRa8K8orCpv0PzIoLwCVJSmcm6.jpg",
+      "https://image.tmdb.org/t/p/w1280/dmcYRTTB6xFD6CK0LprC1EgYBiR.jpg",
+      "https://image.tmdb.org/t/p/w1280/bhq9MyZimP5rG26qxxhbSTZbPf2.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Richard Fleischer",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vAPv1aa28u12zcq8YMvuwZu1hhC.jpg",
+        "tmdbId": 2087
+      },
+      {
+        "name": "Sydney Boehm",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 82862
+      },
+      {
+        "name": "Charles G. Clarke",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/l9mRBLn3BOHA1oOBZz2krckad3C.jpg",
+        "tmdbId": 70821
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0049966": {
     "imdbID": "tt0049966",
     "title": "Written on the Wind",
