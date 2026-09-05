@@ -1307,6 +1307,126 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0084649": {
+    "imdbID": "tt0084649",
+    "title": "The Secret of NIMH",
+    "year": "1982",
+    "poster": "https://m.media-amazon.com/images/M/MV5BODAxNzMwYTktZjAyMi00NmNhLWJjMzAtMjkzZjRkYjY2Nzk2XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "82 min",
+    "genre": "Animation, Adventure, Drama",
+    "director": "Don Bluth",
+    "writer": "Robert C. O'Brien, Don Bluth, John Pomeroy",
+    "imdbRating": "7.5",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "93%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "76/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "q8skJYBxvNk",
+    "tagline": "Right before your eyes, and beyond your wildest dreams.",
+    "plot": "A widowed field mouse must move her family -- including an ailing son -- to escape a farmer's plow. Aided by a crow and a pack of superintelligent, escaped lab rats, the brave mother struggles to transplant her home to firmer ground.",
+    "cast": [
+      {
+        "name": "Elizabeth Hartman",
+        "character": "Mrs. Brisby (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gEgpys9T1L9hZg2CfFq9WnFNcgJ.jpg",
+        "tmdbId": 70286
+      },
+      {
+        "name": "Derek Jacobi",
+        "character": "Nicodemus (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yHENzHZSVpnNrqsoATuDSMiQflf.jpg",
+        "tmdbId": 937
+      },
+      {
+        "name": "Arthur Malet",
+        "character": "Mr. Ages (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AbmKxci3EZMG2rBmFLQiUdNsySL.jpg",
+        "tmdbId": 13392
+      },
+      {
+        "name": "Dom DeLuise",
+        "character": "Jeremy (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/f2GmgZBSZjGUPKFQx9U8AMge8vs.jpg",
+        "tmdbId": 6844
+      },
+      {
+        "name": "Hermione Baddeley",
+        "character": "Auntie Shrew (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6HMJoP13gHI4MdPcApyYirfUNDl.jpg",
+        "tmdbId": 5827
+      },
+      {
+        "name": "Shannen Doherty",
+        "character": "Teresa (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zE9scVmRezSWDrdBxnjjSeRK2LQ.jpg",
+        "tmdbId": 19144
+      },
+      {
+        "name": "Wil Wheaton",
+        "character": "Martin (voice)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3Jn3uSa79TwsK4D5fFyFzKag6ST.jpg",
+        "tmdbId": 3033
+      },
+      {
+        "name": "Jodi Hicks",
+        "character": "Cynthia (voice)",
+        "profileUrl": null,
+        "tmdbId": 1554694
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/zhw2gjDMedftoaoPeQYertgTAo2.jpg",
+      "https://image.tmdb.org/t/p/w1280/r7j6gtgCxDZMF0EzNKvIXJj1T0t.jpg",
+      "https://image.tmdb.org/t/p/w1280/lrvfGI5BGafptXPfYB3W26jiUfH.jpg",
+      "https://image.tmdb.org/t/p/w1280/UJEW79DvQ0W589dC24xpicQRuS.jpg",
+      "https://image.tmdb.org/t/p/w1280/hXJ5Ln4tv2wAKvvxEZi4qo6xOgw.jpg",
+      "https://image.tmdb.org/t/p/w1280/SFh1Ord2GDORIVAR6UWkF0bcH1.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Don Bluth",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vzeIEidWO7v2Dfw7iMv3Xjnmfwd.jpg",
+        "tmdbId": 40345
+      },
+      {
+        "name": "Gary Goldman",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5h4NQ8dj2zWvd3rYGUFCGsPaCJn.jpg",
+        "tmdbId": 12881
+      },
+      {
+        "name": "Don Bluth",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vzeIEidWO7v2Dfw7iMv3Xjnmfwd.jpg",
+        "tmdbId": 40345
+      },
+      {
+        "name": "Will Finn",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 70287
+      },
+      {
+        "name": "John Pomeroy",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8H34EIVxHsC5sgupLrEjWLLgCst.jpg",
+        "tmdbId": 39056
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0098354": {
     "imdbID": "tt0098354",
     "title": "Society",
