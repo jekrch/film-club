@@ -1,18 +1,6 @@
 {
   "Gabe": [
     {
-      "imdbID": "tt0038854",
-      "watchDate": "2026-09-06",
-      "score": null,
-      "scoreQualifier": null,
-      "blurb": null,
-      "image": null,
-      "posterImage": null,
-      "trailerKey": null,
-      "hideTrailer": false,
-      "updatedAt": "2026-09-06T11:37:48Z"
-    },
-    {
       "imdbID": "tt0090756",
       "watchDate": "2026-09-05",
       "score": 8,
@@ -155,6 +143,18 @@
       "trailerKey": null,
       "hideTrailer": false,
       "updatedAt": "2026-09-06T11:37:17Z"
+    },
+    {
+      "imdbID": "tt0038854",
+      "watchDate": "2026-06-20",
+      "score": 5,
+      "scoreQualifier": null,
+      "blurb": "These folks are on a wild path. Lots of better decisions could have been made.",
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-09-06T11:38:49Z"
     }
   ],
   "Jacob": [
