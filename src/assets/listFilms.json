@@ -559,6 +559,116 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0040155": {
+    "imdbID": "tt0040155",
+    "title": "Berlin Express",
+    "year": "1948",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNGY4NTlkMGItZWY3MS00YjM1LWE2ODMtZGI5ODI1YzcwNDQxXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "87 min",
+    "genre": "Crime, Drama, Film-Noir",
+    "director": "Jacques Tourneur",
+    "writer": "Harold Medford, Curt Siodmak",
+    "imdbRating": "6.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "80%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "RpD6VBtApD8",
+    "tagline": "Trapped on a Train of Terror!",
+    "plot": "In post-war Europe, a diverse group of passengers aboard a U.S. Army train to bombed-out Frankfurt becomes involved in a Nazi assassination plot.",
+    "cast": [
+      {
+        "name": "Merle Oberon",
+        "character": "Lucienne Mirbeau",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pWiwXgar9iApykebjYQDQzJYJV1.jpg",
+        "tmdbId": 30225
+      },
+      {
+        "name": "Robert Ryan",
+        "character": "Robert Lindley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hpWgaPTbBLGCdYXHcEVLIWaA3m0.jpg",
+        "tmdbId": 8253
+      },
+      {
+        "name": "Charles Korvin",
+        "character": "Henri Perrot",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4gFgLmYZLrQzka0LRUrTiKEJ3k1.jpg",
+        "tmdbId": 108991
+      },
+      {
+        "name": "Paul Lukas",
+        "character": "Dr. Heinrich Bernhardt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uPN8hpMtacoFylb0Ez9j800bilZ.jpg",
+        "tmdbId": 2092
+      },
+      {
+        "name": "Robert Coote",
+        "character": "James Sterling",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sBzxbysXMqlLr82n5rV61SAkett.jpg",
+        "tmdbId": 92908
+      },
+      {
+        "name": "Reinhold Schünzel",
+        "character": "Johann Walther",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wHBB5WVT3hCv8urHXQb49iIVRBL.jpg",
+        "tmdbId": 4344
+      },
+      {
+        "name": "Roman Toporow",
+        "character": "Lt. Maxim Kirachilov",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wnMlDj6iiZmk35kQy9Qag7iFdIt.jpg",
+        "tmdbId": 115851
+      },
+      {
+        "name": "Peter von Zerneck",
+        "character": "Hans Schmidt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xTzICR13jPJ977LUlgkk7f2sSLQ.jpg",
+        "tmdbId": 127628
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/dbZWe2V6wtdVUn2SHKWmb5AD5oC.jpg",
+      "https://image.tmdb.org/t/p/w1280/xsdvnXGL2f4treNC6kFhFE5M2dG.jpg",
+      "https://image.tmdb.org/t/p/w1280/oQmntNTEscS6Q5U5uLRDqeZd2wl.jpg",
+      "https://image.tmdb.org/t/p/w1280/aOUPZhljpPI1VEtBB7xHxmfv4sS.jpg",
+      "https://image.tmdb.org/t/p/w1280/rFh4at9345KJPuTVZ685acPiGHC.jpg",
+      "https://image.tmdb.org/t/p/w1280/do0Ju6cfRvDYn0h3VjJIDzdQMrt.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Jacques Tourneur",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/o3Du8pFBlQ22JXGTVw9IB9yKVuC.jpg",
+        "tmdbId": 10146
+      },
+      {
+        "name": "Harold Medford",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 115845
+      },
+      {
+        "name": "Curt Siodmak",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1g2v8J8vJKziUnmee4JVoBAeRsW.jpg",
+        "tmdbId": 5028
+      },
+      {
+        "name": "Lucien Ballard",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iZonD2w5n4DVDzpWH5AzfKgHOb2.jpg",
+        "tmdbId": 3351
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0041509": {
     "imdbID": "tt0041509",
     "title": "The Inspector General",
