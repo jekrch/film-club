@@ -1,18 +1,6 @@
 {
   "Gabe": [
     {
-      "imdbID": "tt0373450",
-      "watchDate": "2026-09-06",
-      "score": null,
-      "scoreQualifier": null,
-      "blurb": null,
-      "image": null,
-      "posterImage": null,
-      "trailerKey": null,
-      "hideTrailer": false,
-      "updatedAt": "2026-09-06T11:32:42Z"
-    },
-    {
       "imdbID": "tt0090756",
       "watchDate": "2026-09-05",
       "score": 8,
@@ -131,6 +119,18 @@
       "trailerKey": null,
       "hideTrailer": false,
       "updatedAt": "2026-09-04T03:33:22Z"
+    },
+    {
+      "imdbID": "tt0373450",
+      "watchDate": "2026-06-26",
+      "score": 4,
+      "scoreQualifier": null,
+      "blurb": "Lots of promise with very little payoff. Noir didn't really take flight in the mid-2000s.",
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-09-06T11:34:00Z"
     }
   ],
   "Jacob": [
