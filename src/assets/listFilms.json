@@ -113,6 +113,120 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0032599": {
+    "imdbID": "tt0032599",
+    "title": "His Girl Friday",
+    "year": "1940",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMzRhMTQ1ZjEtYzM2MC00OThiLTk3NTEtNGRhNzcwNGM2YWQ4XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "92 min",
+    "genre": "Comedy, Drama, Romance",
+    "director": "Howard Hawks",
+    "writer": "Charles Lederer, Ben Hecht, Charles MacArthur",
+    "imdbRating": "7.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "99%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "94/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "FKghQCbQOwY",
+    "tagline": "They're at each other's throats when they're not in each other's arms!",
+    "plot": "Walter Burns is an irresistibly conniving newspaper publisher desperate to woo back his paper’s star reporter, who also happens to be his estranged wife. She’s threatening to quit and settle down with a new beau, but, as Walter knows, she has a weakness: she can’t resist a juicy scoop.",
+    "cast": [
+      {
+        "name": "Cary Grant",
+        "character": "Walter Burns",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lcNAirMFcyM7WIiCmaabjbNZVOJ.jpg",
+        "tmdbId": 2638
+      },
+      {
+        "name": "Rosalind Russell",
+        "character": "Hildy Johnson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rM7cjXZv9ikJ3QOOqK2muzMhHsE.jpg",
+        "tmdbId": 30233
+      },
+      {
+        "name": "Ralph Bellamy",
+        "character": "Bruce Baldwin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vC6cdrUUewgurTlVXt36eRAtQKb.jpg",
+        "tmdbId": 1208
+      },
+      {
+        "name": "Gene Lockhart",
+        "character": "Sheriff Hartwell",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8lSQRefIA5kNylZOF7anexkDxqQ.jpg",
+        "tmdbId": 30234
+      },
+      {
+        "name": "Porter Hall",
+        "character": "Murphy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/249Hlfx23i69MsA3rLnC185kbwT.jpg",
+        "tmdbId": 14975
+      },
+      {
+        "name": "Ernest Truex",
+        "character": "Bensinger",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zR2nCojIK4WzCHFEaX1P3X4K6fo.jpg",
+        "tmdbId": 34419
+      },
+      {
+        "name": "Cliff Edwards",
+        "character": "Endicott",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cplAl2NjSDuoHvSJ87kf8Yh2cdK.jpg",
+        "tmdbId": 30236
+      },
+      {
+        "name": "Clarence Kolb",
+        "character": "Mayor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yXKI1161lk7bi5OPma3MkJhSAm3.jpg",
+        "tmdbId": 30237
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/ihoQaiMFAz4YCTAaSIsQjRknsNH.jpg",
+      "https://image.tmdb.org/t/p/w1280/ybbLMVLp4hFzPpZIPtKp15pkTsB.jpg",
+      "https://image.tmdb.org/t/p/w1280/hWJ5tkNLRSqWeVzQ3tsGlNgonj8.jpg",
+      "https://image.tmdb.org/t/p/w1280/rtoov3RgTji1xtWh3rdwMr7jkq0.jpg",
+      "https://image.tmdb.org/t/p/w1280/s1NAj2MsgG1YK2x344O8g9eKkY4.jpg",
+      "https://image.tmdb.org/t/p/w1280/4s4TigvzN3WGqsDJAiiKVMu5Uux.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Howard Hawks",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hG2oF9wZlqwGqP6EhG0qaN9Afg7.jpg",
+        "tmdbId": 11435
+      },
+      {
+        "name": "Charles Lederer",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/h8OpLegI7NkkfpbF7WFsQ3uYaW3.jpg",
+        "tmdbId": 4358
+      },
+      {
+        "name": "Ben Hecht",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uYYvAfPiSx5BoWA0CrUS32p3qI5.jpg",
+        "tmdbId": 4341
+      },
+      {
+        "name": "Joseph Walker",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 17761
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0035567": {
     "imdbID": "tt0035567",
     "title": "Woman of the Year",
