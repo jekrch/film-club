@@ -1427,6 +1427,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0090756": {
+    "imdbID": "tt0090756",
+    "title": "Blue Velvet",
+    "year": "1986",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzkwZGUyYjQtM2QyOC00MTBjLWE0NGYtMTZmOGM5MjI0Mzg0XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "120 min",
+    "genre": "Crime, Drama, Mystery",
+    "director": "David Lynch",
+    "writer": "David Lynch",
+    "imdbRating": "7.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "91%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "75/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "rAA6imfqMYQ",
+    "tagline": "It's a strange world, isn't it?",
+    "plot": "The discovery of a severed human ear found in a field leads a young man on an investigation related to a beautiful, mysterious nightclub singer and a group of psychopathic criminals who have kidnapped her child.",
+    "cast": [
+      {
+        "name": "Isabella Rossellini",
+        "character": "Dorothy Vallens",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/z0zojT6nwDxi35HMcXlVpBfuBAU.jpg",
+        "tmdbId": 6588
+      },
+      {
+        "name": "Kyle MacLachlan",
+        "character": "Jeffrey Beaumont",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7gNyx8fYAUdOp2jpCEH3dyFbeV.jpg",
+        "tmdbId": 6677
+      },
+      {
+        "name": "Dennis Hopper",
+        "character": "Frank Booth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kqyNvLHi5RZGZcZMxl7e6XvoB5U.jpg",
+        "tmdbId": 2778
+      },
+      {
+        "name": "Laura Dern",
+        "character": "Sandy Williams",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gB9PnGEvxKg33OSlcqptQwTBwPE.jpg",
+        "tmdbId": 4784
+      },
+      {
+        "name": "Hope Lange",
+        "character": "Mrs. Williams",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tSI2AeouDffP0V3Qb5nd1cmN83X.jpg",
+        "tmdbId": 3382
+      },
+      {
+        "name": "Dean Stockwell",
+        "character": "Ben",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gdHo8LNElMf1XxoRYgi0UUzbJuB.jpg",
+        "tmdbId": 923
+      },
+      {
+        "name": "George Dickerson",
+        "character": "Detective Williams",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xw2ZqkQkd7p30yXro7UNCyRSv.jpg",
+        "tmdbId": 11792
+      },
+      {
+        "name": "Priscilla Pointer",
+        "character": "Mrs. Beaumont",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sLuwocnvy9QmJ9AOG7QKbi0PN0N.jpg",
+        "tmdbId": 11793
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/s1CBwblInR0ZBIv59CSko2QdLD3.jpg",
+      "https://image.tmdb.org/t/p/w1280/12UiL2rS5M80AhS9uiZ633iy4pB.jpg",
+      "https://image.tmdb.org/t/p/w1280/cr4aTk3q3nHmEs2ssvfFunkI9UC.jpg",
+      "https://image.tmdb.org/t/p/w1280/f8b4SeTcMhWtNwMiOwWELSlG00P.jpg",
+      "https://image.tmdb.org/t/p/w1280/2nlNhsOpOf3n4RWVkdlF9xqeCjQ.jpg",
+      "https://image.tmdb.org/t/p/w1280/d8QL8AHU5lIV99XuuH4v1F9Aoqr.jpg"
+    ],
+    "crew": [
+      {
+        "name": "David Lynch",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wwBzRDoIW6Ld64h6OkQ6ImCZKsR.jpg",
+        "tmdbId": 5602
+      },
+      {
+        "name": "David Lynch",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wwBzRDoIW6Ld64h6OkQ6ImCZKsR.jpg",
+        "tmdbId": 5602
+      },
+      {
+        "name": "Frederick Elmes",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/v2T7YtZwzYSJvgMCuzVPmZOWjMT.jpg",
+        "tmdbId": 4434
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0098354": {
     "imdbID": "tt0098354",
     "title": "Society",
