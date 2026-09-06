@@ -1,18 +1,6 @@
 {
   "Gabe": [
     {
-      "imdbID": "tt0041509",
-      "watchDate": "2026-09-06",
-      "score": null,
-      "scoreQualifier": null,
-      "blurb": null,
-      "image": null,
-      "posterImage": null,
-      "trailerKey": null,
-      "hideTrailer": false,
-      "updatedAt": "2026-09-06T18:23:36Z"
-    },
-    {
       "imdbID": "tt0090756",
       "watchDate": "2026-09-05",
       "score": 8,
@@ -191,6 +179,18 @@
       "trailerKey": null,
       "hideTrailer": false,
       "updatedAt": "2026-09-06T18:23:19Z"
+    },
+    {
+      "imdbID": "tt0041509",
+      "watchDate": "2026-05-09",
+      "score": 8.5,
+      "scoreQualifier": null,
+      "blurb": "Deserves to be cleaned up and restored! Classic Kaye performance - singing, dancing, and laughing.",
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-09-06T18:24:38Z"
     }
   ],
   "Jacob": [
