@@ -445,6 +445,113 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0041509": {
+    "imdbID": "tt0041509",
+    "title": "The Inspector General",
+    "year": "1949",
+    "poster": "https://m.media-amazon.com/images/M/MV5BODI5MTVkOWEtYzcwOC00ZjVjLWIxYmQtOGFlZGU1MGU5MTUzXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "102 min",
+    "genre": "Comedy, Musical, Romance",
+    "director": "Henry Koster",
+    "writer": "Philip Rapp, Harry Kurnitz, Nikolay Gogol",
+    "imdbRating": "6.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "91%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "t3ehZvLL2UE",
+    "tagline": "The Kaye way to chaos and corruption.",
+    "plot": "An illiterate stooge in a traveling medicine show wanders into a strange town and is picked up on a vagrancy charge. The town's corrupt officials mistake him for the inspector general whom they think is traveling in disguise. Fearing he will discover they've been pocketing tax money, they make several bungled attempts to kill him.",
+    "cast": [
+      {
+        "name": "Danny Kaye",
+        "character": "Georgi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/a4ciX3nsLZWCNj8BAKsW3hkC6cr.jpg",
+        "tmdbId": 70668
+      },
+      {
+        "name": "Walter Slezak",
+        "character": "Yakov",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ilVLhrlP21zvzfQ02vc5Lnj1O64.jpg",
+        "tmdbId": 37884
+      },
+      {
+        "name": "Barbara Bates",
+        "character": "Leza",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tKHAPTZYYshqKMlQiETPkGX2vuL.jpg",
+        "tmdbId": 10611
+      },
+      {
+        "name": "Elsa Lanchester",
+        "character": "Maria",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jek9jcqODZGWnmcMm7ynkSaLSWb.jpg",
+        "tmdbId": 2926
+      },
+      {
+        "name": "Gene Lockhart",
+        "character": "The Mayor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8lSQRefIA5kNylZOF7anexkDxqQ.jpg",
+        "tmdbId": 30234
+      },
+      {
+        "name": "Alan Hale",
+        "character": "Kovatch",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/e90MwAMkxjDqr3wOnOhDAjvylW5.jpg",
+        "tmdbId": 8729
+      },
+      {
+        "name": "Walter Catlett",
+        "character": "Colonel Castine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/c5ldUlcqrUuxpQE9iXqj9GlRZwt.jpg",
+        "tmdbId": 13819
+      },
+      {
+        "name": "Rhys Williams",
+        "character": "Inspector General",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5n6ufKbjGLZN64tUgKErOdGONCU.jpg",
+        "tmdbId": 82835
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/m8hzP0azCnfEjapY9UMfnIWiG7x.jpg",
+      "https://image.tmdb.org/t/p/w1280/2psWM2DE67ooR8eGKmJDqZCeRD6.jpg",
+      "https://image.tmdb.org/t/p/w1280/1OHo2l9zaAWxe3bXnTcoCorDSZT.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Henry Koster",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vmIiFgDzZUAiZQIKpEF5QMimlRj.jpg",
+        "tmdbId": 33064
+      },
+      {
+        "name": "Philip Rapp",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 195975
+      },
+      {
+        "name": "Harry Kurnitz",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/w6jvOx4na1XWhLVUHxHjAUPokHH.jpg",
+        "tmdbId": 17843
+      },
+      {
+        "name": "Elwood Bredell",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 103050
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0046126": {
     "imdbID": "tt0046126",
     "title": "Niagara",
