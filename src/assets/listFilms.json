@@ -1307,6 +1307,126 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0082971": {
+    "imdbID": "tt0082971",
+    "title": "Raiders of the Lost Ark",
+    "year": "1981",
+    "poster": "https://m.media-amazon.com/images/M/MV5BOGNhMjg2ZjgtYzk4Ni00MTViLTg1MmUtYzM2MDZiYjZlMmU3XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "115 min",
+    "genre": "Action, Adventure",
+    "director": "Steven Spielberg",
+    "writer": "Lawrence Kasdan, George Lucas, Philip Kaufman",
+    "imdbRating": "8.4",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "86/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "0xQSIdSRlAk",
+    "tagline": "The return of the great adventure.",
+    "plot": "When Dr. Indiana Jones – the tweed-suited professor who just happens to be a celebrated archaeologist – is hired by the government to locate the legendary Ark of the Covenant, he finds himself up against the entire Nazi regime.",
+    "cast": [
+      {
+        "name": "Harrison Ford",
+        "character": "Indiana Jones",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pjBMJVPpcZK23Vt1nzr1zEBTWrP.jpg",
+        "tmdbId": 3
+      },
+      {
+        "name": "Karen Allen",
+        "character": "Marion Ravenwood",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eJszpndpRzrXbSlz7RUlApoTykn.jpg",
+        "tmdbId": 650
+      },
+      {
+        "name": "Paul Freeman",
+        "character": "Dr. René Belloq",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qrjgLfuNdXektuBwNL6onZBkbHw.jpg",
+        "tmdbId": 652
+      },
+      {
+        "name": "John Rhys-Davies",
+        "character": "Sallah",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qpXl1YnqQsUKYEDm3BB2zK5wbhe.jpg",
+        "tmdbId": 655
+      },
+      {
+        "name": "Ronald Lacey",
+        "character": "Major Arnold Toht",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wrFU5EkxKIq0TpEBuKXzcRAld73.jpg",
+        "tmdbId": 653
+      },
+      {
+        "name": "Wolf Kahler",
+        "character": "Colonel Dietrich",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/znWaz8pJjV6iIPj4SuWNPt0PVn1.jpg",
+        "tmdbId": 659
+      },
+      {
+        "name": "Anthony Higgins",
+        "character": "Gobler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/97ldqHkMzAyGCZZGozJA7RGMpDN.jpg",
+        "tmdbId": 660
+      },
+      {
+        "name": "Denholm Elliott",
+        "character": "Dr. Marcus Brody",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qqgkT4QMMUbiFztfcUVLPYRXAxD.jpg",
+        "tmdbId": 656
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/zPACwR32amTNvzId9qyapCWXYDJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/oxK0OlJ5brTZMLQu5AD1oLDgwt3.jpg",
+      "https://image.tmdb.org/t/p/w1280/c7Mjuip0jfHLY7x8ZSEriRj45cu.jpg",
+      "https://image.tmdb.org/t/p/w1280/odblUdMERDmhQ4ei9Ja8tRZ4br6.jpg",
+      "https://image.tmdb.org/t/p/w1280/ueDw7djPgKPZfph0vC43aD2EMyF.jpg",
+      "https://image.tmdb.org/t/p/w1280/f3XrGXd34Ru7o39LUwWvk5igEV7.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Steven Spielberg",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg",
+        "tmdbId": 488
+      },
+      {
+        "name": "Lawrence Kasdan",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1c57YAUDEsyI6jwc3buKISgh2pf.jpg",
+        "tmdbId": 8844
+      },
+      {
+        "name": "Philip Kaufman",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dv62g0D5lkNAS0Db1jJ2Z81Aubz.jpg",
+        "tmdbId": 648
+      },
+      {
+        "name": "George Lucas",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mDLDvsx8PaZoEThkBdyaG1JxPdf.jpg",
+        "tmdbId": 1
+      },
+      {
+        "name": "Douglas Slocombe",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3MLaxck3irbvVyNBJXAAASoU1C6.jpg",
+        "tmdbId": 666
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0084649": {
     "imdbID": "tt0084649",
     "title": "The Secret of NIMH",
