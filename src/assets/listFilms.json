@@ -666,6 +666,116 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0045564": {
+    "imdbID": "tt0045564",
+    "title": "The Blue Gardenia",
+    "year": "1953",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYWM3NDk3NTMtMjI2Zi00ZjE0LWFhMTEtNzFlMjY4ODQ4NjQ4XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "90 min",
+    "genre": "Crime, Drama, Film-Noir",
+    "director": "Fritz Lang",
+    "writer": "Charles Hoffman, Vera Caspary",
+    "imdbRating": "6.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "85%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": null,
+    "tagline": "There was nothing lily-white about her -- the clinch-and-kill girl they called: The Blue Gardenia",
+    "plot": "Upon waking up to the news that the man she’d gone on a date with the previous night has been murdered, a young woman with only a faint memory of the night’s events begins to suspect that she murdered him while attempting to resist his advances.",
+    "cast": [
+      {
+        "name": "Anne Baxter",
+        "character": "Norah Larkin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mUMKB7ZGzHJ38LpDWnA4VheIGBB.jpg",
+        "tmdbId": 10606
+      },
+      {
+        "name": "Richard Conte",
+        "character": "Casey Mayo",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bDegodf4dYGXMejdm4T6XgOJwlr.jpg",
+        "tmdbId": 3090
+      },
+      {
+        "name": "Ann Sothern",
+        "character": "Crystal Carpenter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oWjtae0NMfkrhuu0TuJCRvLcbre.jpg",
+        "tmdbId": 87685
+      },
+      {
+        "name": "Raymond Burr",
+        "character": "Harry Prebble",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gsmckogOXPIk6lce2qnNMAFF901.jpg",
+        "tmdbId": 7685
+      },
+      {
+        "name": "Jeff Donnell",
+        "character": "Sally Ellis",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/x7qNasj4LB4h6RCknz0PiTBZI9r.jpg",
+        "tmdbId": 14576
+      },
+      {
+        "name": "Richard Erdman",
+        "character": "Al",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xcG7hxTE6LEWD12f5axrqjIOCxd.jpg",
+        "tmdbId": 9110
+      },
+      {
+        "name": "George Reeves",
+        "character": "Sam Haynes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lMAisWTTWOGIArARAbvSBectUmx.jpg",
+        "tmdbId": 11496
+      },
+      {
+        "name": "Ruth Storey",
+        "character": "Rose Miller",
+        "profileUrl": null,
+        "tmdbId": 87687
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/rsvJrcEn0DHKLLb37eKPVF0394Z.jpg",
+      "https://image.tmdb.org/t/p/w1280/3VEkPssdOJRe2BVhpzO9mgsHpxZ.jpg",
+      "https://image.tmdb.org/t/p/w1280/yMDfOFyCtETrNWZlIjLRcB4mglD.jpg",
+      "https://image.tmdb.org/t/p/w1280/uuziqdhRW3PJzAGnTS2NVGT2w8i.jpg",
+      "https://image.tmdb.org/t/p/w1280/9BrDRYLuXAiJzB3HGLsYLDKWp2s.jpg",
+      "https://image.tmdb.org/t/p/w1280/543qreV9t948IvKO7eq488tqbb0.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Fritz Lang",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9dz4PmFzlSyexldWrOXBLLpkBqB.jpg",
+        "tmdbId": 68
+      },
+      {
+        "name": "Charles Hoffman",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 87688
+      },
+      {
+        "name": "Vera Caspary",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 20122
+      },
+      {
+        "name": "Nicholas Musuraca",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vX9r3YEkQYCNDz189PFGMbRQgkz.jpg",
+        "tmdbId": 10150
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0046126": {
     "imdbID": "tt0046126",
     "title": "Niagara",
