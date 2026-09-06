@@ -1,4 +1,118 @@
 {
+  "tt0025878": {
+    "imdbID": "tt0025878",
+    "title": "The Thin Man",
+    "year": "1934",
+    "poster": "https://m.media-amazon.com/images/M/MV5BOWNhZmQxMzUtZDMxYS00OWFhLWI1MjgtOTYxNmM0NWQ3M2FhXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "91 min",
+    "genre": "Comedy, Crime, Mystery",
+    "director": "W.S. Van Dyke",
+    "writer": "Albert Hackett, Frances Goodrich, Dashiell Hammett",
+    "imdbRating": "7.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "98%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "86/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "F2vlPkv0tQU",
+    "tagline": "A laugh tops every thrilling moment!",
+    "plot": "Former detective Nick Charles has retired from police work, preferring a life of cocktails, parties, and relaxation with his wealthy wife, Nora. Their holiday is interrupted when the daughter of Nick’s former client asks for help finding her missing father, eccentric inventor Clyde Wynant. When Wynant’s body is discovered, Nick is drawn back into the investigation, with Nora eagerly joining him. As the couple questions Wynant’s family, friends, and business associates, a tangled web of greed, deception, and murder begins to unravel. Directed by W. S. Van Dyke and adapted from Dashiell Hammett’s novel, The Thin Man combines witty dialogue, sophisticated comedy, romance, and classic mystery. William Powell and Myrna Loy are perfectly matched as Nick and Nora Charles, whose playful banter and effortless chemistry made them one of Hollywood’s most beloved screen couples. This stylish 1934 mystery remains a landmark of classic American cinema.",
+    "cast": [
+      {
+        "name": "William Powell",
+        "character": "Nick Charles",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8DTWs389THkVCTiDFu0x8ekNmUC.jpg",
+        "tmdbId": 32428
+      },
+      {
+        "name": "Myrna Loy",
+        "character": "Nora Charles",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rNzjcOeTmJkyE8LMHdF3iYUCkPz.jpg",
+        "tmdbId": 13577
+      },
+      {
+        "name": "Maureen O'Sullivan",
+        "character": "Dorothy Wynant",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zWovLel1yHMSpWpoAUbfhs7uw9j.jpg",
+        "tmdbId": 41516
+      },
+      {
+        "name": "Nat Pendleton",
+        "character": "Inspector Guild",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9rZC8qMgJTJ7QYgg6ckXIv8uYRd.jpg",
+        "tmdbId": 32430
+      },
+      {
+        "name": "Minna Gombell",
+        "character": "Mimi Wynant",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oQgkBdgs36EPtRBm2vjge3MmZT3.jpg",
+        "tmdbId": 32431
+      },
+      {
+        "name": "Porter Hall",
+        "character": "Herbert MacCaulay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/249Hlfx23i69MsA3rLnC185kbwT.jpg",
+        "tmdbId": 14975
+      },
+      {
+        "name": "Henry Wadsworth",
+        "character": "Tommy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nAleY1hlFTVmnYVAWt7291Zgzki.jpg",
+        "tmdbId": 32433
+      },
+      {
+        "name": "William Henry",
+        "character": "Gilbert Wynant",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xus92cAGkL1QP5rtscEsF6htU61.jpg",
+        "tmdbId": 32434
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/b1bMEMtuiHBX23tfQU5ybNpakVf.jpg",
+      "https://image.tmdb.org/t/p/w1280/dSXAPWQiGRR7L6utshQIff9niUQ.jpg",
+      "https://image.tmdb.org/t/p/w1280/1vvRBicljQE5KOfPpY379KyFIdX.jpg",
+      "https://image.tmdb.org/t/p/w1280/dK3hEVgO2k3E8qPwqAzp2nWPeZ6.jpg",
+      "https://image.tmdb.org/t/p/w1280/amIl0MsLT0GP5ERwbodOPswYabr.jpg",
+      "https://image.tmdb.org/t/p/w1280/nlmkbn2bkCmJ03V7P5H86LpfWZN.jpg"
+    ],
+    "crew": [
+      {
+        "name": "W.S. Van Dyke",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/82hTZOdmnF9lFUY7XVeCbGGuqvN.jpg",
+        "tmdbId": 32427
+      },
+      {
+        "name": "Albert Hackett",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1W4D2IfDxZuvqL11BuMujBAn73v.jpg",
+        "tmdbId": 26160
+      },
+      {
+        "name": "Frances Goodrich",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4PPMyzYew3IEx7EERbOIKSobeFw.jpg",
+        "tmdbId": 26159
+      },
+      {
+        "name": "James Wong Howe",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7i7dsr3DjFuUXWjDG0Kp467Sovo.jpg",
+        "tmdbId": 14569
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0035567": {
     "imdbID": "tt0035567",
     "title": "Woman of the Year",
