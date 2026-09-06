@@ -786,6 +786,122 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0047811": {
+    "imdbID": "tt0047811",
+    "title": "All That Heaven Allows",
+    "year": "1955",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMzVjMWE5OTQtZDk5ZC00MTQ5LWJmMzAtY2UxYjE1MjE2ZjM3XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "89 min",
+    "genre": "Drama, Romance",
+    "director": "Douglas Sirk",
+    "writer": "Peggy Thompson, Edna L. Lee, Harry Lee",
+    "imdbRating": "7.6",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "91%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "3H8yXanHW1I",
+    "tagline": "How much does Heaven Allow a Woman in Love?",
+    "plot": "Two different social classes collide when Cary Scott, a wealthy upper-class widow, falls in love with her much younger and down-to-earth gardener, prompting disapproval and criticism from her children and country club friends.",
+    "cast": [
+      {
+        "name": "Jane Wyman",
+        "character": "Cary Scott",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/A5aHswRznZbCzbU4aD4lJ1r1J62.jpg",
+        "tmdbId": 20391
+      },
+      {
+        "name": "Rock Hudson",
+        "character": "Ron Kirby",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6DQsctwdw7vC3asZMTCpH88OE1S.jpg",
+        "tmdbId": 18735
+      },
+      {
+        "name": "Agnes Moorehead",
+        "character": "Sara Warren",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7o36YiQhngUEZ6eZUNQwFh8cbV7.jpg",
+        "tmdbId": 11025
+      },
+      {
+        "name": "Conrad Nagel",
+        "character": "Harvey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eq8mN5jfRlkKhU0AlOtbSTtZdeS.jpg",
+        "tmdbId": 141600
+      },
+      {
+        "name": "Virginia Grey",
+        "character": "Alida Anderson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ftyCI3XPJoGS75m3DFXOgOpw58z.jpg",
+        "tmdbId": 19967
+      },
+      {
+        "name": "Gloria Talbott",
+        "character": "Kay Scott",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dMx3GnOpQirJS33zx7fs6aUXi7t.jpg",
+        "tmdbId": 47080
+      },
+      {
+        "name": "William Reynolds",
+        "character": "Ned Scott",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5dSyTuJ9L3z5Xk2HX7TtJBprGJB.jpg",
+        "tmdbId": 114957
+      },
+      {
+        "name": "Charles Drake",
+        "character": "Mick Anderson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8MbNiIMYrJ7UgKseAmBbw2sXH1M.jpg",
+        "tmdbId": 15978
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/iQQ4jjYV8fgdEHDgkgSrc4mWgUx.jpg",
+      "https://image.tmdb.org/t/p/w1280/dLbFxnsmMbdiUdDFdXLpwcAiMjJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/nJAdgBJDLqyLuADdBWQ5qCjPOTu.jpg",
+      "https://image.tmdb.org/t/p/w1280/zi7AjheNhXdlmORg3kqrFXYrBuA.jpg",
+      "https://image.tmdb.org/t/p/w1280/kCyJHIgxv5xkZeTqwN2CIw7nVkF.jpg",
+      "https://image.tmdb.org/t/p/w1280/4FHZXfwfRnIXgYT5lv69jP9fvL4.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Douglas Sirk",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gjmc7rnV7LZjw1aM5OfjHxOeil0.jpg",
+        "tmdbId": 46712
+      },
+      {
+        "name": "Peggy Thompson",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 988922
+      },
+      {
+        "name": "Edna L. Lee",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 129997
+      },
+      {
+        "name": "Harry Lee",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 1154120
+      },
+      {
+        "name": "Russell Metty",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 13809
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0048119": {
     "imdbID": "tt0048119",
     "title": "The Girl in the Red Velvet Swing",
