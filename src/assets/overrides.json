@@ -46,6 +46,21 @@
           "updatedAt": "2026-09-06T18:27:05Z"
         }
       }
+    },
+    "tt0110620": {
+      "ratings": {},
+      "film": {
+        "selector": "Jacob",
+        "poster": "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/344/2026/01/23184828/NADJA-Poster.jpeg",
+        "updatedBy": "Jacob",
+        "updatedAt": "2026-09-07T18:30:57Z"
+      },
+      "added": {
+        "addedBy": "Jacob",
+        "addedAt": "2026-09-07T18:30:57Z",
+        "title": "Nadja",
+        "year": "1994"
+      }
     }
   }
 }
