@@ -102,8 +102,8 @@ const stubOverflow = () => {
 };
 
 afterEach(() => {
-    delete (HTMLElement.prototype as Partial<HTMLElement>).scrollHeight;
-    delete (HTMLElement.prototype as Partial<HTMLElement>).clientHeight;
+    Reflect.deleteProperty(HTMLElement.prototype, 'scrollHeight');
+    Reflect.deleteProperty(HTMLElement.prototype, 'clientHeight');
 });
 
 describe('WallPage', () => {
@@ -133,7 +133,7 @@ describe('WallPage', () => {
         expect(screen.getByRole('heading', { name: '4 Events' })).toBeInTheDocument();
     });
 
-    it("draws one poster for a screening and the trophies handed out at it", () => {
+    it('draws one poster for a screening and the trophies handed out at it', () => {
         renderWall();
 
         // The screening's box holds the award, and the film's poster appears in
@@ -179,13 +179,15 @@ describe('WallPage', () => {
     it('links each headline back to where its record lives', () => {
         renderWall();
 
-        expect(
-            within(rows()[1]).getByRole('link', { name: 'The Screening 1999' })
-        ).toHaveAttribute('href', '/films/tt1000001');
+        expect(within(rows()[1]).getByRole('link', { name: 'The Screening 1999' })).toHaveAttribute(
+            'href',
+            '/films/tt1000001'
+        );
         // A film the club never watched has no page here, so it leaves the site.
-        expect(
-            within(rows()[0]).getByRole('link', { name: 'A Cached Film 1985' })
-        ).toHaveAttribute('href', 'https://www.imdb.com/title/tt1000009/');
+        expect(within(rows()[0]).getByRole('link', { name: 'A Cached Film 1985' })).toHaveAttribute(
+            'href',
+            'https://www.imdb.com/title/tt1000009/'
+        );
         expect(
             within(rows()[2]).getByRole('link', { name: 'Even Your Therapist' })
         ).toHaveAttribute('href', '/lists/jacob-therapists');

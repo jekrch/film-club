@@ -24,7 +24,10 @@ const clubFilm = makeFilm({
     movieClubInfo: makeClubInfo({
         selector: 'Mark',
         watchDate: '08/12/2020',
-        clubRatings: [makeRating({ user: 'andy', score: 8 }), makeRating({ user: 'gabe', score: 5 })],
+        clubRatings: [
+            makeRating({ user: 'andy', score: 8 }),
+            makeRating({ user: 'gabe', score: 5 }),
+        ],
     }),
 });
 
@@ -348,7 +351,9 @@ describe('mergeTrophyRows', () => {
             // Entered in 2026 for a film the club watched in 2020. Nothing
             // separates the two on this wall, but six years do: folding them
             // would file the award under a day it was not given on.
-            trophies: { tt0000001: [makeTrophy({ recipient: 'Joey', awardedAt: '2026-09-03T15:00:00Z' })] },
+            trophies: {
+                tt0000001: [makeTrophy({ recipient: 'Joey', awardedAt: '2026-09-03T15:00:00Z' })],
+            },
         });
 
         const rows = mergeTrophyRows(events);

@@ -324,7 +324,7 @@ const findAwardedAt = (
     trophy: ResolvedTrophy,
     stored: Trophy[] | undefined
 ): string | null => {
-    const rows = stored ?? (trophyIndex.films[film.imdbID] ?? []);
+    const rows = stored ?? trophyIndex.films[film.imdbID] ?? [];
     return rows.find((row) => row.id === trophy.id)?.awardedAt ?? null;
 };
 
@@ -477,7 +477,9 @@ export const mergeTrophyRows = (events: WallEvent[]): WallRow[] => {
         }
 
         const run = events.slice(index, end);
-        const screening = run.find((member): member is ClubWatchEvent => member.kind === 'club-watch');
+        const screening = run.find(
+            (member): member is ClubWatchEvent => member.kind === 'club-watch'
+        );
         const lead = screening ?? run[0];
         rows.push({
             id: lead.id,
