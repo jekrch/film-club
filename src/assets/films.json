@@ -16862,5 +16862,205 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "Nadja",
+    "year": "1994",
+    "rated": "R",
+    "released": "01 Sep 1995",
+    "runtime": "93 min",
+    "genre": "Drama, Horror",
+    "director": "Michael Almereyda",
+    "writer": "Michael Almereyda, Bram Stoker",
+    "actors": "Elina Löwensohn, Peter Fonda, Nic Ratner",
+    "plot": "This ultra-hip, post-modern vampire tale is set in contemporary New York City. Members of a dysfunctional family of vampires are trying to come to terms with each other, in the wake of their father's death. Meanwhile, they are being hunted by Dr. Van Helsing and his hapless nephew. As in all good vampire movies, forces of love are pitted against forces of destruction.",
+    "language": "English",
+    "country": "United States",
+    "awards": "2 wins & 5 nominations",
+    "poster": "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/344/2026/01/23184828/NADJA-Poster.jpeg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.0/10"
+      },
+      {
+        "source": "Metacritic",
+        "value": "64/100"
+      }
+    ],
+    "metascore": "64",
+    "imdbRating": "6.0",
+    "imdbVotes": "3,556",
+    "imdbID": "tt0110620",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$443,169",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "tmdbDataVersion": 4,
+    "costumeDesigner": "Prudence Moriarty",
+    "productionDesigner": "Kurt Ossenfort",
+    "editor": "David Leonard",
+    "musicComposer": "Simon Fisher-Turner",
+    "cinematographer": "Jim Denault",
+    "cast": [
+      {
+        "name": "Elina Löwensohn",
+        "character": "Nadja",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pRFLUsONKzg0hnl2CLnNBE4AJZ1.jpg"
+      },
+      {
+        "name": "Suzy Amis",
+        "character": "Cassandra",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/q8aPLY9CjCl7tp60neddbJl4ZfW.jpg"
+      },
+      {
+        "name": "Galaxy Craze",
+        "character": "Lucy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pyOjHFCpelmGrHFRSrKzDDsUv7E.jpg"
+      },
+      {
+        "name": "Martin Donovan",
+        "character": "Jim",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wTCmpcmd8mcAbsX6Yc7zFs2J98Q.jpg"
+      },
+      {
+        "name": "Peter Fonda",
+        "character": "Dracula / Dr. Van Helsing",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dgorN06SQ9ZNL2NY3I7BNxg93lc.jpg"
+      },
+      {
+        "name": "Karl Geary",
+        "character": "Renfield",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ex3VfDXZPirfULVqzyTKVcKHFt2.jpg"
+      },
+      {
+        "name": "Jared Harris",
+        "character": "Edgar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jAyPWkmge3BqXtgxIG9MfXBzOGj.jpg"
+      },
+      {
+        "name": "Nic Ratner",
+        "character": "Bar Victim",
+        "profileUrl": null
+      },
+      {
+        "name": "Jack Lotz",
+        "character": "Boxing Coach",
+        "profileUrl": null
+      },
+      {
+        "name": "David Lynch",
+        "character": "Morgue Receptionist",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wwBzRDoIW6Ld64h6OkQ6ImCZKsR.jpg"
+      },
+      {
+        "name": "Isabel Gillies",
+        "character": "Waitress",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6va65ZAmrXKUT92c9RPPtDVZddP.jpg"
+      },
+      {
+        "name": "José Zúñiga",
+        "character": "Bartender",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r6nFkJkMHP9tFDohwfav9Bf2rCR.jpg"
+      }
+    ],
+    "personProfiles": {
+      "prudence moriarty": {
+        "tmdbId": 112578,
+        "profileUrl": null
+      },
+      "michael almereyda": {
+        "tmdbId": 54469,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oiMAcT7GwLXBKTYWLl9FDBqrwHX.jpg"
+      },
+      "kurt ossenfort": {
+        "tmdbId": 112577,
+        "profileUrl": null
+      },
+      "david leonard": {
+        "tmdbId": 112576,
+        "profileUrl": null
+      },
+      "simon fisher-turner": {
+        "tmdbId": 32804,
+        "profileUrl": null
+      },
+      "jim denault": {
+        "tmdbId": 2864,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pWZYh38yiY76hUshW0oMUEhWNbY.jpg"
+      },
+      "elina löwensohn": {
+        "tmdbId": 17257,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pRFLUsONKzg0hnl2CLnNBE4AJZ1.jpg"
+      },
+      "suzy amis": {
+        "tmdbId": 2179,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/q8aPLY9CjCl7tp60neddbJl4ZfW.jpg"
+      },
+      "galaxy craze": {
+        "tmdbId": 1936113,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pyOjHFCpelmGrHFRSrKzDDsUv7E.jpg"
+      },
+      "martin donovan": {
+        "tmdbId": 42993,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wTCmpcmd8mcAbsX6Yc7zFs2J98Q.jpg"
+      },
+      "peter fonda": {
+        "tmdbId": 8949,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dgorN06SQ9ZNL2NY3I7BNxg93lc.jpg"
+      },
+      "karl geary": {
+        "tmdbId": 27176,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ex3VfDXZPirfULVqzyTKVcKHFt2.jpg"
+      },
+      "jared harris": {
+        "tmdbId": 15440,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jAyPWkmge3BqXtgxIG9MfXBzOGj.jpg"
+      },
+      "nic ratner": {
+        "tmdbId": 1337469,
+        "profileUrl": null
+      },
+      "jack lotz": {
+        "tmdbId": 122269,
+        "profileUrl": null
+      },
+      "david lynch": {
+        "tmdbId": 5602,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wwBzRDoIW6Ld64h6OkQ6ImCZKsR.jpg"
+      },
+      "isabel gillies": {
+        "tmdbId": 171613,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6va65ZAmrXKUT92c9RPPtDVZddP.jpg"
+      },
+      "josé zúñiga": {
+        "tmdbId": 10963,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r6nFkJkMHP9tFDohwfav9Bf2rCR.jpg"
+      }
+    },
+    "tagline": "Unseen. Unforgiving. Undead.",
+    "keywords": [
+      "new york city",
+      "vampire"
+    ],
+    "trailerKey": "RR3RjPOCPFo",
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/oS9pCcAOq5Jn9myvjM8KaJuBHz6.jpg",
+      "https://image.tmdb.org/t/p/w1280/e67eo1crGllFvBH8mWBamSTfvsL.jpg",
+      "https://image.tmdb.org/t/p/w1280/r5Bjj1DPjsbqHZZ5ZSaixuT6UZR.jpg",
+      "https://image.tmdb.org/t/p/w1280/dSSnHdsrlkxVoKy6hzC2jYjaEmp.jpg",
+      "https://image.tmdb.org/t/p/w1280/xAl1AARbys8QmBocjY5qdpRJihe.jpg",
+      "https://image.tmdb.org/t/p/w1280/6LrCRZPvL31VKFYIGADeyA0cib7.jpg"
+    ],
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
