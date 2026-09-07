@@ -1,6 +1,7 @@
 import React, { useState, useRef, useLayoutEffect, useCallback } from 'react';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import Button from './Button';
+import { prefersReducedMotion } from '../../utils/motion';
 
 interface CollapsibleContentProps {
     children: React.ReactNode;
@@ -11,11 +12,6 @@ interface CollapsibleContentProps {
     buttonSize?: 'sm' | 'md';
     durationMs?: number; // Length of the open/close height animation
 }
-
-const prefersReducedMotion = () =>
-    typeof window !== 'undefined' &&
-    typeof window.matchMedia === 'function' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const CollapsibleContent: React.FC<CollapsibleContentProps> = ({
     children,

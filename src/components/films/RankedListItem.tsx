@@ -53,7 +53,18 @@ const POSTER_WIDTH = 'w-16 sm:w-20';
  * note drops to its own row across the full width, which a grid can express
  * with the same markup that a flex row would need two copies of.
  */
-const BODY_GRID = 'grid grid-cols-[auto_auto_minmax(0,1fr)] items-start';
+/**
+ * `grid-rows-[auto_1fr]` is what keeps the note still when it opens. The poster
+ * spans both rows, and when it is taller than they are, grid hands the surplus
+ * to every spanned auto track *equally* — so half of it lands in the title's row
+ * and pushes the note down. Open the note and the rows outgrow the poster, that
+ * half disappears, and the lines the reader was already looking at jump up by
+ * it. Naming the second track `1fr` sends the whole surplus there instead: the
+ * title's row is only ever as tall as the title, and the prose under it starts
+ * at the same place open or shut. Only from `sm`, which is where the poster
+ * starts spanning.
+ */
+const BODY_GRID = 'grid grid-cols-[auto_auto_minmax(0,1fr)] items-start sm:grid-rows-[auto_1fr]';
 /** Column 1 and 2: beside the title on a phone, alongside the note above it. */
 const SPANS_NOTE = 'row-start-1 sm:row-span-2';
 
@@ -284,11 +295,12 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                 numeral's band, though — `pl-0` is for the numeral alone, and a
                 panel inheriting it sat flush against the border on one side
                 while its own right edge stayed inset by the row's `pr`. */}
-            {details && detailsOpen && (
+            {details && (
                 <div className="relative pl-3 sm:pl-4">
                     <EntryDetailsPanel
                         details={details}
                         panelId={panelId}
+                        open={detailsOpen}
                         title={displayTitle}
                         imdbID={imdbID}
                     />

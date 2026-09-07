@@ -97,6 +97,21 @@ export interface ListEvent extends WallEventBase {
     list: FilmListDefinition;
     /** Posters for the stacked preview, in rank order. Films with none are skipped. */
     posters: string[];
+    /**
+     * The films at the head of the list, by name, for the row's preview line.
+     *
+     * The deck of posters beside it is art, not text: it says a list has films
+     * on it without saying which, and below `sm` it isn't there at all. Every
+     * other kind of row on this wall names what it is about, and until this
+     * existed a list was the one that didn't — it said "7 films" and left the
+     * reader to open it to find out which seven.
+     *
+     * A film the caches don't know yet has no name to print and is dropped, so
+     * this is the top few *nameable* films rather than strictly ranks 1-3. The
+     * count that follows it is figured from the list's own length, so the row
+     * still adds up to the whole list either way.
+     */
+    titles: string[];
 }
 
 /** A member was handed a trophy for a film. */
@@ -241,6 +256,16 @@ const logEvents = (log: WatchedLog, sources: WallDataSources): LogEvent[] =>
 const LIST_PREVIEW_COUNT = 5;
 
 /**
+ * How many of a list's films the row names.
+ *
+ * Three fits one line at the widths this row is read at, and is enough to say
+ * what kind of list it is — which is the whole job of the line. A fourth mostly
+ * wraps, and a wrapped teaser costs more room than the list's own blurb sitting
+ * right under it.
+ */
+const LIST_TITLE_COUNT = 3;
+
+/**
  * Every list that knows when it was made.
  *
  * A list written before `createdAt` existed has no date and cannot be placed on
@@ -274,6 +299,10 @@ const listEvents = (lists: FilmListDefinition[], sources: WallDataSources): List
                     .map((entry) => entry.poster)
                     .filter((poster): poster is string => poster !== null)
                     .slice(0, LIST_PREVIEW_COUNT),
+                titles: entries
+                    .map((entry) => entry.title)
+                    .filter((title): title is string => title !== null)
+                    .slice(0, LIST_TITLE_COUNT),
             },
         ];
     });

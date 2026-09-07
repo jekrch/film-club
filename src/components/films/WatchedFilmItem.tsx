@@ -194,7 +194,16 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                 a ribbon of three-word lines. Spanning the full width there is a
                 change of placement, not of markup — which a flex row would need
                 two copies of. */}
-            <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start">
+            {/* `grid-rows-[auto_1fr]` is what keeps the review still when it
+                opens. The poster spans both rows, and when it is taller than
+                they are, grid hands the surplus to every spanned auto track
+                *equally* — so half of it lands in the title's row and pushes the
+                review down. Open the review and the rows outgrow the poster,
+                that half disappears, and the lines the reader was already
+                looking at jump up by it. Naming the second track `1fr` sends the
+                whole surplus there instead. Only from `sm`, which is where the
+                poster starts spanning. */}
+            <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start sm:grid-rows-[auto_1fr]">
                 {wrapLink(
                     poster && !posterFailed ? (
                         <img
@@ -329,11 +338,15 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
             {/* Across the whole row rather than in the title's column: this is
                 the film's own description, not the member's. Closed while the
                 editor is open — the form is the row then. */}
-            {details && detailsOpen && !editing && (
+            {details && (
                 <div className="relative">
                     <EntryDetailsPanel
                         details={details}
                         panelId={panelId}
+                        // Closed while the editor is open — the form is the row
+                        // then — and it now closes the way it would have if the
+                        // reader had done it, rather than vanishing.
+                        open={detailsOpen && !editing}
                         title={displayTitle}
                         imdbID={imdbID}
                     />

@@ -63,17 +63,23 @@ export const NODE_PHOTO_CLASS: Record<CardAccent, string> = {
  * straight down, with a heavier beat every few rows.
  */
 export const CLUB_PICK_ROW_CLASS =
-    'border-blue-500/30 bg-blue-500/[0.05] hover:border-blue-400/45 hover:bg-blue-500/[0.09]';
+    'border-blue-500/30 bg-blue-500/[0.05] group-hover:border-blue-400/45 group-hover:bg-blue-500/[0.09]';
 
 /** The node under that emphasis: the same recipe as {@link NODE_CLASS}, lit. */
 export const CLUB_PICK_NODE_CLASS = 'ring-blue-400/50 bg-blue-400/[0.15] text-blue-300';
 
-/** The row's border warming to its accent on hover, as every card here does. */
+/**
+ * The row's border warming to its accent on hover, as every card here does.
+ *
+ * Keyed off the row rather than off the box itself: the caption and the node
+ * stand outside it, and lighting only the part the cursor happens to be over
+ * would read as three things stacked rather than as one event.
+ */
 export const ROW_HOVER_CLASS: Record<CardAccent, string> = {
-    emerald: 'hover:border-emerald-500/25',
-    blue: 'hover:border-blue-500/25',
-    amber: 'hover:border-amber-500/25',
-    rose: 'hover:border-rose-500/25',
+    emerald: 'group-hover:border-emerald-500/25',
+    blue: 'group-hover:border-blue-500/25',
+    amber: 'group-hover:border-amber-500/25',
+    rose: 'group-hover:border-rose-500/25',
 };
 
 /** The date caption picking up the accent as the row is hovered. */

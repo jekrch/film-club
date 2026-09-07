@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
-import { EyeIcon, FilmIcon, QueueListIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, FilmIcon, NumberedListIcon, QueueListIcon } from '@heroicons/react/24/outline';
 
 import CircularImage from '../common/CircularImage';
 import CollapsibleContent from '../common/CollapsableContent';
 import RowFrameWash from '../common/RowFrameWash';
+import EntryDetailsPanel, { EntryDetailsToggle } from '../films/EntryDetailsPanel';
 import { resolveTrophyIcon, type IconComponent } from '../common/trophyIcons';
+import { clubFilmDetails, type EntryDetails } from '../../utils/entryDetails';
 import { getRatingColorClass } from '../../utils/ratingUtils';
 import { MAX_SCORE } from '../../utils/ratingEditUtils';
 import { formatWatchDate, watchedRowId } from '../../utils/watchedUtils';
+import { isRankedList } from '../../types/list';
 import type { CardAccent } from '../common/accents';
-import type { TrophyEvent, WallEvent, WallRow } from '../../utils/wallUtils';
+import type { ListEvent, TrophyEvent, WallEvent, WallRow } from '../../utils/wallUtils';
 import {
     CLUB_PICK_NODE_CLASS,
     CLUB_PICK_ROW_CLASS,
@@ -25,11 +28,12 @@ import {
 /**
  * One box on the club's wall.
  *
- * Every kind wears the same box — a node on the timeline, a dated caption, a
- * sentence naming who did what, and the subject's art washed in from the right.
- * What changes between them is the sentence and the badge at the end of it, and
- * that is on purpose: the wall's job is to be read straight down, and four
- * layouts interleaved would make the reader re-learn where to look on every row.
+ * Every kind wears the same box — a node on the timeline, a band naming when it
+ * happened and who did it, the thing they did it to on the line below, and that
+ * thing's art washed in from the right. What changes between them is the verb in
+ * the band and the badge at the end of the line, and that is on purpose: the
+ * wall's job is to be read straight down, and four layouts interleaved would
+ * make the reader re-learn where to look on every row.
  *
  * The box is a sibling-of-links structure rather than one big link. A screening
  * names a film *and* the member who picked it, and an anchor inside an anchor is
@@ -104,6 +108,74 @@ const eventHomeLabel = (event: WallEvent): string => {
 };
 
 /**
+ * The film a row is about: what its poster shows, what its expander opens, and
+ * what both of those are labelled with.
+ *
+ * Null for a list, which is about several films and has no one of them to draw
+ * — the row's poster slot and its expander are both absent there for the same
+ * reason, so they ask this one question rather than each testing the kind.
+ */
+const rowFilm = (
+    event: WallEvent
+): { imdbID: string; title: string; poster: string | null } | null => {
+    switch (event.kind) {
+        case 'log':
+            return {
+                imdbID: event.entry.imdbID,
+                title: event.entry.title ?? 'Unknown film',
+                poster: event.entry.poster,
+            };
+        case 'club-watch':
+        case 'trophy':
+            return {
+                imdbID: event.film.imdbID,
+                title: event.film.title,
+                poster: event.film.poster,
+            };
+        case 'list':
+            return null;
+    }
+};
+
+/**
+ * What a row can open out about its film — tagline, synopsis, credits, external
+ * scores, stills, cast — or null when nothing knows anything worth expanding.
+ *
+ * The same panel the watch log and the list rows carry, and here for the same
+ * reason: a wall row said a title, a year and a poster, and half of what's on
+ * this wall is a film the club never watched and so has no page on this site to
+ * follow the title to. A log's entry has already resolved its own details —
+ * against the club film where there is one, the summary cache otherwise — while
+ * a screening or a trophy resolves the club film it names.
+ *
+ * Resolved per render rather than on first open, because the answer is also what
+ * decides whether the row gets an expander at all.
+ */
+const rowDetails = (event: WallEvent): EntryDetails | null => {
+    switch (event.kind) {
+        case 'log':
+            return event.entry.details;
+        case 'club-watch':
+        case 'trophy':
+            return clubFilmDetails(event.film);
+        case 'list':
+            return null;
+    }
+};
+
+/**
+ * True when {@link WallFigure} will draw something.
+ *
+ * Asked one line above where the badge is rendered, because the figure and the
+ * expander share a cluster at the end of the subject and the cluster shouldn't
+ * exist when neither does.
+ */
+const hasFigure = (event: WallEvent): boolean =>
+    (event.kind === 'club-watch' && event.average !== null) ||
+    (event.kind === 'log' && event.entry.score !== null) ||
+    event.kind === 'list';
+
+/**
  * A member, as a chip linking to their profile.
  *
  * Deliberately neutral rather than accent-tinted. A wall row already carries its
@@ -152,7 +224,15 @@ const MemberChip: React.FC<{ name: string; photo?: boolean }> = ({ name, photo =
  * would file the evening under them.
  */
 const TimelineNode: React.FC<{ event: WallEvent; accent: CardAccent }> = ({ event, accent }) => {
-    const position = 'absolute left-0 top-2 h-8 w-8 sm:h-9 sm:w-9';
+    /**
+     * The node stands at the head of the row's caption line, which is sized to
+     * hold it. Below `sm` that line is all it has: a 44px lane down the left of
+     * a phone is a quarter of the row spent on a 32px circle, and the title is
+     * what that width was for, so the gutter goes and the boxes start at the
+     * screen's own edge. The node keeps its column either way — every one at
+     * the same x, straight down the page.
+     */
+    const position = 'absolute left-0 top-0 h-8 w-8 sm:h-9 sm:w-9';
 
     if (event.kind === 'log') {
         return (
@@ -292,9 +372,9 @@ const ScoreBadge: React.FC<{
 );
 
 /**
- * Secondary prose under the headline — a review, a note, a list's blurb.
+ * Secondary prose under the subject — a review, a note, a list's blurb.
  *
- * Railed rather than merely greyed: the line under a headline is the one place
+ * Railed rather than merely greyed: the line under a subject is the one place
  * on this wall where somebody is talking rather than something being recorded,
  * which is the distinction the emerald rail draws everywhere else, and which is
  * how the watch log draws a review.
@@ -331,111 +411,191 @@ const Detail: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
     const { lead, trophies } = row;
     const accent = KIND_ACCENT[lead.kind];
-    /** A list has no single poster, so its column-one slot is not drawn at all. */
-    const hasPoster = lead.kind !== 'list';
+    /** A list has no single film, so its poster slot and its expander are both absent. */
+    const film = rowFilm(lead);
     /** The club's own screening, which the wall draws with more weight than the rest. */
     const clubPick = lead.kind === 'club-watch';
 
+    const details = useMemo(() => rowDetails(lead), [lead]);
+    const [detailsOpen, setDetailsOpen] = useState(false);
+    // Keyed by the row rather than by the film: a screening and a member's log
+    // of the same film can sit on one page, and two panels sharing an `id` would
+    // point every one of their toggles at whichever came first.
+    const panelId = `wall-details-${row.id}`;
+
     return (
-        <li className="relative pl-11 sm:pl-14">
+        // `group` on the row rather than on the card: the caption and the node
+        // now stand outside the box, and a row that lit only the part the cursor
+        // happened to be over would read as three things stacked rather than as
+        // one event.
+        <li className="group relative sm:pl-14">
             {/* The rail runs from under this node to the next one rather than
                 behind them all, so a node needs no fill of its own to punch
                 through it — which matters on a page whose background is a
-                gradient and has no single shade to paint with. */}
+                gradient and has no single shade to paint with.
+
+                From `sm` up it has the gutter to run down, and it runs the
+                whole way — out past the row's own bottom and into the gap, so
+                it meets the next node rather than stopping short of it.
+
+                On a phone there is no gutter: the boxes start at the screen's
+                own edge, and a line between the nodes would have to cross every
+                box it was meant to connect. So it shortens to that same gap — a
+                stub under the node, picking the thread back up between one row
+                and the next. */}
             {connected && (
                 <span
-                    className="absolute bottom-0 left-4 top-10 w-px bg-slate-700/50 sm:left-[1.125rem] sm:top-11"
+                    className="absolute left-4 top-full h-4 w-px bg-slate-700/50 sm:-bottom-4 sm:left-[1.125rem] sm:top-11 sm:h-auto"
                     aria-hidden="true"
                 />
             )}
             <TimelineNode event={lead} accent={accent} />
 
-            <article
-                className={`group relative overflow-hidden rounded-xl border p-3 transition-colors duration-200 sm:p-4 ${
-                    clubPick
-                        ? CLUB_PICK_ROW_CLASS
-                        : `border-slate-600/30 bg-slate-700/25 hover:bg-slate-700/45 ${ROW_HOVER_CLASS[accent]}`
-                }`}
-            >
-                <RowFrameWash image={lead.wash} />
+            {/* The event is the caption *and* the box, so the article is both.
+                What the box has of its own is a surface — a border, a wash, and
+                the padding they need — and a caption sitting inside that surface
+                is what this row spent two passes getting out of. */}
+            <article>
+                {/* When it happened and who did it, on the node's own line above
+                    the box. Inside it, the sentence was competing for the same
+                    column as the title and the poster; out here it has the row's
+                    full width and the box below it starts clean.
 
-                {/* The club pick's spine, drawn after the wash so the art never
-                    passes over it. A painted bar rather than a `border-l-2`,
-                    because a border can only be one flat color and this one
-                    fades out down the row — and because a flat 2px left rail is
-                    already spoken for on this wall: it is what `Detail` draws in
-                    emerald when somebody is talking. Inside the article's own
-                    rounded clip, so it takes the corner radius with it. */}
-                {clubPick && (
-                    <span
-                        className="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-blue-400/80 via-blue-400/45 to-blue-400/10"
-                        aria-hidden="true"
-                    />
-                )}
+                    `min-h-8` is exactly a node, so the circle has a line to sit
+                    on rather than an edge to hang off, and `pl-10` clears it.
+                    From `sm` the row's own `pl-14` has already done that. */}
+                <div className="mb-1.5 flex min-h-8 flex-wrap items-center gap-x-2 gap-y-1 pl-10 text-sm text-slate-400 sm:min-h-9 sm:pl-0">
+                    {/* The wall is ordered by when, so the date leads the row —
+                        at the same place under the same edge on every one of
+                        them, which is what makes dates scannable. */}
+                    <time
+                        dateTime={lead.date}
+                        className={`text-xs uppercase tracking-widest tabular-nums text-slate-500 transition-colors duration-200 ${DATE_HOVER_CLASS[accent]}`}
+                    >
+                        {formatWatchDate(lead.date)}
+                    </time>
+                    <WallActor event={lead} />
+                </div>
 
-                {/* A grid rather than a flex row, and the watch log's grid: on a
-                    wide screen the prose belongs beside the poster in the
-                    headline's column, and on a phone that column is barely
-                    150px once the timeline and the poster have taken theirs,
-                    which turns a review into a ribbon of three-word lines.
-                    Spanning the full width down there is a change of placement,
-                    not of markup — which a flex row would need two copies of. */}
-                <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start">
-                    {hasPoster && (
-                        <Link
-                            to={eventHome(lead)}
-                            title={`Open ${eventHomeLabel(lead)}`}
-                            className="col-start-1 row-start-1 block rounded-md transition-opacity duration-200 hover:opacity-80 sm:row-span-2"
-                        >
-                            <EventPoster
-                                src={lead.kind === 'log' ? lead.entry.poster : lead.film.poster}
-                                title={
-                                    lead.kind === 'log'
-                                        ? (lead.entry.title ?? 'Unknown film')
-                                        : lead.film.title
-                                }
-                            />
-                        </Link>
+                <div
+                    className={`relative overflow-hidden rounded-xl border p-3 transition-colors duration-200 sm:p-4 ${
+                        clubPick
+                            ? CLUB_PICK_ROW_CLASS
+                            : `border-slate-600/30 bg-slate-700/25 group-hover:bg-slate-700/45 ${ROW_HOVER_CLASS[accent]}`
+                    }`}
+                >
+                    <RowFrameWash image={lead.wash} />
+
+                    {/* The club pick's spine, drawn after the wash so the art never
+                        passes over it. A painted bar rather than a `border-l-2`,
+                        because a border can only be one flat color and this one
+                        fades out down the row — and because a flat 2px left rail is
+                        already spoken for on this wall: it is what `Detail` draws in
+                        emerald when somebody is talking. Inside the article's own
+                        rounded clip, so it takes the corner radius with it. */}
+                    {clubPick && (
+                        <span
+                            className="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-blue-400/80 via-blue-400/45 to-blue-400/10"
+                            aria-hidden="true"
+                        />
                     )}
 
-                    <div
-                        className={`col-start-2 row-start-1 min-w-0${hasPoster ? ' ml-3 sm:ml-4' : ''}`}
-                    >
-                        {/* The wall is ordered by when, so the date leads the row
-                            — as a caption over the sentence rather than a column
-                            beside it, which is where the watch log settled for
-                            the same reason: every row's date at the same place
-                            under the same edge is what makes dates scannable. */}
-                        <time
-                            dateTime={lead.date}
-                            className={`block text-xs uppercase tracking-widest tabular-nums text-slate-500 transition-colors duration-200 ${DATE_HOVER_CLASS[accent]}`}
-                        >
-                            {formatWatchDate(lead.date)}
-                        </time>
+                    {/* A grid rather than a flex row, and the watch log's grid: on a
+                        wide screen the prose belongs beside the poster in the
+                        subject's column, and on a phone that column is barely
+                        150px once the timeline and the poster have taken theirs,
+                        which turns a review into a ribbon of three-word lines.
+                        Spanning the full width down there is a change of placement,
+                        not of markup — which a flex row would need two copies of. */}
+                    {/* `grid-rows-[auto_1fr]` is what keeps the review still
+                        when it opens. The poster spans both rows, and when it is
+                        taller than they are, grid hands the surplus to every
+                        spanned auto track *equally* — so half of it lands in the
+                        title's row and pushes the review down. Open the review
+                        and the rows outgrow the poster, that half disappears,
+                        and the two lines the reader was already looking at jump
+                        up by it. Naming the second track `1fr` sends the whole
+                        surplus there instead: the title's row is only ever as
+                        tall as the title, and the prose under it starts at the
+                        same place open or shut. Only from `sm`, which is where
+                        the poster starts spanning. */}
+                    <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start sm:grid-rows-[auto_1fr]">
+                        {film && (
+                            <Link
+                                to={eventHome(lead)}
+                                title={`Open ${eventHomeLabel(lead)}`}
+                                className="col-start-1 row-start-1 block rounded-md transition-opacity duration-200 hover:opacity-80 sm:row-span-2"
+                            >
+                                <EventPoster src={film.poster} title={film.title} />
+                            </Link>
+                        )}
 
-                        {/* The score travels at the end of the sentence rather
-                            than in a column of its own at the row's edge — the
-                            watch log's arrangement, and the one that leaves the
-                            sentence its full width on a phone instead of
-                            squeezing it between a poster and a badge. */}
-                        <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1.5 leading-relaxed text-slate-400">
-                            <WallHeadline event={lead} />
-                            <WallScore event={lead} />
+                        {/* The score travels at the end of the subject rather than in
+                            a column of its own at the row's edge — the watch log's
+                            arrangement, and the one that leaves the title its full
+                            width on a phone instead of squeezing it between a poster
+                            and a badge. */}
+                        <div
+                            className={`col-start-2 row-start-1 flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1.5 leading-relaxed text-slate-400${
+                                film ? ' ml-3 sm:ml-4' : ''
+                            }`}
+                        >
+                            <WallSubject event={lead} />
+
+                            {/* The score and the expander travel together at the
+                                end of the line, so the pair moves as one when
+                                the title wraps — the watch log's arrangement,
+                                and the reason the `ml-auto` is out here rather
+                                than on each of them: two of those would each
+                                claim the free space and split apart. */}
+                            {(hasFigure(lead) || details) && (
+                                <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+                                    <WallFigure event={lead} />
+
+                                    {/* Last in the cluster: the badge before it
+                                        is a label, this is the one that acts on
+                                        the row. */}
+                                    {details && film && (
+                                        <EntryDetailsToggle
+                                            isOpen={detailsOpen}
+                                            onToggle={() => setDetailsOpen((open) => !open)}
+                                            title={film.title}
+                                            panelId={panelId}
+                                        />
+                                    )}
+                                </span>
+                            )}
+                        </div>
+
+                        <ListPosters event={lead} />
+
+                        {/* Full width beneath everything on a phone, back in the
+                            subject's column from `sm` up. */}
+                        <div
+                            className={`col-span-3 col-start-1 row-start-2 min-w-0 sm:col-span-1 sm:col-start-2${
+                                film ? ' sm:ml-4' : ''
+                            }`}
+                        >
+                            <WallDetail event={lead} />
+                            <FoldedTrophies trophies={trophies} />
                         </div>
                     </div>
 
-                    <ListPosters event={lead} />
-
-                    {/* Full width beneath everything on a phone, back in the
-                        headline's column from `sm` up. */}
-                    <div
-                        className={`col-span-3 col-start-1 row-start-2 min-w-0 sm:col-span-1 sm:col-start-2${
-                            hasPoster ? ' sm:ml-4' : ''
-                        }`}
-                    >
-                        <WallDetail event={lead} />
-                        <FoldedTrophies trophies={trophies} />
-                    </div>
+                    {/* Across the whole box rather than in the subject's column:
+                        this is the film's own description, not anybody's word
+                        about it, and its stills want the width. `relative` to
+                        stack it above the wash, as everything else here is. */}
+                    {details && film && (
+                        <div className="relative">
+                            <EntryDetailsPanel
+                                details={details}
+                                panelId={panelId}
+                                open={detailsOpen}
+                                title={film.title}
+                                imdbID={film.imdbID}
+                            />
+                        </div>
+                    )}
                 </div>
             </article>
         </li>
@@ -446,7 +606,7 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
  * The awards folded into this box, under the event they were given at.
  *
  * They keep their own icons and their own recipients but drop the film, because
- * the headline above already names it — repeating it on each line is exactly the
+ * the subject above already names it — repeating it on each line is exactly the
  * repetition the fold exists to remove.
  */
 const FoldedTrophies: React.FC<{ trophies: TrophyEvent[] }> = ({ trophies }) => {
@@ -489,21 +649,75 @@ const FoldedTrophies: React.FC<{ trophies: TrophyEvent[] }> = ({ trophies }) => 
     );
 };
 
-/** Who did what. One sentence per kind, all in the same voice. */
-const WallHeadline: React.FC<{ event: WallEvent }> = ({ event }) => {
+/**
+ * Who did it, and in what act — the meta band's half of the sentence.
+ *
+ * The sentence a row used to carry in one run is split at its verb: the actor
+ * and the verb ride up here beside the date, and what they acted on stays below
+ * in {@link WallSubject}. Two reasons, and the second is why it is worth doing
+ * at every width rather than only on a phone.
+ *
+ * The first is width. A phone gives a row about 200px of column once the
+ * timeline, the poster and two card paddings have taken theirs, and "Jacob
+ * logged" spent a third of it saying the thing the node beside it was already
+ * saying with his face. Moving the attribution to a band that runs the full
+ * width of the card gives the title the column to itself.
+ *
+ * The second is that every row now opens on what it is *about*. That was
+ * already the intent behind setting "The club watched" small and lettered — so
+ * the film's own title read first rather than the third word of a sentence that
+ * opens the same way every time — and this is that intent applied to all four
+ * kinds instead of one.
+ */
+const WallActor: React.FC<{ event: WallEvent }> = ({ event }) => {
     switch (event.kind) {
         case 'club-watch':
             // No avatar: this is the one thing on the wall the club did rather
             // than one of its members, and leading with a face would file it
             // under whoever picked it.
             return (
+                <span className="text-[10px] uppercase tracking-widest text-blue-300/70">
+                    The club watched
+                </span>
+            );
+
+        case 'log':
+            return (
                 <>
-                    {/* Set small and lettered, so the film's own title is the
-                        first thing read on the row rather than the third word of
-                        a sentence that opens the same way every time. */}
-                    <span className="text-[10px] uppercase tracking-widest text-blue-300/70">
-                        The club watched
-                    </span>
+                    <MemberChip name={event.member} photo={false} />
+                    <span>logged</span>
+                </>
+            );
+
+        case 'list':
+            return (
+                <>
+                    <MemberChip name={event.list.owner} />
+                    <span>started a list</span>
+                </>
+            );
+
+        case 'trophy':
+            return event.trophy.recipient ? (
+                <>
+                    <MemberChip name={event.trophy.recipient} />
+                    <span>won the</span>
+                </>
+            ) : (
+                // A sheet award whose prose named nobody the club recognizes.
+                // Rendered unattributed rather than dropped, the same call the
+                // trophy galleries make.
+                <span>Awarded:</span>
+            );
+    }
+};
+
+/** What they did it to: the row's subject, and the first thing on its line. */
+const WallSubject: React.FC<{ event: WallEvent }> = ({ event }) => {
+    switch (event.kind) {
+        case 'club-watch':
+            return (
+                <>
                     <FilmTitle
                         imdbID={event.film.imdbID}
                         title={event.film.title}
@@ -522,8 +736,6 @@ const WallHeadline: React.FC<{ event: WallEvent }> = ({ event }) => {
         case 'log':
             return (
                 <>
-                    <MemberChip name={event.member} photo={false} />
-                    <span>logged</span>
                     <FilmTitle
                         imdbID={event.entry.imdbID}
                         title={event.entry.title}
@@ -543,32 +755,17 @@ const WallHeadline: React.FC<{ event: WallEvent }> = ({ event }) => {
 
         case 'list':
             return (
-                <>
-                    <MemberChip name={event.list.owner} />
-                    <span>started a list</span>
-                    <Link
-                        to={`/lists/${event.list.id}`}
-                        className="font-medium text-slate-200 decoration-slate-600 underline-offset-4 transition-colors hover:text-white hover:underline"
-                    >
-                        {event.list.name}
-                    </Link>
-                </>
+                <Link
+                    to={`/lists/${event.list.id}`}
+                    className="font-medium text-slate-200 decoration-slate-600 underline-offset-4 transition-colors hover:text-white hover:underline"
+                >
+                    {event.list.name}
+                </Link>
             );
 
         case 'trophy':
             return (
                 <>
-                    {event.trophy.recipient ? (
-                        <>
-                            <MemberChip name={event.trophy.recipient} />
-                            <span>won the</span>
-                        </>
-                    ) : (
-                        // A sheet award whose prose named nobody the club
-                        // recognizes. Rendered unattributed rather than dropped,
-                        // the same call the trophy galleries make.
-                        <span>Awarded:</span>
-                    )}
                     <span className="font-medium text-slate-200">{event.trophy.award}</span>
                     <span className="text-slate-500">on</span>
                     <FilmTitle
@@ -582,7 +779,7 @@ const WallHeadline: React.FC<{ event: WallEvent }> = ({ event }) => {
     }
 };
 
-/** The line under the headline, when the event has anything more to say. */
+/** The line under the subject, when the event has anything more to say. */
 const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
     switch (event.kind) {
         case 'club-watch':
@@ -611,11 +808,12 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
         case 'list':
             return (
                 <>
-                    <p className="relative mt-1 text-sm text-slate-500">
-                        {event.list.entries.length} film
-                        {event.list.entries.length !== 1 ? 's' : ''}
-                    </p>
-                    {/* Railed and expandable rather than run onto the count line:
+                    {/* Where the count used to sit. The count is a figure and has
+                        gone up to the badge cluster with the other figures; what
+                        the line under a subject is for is saying something about
+                        it, and on a list that is what's on it. */}
+                    <ListHead event={event} />
+                    {/* Railed and expandable rather than run onto the line above:
                         a list's blurb is its owner talking, which is what the
                         rail means, and some of them run for a paragraph. */}
                     {event.list.description && <Detail>{event.list.description}</Detail>}
@@ -628,18 +826,25 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
 };
 
 /**
- * The score at the end of the headline, when the event carries one.
+ * The number a row ends its subject line on: a score for a watch, a length for
+ * a list.
  *
- * `ml-auto` inside the headline's own wrap container rather than a column at the
- * row's edge: this way the badge follows the sentence when it wraps on a phone
- * instead of holding width the sentence needed, which is the arrangement the
- * watch log uses for its score and trailer.
+ * Inside the subject's own wrap container rather than in a column at the row's
+ * edge: this way the badge follows the sentence when it wraps on a phone instead
+ * of holding width the sentence needed, which is the arrangement the watch log
+ * uses for its score and trailer. The `ml-auto` that pushes it there belongs to
+ * the cluster it shares with the details expander, not to this badge.
+ *
+ * A list used to end this line on nothing, which is most of why it read as the
+ * thin row among four — every other kind closes on a figure or a chip, and the
+ * eye scanning down the wall found a hole where the beat was. Its count is a
+ * figure and it belongs here, not buried in grey prose under the title.
  */
-const WallScore: React.FC<{ event: WallEvent }> = ({ event }) => {
+const WallFigure: React.FC<{ event: WallEvent }> = ({ event }) => {
     switch (event.kind) {
         case 'club-watch':
             return event.average === null ? null : (
-                <span className="ml-auto flex flex-shrink-0 items-baseline gap-1.5">
+                <span className="flex flex-shrink-0 items-baseline gap-1.5">
                     {/* Named on a wide screen, and on a phone left to the badge's
                         own tooltip — the label is twice the width of the number
                         it explains, and this row has none to spare down there. */}
@@ -655,7 +860,7 @@ const WallScore: React.FC<{ event: WallEvent }> = ({ event }) => {
 
         case 'log':
             return event.entry.score === null ? null : (
-                <span className="ml-auto flex flex-shrink-0 items-baseline gap-1.5">
+                <span className="flex flex-shrink-0 items-baseline gap-1.5">
                     {/* Named for the same reason the screening's average is, and
                         it is the more important of the two labels: this number
                         is one person's and counts toward nothing, and the club
@@ -672,20 +877,116 @@ const WallScore: React.FC<{ event: WallEvent }> = ({ event }) => {
                 </span>
             );
 
-        case 'list':
+        case 'list': {
+            const count = event.list.entries.length;
+            // The chip the wall already uses for "Club film" and "Popcorn Pod",
+            // in the amber lists are drawn in — a label about the subject rather
+            // than a number the club arrived at, which is the distinction the
+            // mono score badge above carries and this one must not borrow.
+            //
+            // The glyph is the one place `ranked` shows on this wall: numerals
+            // for a list making a claim about order, plain rules for one that is
+            // merely arranged. No word for it — a chip that had to say "ranked"
+            // as well as its count would be saying more than the row can spare.
+            const Icon = isRankedList(event.list) ? NumberedListIcon : QueueListIcon;
+
+            return (
+                <span
+                    className="flex flex-shrink-0 items-center gap-1.5 rounded-md bg-amber-400/[0.07] px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400/70 ring-1 ring-inset ring-amber-400/20"
+                    title={
+                        isRankedList(event.list)
+                            ? `A ranking of ${count} film${count !== 1 ? 's' : ''}`
+                            : `A list of ${count} film${count !== 1 ? 's' : ''}`
+                    }
+                >
+                    <Icon className="h-3 w-3" aria-hidden="true" />
+                    {count} film{count !== 1 ? 's' : ''}
+                </span>
+            );
+        }
+
         case 'trophy':
             return null;
     }
 };
 
 /**
- * A list's stacked preview, standing where every other row's poster stands —
- * on the far side, since a stack five posters wide is the one piece of art here
- * that will not fit a phone's column. Below `sm` the row goes without it.
+ * The films at the head of a list, named.
+ *
+ * The deck of posters beside this is art rather than text: it says a list has
+ * films on it without saying which, and a poster reduced to an 18px sliver of
+ * itself isn't recognizable even to somebody who knows the film. So the row
+ * says three of them out loud. Every other kind on this wall opens on the name
+ * of the thing it is about, and a list was the one that didn't — it gave a
+ * count and left the reader to open it to find out what kind of list it was.
+ *
+ * Three names and a remainder rather than a scrollable strip: this is a teaser
+ * for a page one click away, and the point is to be read in passing.
+ *
+ * Plain text, not links. The names are here to characterize the list, and
+ * three more link targets in a row that already has the list, its owner and its
+ * deck would be four ways out of one box — see the note atop this file on the
+ * box being a sibling-of-links structure rather than a thicket of them.
+ */
+const ListHead: React.FC<{ event: ListEvent }> = ({ event }) => {
+    if (event.titles.length === 0) return null;
+
+    // Counted off the list itself rather than off `titles`, so a film the
+    // caches can't name yet is folded into the remainder instead of vanishing
+    // from the row's arithmetic.
+    const rest = event.list.entries.length - event.titles.length;
+
+    return (
+        <p className="relative mt-1 text-sm leading-relaxed text-slate-400">
+            {event.titles.map((title, index) => (
+                // Indexed as well as titled: a list may hold the same film twice
+                // — a remake and its original share nothing but a name, and the
+                // caches have been known to hand back one for the other.
+                <React.Fragment key={`${title}-${index}`}>
+                    {index > 0 && (
+                        <span className="mx-1.5 text-slate-600" aria-hidden="true">
+                            ·
+                        </span>
+                    )}
+                    {title}
+                </React.Fragment>
+            ))}
+            {rest > 0 && <span className="text-slate-600"> +{rest} more</span>}
+        </p>
+    );
+};
+
+/**
+ * How many of the deck's cards a phone shows.
+ *
+ * Five was the whole reason the deck used to sit out every width below `sm`: at
+ * 2.4rem a card with 1.15rem showing, five of them run to 112px, and a phone's
+ * row hasn't got it to give. Three run to 75px, which it has — and a list row
+ * with no art at all was the barest thing on this wall. The two cards past the
+ * third are hidden rather than dropped, so the deck grows into the space at
+ * `sm` instead of being rebuilt at it.
+ */
+const DECK_PHONE_COUNT = 3;
+
+/**
+ * A list's deck of posters, standing where every other row's poster stands —
+ * on the far side, since a list is about several films and none of them is the
+ * one the row is *of*.
  *
  * Overlapping in rank order, as the profile's list rows draw them. Later
  * siblings would paint over earlier ones, so the z-index descends to keep the
  * top-ranked poster on top of the stack.
+ *
+ * It fans open as the row is hovered — each card sliding out from behind the
+ * one in front of it and tipping a degree or two further than its neighbour, so
+ * a stack the reader can only half see resolves into a hand of them. The
+ * geometry is in `index.css` under `.wall-deck-card`; what this sets is the one
+ * number that drives it, which is how far back in the deck a card sits. It
+ * opens to the *left*, into the gap between the deck and the title, because the
+ * row is clipped to its own rounded corners and there is nothing to the right
+ * but that clip. And the rings warm to amber with it: the row's border is
+ * already doing that on hover, and the deck is the largest thing in the box
+ * that wasn't joining in.
  */
 const ListPosters: React.FC<{ event: WallEvent }> = ({ event }) => {
     if (event.kind !== 'list' || event.posters.length === 0) return null;
@@ -696,16 +997,26 @@ const ListPosters: React.FC<{ event: WallEvent }> = ({ event }) => {
             title={`Open ${event.list.name}`}
             tabIndex={-1}
             aria-hidden="true"
-            className="col-start-3 row-start-1 ml-3 hidden flex-shrink-0 transition-opacity duration-200 hover:opacity-80 sm:flex"
+            className="col-start-3 row-start-1 ml-2 flex flex-shrink-0 transition-opacity duration-200 hover:opacity-80 sm:ml-3"
         >
             {event.posters.map((poster, index) => (
                 <img
-                    key={poster}
+                    // Indexed as well as keyed by URL, for the reason ListHead
+                    // gives: one list can hold two entries pointing at the same
+                    // artwork, and two cards cannot share a key.
+                    key={`${poster}-${index}`}
                     src={poster}
                     alt=""
                     loading="lazy"
-                    style={{ zIndex: event.posters.length - index }}
-                    className={`relative h-14 w-[2.4rem] rounded object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 ${index === 0 ? '' : '-ml-5'}`}
+                    style={
+                        {
+                            zIndex: event.posters.length - index,
+                            '--deck-depth': event.posters.length - 1 - index,
+                        } as React.CSSProperties
+                    }
+                    className={`wall-deck-card relative h-14 w-[2.4rem] rounded object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 group-hover:ring-amber-400/30 ${
+                        index === 0 ? '' : '-ml-5'
+                    }${index < DECK_PHONE_COUNT ? '' : ' hidden sm:block'}`}
                     onError={(e) => {
                         e.currentTarget.style.display = 'none';
                     }}

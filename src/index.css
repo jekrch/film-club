@@ -286,6 +286,47 @@ body {
         animation: row-arrival 3s ease-out;
     }
 
+    /* One poster in a list's deck on the club wall — see ListPosters in
+     WallEventRow.
+
+     At rest the cards are a tight overlapped stack with about 1.15rem of each
+     one showing, which says "several films" and no more. Hovering the row fans
+     them: `--deck-depth` is how many cards sit in front of this one, so each
+     one slides a little further out than its neighbour and tips a little
+     further with it, and the stack opens into a hand.
+
+     It opens leftward, into the gap between the deck and the title, because the
+     row is clipped to its own rounded corners and the deck already sits at the
+     right-hand end of it. `bottom right` origin for the same reason: the cards
+     swing up and away from that clip rather than into it.
+
+     Below `sm` only the first three cards are rendered, so the hindmost visible
+     one keeps a depth of 2 and the whole group slides those 6px with the fan.
+     That is inside the deck's own 0.5rem gutter, and the spacing the eye reads
+     — 3px between one card and the next — is unchanged.
+
+     Reduced motion gets the stack and no fan. Unlike the modal's fade, there is
+     nothing here to keep once the movement goes: the fan *is* the transform. */
+    .wall-deck-card {
+        transform-origin: bottom right;
+        transition:
+            transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 300ms ease;
+    }
+
+    .group:hover .wall-deck-card {
+        transform: translateX(calc(var(--deck-depth) * -3px))
+            rotate(calc(var(--deck-depth) * -1.5deg));
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .wall-deck-card,
+        .group:hover .wall-deck-card {
+            transform: none;
+            transition: box-shadow 300ms ease;
+        }
+    }
+
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -296,6 +337,71 @@ body {
     }
     .animate-fadeIn {
         animation: fadeIn 0.2s ease-out forwards;
+    }
+
+    /* A row's details panel opening under it — see EntryDetailsPanel.
+
+     The panel's height, not only its opacity. One that fades in at full height
+     shoves everything below it down in a single frame, which on a page of rows
+     — the wall's timeline, a watch log — reads as the page jumping rather than
+     as a panel opening, and costs the reader the place they were looking at.
+
+     A keyframe rather than a transition, and that is the whole trick. The panel
+     is mounted at the moment it opens, and a transition on a brand-new element
+     is unreliable: the browser can settle the closed style and the open one in
+     a single style recalculation, see no change, and run nothing. An animation
+     on a newly inserted element always plays — it is why the modals and the
+     route transition are written this way too.
+
+     `max-height` rather than the tidier `grid-template-rows: 0fr -> 1fr`, which
+     needs no measuring and animates a true automatic height, but did not
+     interpolate here. So the height is measured before paint and handed in as
+     `--details-height` (see `useOpenOnMount`). No fill mode: when the animation
+     ends the cap lifts and the panel goes back to sizing itself, which is what
+     keeps it from clipping its own stills once their images load.
+
+     260ms is `CollapsibleContent`'s default. The two are the same gesture — a
+     row opening out — and a reader meets both on one page. */
+    @keyframes details-open {
+        from {
+            max-height: 0;
+            opacity: 0;
+        }
+        to {
+            max-height: var(--details-height);
+            opacity: 1;
+        }
+    }
+    /* Closing is the same move backwards, and it exists only because the panel
+     is held in the tree for as long as this takes to play — see the panel's own
+     note. `forwards`, so it stays shut for the frames between the end of the
+     animation and the unmount rather than springing open for one of them. */
+    @keyframes details-close {
+        from {
+            max-height: var(--details-height);
+            opacity: 1;
+        }
+        to {
+            max-height: 0;
+            opacity: 0;
+        }
+    }
+
+    /* The clipping both of these need is `overflow-hidden`, which the panel
+     carries from its first render rather than from here — it has to be in place
+     for the measurement too. EntryDetailsPanel says why. */
+    .animate-details-open {
+        animation: details-open 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .animate-details-close {
+        animation: details-close 260ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .animate-details-open,
+        .animate-details-close {
+            animation: none;
+        }
     }
 
     /* Modal enter/exit — see Modal.tsx.

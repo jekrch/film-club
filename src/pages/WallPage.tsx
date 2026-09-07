@@ -59,6 +59,11 @@ const PILLAR_OPACITY = 0.1;
  * units — comes out about as wide as a node, which is what makes the icons read
  * as hanging on the column rather than beside it. All pixel facts the SVG needs
  * as numbers, which is why this is a media query rather than responsive classes.
+ *
+ * Below `sm` there is no gutter for a node to stand in — the boxes start at the
+ * card's own padding edge — so the nodes stand at that edge on the caption line
+ * above each box instead (see `TimelineNode`). Still one column, which is all
+ * the shaft has to line up with.
  */
 const usePillarPlacement = (): { width: number; left: number } => {
     const isMd = useMediaQuery('(min-width: 768px)');
@@ -249,7 +254,11 @@ const WallPage: React.FC = () => {
                                         </span>
                                     </div>
 
-                                    <ol className="space-y-2">
+                                    {/* Wider than the gap between a row's own
+                                        caption and its box, so a date reads as
+                                        belonging to the box under it rather
+                                        than to the one above. */}
+                                    <ol className="space-y-4">
                                         {month.rows.map((row, index) => (
                                             <WallEventRow
                                                 key={row.id}

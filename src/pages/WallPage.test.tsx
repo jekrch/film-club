@@ -45,6 +45,10 @@ jest.mock('../types/watched', () => ({
 }));
 
 jest.mock('../types/list', () => ({
+    // The real predicate rather than a stub: a list row's badge glyph turns on
+    // it, and a mock that always said "ranked" would make that assertion pass
+    // for a list this fixture deliberately marks as unranked.
+    isRankedList: (list: { ranked?: boolean }) => list.ranked !== false,
     filmLists: [
         {
             id: 'jacob-therapists',
@@ -53,7 +57,13 @@ jest.mock('../types/list', () => ({
             description: null,
             ranked: false,
             createdAt: '2026-08-15T23:43:02Z',
-            entries: [{ rank: 1, imdbID: 'tt1000009', description: null }],
+            entries: [
+                { rank: 1, imdbID: 'tt1000009', description: null },
+                // Nothing knows this one, so the row has no name to print for
+                // it — which is the case the head line has to fold into its
+                // remainder rather than drop from the list's arithmetic.
+                { rank: 2, imdbID: 'tt1000042', description: null },
+            ],
         },
     ],
     listFilmSummaries: {
@@ -119,6 +129,17 @@ describe('WallPage', () => {
         expect(rows()[1]).toHaveTextContent(/The club watched\s*The Screening/);
         expect(rows()[1]).toHaveTextContent(/Joey\s*won the\s*Togetherness trophy/);
         expect(rows()[2]).toHaveTextContent(/Jacob\s*started a list\s*Even Your Therapist/);
+    });
+
+    it('names the films at the top of a list rather than only counting them', () => {
+        renderWall();
+
+        // The badge carries the list's whole length; the line under the title
+        // carries as much of it as the caches can name, and the balance as a
+        // remainder — so a reader learns what kind of list it is without
+        // opening it.
+        expect(rows()[2]).toHaveTextContent('2 films');
+        expect(rows()[2]).toHaveTextContent(/A Cached Film\s*\+1 more/);
     });
 
     it('heads each run with the month it fell in', () => {

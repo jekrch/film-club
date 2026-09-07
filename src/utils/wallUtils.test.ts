@@ -157,6 +157,30 @@ describe('buildWall', () => {
         expect(event.posters).toEqual(['https://example.com/cached.jpg']);
     });
 
+    it('names the films at the head of a list, and skips the ones it cannot', () => {
+        const named: FilmListDefinition = {
+            ...datedList,
+            entries: [
+                { rank: 1, imdbID: 'tt0000001', description: null },
+                // Neither the club's films nor the summary cache knows this one:
+                // a row added from another device a moment ago, and all CI has
+                // enriched since is nothing. It has no name to print.
+                { rank: 2, imdbID: 'tt9999999', description: null },
+                { rank: 3, imdbID: 'tt0000009', description: null },
+                { rank: 4, imdbID: 'tt0000002', description: null },
+            ],
+        };
+        const event = byId(
+            buildWall({ ...sources, lists: [named] }),
+            'list-jacob-therapists'
+        ) as ListEvent;
+
+        // Three names, in rank order, with the nameless entry passed over rather
+        // than printed blank — and stopping at three even though a fourth film
+        // is known, so the row's line stays a line.
+        expect(event.titles).toEqual(['A Club Film', 'A Cached Film', 'A Later Club Film']);
+    });
+
     it('skips a list written before creation dates were recorded', () => {
         expect(byId(buildWall(sources), 'list-gabe-comfort')).toBeUndefined();
     });
