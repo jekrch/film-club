@@ -105,6 +105,18 @@ export interface FilmListDefinition {
      * field existed was a numbered one.
      */
     ranked?: boolean;
+    /**
+     * When the list was created, as an ISO instant. Assigned by the worker on
+     * create and carried unchanged through every later save, so it dates the
+     * list rather than the last edit to it — which is what puts it in one fixed
+     * place on the club's wall instead of floating to the top whenever its owner
+     * reorders a row.
+     *
+     * Absent on a list written before the field existed. The wall skips such a
+     * list rather than guessing a date for it; see `listEvents` in
+     * `utils/wallUtils.ts`.
+     */
+    createdAt?: string;
     entries: FilmListEntry[];
 }
 

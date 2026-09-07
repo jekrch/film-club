@@ -3,6 +3,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import CorinthianPillar from './components/layout/CorinthianPillar';
 import HomePage from './pages/HomePage';
+import WallPage from './pages/WallPage';
 import FilmsPage from './pages/FilmsPage';
 import FilmDetailPage from './pages/FilmDetailPage';
 import AboutPage from './pages/AboutPage';
@@ -23,12 +24,16 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 
 function AppContent() {
     const location = useLocation();
-    const isHomePage = location.pathname === '/';
+    // The pages that raise a colonnade of their own — the home page's pair and
+    // the wall's single left pillar — go without the site-wide one behind them.
+    // Two sets of columns in one view read as an accident rather than as
+    // architecture.
+    const drawsOwnPillars = location.pathname === '/' || location.pathname === '/wall';
 
     return (
         <div className="relative flex flex-col min-h-screen bg-gradient-to-t from-slate-900 via-slate-800 to-slate-900 font-se overflow-x-hidden">
             {/* Background pillar wrapper - stretches to full document height */}
-            {!isHomePage && (
+            {!drawsOwnPillars && (
                 <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
                     <CorinthianPillar
                         side="right"
@@ -46,6 +51,10 @@ function AppContent() {
                     <Routes>
                         <Route path="/" element={<HomePage />} />
                         <Route path="/films" element={<FilmsPage />} />
+                        {/* The club's activity in one chronological column. Reads
+                the same four bundled files the pages below do; see
+                `utils/wallUtils.ts`. */}
+                        <Route path="/wall" element={<WallPage />} />
                         <Route path="/films/:imdbId" element={<FilmDetailPage />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/almanac" element={<AlmanacPage />} />

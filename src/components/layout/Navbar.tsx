@@ -9,6 +9,9 @@ import { PillarMark } from './CorinthianPillar';
 const links = [
     { to: '/', label: 'Home' },
     { to: '/films', label: 'Films' },
+    // Next to Films rather than at the end: the two are the same history read
+    // two ways, one by film and one by date.
+    { to: '/wall', label: 'Wall' },
     { to: '/about', label: 'About' },
     { to: '/almanac', label: 'Almanac' },
 ];

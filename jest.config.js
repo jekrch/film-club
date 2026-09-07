@@ -1,3 +1,11 @@
+// The club is in US Central, and several things it records are dated by the day
+// they fell on *there* — a trophy stamped at 9pm Central is past midnight UTC,
+// and filing it under the next day would put it above the film it was given for
+// (see `instantDayKey` in `src/utils/wallUtils.ts`). Pinning the suite to that
+// zone rather than the machine's is what lets those dates be asserted at all,
+// and it exercises a real offset instead of UTC's zero, where the bug hides.
+process.env.TZ = 'America/Chicago';
+
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
     preset: 'ts-jest',

@@ -690,6 +690,9 @@ async function putList(
                     owner,
                     description: input.description,
                     ranked: input.ranked,
+                    // Stamped once, here, and never again: the club's wall dates
+                    // the list by this, so a rename must not move it.
+                    createdAt: timestamp(),
                     entries: input.entries,
                 };
                 // Creation order — the frontend renders lists in file order.
@@ -720,6 +723,11 @@ async function putList(
                 owner,
                 description: input.description,
                 ranked: input.ranked,
+                // Immutable for the same reason `id` is, and load-bearing in the
+                // same way: it is what the wall orders the list by. A list made
+                // before the field existed keeps having none — backfilling one
+                // from an edit would date it to the edit.
+                ...(existing.createdAt === undefined ? {} : { createdAt: existing.createdAt }),
                 entries: input.entries,
             };
             lists[index] = updated;

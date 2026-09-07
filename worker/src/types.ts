@@ -63,6 +63,16 @@ export interface FilmListDefinition {
     description: string | null;
     /** Whether the list's order renders as a numbered ranking. */
     ranked: boolean;
+    /**
+     * When the list was created, as an ISO instant. Stamped once, on create, and
+     * carried through every later save — a rename or a reorder must not redate
+     * the list, because the site places it on a chronological wall by this field.
+     *
+     * Optional only for the lists written before it existed; the worker sets it
+     * on everything it creates from here on. Mirrors `createdAt` in
+     * `src/types/list.ts`.
+     */
+    createdAt?: string;
     entries: FilmListEntry[];
 }
 
