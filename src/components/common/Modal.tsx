@@ -25,6 +25,13 @@ interface ModalProps {
     title: React.ReactNode;
     /** Small caps label above the title, saying what kind of thing this is. */
     eyebrow?: string;
+    /**
+     * Drop the header bar, leaving a floating close button over the content.
+     * For a dialog whose body is the whole point and speaks for itself — a
+     * trailer, a full-bleed image — where a title strip is just lost height.
+     * The title still names the dialog for screen readers.
+     */
+    hideHeader?: boolean;
     /** Quiet line under the title. */
     subtitle?: React.ReactNode;
     /**
@@ -68,6 +75,7 @@ const Modal: React.FC<ModalProps> = ({
     onClose,
     title,
     eyebrow,
+    hideHeader = false,
     subtitle,
     truncateTitle = true,
     accent = 'blue',
@@ -187,37 +195,55 @@ const Modal: React.FC<ModalProps> = ({
                     )}
                 />
 
-                <div className="relative z-10 flex flex-shrink-0 items-start justify-between gap-3 border-b border-slate-700/60 px-4 py-3.5 md:px-5 md:py-4">
-                    <div className="min-w-0">
-                        {eyebrow && (
-                            <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">
-                                {eyebrow}
-                            </p>
-                        )}
-                        {/* Merriweather ships 400 and 700 only, and
-                            `font-synthesis: none` means anything between is a
-                            lie — so the serif title carries its weight through
-                            size and color instead. */}
-                        <h2
-                            id={titleId}
-                            className={classNames(
-                                'font-serif text-base leading-snug text-slate-100 md:text-lg',
-                                truncateTitle && 'truncate'
-                            )}
-                        >
+                {hideHeader ? (
+                    <>
+                        {/* The dialog still needs its accessible name, so the
+                            heading stays in the tree — just not on screen. */}
+                        <h2 id={titleId} className="sr-only">
                             {title}
                         </h2>
-                        {subtitle && <p className="mt-1 text-xs text-slate-400">{subtitle}</p>}
+                        <Button
+                            onClick={onClose}
+                            variant="ghost"
+                            className="absolute right-2 top-2 z-30 bg-slate-950/60 text-slate-300 backdrop-blur-sm hover:bg-slate-800/80"
+                            aria-label="Close"
+                        >
+                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                        </Button>
+                    </>
+                ) : (
+                    <div className="relative z-10 flex flex-shrink-0 items-start justify-between gap-3 border-b border-slate-700/60 px-4 py-3.5 md:px-5 md:py-4">
+                        <div className="min-w-0">
+                            {eyebrow && (
+                                <p className="mb-1 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">
+                                    {eyebrow}
+                                </p>
+                            )}
+                            {/* Merriweather ships 400 and 700 only, and
+                                `font-synthesis: none` means anything between is
+                                a lie — so the serif title carries its weight
+                                through size and color instead. */}
+                            <h2
+                                id={titleId}
+                                className={classNames(
+                                    'font-serif text-base leading-snug text-slate-100 md:text-lg',
+                                    truncateTitle && 'truncate'
+                                )}
+                            >
+                                {title}
+                            </h2>
+                            {subtitle && <p className="mt-1 text-xs text-slate-400">{subtitle}</p>}
+                        </div>
+                        <Button
+                            onClick={onClose}
+                            variant="ghost"
+                            className="-mr-1 flex-shrink-0"
+                            aria-label="Close"
+                        >
+                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                        </Button>
                     </div>
-                    <Button
-                        onClick={onClose}
-                        variant="ghost"
-                        className="-mr-1 flex-shrink-0"
-                        aria-label="Close"
-                    >
-                        <XMarkIcon className="h-5 w-5" aria-hidden="true" />
-                    </Button>
-                </div>
+                )}
 
                 <div className="relative z-10 flex min-h-0 flex-1 flex-col">{children}</div>
             </div>

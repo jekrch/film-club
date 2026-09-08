@@ -20,6 +20,7 @@ import { getPersonProfileByName } from '../utils/personUtils';
 import { Film } from '../types/film';
 import FilmCastStrip from '../components/films/FilmCastStrip';
 import FilmStills from '../components/films/FilmStills';
+import PlotParagraphs from '../components/films/PlotParagraphs';
 import ScoreQualifierNote from '../components/films/ScoreQualifierNote';
 import {
     PopcornPodStamp,
@@ -143,24 +144,6 @@ const FilmDetailPage = () => {
     );
 
     // UI Helper function (can remain in component or be moved to utils if more broadly used)
-    const renderPlotParagraphs = (plot: string | undefined) => {
-        if (!plot) {
-            return <span className="italic text-slate-500">Plot not available.</span>;
-        }
-        const paragraphs = plot
-            .split(/\n+/)
-            .map((p) => p.trim())
-            .filter((p) => p !== '');
-        if (paragraphs.length === 0) {
-            return <span className="italic text-slate-500">Plot not available.</span>;
-        }
-        return paragraphs.map((paragraph, index) => (
-            <p key={index} className={index < paragraphs.length - 1 ? 'mb-3' : ''}>
-                {paragraph}
-            </p>
-        ));
-    };
-
     if (loading) {
         return <LoadingSpinner />;
     }
@@ -471,7 +454,14 @@ const FilmDetailPage = () => {
                                 )}
                                 <div className="mb-5 text-slate-300 ">
                                     <CollapsibleContent buttonSize="sm" lineClamp={3}>
-                                        {renderPlotParagraphs(film.plot)}
+                                        <PlotParagraphs
+                                            plot={film.plot}
+                                            fallback={
+                                                <span className="italic text-slate-500">
+                                                    Plot not available.
+                                                </span>
+                                            }
+                                        />
                                     </CollapsibleContent>
                                 </div>
 

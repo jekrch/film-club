@@ -14,6 +14,7 @@ jest.mock('../types/film', () => ({
             title: 'The Screening',
             year: '1999',
             poster: 'https://example.com/screening.jpg',
+            trailerKey: 'CLUBTRAILER',
             ratings: [],
             type: 'movie',
             movieClubInfo: {
@@ -38,6 +39,9 @@ jest.mock('../types/watched', () => ({
                 score: 7,
                 scoreQualifier: null,
                 blurb: 'Watched it on my own.\nTwice, actually.',
+                // A link of Gabe's own, over the cached film's below: the wall
+                // has to play the trailer his log plays, not the film's.
+                trailerKey: 'GABETRAILER',
                 updatedAt: '2026-09-04T21:14:02Z',
             },
         ],
@@ -72,6 +76,7 @@ jest.mock('../types/list', () => ({
             title: 'A Cached Film',
             year: '1985',
             poster: 'https://example.com/cached.jpg',
+            trailerKey: 'CACHEDTRAILER',
         },
     },
 }));
@@ -183,6 +188,47 @@ describe('WallPage', () => {
         expect(log.getByText('7')).toBeInTheDocument();
         expect(log.queryByText('Club avg')).not.toBeInTheDocument();
         expect(log.getByText(/Watched it on my own/)).toBeInTheDocument();
+    });
+
+    it("plays a trailer from the row, the member's own where they set one", () => {
+        renderWall();
+
+        // Half of what is on this wall is a film with no page here to follow the
+        // title to, so the row itself has to be able to play the trailer.
+        const log = within(rows()[0]);
+        fireEvent.click(log.getByRole('button', { name: 'Play the A Cached Film trailer' }));
+        expect(screen.getByTitle('A Cached Film trailer')).toHaveAttribute(
+            'src',
+            expect.stringContaining('/embed/GABETRAILER')
+        );
+
+        // A screening is about a club film, which carries only its own key.
+        const screening = within(rows()[1]);
+        fireEvent.click(screening.getByRole('button', { name: 'Play the The Screening trailer' }));
+        expect(screen.getByTitle('The Screening trailer')).toHaveAttribute(
+            'src',
+            expect.stringContaining('/embed/CLUBTRAILER')
+        );
+
+        // A list is about several films and plays none of them.
+        expect(
+            within(rows()[2]).queryByRole('button', { name: /Play the .* trailer/ })
+        ).not.toBeInTheDocument();
+    });
+
+    it("shows every member's own score on a screening, as the film cards do", () => {
+        renderWall();
+
+        // The card's strip of tiles — initials over the number — so the two
+        // views of one screening say the same thing about how the room voted.
+        // The average badge above them is the summary, not a substitute.
+        const screening = within(rows()[1]);
+        expect(screening.getByTitle('andy: 8/9')).toHaveTextContent('an');
+        expect(screening.getByTitle('gabe: 5/9')).toHaveTextContent('5');
+
+        // A log carries one person's private score and has no club tiles at
+        // all — the divide the wall's event kinds exist to keep.
+        expect(within(rows()[0]).queryByTitle(/^[a-z]+: /)).not.toBeInTheDocument();
     });
 
     it('keeps the line breaks a member typed into their review', () => {

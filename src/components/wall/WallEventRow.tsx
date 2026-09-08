@@ -6,7 +6,9 @@ import { EyeIcon, FilmIcon, NumberedListIcon, QueueListIcon } from '@heroicons/r
 import CircularImage from '../common/CircularImage';
 import CollapsibleContent from '../common/CollapsableContent';
 import RowFrameWash from '../common/RowFrameWash';
+import TrailerButton from '../common/TrailerButton';
 import EntryDetailsPanel, { EntryDetailsToggle } from '../films/EntryDetailsPanel';
+import MemberScoreTiles from '../films/MemberScoreTiles';
 import { resolveTrophyIcon, type IconComponent } from '../common/trophyIcons';
 import { clubFilmDetails, type EntryDetails } from '../../utils/entryDetails';
 import { getRatingColorClass } from '../../utils/ratingUtils';
@@ -158,6 +160,27 @@ const rowDetails = (event: WallEvent): EntryDetails | null => {
         case 'club-watch':
         case 'trophy':
             return clubFilmDetails(event.film);
+        case 'list':
+            return null;
+    }
+};
+
+/**
+ * The YouTube key this row's trailer button plays, or null when it has none.
+ *
+ * A log has already resolved its own — the member's link if they set one, the
+ * film's otherwise, and nothing at all if they hid it — so the wall shows the
+ * same trailer their log does. A screening or a trophy is about a club film,
+ * which carries only the film's own key; nobody overrides a trailer on a club
+ * record. A list is about several films and plays none of them.
+ */
+const rowTrailerKey = (event: WallEvent): string | null => {
+    switch (event.kind) {
+        case 'log':
+            return event.entry.resolvedTrailerKey;
+        case 'club-watch':
+        case 'trophy':
+            return event.film.trailerKey ?? null;
         case 'list':
             return null;
     }
@@ -417,6 +440,7 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
     const clubPick = lead.kind === 'club-watch';
 
     const details = useMemo(() => rowDetails(lead), [lead]);
+    const trailerKey = rowTrailerKey(lead);
     const [detailsOpen, setDetailsOpen] = useState(false);
     // Keyed by the row rather than by the film: a screening and a member's log
     // of the same film can sit on one page, and two panels sharing an `id` would
@@ -542,14 +566,22 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                         >
                             <WallSubject event={lead} />
 
-                            {/* The score and the expander travel together at the
-                                end of the line, so the pair moves as one when
-                                the title wraps — the watch log's arrangement,
-                                and the reason the `ml-auto` is out here rather
-                                than on each of them: two of those would each
-                                claim the free space and split apart. */}
-                            {(hasFigure(lead) || details) && (
+                            {/* The trailer, the score and the expander travel
+                                together at the end of the line, so they move as
+                                one when the title wraps — the watch log's
+                                arrangement, and the reason the `ml-auto` is out
+                                here rather than on each of them: each would
+                                claim the free space and they would split apart. */}
+                            {(hasFigure(lead) || details || trailerKey) && (
                                 <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+                                    {/* First in the cluster, as it is on a watch
+                                        log row: the figure beside it is what the
+                                        row is *about*, and the trailer is an
+                                        aside offered before it, not after. */}
+                                    {trailerKey && film && (
+                                        <TrailerButton trailerKey={trailerKey} title={film.title} />
+                                    )}
+
                                     <WallFigure event={lead} />
 
                                     {/* Last in the cluster: the badge before it
@@ -617,31 +649,38 @@ const FoldedTrophies: React.FC<{ trophies: TrophyEvent[] }> = ({ trophies }) => 
             {trophies.map((event) => {
                 const Icon = resolveTrophyIcon(event.trophy.award);
                 return (
-                    <li key={event.id} className="flex items-start gap-2">
-                        <Icon
-                            className="mt-1 h-4 w-4 flex-shrink-0 text-amber-400/70"
-                            aria-hidden="true"
-                        />
-                        <div className="min-w-0 flex-grow">
-                            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1.5 text-sm leading-relaxed text-slate-400">
-                                {event.trophy.recipient ? (
-                                    <>
-                                        <MemberChip name={event.trophy.recipient} />
-                                        <span>won the</span>
-                                    </>
-                                ) : (
-                                    // A sheet award whose prose named nobody the
-                                    // club recognizes. Rendered unattributed
-                                    // rather than dropped, the same call the
-                                    // trophy galleries make.
-                                    <span>Awarded:</span>
-                                )}
-                                <span className="font-medium text-slate-200">
-                                    {event.trophy.award}
-                                </span>
-                            </div>
-                            {event.trophy.note && <Detail>{event.trophy.note}</Detail>}
-                        </div>
+                    <li key={event.id} className="min-w-0">
+                        {/* One run of inline text rather than a row of flex
+                            items. The icon, the recipient, the verb and the
+                            award are a sentence, and flex was breaking it in
+                            two places: `won the` fell to a line of its own as
+                            soon as the chip and the award couldn't share the
+                            column, and every wrapped line started past the icon
+                            instead of under it. Inline flow lets the sentence
+                            use the full width on each line and puts the vertical
+                            alignment back in the hands of `MemberChip`'s own
+                            `align-middle` — under `items-baseline` the chip was
+                            aligned on the bottom edge of its avatar, which sat
+                            the name a few pixels off the words beside it. */}
+                        <p className="text-sm leading-relaxed text-slate-400">
+                            <Icon
+                                className="mr-1.5 inline h-4 w-4 align-middle text-amber-400/70"
+                                aria-hidden="true"
+                            />
+                            {event.trophy.recipient ? (
+                                <>
+                                    <MemberChip name={event.trophy.recipient} /> won the{' '}
+                                </>
+                            ) : (
+                                // A sheet award whose prose named nobody the
+                                // club recognizes. Rendered unattributed rather
+                                // than dropped, the same call the trophy
+                                // galleries make.
+                                <>Awarded: </>
+                            )}
+                            <span className="font-medium text-slate-200">{event.trophy.award}</span>
+                        </p>
+                        {event.trophy.note && <Detail>{event.trophy.note}</Detail>}
                     </li>
                 );
             })}
@@ -783,19 +822,34 @@ const WallSubject: React.FC<{ event: WallEvent }> = ({ event }) => {
 const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
     switch (event.kind) {
         case 'club-watch':
-            if (!event.selector) return null;
             return (
-                // Not a Detail: this is a fact about the screening, not somebody
-                // talking, so it takes no emerald rail.
-                <p className="relative mt-1 text-sm text-slate-500">
-                    <Link
-                        to={`/profile/${encodeURIComponent(event.selector)}`}
-                        className="text-slate-400 transition-colors hover:text-slate-200"
-                    >
-                        {event.selector}
-                    </Link>
-                    's pick
-                </p>
+                <>
+                    {/* Not a Detail: this is a fact about the screening, not
+                        somebody talking, so it takes no emerald rail. */}
+                    {event.selector && (
+                        <p className="relative mt-1 text-sm text-slate-500">
+                            <Link
+                                to={`/profile/${encodeURIComponent(event.selector)}`}
+                                className="text-slate-400 transition-colors hover:text-slate-200"
+                            >
+                                {event.selector}
+                            </Link>
+                            's pick
+                        </p>
+                    )}
+                    {/* How the room actually voted, in the card's own tiles.
+                        The badge up on the subject line is the average, which
+                        is one number standing in for four opinions — and on a
+                        wall that is mostly one member's private log, the club's
+                        screenings are the rows where there *are* four. Compact
+                        and unstretched: this sits in a column of prose beside a
+                        poster, not across the width of a card. */}
+                    <MemberScoreTiles
+                        ratings={event.film.movieClubInfo?.clubRatings}
+                        compact
+                        className="relative mt-2"
+                    />
+                </>
             );
 
         case 'log':

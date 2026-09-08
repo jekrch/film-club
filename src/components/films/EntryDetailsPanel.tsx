@@ -3,6 +3,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 import EntryPersonStrip from './EntryPersonStrip';
 import FilmStills from './FilmStills';
+import PlotParagraphs from './PlotParagraphs';
 import { prefersReducedMotion } from '../../utils/motion';
 import type { Rating } from '../../types/film';
 import type { EntryDetails } from '../../utils/entryDetails';
@@ -261,9 +262,13 @@ const EntryDetailsPanel: React.FC<EntryDetailsPanelProps> = ({
                     two-sentence synopsis set across the whole of it on a desktop
                     is one long line the eye has to travel end to end. */}
                 {details.plot && (
-                    <p className="max-w-prose text-sm leading-relaxed text-slate-300">
-                        {details.plot}
-                    </p>
+                    <div className="max-w-prose space-y-2">
+                        <PlotParagraphs
+                            plot={details.plot}
+                            className="text-sm leading-relaxed text-slate-300"
+                            gapClassName=""
+                        />
+                    </div>
                 )}
 
                 {details.ratings.length > 0 && (

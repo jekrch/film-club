@@ -5,7 +5,7 @@ interface TrailerModalProps {
     isOpen: boolean;
     onClose: () => void;
     trailerKey: string; // YouTube video key
-    title: string; // Film title, used for the heading and iframe label
+    title: string; // Film title, used to name the dialog and the iframe
 }
 
 /**
@@ -13,13 +13,17 @@ interface TrailerModalProps {
  * embed (and any playback) starts on open and stops on close — the iframe stays
  * mounted through the brief close animation rather than cutting to black. Uses
  * the privacy-friendly youtube-nocookie host and autoplays on open.
+ *
+ * No header: the player is the whole dialog, and on a phone a title strip eats
+ * height the video needs. Whoever clicked "Trailer" on a film knows what this
+ * is, and the title still names the dialog for screen readers.
  */
 const TrailerModal: React.FC<TrailerModalProps> = ({ isOpen, onClose, trailerKey, title }) => (
     <Modal
         isOpen={isOpen}
         onClose={onClose}
-        eyebrow="Trailer"
-        title={title}
+        title={`${title} trailer`}
+        hideHeader
         className="max-w-3xl"
         accent="blue"
     >

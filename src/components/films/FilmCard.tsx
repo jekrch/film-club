@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Film } from '../../types/film';
-import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils';
+import { calculateClubAverage } from '../../utils/ratingUtils';
 import { CardSize } from '../../contexts/ViewSettingsContext';
 import PopcornRating from '../common/PopcornRating';
+import MemberScoreTiles from './MemberScoreTiles';
 import {
     PopcornPodStamp,
     POPCORN_POD_POSTER_FILTER,
@@ -363,52 +364,14 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                 ) : (
                                     // --- RENDER IF WATCHED ---
                                     <>
-                                        {/* Member Ratings Display */}
-                                        {ratingEntries.length > 0 && (
-                                            <div
-                                                className={`flex flex-wrap items-stretch gap-1 ${isCompact ? 'gap-0.5' : 'gap-1'}`}
-                                            >
-                                                {ratingEntries.map((rating) => {
-                                                    const numericRating = rating.score as number;
-                                                    const ratingColorClass =
-                                                        getRatingColorClass(numericRating);
-                                                    return (
-                                                        <div
-                                                            key={rating.user}
-                                                            title={
-                                                                rating.scoreQualifier
-                                                                    ? `${rating.user}: ${rating.score}/9 (${rating.scoreQualifier} — a ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} score; see the film page)`
-                                                                    : `${rating.user}: ${rating.score}/9`
-                                                            }
-                                                            className={`
-                                                                flex flex-col items-center justify-center flex-1 basis-0 min-w-0 max-w-10
-                                                                text-center bg-white/[0.04] rounded-md ring-1 ring-inset ring-white/[0.06]
-                                                                transition-colors duration-150 ease-out hover:bg-white/[0.08]
-                                                                ${isCompact ? 'py-0.5' : 'py-1'}
-                                                            `}
-                                                        >
-                                                            {/* Member Initials */}
-                                                            <div
-                                                                className={`uppercase font-mono text-slate-400 leading-none tracking-widest whitespace-nowrap ${isCompact ? 'text-[8px]' : 'text-[9px]'}`}
-                                                            >
-                                                                {rating.user.substring(0, 2)}
-                                                            </div>
-                                                            {/* Member Rating */}
-                                                            <div
-                                                                className={`font-mono font-bold leading-none whitespace-nowrap mt-0.5 ${ratingColorClass} ${isCompact ? 'text-[11px]' : 'text-sm'}`}
-                                                            >
-                                                                {rating.score}
-                                                                {rating.scoreQualifier && (
-                                                                    <span className="align-super text-[0.6em] text-amber-400/90 lowercase">
-                                                                        {rating.scoreQualifier}
-                                                                    </span>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        )}
+                                        {/* Member Ratings Display — the same
+                                            strip the wall's screening rows
+                                            draw; see MemberScoreTiles. */}
+                                        <MemberScoreTiles
+                                            ratings={clubRatings}
+                                            compact={isCompact}
+                                            stretch
+                                        />
 
                                         {/* Club Average Rating Display — intentionally disabled toggle */}
                                         {/* eslint-disable-next-line no-constant-binary-expression */}

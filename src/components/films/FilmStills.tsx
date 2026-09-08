@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ImageViewer, type ViewerItem, type ViewerRect } from '@jekrch/react-viewport-lightbox';
+import { ImageViewer, type ViewerItem } from '@jekrch/react-viewport-lightbox';
 
 interface FilmStillsProps {
     /** Ordered list of still image URLs (backdrops + cover). */
@@ -22,17 +22,19 @@ const FilmStills: React.FC<FilmStillsProps> = ({ images, title }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [index, setIndex] = useState(0);
 
-    // Source thumbnails for the shared-element open/close transition. The viewer
-    // expands from / collapses into these via `getOriginRect`.
-    const thumbRefs = useRef<(HTMLImageElement | null)[]>([]);
+    // Source elements for the shared-element open/close transition. These are the
+    // wrappers *around* each thumbnail, not the `img` itself: the viewer looks for
+    // a descendant `img` to read the `object-fit: cover` crop off, and takes the
+    // flight's corner radius from the element handed over.
+    const thumbRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
-    // Return the on-screen rect of the thumbnail backing `i`, or null when there's
-    // no visible source (only the first few stills are previewed; failed loads are
-    // hidden) so the viewer falls back to its default fade for that index.
-    const getOriginRect = (i: number): ViewerRect | null => {
+    // Return the thumbnail backing `i`, or null when there's no visible source
+    // (only the first few stills are previewed; failed loads are hidden) so the
+    // viewer falls back to its default fade for that index.
+    const getOrigin = (i: number): HTMLElement | null => {
         const el = thumbRefs.current[i];
         if (!el || el.style.display === 'none') return null;
-        return el.getBoundingClientRect();
+        return el;
     };
 
     // Final, ready-to-load urls — the consumer (this component) resolves them, so
@@ -69,20 +71,25 @@ const FilmStills: React.FC<FilmStillsProps> = ({ images, title }) => {
             >
                 <span className="relative h-9 flex-shrink-0" style={{ width: stackWidth }}>
                     {previewThumbs.map((src, i) => (
-                        <img
+                        <span
                             key={src}
                             ref={(el) => {
                                 thumbRefs.current[i] = el;
                             }}
-                            src={src}
-                            alt=""
                             aria-hidden="true"
-                            className="absolute top-0 h-9 w-14 rounded object-cover ring-1 ring-slate-600/80 shadow-md shadow-black/40 transition-transform duration-200 group-hover:-translate-y-0.5"
+                            className="absolute top-0 block h-9 w-14 overflow-hidden rounded ring-1 ring-slate-600/80 shadow-md shadow-black/40 transition-transform duration-200 group-hover:-translate-y-0.5"
                             style={{ left: i * THUMB_OVERLAP, zIndex: previewThumbs.length - i }}
-                            onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                            }}
-                        />
+                        >
+                            <img
+                                src={src}
+                                alt=""
+                                className="h-full w-full object-cover"
+                                onError={() => {
+                                    const wrapper = thumbRefs.current[i];
+                                    if (wrapper) wrapper.style.display = 'none';
+                                }}
+                            />
+                        </span>
                     ))}
                 </span>
                 <span className="flex flex-col items-start leading-tight">
@@ -101,7 +108,7 @@ const FilmStills: React.FC<FilmStillsProps> = ({ images, title }) => {
                         items={items}
                         index={index}
                         loop={true}
-                        getOrigin={getOriginRect}
+                        getOrigin={getOrigin}
                         closeOnBackdropClick={true}
                         onIndexChange={setIndex}
                         onClose={() => setIsOpen(false)}
