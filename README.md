@@ -4,7 +4,7 @@
 
 [criterionclub.org](https://criterionclub.org)
 
-A web application for tracking films watched and reviewed by the Criterion Club, a group of friends who watch Criterion Channel films and discuss them over Zoom. The site lets you browse the films we've watched, read each member's reviews, and explore member profiles and club statistics.
+A web app for tracking films watched and reviewed by the Criterion Club,a group of friends who watch Criterion Channel films and discuss them over Zoom. The site lets you browse the films we've watched, read each member's reviews, and explore member profiles, individually logged/listed films, and club statistics.
 
 ## Tech Stack
 
