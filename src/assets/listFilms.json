@@ -1990,6 +1990,120 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0074486": {
+    "imdbID": "tt0074486",
+    "title": "Eraserhead",
+    "year": "1977",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNGYxNzZkYzAtMDExMS00MzE1LTg5ZGItMTgzMzJhZWMyNTBjXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "89 min",
+    "genre": "Fantasy, Horror",
+    "director": "David Lynch",
+    "writer": "David Lynch",
+    "imdbRating": "7.2",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.2/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "87%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "87/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "zVJICfUx8M0",
+    "tagline": "Where your nightmares end...",
+    "plot": "First-time father Henry Spencer tries to survive his industrial environment, his angry girlfriend, and the unbearable screams of his newly born mutant child.",
+    "cast": [
+      {
+        "name": "Jack Nance",
+        "character": "Henry Spencer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uYZ2D1gb7lO779L5nDn8XarZSvf.jpg",
+        "tmdbId": 6718
+      },
+      {
+        "name": "Charlotte Stewart",
+        "character": "Mary X",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2q8O8fpP5e0yvKJkrR45qbHCq6n.jpg",
+        "tmdbId": 14794
+      },
+      {
+        "name": "Allen Joseph",
+        "character": "Mr. X",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zGyWYC3x62ZMHTHpOLJ3mRPPTbn.jpg",
+        "tmdbId": 14795
+      },
+      {
+        "name": "Jeanne Bates",
+        "character": "Mrs. X",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/d0sb01vqRKDP0jNBbWEbs8VaIUj.jpg",
+        "tmdbId": 14796
+      },
+      {
+        "name": "Judith Roberts",
+        "character": "Beautiful Girl Across the Hall",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/buUgZfvycC3jzj4VeZdoBtuwbF8.jpg",
+        "tmdbId": 14797
+      },
+      {
+        "name": "Laurel Near",
+        "character": "Lady in the Radiator",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jb7UomcOKW3XpbgQnVAcoc4y36a.jpg",
+        "tmdbId": 14798
+      },
+      {
+        "name": "Jack Fisk",
+        "character": "Man in the Planet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6uXKrehuM7f300vQIw5i56offah.jpg",
+        "tmdbId": 5632
+      },
+      {
+        "name": "Jean Lange",
+        "character": "Grandmother",
+        "profileUrl": null,
+        "tmdbId": 14802
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/ApB0mF2d5Oqioi3yxjuogiotSLI.jpg",
+      "https://image.tmdb.org/t/p/w1280/g47N8791SGRo0Yz1MiLZnjlxaND.jpg",
+      "https://image.tmdb.org/t/p/w1280/k0WR3JjgB1SlOu9ijGITah4P8fC.jpg",
+      "https://image.tmdb.org/t/p/w1280/eOHS4jXagj0LacT9iYs2FMhVSm7.jpg",
+      "https://image.tmdb.org/t/p/w1280/fJO6xgoj8NE5mCsdxMRjfvjBcJ2.jpg",
+      "https://image.tmdb.org/t/p/w1280/iZenEKU5uV7MWfxC2PZokS4hoDM.jpg"
+    ],
+    "crew": [
+      {
+        "name": "David Lynch",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wwBzRDoIW6Ld64h6OkQ6ImCZKsR.jpg",
+        "tmdbId": 5602
+      },
+      {
+        "name": "David Lynch",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wwBzRDoIW6Ld64h6OkQ6ImCZKsR.jpg",
+        "tmdbId": 5602
+      },
+      {
+        "name": "Frederick Elmes",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/v2T7YtZwzYSJvgMCuzVPmZOWjMT.jpg",
+        "tmdbId": 4434
+      },
+      {
+        "name": "Herbert Cardwell",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 14793
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0077405": {
     "imdbID": "tt0077405",
     "title": "Days of Heaven",
