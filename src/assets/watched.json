@@ -255,6 +255,18 @@
   ],
   "Jacob": [
     {
+      "imdbID": "tt0090756",
+      "watchDate": "2026-09-12",
+      "score": null,
+      "scoreQualifier": null,
+      "blurb": null,
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-09-13T00:05:09Z"
+    },
+    {
       "imdbID": "tt0074486",
       "watchDate": "2026-09-11",
       "score": 6.5,
