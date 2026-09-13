@@ -113,6 +113,126 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0027260": {
+    "imdbID": "tt0027260",
+    "title": "After the Thin Man",
+    "year": "1936",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNjM4NzM3MjA1OV5BMl5BanBnXkFtZTgwMzExODgwMzE@._V1_SX300.jpg",
+    "runtime": "112 min",
+    "genre": "Comedy, Crime, Mystery",
+    "director": "W.S. Van Dyke",
+    "writer": "Frances Goodrich, Albert Hackett, Dashiell Hammett",
+    "imdbRating": "7.6",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "96%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "76/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "gql78s6drdM",
+    "tagline": "Continuing the fun in their NEW hit!",
+    "plot": "Nick and Nora Charles are back—and this time, their holiday takes a deadly turn! After returning to San Francisco, the sophisticated couple is drawn into the disappearance of Nora’s cousin’s husband. When he is found murdered, suspicion falls on the troubled family, and Nick reluctantly resumes his detective work. With Nora eagerly at his side, the pair follows a trail of jealousy, blackmail, secret relationships, and long-buried family scandals. William Powell and Myrna Loy sparkle as Hollywood’s most charming married sleuths, trading witty banter while unraveling a dangerous mystery. Directed by W. S. Van Dyke and written by Frances Goodrich and Albert Hackett, After the Thin Man delivers everything audiences love about the series: romance, comedy, suspense, elegant settings, and the irresistible return of Asta, Nick and Nora’s mischievous wire-haired terrier. This stylish 1936 sequel is a delightful blend of mystery and sophisticated fun.",
+    "cast": [
+      {
+        "name": "William Powell",
+        "character": "Nick Charles",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8DTWs389THkVCTiDFu0x8ekNmUC.jpg",
+        "tmdbId": 32428
+      },
+      {
+        "name": "Myrna Loy",
+        "character": "Nora Charles",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rNzjcOeTmJkyE8LMHdF3iYUCkPz.jpg",
+        "tmdbId": 13577
+      },
+      {
+        "name": "James Stewart",
+        "character": "David Graham",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3CU3yG3rCTlG3SwxI9iUOzfHtfX.jpg",
+        "tmdbId": 854
+      },
+      {
+        "name": "Elissa Landi",
+        "character": "Selma Forrest Landis",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7RzM3xwjNlnS2THk3guMkPPJ0WW.jpg",
+        "tmdbId": 32924
+      },
+      {
+        "name": "Joseph Calleia",
+        "character": "Dancer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qLLipHfet9kXRiveOqmimE5SGg1.jpg",
+        "tmdbId": 33747
+      },
+      {
+        "name": "Jessie Ralph",
+        "character": "Katherine Forrest",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gy4W2M3Jpi4kb7NTc6MPHUhHgc0.jpg",
+        "tmdbId": 13965
+      },
+      {
+        "name": "Alan Marshal",
+        "character": "Robert Landis",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3s50CuZjKmKwaXqATJxkEKR0nDy.jpg",
+        "tmdbId": 78854
+      },
+      {
+        "name": "Teddy Hart",
+        "character": "Floyd Casper",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rERpmC3LXn0eKmjHyhffq1juNiF.jpg",
+        "tmdbId": 131129
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/xRyu3WKWBATP8T4afJ5vArNlElB.jpg",
+      "https://image.tmdb.org/t/p/w1280/5Zfx74PQ2E2W27lD6zRB1PXTr4.jpg",
+      "https://image.tmdb.org/t/p/w1280/aoolRxabPL6p3ETVCajdSTVixWB.jpg",
+      "https://image.tmdb.org/t/p/w1280/gsw3vd7oII7DqymYNyoVKUCFZzF.jpg",
+      "https://image.tmdb.org/t/p/w1280/eu3p5Wk5hIcwd4DhVAzY9D5OAwh.jpg",
+      "https://image.tmdb.org/t/p/w1280/vv6AEIhZImHCDfE4tIszNIFJ8oM.jpg"
+    ],
+    "crew": [
+      {
+        "name": "W.S. Van Dyke",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/82hTZOdmnF9lFUY7XVeCbGGuqvN.jpg",
+        "tmdbId": 32427
+      },
+      {
+        "name": "Frances Goodrich",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4PPMyzYew3IEx7EERbOIKSobeFw.jpg",
+        "tmdbId": 26159
+      },
+      {
+        "name": "Albert Hackett",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1W4D2IfDxZuvqL11BuMujBAn73v.jpg",
+        "tmdbId": 26160
+      },
+      {
+        "name": "Dashiell Hammett",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/d1olCdG9HltN6mScWy0S3iaHP48.jpg",
+        "tmdbId": 5165
+      },
+      {
+        "name": "Oliver T. Marsh",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 127523
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0032599": {
     "imdbID": "tt0032599",
     "title": "His Girl Friday",
