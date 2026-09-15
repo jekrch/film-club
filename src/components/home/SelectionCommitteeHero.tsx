@@ -83,11 +83,9 @@ const Spotlight: React.FC<{ active: boolean; index: number }> = ({ active, index
 /**
  * Direction of play between two members, at the height of their portraits.
  *
- * Held back until `sm`. Four portraits and their separators don't fit across a
- * phone — the chevrons and the gaps either side of them cost 66px, and there are
- * about six to spare — and a committee that wraps onto two lines reads as two
- * groups rather than as one cycle. Below that the running order is the reading
- * order, which is how it has always been on a phone.
+ * Hidden below `sm`: four portraits and their separators don't fit across a
+ * phone, and a committee that wraps onto two lines reads as two groups rather
+ * than one cycle. On a phone the reading order is the running order.
  */
 const CycleChevron: React.FC = () => (
     <svg

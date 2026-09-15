@@ -158,7 +158,7 @@ export interface TrophiesFile {
  * One member's edits to their rating of one film.
  *
  * Presence is meaningful: a key that is absent means "the sheet's value stands",
- * an explicit `null` means "deliberately blank". See §8.7 of the plan.
+ * an explicit `null` means "deliberately blank".
  */
 export interface RatingOverride {
     score?: number | null;
@@ -179,11 +179,9 @@ export interface RatingOverride {
  * selector the sheet supplied.
  *
  * `poster` and `backdropImage` are presentation rather than club record: the
- * first replaces OMDb's cover art, which is frequently the wrong edition or a
+ * first replaces OMDb's cover art, which is often the wrong edition or a
  * washed-out scan, and the second is the wide still behind the selection
- * committee and the film's own page. Both were hand-edits to `films.json` until
- * now, which is why 23 films have a `backdropImage` and nobody could add the
- * 24th without a commit.
+ * committee and the film's own page.
  */
 export interface FilmOverride {
     /** A `club.json` display name — whose pick it was. Null when unrecorded. */
@@ -200,19 +198,15 @@ export interface FilmOverride {
 }
 
 /**
- * The marker that says a film entered the club on the site rather than through
- * the Google Sheet.
+ * The marker that says a film was added to the club on the site.
  *
- * It is what `create_submitted_films.py` looks for: an id carrying this and
- * absent from `films.json` is one CI still has to fetch from OMDb and TMDb. The
- * worker cannot write `films.json` (§8.1) and would have to hold OMDb's whole
- * response to try, so what it commits is this — the intent — and CI builds the
- * record on the next deploy, about a minute later.
+ * `create_submitted_films.py` looks for it: an id with this marker that's absent
+ * from `films.json` still needs its record fetched from OMDb and TMDb. The
+ * worker can't write `films.json`, so it commits this and CI builds the record
+ * on the next deploy.
  *
- * `title` and `year` are OMDb's, read once when the submission is accepted. They
- * are not club data and nothing renders them once the film lands; they exist so
- * the pending state can name the film rather than an id, in the editor and in
- * the CI log.
+ * `title` and `year` come from OMDb when the submission is accepted. They're only
+ * used to name the film while it's pending, in the editor and the CI log.
  */
 export interface FilmSubmission {
     /** The member who added it. */

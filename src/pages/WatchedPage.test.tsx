@@ -30,9 +30,8 @@ jest.mock('../types/watched', () => {
                     updatedAt: '2026-08-09T21:14:02Z',
                 },
             ],
-            // One film, and one the club never watched — the shape a log has on
-            // the day a member starts one, and the case the banner used to
-            // render nothing at all for.
+            // One film, and one the club never watched — the shape of a
+            // brand-new log.
             Mark: [
                 {
                     imdbID: 'tt9999999',
@@ -121,10 +120,8 @@ describe('WatchedPage', () => {
         });
     });
 
-    // The banner used to be able to draw only on club films, which left a log
-    // of films the club never watched with a plain card. It now takes the
-    // poster from the summary cache, and credits it out to IMDb rather than to
-    // a film page that doesn't exist.
+    // A log of non-club films still gets a banner, using the poster from the
+    // summary cache and crediting it to IMDb rather than to a film page.
     it('builds its banner from films the club never watched', () => {
         renderFor('Andy');
         const credits = screen

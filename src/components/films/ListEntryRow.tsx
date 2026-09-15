@@ -22,7 +22,7 @@ import { MAX_SCORE, SCORE_STEP } from '../../utils/ratingEditUtils';
  *
  * It owns no state: every field is a controlled input over the {@link DraftEntry}
  * it is handed, and every change goes back up as a callback. The page holds the
- * whole draft because a list is saved whole (§8.4), so a row that kept its own
+ * whole draft because a list is saved whole, so a row that kept its own
  * copy would only be a second source of truth to reconcile.
  *
  * Its declared class strings are its own rather than shared: the field styling

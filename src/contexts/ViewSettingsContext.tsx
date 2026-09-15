@@ -13,11 +13,8 @@ export const CARD_SIZES = ['standard', 'compact', 'poster'] as const;
 export type CardSize = (typeof CARD_SIZES)[number];
 
 /**
- * The single list both the rehydrate and the setter validate against.
- *
- * These two checks used to be written out separately and had drifted: the
- * setter accepted 'poster' but the localStorage read did not, so choosing the
- * poster view and reloading silently dropped back to compact.
+ * The single list both the rehydrate and the setter validate against, so any
+ * size that can be set can also be restored.
  */
 const isCardSize = (value: unknown): value is CardSize =>
     typeof value === 'string' && (CARD_SIZES as readonly string[]).includes(value);

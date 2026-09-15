@@ -10,15 +10,11 @@ import {
 import { pendingFilmSummary } from './pendingFilmSummaries';
 
 /**
- * What a profile banner draws, once the member has had their say.
+ * What a profile banner draws.
  *
- * The banner used to be a fixed rule — the six club films this member scored
- * highest — which is a good default and a poor only option: it says what someone
- * rated well, not what they would put on a wall. A member may now name the films
- * instead, and those need not be club films. That is the whole reason this
- * module resolves art the way the list and watch-log rows do, through
- * {@link FrameSource}, rather than through `Film`: a member's favorite is far
- * more likely to be in the summary cache than in `films.json`.
+ * By default, the six club films this member scored highest. A member may
+ * instead name the films, and those need not be club films, so art is resolved
+ * through {@link FrameSource} (like list and watch-log rows) rather than `Film`.
  */
 
 /**

@@ -145,12 +145,9 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
                         ))}
                     </ul>
 
-                    {/* Unconditional, and shaped like the rows above it. The rows
-                        link to the log too, but nothing about a row says so —
-                        and a member with four entries or fewer used to have no
-                        visible way through to the page at all. A full-width
-                        footer reads as a way out of the card in a way an inline
-                        line of text under four cards does not. */}
+                    {/* Always shown, and shaped like the rows above it, so there is
+                        a visible way through to the log page however few entries
+                        the member has. */}
                     <Link
                         to={watchedPath}
                         className="group mt-2 flex items-center justify-center gap-1.5 rounded-xl border border-slate-600/30 bg-slate-700/20 px-3 py-2.5 text-sm text-blue-400 transition-colors duration-200 hover:border-blue-500/25 hover:bg-slate-700/40 hover:text-blue-300"

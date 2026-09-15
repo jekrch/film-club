@@ -160,9 +160,8 @@ export function parseFilmForm(form: FilmFormValues): FilmParseResult {
  *
  * A field-level merge needs a field-level diff: sending every key would write
  * `selector: null` for a film whose selector the sheet supplied and this member
- * never looked at, and an override of `null` is a deliberate blank that the
- * sheet can no longer fix (§8.7). So a key is sent when the member changed it,
- * and left out otherwise.
+ * never touched, and a `null` override is a deliberate blank the sheet can't
+ * replace. So a key is sent only when the member changed it.
  *
  * `baseline` is the form the values were seeded from — the same one
  * {@link baselineFilmForm} built — so "changed" means changed by this member in

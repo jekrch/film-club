@@ -23,9 +23,8 @@ const PREVIEW_COUNT = 5;
  * when they have none, so the page can include it unconditionally — unless the
  * viewer is the member themself, who needs somewhere to start their first list.
  *
- * The editing links are the profile's entry point into the list editor (§8.9).
- * They appear only for the owner (or an admin); everyone else sees the section
- * exactly as it was before editing existed.
+ * The editing links open the list editor and appear only for the owner (or an
+ * admin).
  */
 const ProfileListsSection: React.FC<ProfileListsSectionProps> = ({ lists, owner }) => {
     const { configured, canEditAs } = useClubAuth();

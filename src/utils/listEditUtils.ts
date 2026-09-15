@@ -9,18 +9,14 @@ import { parseTrailerLink } from './youtube';
  * The pure half of the list editor: the draft a member is building, and what it
  * has to become for the worker to accept it.
  *
- * The list editor is the odd one of the four — a rating, a watch-log entry and a
- * profile are each a single record, while a list is an *ordered collection*, so
- * the draft here is an array with its own add, move, patch and remove rules
- * rather than a form. What it shares with {@link ./watchedEditUtils} and the
- * other two is the shape of the deal: every field is validated by the same
- * parsers the worker uses, so a mistake is caught while the member is still
- * looking at the field rather than after a round trip. The worker validates
- * again regardless — this is convenience, not trust.
+ * Unlike a rating, watch-log entry, or profile, a list is an *ordered
+ * collection*, so the draft is an array with its own add, move, patch and remove
+ * rules. As in {@link ./watchedEditUtils}, fields are validated with the same
+ * parsers the worker uses, so mistakes show up before a round trip; the worker
+ * validates again regardless.
  *
- * Writes are whole-list rather than per-entry, so there is no patch builder
- * here: the draft becomes a complete {@link ListInput} and replaces what was
- * stored (§8.4).
+ * Writes are whole-list, so there is no patch builder: the draft becomes a
+ * complete {@link ListInput} that replaces what was stored.
  */
 
 /**
@@ -153,7 +149,7 @@ export const toDraftEntries = (
 /**
  * A search hit as a new row. Its title, year and poster come from the hit
  * itself, so a film just added draws immediately rather than waiting on the CI
- * step that fills `listFilms.json` (§8.8).
+ * step that fills `listFilms.json`.
  */
 export const draftEntryFromSearch = (
     hit: FilmSearchResult,

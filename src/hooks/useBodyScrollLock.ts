@@ -10,9 +10,8 @@ import { useLayoutEffect } from 'react';
  * - The gutter check, not a padding guess. `html` carries
  *   `scrollbar-gutter: stable` (see index.css), so the scrollbar's width stays
  *   reserved while the scrollbar itself is hidden — the page gains nothing and
- *   needs no compensation. Adding the classic `padding-right: <scrollbar>`
- *   there narrows the page by that width and slides its centered content left,
- *   which is the shift this hook used to cause. The padding is applied only
+ *   needs no compensation; adding `padding-right: <scrollbar>` there would
+ *   narrow the page and shift centered content left. The padding is applied only
  *   when the gutter is *not* reserved, i.e. in browsers without
  *   `scrollbar-gutter` support, where hiding the scrollbar really does widen
  *   the page.

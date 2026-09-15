@@ -1,20 +1,13 @@
 #!/usr/bin/env python3
 """Fetching one film from OMDB and TMDb, shared by the two scripts that add films.
 
-Films used to arrive one way — a row in the Google Sheet, materialized by
-`sync_sheet_to_json.py` — so the fetching lived there. They now arrive two ways:
-members add them on the site, and `create_submitted_films.py` materializes those
-at deploy time. Both need the same OMDB record, the same TMDb crew, cast,
-keywords, and stills, and the same `tmdbDataVersion` bookkeeping, and a film has
-to come out identical whichever door it came in by.
+Films come from the Google Sheet (`sync_sheet_to_json.py`) and from members
+adding them on the site (`create_submitted_films.py`). Both use this module, so
+a film's OMDB record, TMDb crew, cast, keywords, stills, and `tmdbDataVersion`
+come out identical either way.
 
-So this module holds that logic, and both scripts import it. It is the same code
-those functions have always been, moved rather than rewritten.
-
-**It imports nothing outside the standard library except `requests`**, which is
-the constraint that makes sharing possible at all: `sync_sheet_to_json.py` needs
-pandas to read the sheet, `deploy.yml` installs only `requests`, and a module
-that reached for pandas here would put it on every deploy.
+**It imports nothing outside the standard library except `requests`**, because
+`deploy.yml` installs only `requests`; pandas is needed only by the sheet sync.
 """
 
 import json

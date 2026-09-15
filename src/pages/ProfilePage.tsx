@@ -49,7 +49,7 @@ const ProfilePage: React.FC = () => {
 
     const { configured, canEditAs } = useClubAuth();
     // The live `club.json` record, for a member looking at a profile they may
-    // edit: a bio saved a minute ago is not in the bundle yet (§8.8).
+    // edit: a bio saved a minute ago is not in the bundle yet.
     const { profile, loading: profileLoading, applyLocal } = useMemberProfile(member?.name);
 
     if (loading) return <LoadingSpinner />;

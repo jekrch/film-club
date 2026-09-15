@@ -17,17 +17,12 @@ import { compareTrophies } from '../utils/trophyUtils';
 /**
  * Every award the club has given, as fresh as this session can see them.
  *
- * Same job as `OverridesContext`, with one difference that shows up in the
- * initial value. A rating override is invisible to a signed-out visitor — it has
- * already been folded into `films.json` by the time they load the page, and the
- * live file only marks which rows the sheet no longer owns. A trophy is the
- * thing itself, so the fallback here is the *bundled* file rather than an empty
- * map: signed out, this context serves what the last build baked in, which is
- * exactly what the galleries would have read on their own.
+ * Like `OverridesContext`, but the signed-out fallback is the *bundled* file
+ * rather than an empty map: overrides are already folded into `films.json`,
+ * while trophies are only in this file.
  *
- * Signed in, it fetches `trophies.json` from `main` once, because a member who
- * has just handed out an award should see it on the film page and on the
- * recipient's shelf immediately, not after the deploy a minute later (§8.8).
+ * Signed in, it fetches `trophies.json` from `main` once, so a member who hands
+ * out an award sees it immediately rather than after the next deploy.
  */
 interface TrophiesValue {
     /** IMDb id → that film's awards. Bundled until the live read lands. */

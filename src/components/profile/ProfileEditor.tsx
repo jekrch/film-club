@@ -34,26 +34,18 @@ import {
 } from '../../utils/profileEditUtils';
 
 /**
- * A member's own profile, made editable: their picture, their role line, their
- * bio, their link, their interview (§8.9), and what their banner draws.
+ * A member's own profile, made editable: picture, role line, bio, link,
+ * interview, and banner films.
  *
- * Two of those don't behave like the rest, and both for the same reason — they
- * aren't text. A picture may be *uploaded* rather than linked, which commits the
- * file and the profile immediately instead of waiting for Save; there is no
- * half-typed state for a file, and holding bytes in form state until a later
- * click would only invent one. Banner films are picked from search rather than
- * typed, but are ordinary form state and save with everything else.
+ * An uploaded picture commits the file and the profile immediately instead of
+ * waiting for Save, since a file has no half-typed state. Banner films are
+ * picked from search but save with everything else.
  *
- * Collapsed until asked for, like every other editor here — though for a
- * gentler reason than the rest. This one is only rendered for someone already
- * signed in and entitled to edit it, so no third-party script hangs on the
- * toggle; what it protects is the profile page, which is a thing to read rather
- * than a form to fill in.
+ * Collapsed by default, so the profile page reads as a page rather than a form.
  *
- * A save commits to the repo and is live after the next Pages build — about a
- * minute — so the page renders from what came back rather than waiting (§8.8).
- * What it can't do is change who someone is: `name` is the key every rating,
- * list, and watch log joins on, and the worker refuses it.
+ * A save is live after the next Pages build (about a minute), so the page renders
+ * from the saved response. `name` can't be changed: every rating, list, and
+ * watch log joins on it, and the worker rejects it.
  */
 
 interface ProfileEditorProps {

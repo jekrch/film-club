@@ -2,10 +2,9 @@
  * OMDB search proxy for the editor's add-film picker.
  *
  * This endpoint exists only so `OMDB_API_KEY` stays a worker secret instead of
- * shipping in the site bundle. It is search and nothing else: the *metadata*
- * for a list film is fetched in CI by `enrich_list_films.py`, so a save makes no
- * OMDB call at all no matter how long the list is (§8.6). What comes back here
- * is just enough to render a picker row and record an id.
+ * shipping in the site bundle. List film metadata is fetched in CI by
+ * `enrich_list_films.py`, so saving a list makes no OMDB calls; results here
+ * carry just enough to render a picker row and record an id.
  */
 
 import { HttpError } from './errors';
@@ -65,15 +64,12 @@ export async function searchFilms(env: Env, query: string): Promise<FilmSearchRe
 /**
  * Resolves one IMDb id, so a film can be added to the club on the site.
  *
- * The one OMDB call the worker makes on a write, and it earns its place: the
- * record itself is built in CI from the full OMDB and TMDb responses (§8.6), so
- * what a submission commits is an intent rather than a film. An id OMDB has
- * never heard of would commit cleanly and then fail in CI on every deploy from
- * then on, leaving a film that is permanently arriving. One lookup at the door
- * turns that into a 404 the member can read.
+ * The only OMDB call on a write. The full record is built in CI, but an unknown
+ * id would commit cleanly and then fail in CI on every deploy; checking here
+ * returns a 404 the member can see instead.
  *
- * The title and year come back for the same reason: the submission stores them
- * so the pending state can name the film while CI catches up.
+ * The title and year are stored on the submission so the film can be named
+ * while it's pending.
  */
 export async function lookupFilm(env: Env, imdbId: string): Promise<FilmSearchResult> {
     const url = new URL(OMDB_URL);

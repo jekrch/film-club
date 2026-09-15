@@ -17,22 +17,18 @@ import {
 } from '../../utils/filmEditUtils';
 
 /**
- * Adding a film to the club, which used to mean opening the Google Sheet.
+ * Adding a film to the club.
  *
- * A member searches OMDB, picks the film, says whose pick it was and when the
- * club watched it, and optionally points it at a better cover and a wide still
- * for the selection committee card. What that commits is a submission rather
- * than a film: the record itself — OMDb's response plus TMDb's crew, cast, and
- * stills — is built in CI on the next deploy, because the worker may not write
- * `films.json` and no browser should be assembling several kilobytes of it.
+ * A member searches OMDB, picks the film, sets whose pick it was and when the
+ * club watched it, and optionally a better cover and a wide still for the
+ * selection committee card. This commits a submission, not a film: the full
+ * record is built in CI on the next deploy, since the worker can't write
+ * `films.json`.
  *
- * So the film is not on the site the moment this closes. It is there about a
- * minute later, the same latency every other save here has, and the panel says
- * so in those words rather than leaving a member refreshing a 404.
+ * The film appears on the site about a minute later, and the panel says so.
  *
- * Films already in the club are shown disabled in the picker: the worker would
- * accept the write and treat it as an edit, which is right for the film's fields
- * and wrong as an answer to "add this film".
+ * Films already in the club are disabled in the picker: the worker would accept
+ * the write as an edit, which isn't what "add this film" means.
  */
 
 interface AddClubFilmPanelProps {

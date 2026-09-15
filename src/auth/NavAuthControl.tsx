@@ -15,9 +15,8 @@ import { useClubAuth } from './GoogleAuth';
  * and picks up the nav's blue once someone is actually signed in, which is the
  * only state worth announcing.
  *
- * Google's button is mounted only after the panel opens, and this is the only
- * place in the app that mounts it: doing so loads a third-party script, and a
- * nav that's on every page must not pay for a sign-in nobody asked for (§8.9).
+ * Google's button is mounted only after the panel opens, since it loads a
+ * third-party script and the nav is on every page.
  */
 
 interface NavAuthControlProps {
@@ -126,8 +125,7 @@ const NavAuthControl: React.FC<NavAuthControlProps> = ({ variant = 'icon', class
         wasSignedIn.current = signedIn;
     }, [signedIn]);
 
-    // A build with no worker has nothing to sign into, and the nav shouldn't
-    // carry a control that leads nowhere (§6.2).
+    // A build with no worker has nothing to sign into, so show no control.
     if (!configured) return null;
 
     const label = signedIn ? 'Account' : 'Club member sign-in';

@@ -4,10 +4,9 @@ import type { ReactNode } from 'react';
 import { CARD_SIZES, ViewSettingsProvider, useViewSettings } from './ViewSettingsContext';
 
 /**
- * The card-size preference is the one piece of user state the site persists on
- * its own, and it survives a reload only if the write and the read agree on
- * what a valid size is. They had drifted — `poster` could be set but not
- * restored — which is the regression these tests exist to hold shut.
+ * The card-size preference is persisted to localStorage. These tests check that
+ * the write and the read agree on what a valid size is, so every size that can
+ * be set is restored on reload.
  */
 
 const KEY = 'appViewSettings';
@@ -28,8 +27,7 @@ describe('initial value', () => {
         expect(render().result.current.cardSize).toBe('compact');
     });
 
-    // Every size the type allows must survive a reload. The poster case is the
-    // one that used to fail.
+    // Every size the type allows must survive a reload.
     it.each(CARD_SIZES)('restores %s from a previous session', (size) => {
         localStorage.setItem(KEY, JSON.stringify({ cardSize: size }));
         expect(render().result.current.cardSize).toBe(size);

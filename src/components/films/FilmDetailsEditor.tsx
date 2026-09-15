@@ -20,16 +20,12 @@ import {
  * The film's own club record, made editable in place: whose pick it was, when
  * the club watched it, and the two images the site cannot source for itself.
  *
- * These four fields were the Google Sheet's job — two of its columns and two
- * hand-edits to `films.json` — which made adding a film to the club a
- * spreadsheet errand and correcting a wrong cover a commit. They are club
- * property rather than anyone's own row, so any signed-in member may write them,
- * on the same reasoning that lets any member hand out a trophy.
+ * These are club property rather than anyone's own row, so any signed-in member
+ * may edit them, as with trophies.
  *
- * Rendered only for a signed-in member and collapsed until asked for, like every
- * other editor here. A save commits to the repo and is live after the next Pages
- * build — about a minute — so the panel reports what it stored rather than
- * waiting for the page around it to agree (§8.8).
+ * Rendered only for a signed-in member and collapsed by default. A save is live
+ * after the next Pages build (about a minute), so the panel shows what it stored
+ * rather than waiting for the page to catch up.
  */
 
 interface FilmDetailsEditorProps {

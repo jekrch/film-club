@@ -32,9 +32,7 @@ const formatTotalMinutes = (totalMinutes: number): string => {
 const PILLAR_TRAIL_MASK =
     'linear-gradient(to bottom, rgba(0,0,0,1) 0px, rgba(0,0,0,1) 280px, rgba(0,0,0,0.6) 440px, rgba(0,0,0,0.5) 90%, rgba(0,0,0,0.35) 97%, rgba(0,0,0,0) 100%)';
 
-// One value for both sides. They used to differ because the banner behind the left
-// pillar was a lighter slate than the one behind the right; it carries no fill of its
-// own now, so the two stand on the same ground and read identically.
+// One value for both sides: the banner has no fill, so both pillars stand on the same ground.
 const PILLAR_OPACITY = 0.14;
 
 // The pillars scale up with the viewport. The SVG geometry is derived from a pixel
@@ -190,9 +188,7 @@ const HomePage = () => {
         <PageLayout>
             <div className="relative">
                 {/* The colonnade: one continuous run of pillars down the whole page, behind
-          the content. The banner carries no fill, so these show through it rather
-          than stopping at its top edge and starting again below - which is what a
-          second, banner-local set of pillars used to do, seam and all. */}
+          the content. The banner has no fill, so the pillars show through it. */}
                 <div
                     className="absolute inset-x-0 top-0 -bottom-8 -z-10 pointer-events-none"
                     style={{

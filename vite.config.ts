@@ -2,6 +2,80 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import type { Plugin } from 'vite';
+
+/**
+ * The Content Security Policy, injected into the built `index.html` only.
+ *
+ * What it protects is the editor's Google ID token, which `sessionStore.ts`
+ * keeps in `sessionStorage` where any script running on this origin can read
+ * it. Pinning `script-src` to this origin and the two third-party scripts the
+ * site actually loads is what stops an injection from becoming such a script.
+ * Nothing on the site is known to be injectable — `Markdown` escapes raw HTML
+ * and the worker validates every stored URL — so this is the second line of
+ * defense rather than a patch over a hole.
+ *
+ * It is a meta tag because GitHub Pages can't set response headers, which also
+ * means `frame-ancestors` (header-only) can't be expressed. A meta policy only
+ * governs what comes after it, so it goes straight after the charset.
+ *
+ * Build-only because the dev server injects an inline React Refresh preamble
+ * that `script-src` would block. `vite preview` serves the build, and is where
+ * a violation shows up in the console.
+ *
+ * Every origin added below widens what an injected script could reach.
+ */
+function contentSecurityPolicy(): Plugin {
+    let editorOrigin = '';
+    return {
+        name: 'content-security-policy',
+        apply: 'build',
+        configResolved(config) {
+            // The worker is the one origin that varies by deployment. Unset,
+            // editing is off and nothing needs to reach it.
+            const url: string | undefined = config.env.VITE_EDITOR_API_URL;
+            editorOrigin = url ? new URL(url).origin : '';
+        },
+        transformIndexHtml(html) {
+            const connect = [
+                "'self'",
+                'https://raw.githubusercontent.com',
+                'https://accounts.google.com',
+                'https://analytics.jacobkrch.com',
+                editorOrigin,
+            ].filter(Boolean);
+            const policy = [
+                "default-src 'self'",
+                // GIS and analytics, nothing else. The JSON-LD block is data, not
+                // script, and a policy doesn't apply to it.
+                "script-src 'self' https://accounts.google.com/gsi/client https://analytics.jacobkrch.com",
+                // 'unsafe-inline' because React and framer-motion set style
+                // attributes; injected style is a far smaller problem than script.
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style",
+                "font-src 'self' https://fonts.gstatic.com",
+                // Posters and stills come from OMDb, TMDb, and any https URL a
+                // member pastes; blob: is the avatar upload's preview.
+                "img-src 'self' data: blob: https:",
+                `connect-src ${connect.join(' ')}`,
+                'frame-src https://accounts.google.com https://www.youtube-nocookie.com',
+                "worker-src 'self'",
+                "base-uri 'self'",
+                "form-action 'self'",
+                "object-src 'none'",
+            ].join('; ');
+
+            // Fail the build rather than ship a page without its policy.
+            const charset = '<meta charset="UTF-8" />';
+            if (!html.includes(charset)) {
+                throw new Error('content-security-policy: no charset meta in index.html to follow');
+            }
+            return html.replace(
+                charset,
+                `${charset}\n        <meta http-equiv="Content-Security-Policy" content="${policy}" />`
+            );
+        },
+    };
+}
 
 export default defineConfig({
     plugins: [
@@ -9,6 +83,7 @@ export default defineConfig({
             jsxRuntime: 'automatic',
         }),
         tailwindcss(),
+        contentSecurityPolicy(),
         VitePWA({
             registerType: 'autoUpdate', // Automatically update the SW when new content is available
             // `null`, not 'auto': src/main.tsx registers via `virtual:pwa-register`,

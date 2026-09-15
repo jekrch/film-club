@@ -70,10 +70,9 @@ const isLive = (imdbID: string, record: unknown): record is PendingRecord => {
  * itself up on the next page that resolves a row, and the pruned map is what the
  * next write persists.
  *
- * Storage throws rather than no-ops in Safari's private mode, on a full quota,
- * and in webviews with storage disabled. None of that should break rendering a
- * list, so a failure just means the film shows as unknown until the deploy —
- * which is the behavior this replaced.
+ * Storage can throw (private mode, full quota, disabled storage). That shouldn't
+ * break rendering a list, so on failure the film just shows as unknown until the
+ * deploy.
  */
 const load = (): Record<string, PendingRecord> => {
     if (cache) return cache;

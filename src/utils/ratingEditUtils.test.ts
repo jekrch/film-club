@@ -45,8 +45,8 @@ describe('baselineRating', () => {
         });
     });
 
-    // Presence, not truthiness: this is the distinction the whole override
-    // scheme rests on (§8.7).
+    // Presence, not truthiness: an absent key defers to the sheet, while null is
+    // a deliberate blank.
     it('leaves the sheet in charge of fields the override does not mention', () => {
         expect(baselineRating(override({ score: 9 }), sheetRating())).toEqual({
             score: 9,

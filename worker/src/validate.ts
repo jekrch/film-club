@@ -1,5 +1,5 @@
 /**
- * Payload validation — the trust boundary from §8.3 of the lists plan.
+ * Payload validation — the worker's trust boundary.
  *
  * An authenticated member is trusted to edit *their own contributions*, not to
  * write files. Nothing here reads the network or the environment: every export
@@ -31,7 +31,7 @@ export const MAX_SCORE = 9;
 
 /**
  * Sanity bounds on what one commit may contain, not technical limits. The
- * worker makes no per-film network call on save (§8.6), so a long list costs it
+ * worker makes no per-film network call on save, so a long list costs it
  * nothing — these exist to keep a single request from writing an absurd file.
  */
 export const LIMITS = {
@@ -93,7 +93,7 @@ type RatingField = (typeof RATING_FIELDS)[number];
  * A partial rating update. Presence is the payload: a key that is absent is left
  * to the sheet, an explicit `null` is a deliberate blank. `PUT …/rating` is
  * therefore a field-level merge, which is what lets a member fix their score
- * without wiping a blurb the sheet supplied (§8.7).
+ * without wiping a blurb the sheet supplied.
  */
 export type RatingPatch = Partial<Record<RatingField, number | string | null>> & {
     score?: number | null;

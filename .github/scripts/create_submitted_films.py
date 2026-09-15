@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 """Turn films members added on the site into real entries in films.json.
 
-A member adding a film commits an intent, not a film. The editing worker owns
-`overrides.json` and may never write `films.json` (§8.1), and a film record is
-OMDb's response plus TMDb's — several kilobytes of crew, cast, keywords, and
-stills that no browser should be trusted to assemble. So the worker writes a
-small `added` marker and this script, running in CI where the API keys live,
-builds the record from it.
+The editing worker can't write `films.json`, so adding a film on the site only
+commits an `added` marker to `overrides.json`. This script runs in CI, where the
+API keys live, and builds the full OMDb + TMDb record from that marker.
 
 ```
 overrides.json          films.json
@@ -16,19 +13,15 @@ overrides.json          films.json
                               cover, backdrop, and everyone's scores
 ```
 
-Runs *before* `apply_overrides.py` in `deploy.yml`, and the order is the whole
-design: this script creates the entry, that one populates it. Between them a new
-film gets its club fields by exactly the same path an old film's edits do, and
-neither script needs to know the other's job.
+Runs *before* `apply_overrides.py` in `deploy.yml`: this script creates the
+entry, and that one fills in its club fields.
 
-Idempotent, like the rest of the derived-data steps: an id already in
-`films.json` is skipped, so re-running costs one file read and nothing else.
-Fetching is the same shared code the sheet sync uses (`film_fetch.py`), so a
-film added here is indistinguishable from one added through the sheet.
+Idempotent: ids already in `films.json` are skipped. Fetching uses the same
+code as the sheet sync (`film_fetch.py`), so the resulting entries are identical.
 
 A film OMDb can't resolve is logged and left pending rather than failing the
-deploy — the worker checks the id against OMDb before accepting a submission, so
-reaching that branch means OMDb was down, and the next deploy will pick it up.
+deploy. The worker already checks ids against OMDb, so this only happens when
+OMDb is down; the next deploy retries.
 """
 
 import json

@@ -1,25 +1,18 @@
 /**
  * The film-club editing worker: auth → validate → commit.
  *
- * Members sign in to the site with Google and edit their own contributions;
- * this worker verifies who they are, checks the payload against §8.3's trust
- * boundary, and commits the result to the repo. The site itself stays fully
- * static — nothing on a normal page load talks to this worker, and a save is
- * live once the Pages build that the commit triggers finishes, about a minute.
+ * Verifies the signed-in member, validates the payload, and commits the result
+ * to the repo. The site stays static; a save is live once the Pages build
+ * triggered by the commit finishes, about a minute.
  *
- * Five files, one writer each (§8.1): `overrides.json` for club films — scores,
+ * Five files, one writer each: `overrides.json` for club films — scores,
  * reviews, and the film's own record — `lists.json` for member lists,
- * `watched.json` for what members watched on their own, `club.json` for the
- * members themselves, and `trophies.json` for the awards they hand each other.
- * CI owns `films.json` and `listFilms.json` and this worker never touches them.
+ * `watched.json` for personal watch logs, `club.json` for member profiles, and
+ * `trophies.json` for awards. CI owns `films.json` and `listFilms.json`, which
+ * this worker never touches.
  *
- * That last part is why adding a film looks the way it does. A club film's
- * record is OMDb's response plus TMDb's, several kilobytes of crew, cast, and
- * stills, and it belongs in `films.json` — which this worker may not write. So a
- * member adding a film commits the *intent* to `overrides.json`, and
- * `create_submitted_films.py` builds the record on the next deploy. The film is
- * on the site about a minute later, by the same route and with the same latency
- * as every other save here.
+ * So adding a film commits an `added` marker to `overrides.json`, and
+ * `create_submitted_films.py` builds the full record on the next deploy.
  */
 
 import { authenticate, memberNames } from './auth';
@@ -133,13 +126,12 @@ function json(data: unknown, status: number, cors: Record<string, string>): Resp
 // --- Request helpers ----------------------------------------------------
 
 /**
- * Parses the body, refusing anything over the §8.3 size cap *before* parsing it.
+ * Parses the body, refusing anything over the size cap *before* parsing it.
  * `Content-Length` is a hint the client controls, so the real check is on the
  * bytes that actually arrived.
  *
- * The cap is a parameter for exactly one caller: an avatar upload carries an
- * image rather than the few hundred bytes of text every other route does, and
- * raising the shared limit to suit it would raise it for all of them.
+ * The cap is a parameter so avatar uploads can use a larger one without raising
+ * it for every other route.
  */
 async function readBody(request: Request, limit: number = LIMITS.body): Promise<unknown> {
     const text = await request.text();
@@ -238,7 +230,7 @@ async function putRating(
  *
  * This is the revert action behind the film page's "edited on the site" marker.
  * It removes the member's key entirely rather than nulling its fields, because
- * a `null` is itself an override meaning "deliberately blank" (§8.7).
+ * a `null` is itself an override meaning "deliberately blank".
  */
 async function deleteRating(
     env: Env,
@@ -296,14 +288,11 @@ function filmRecordEmpty(record: FilmOverrideRecord): boolean {
 /**
  * Refuses a write about a film the club doesn't have.
  *
- * `films.json` used to be the whole answer, because the sheet was the only way
- * a film could arrive. Now one can be added here, and for the minute or two
- * before CI builds its record the only evidence it exists is the submission in
- * `overrides.json` — so a member who adds a film and immediately scores it must
- * not be told it isn't a club film.
+ * A club film is one in `films.json` or with a pending submission in
+ * `overrides.json` (added on the site, not yet built by CI), so a member can
+ * score a film right after adding it.
  *
- * The second read only happens on a miss, which is the rare path: an id already
- * in `films.json` costs the cached id set and nothing else.
+ * `overrides.json` is only read on a miss; a hit costs just the cached id set.
  */
 async function assertClubFilm(env: Env, imdbId: string): Promise<void> {
     if ((await fetchClubFilmIds(env)).has(imdbId)) return;
@@ -652,7 +641,7 @@ async function deleteWatched(
  * Creates or replaces one list.
  *
  * The id in the path is only a lookup key. On create the worker assigns the id
- * itself (§8.3) and returns it — so a rename later changes the name and leaves
+ * itself and returns it — so a rename later changes the name and leaves
  * the URL alone, which is why the id can't be derived from the name at render
  * time. Clients that are creating should PUT to `/api/lists/new`; any unmatched
  * id behaves the same way.
@@ -1042,19 +1031,14 @@ async function putProfile(request: Request, env: Env, member: Member): Promise<u
 /**
  * Takes a picture rather than a link to one, and puts it in the repo.
  *
- * A member's `image` has always been a URL, which is fine for someone who
- * already hosts their photograph somewhere and useless for everyone else. This
- * is the other half: the browser resizes the file it was given, sends the bytes,
- * and the worker commits them to `public/images/members/` and points the profile
- * at the result.
+ * The browser resizes the file and sends the bytes; the worker commits them to
+ * `public/images/members/` and points the profile's `image` at the result.
  *
- * **Two commits, deliberately.** The image and `club.json` are separate files, so
- * writing both atomically would mean the git tree API — five calls and its own
- * failure modes — to save a Pages build that `deploy.yml`'s `cancel-in-progress`
- * concurrency group already collapses. The order is what matters: the file lands
- * first, so the profile never points at a path that isn't there yet. If the
- * second half fails the member has an unreferenced file in the repo and an
- * unchanged profile, which is the harmless direction for this to break.
+ * **Two commits, deliberately.** Writing both files atomically would need the
+ * git tree API, and `deploy.yml`'s `cancel-in-progress` already collapses the
+ * extra Pages build. The image is committed first so the profile never points at
+ * a missing file; if the second commit fails, the only leftover is an
+ * unreferenced image.
  */
 async function putProfileImage(request: Request, env: Env, member: Member): Promise<unknown> {
     const body = await readBody(request, LIMITS.avatarBody);
@@ -1088,9 +1072,8 @@ async function putProfileImage(request: Request, env: Env, member: Member): Prom
  * Resolves one request to a response body.
  *
  * Every route authenticates first — there is no unauthenticated surface here
- * beyond the CORS preflight. The reads exist so the editor sees a save that
- * hasn't deployed yet: they come from `main`, not from the bundle the browser
- * loaded (§8.8).
+ * beyond the CORS preflight. Reads come from `main`, not the deployed bundle, so
+ * the editor sees saves that haven't deployed yet.
  */
 async function route(request: Request, env: Env): Promise<unknown> {
     const url = new URL(request.url);

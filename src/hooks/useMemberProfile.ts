@@ -8,17 +8,11 @@ import type { TeamMember } from '../types/team';
 /**
  * One member's `club.json` record, read live from the repo.
  *
- * The bundle already carries every profile, so this exists for one reason: a
- * member who saved a minute ago must see their own words rather than the copy
- * baked in at the last build (§8.8). A save commits to the repo and is live
- * after the next Pages build; without this the editor would reopen showing the
- * bio they just replaced, which reads exactly like a save that failed.
+ * The bundle already has every profile; this exists so a member sees their own
+ * recent save rather than the copy from the last build.
  *
- * It fetches only for someone who could actually edit this profile. That is a
- * product choice rather than a constraint now that the read needs no token: a
- * visitor reading a profile has no use for a value the page is about to render
- * from the bundle anyway. For everyone else it settles at `null`, so callers
- * can fall back unconditionally.
+ * It fetches only for someone who can edit this profile. For everyone else it
+ * settles at `null`, so callers can fall back to the bundle unconditionally.
  */
 export interface MemberProfileState {
     /** The live record, or null when it hasn't been read (or couldn't be). */

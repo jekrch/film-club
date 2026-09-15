@@ -7,11 +7,9 @@ import { resolveTrophyIcon, TrophyWatermark } from './trophyIcons';
 /**
  * A film's trophy shelf.
  *
- * Renders whatever `resolveFilmTrophies` produced, which means the sheet's prose
- * and the site's structured awards land in the same rows and look alike. The
- * recipient is a chip linking to their profile — the one piece of an award that
- * was always the point, and that used to be recovered by running six regexes
- * over a sentence at render time.
+ * Renders whatever `resolveFilmTrophies` produced, so the sheet's prose and the
+ * site's structured awards look alike. Each recipient is a chip linking to their
+ * profile.
  */
 
 interface TrophyGalleryProps {

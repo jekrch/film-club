@@ -10,10 +10,8 @@ import type { CardAccent } from './AccentCard';
  * - `ghost` — an icon button: modal closes, toolbar toggles.
  * - `chip`  — a member of a segmented control (sort, category).
  *
- * Focus is deliberately absent here: index.css gives every <button> one
- * keyboard-only outline. An outline needs no offset color, so a single rule
- * works on the page background and on any card — unlike the five different
- * ring/ring-offset combinations these call sites used to carry.
+ * Focus styles are omitted: index.css gives every <button> a keyboard-only
+ * outline, which works on the page background and on any card.
  */
 export type ButtonVariant = 'link' | 'solid' | 'ghost' | 'chip';
 export type ButtonSize = 'xs' | 'sm' | 'md';

@@ -1,16 +1,12 @@
 /**
  * GitHub-as-database: read a JSON file from `main`, mutate it, commit it back.
  *
- * Ported from `comic-snaps/worker/src/github.ts`, narrowed to the files this
- * worker owns. The invariant that makes this safe is §8.1's **one writer per
- * file**: CI owns `films.json` and `listFilms.json`, the worker owns
- * `overrides.json`, `lists.json`, `watched.json`, `club.json`, and
- * `trophies.json`, and nothing writes both sides. There is no merge to get wrong
- * — only the sha to respect.
+ * **One writer per file**: CI owns `films.json` and `listFilms.json`; the worker
+ * owns `overrides.json`, `lists.json`, `watched.json`, `club.json`, and
+ * `trophies.json`. There is no merge to get wrong — only the sha to respect.
  *
- * Paths are constants in this module. The worker never derives a path from
- * request input; that is the rule that keeps a stolen token's blast radius to
- * the two files below rather than the whole repo.
+ * Paths are constants in this module and never derived from request input, which
+ * limits a stolen token to the files below rather than the whole repo.
  */
 
 import { HttpError } from './errors';
@@ -32,10 +28,8 @@ export const WATCHED_PATH = 'src/assets/watched.json';
  */
 export const TROPHIES_PATH = 'src/assets/trophies.json';
 /**
- * Member profiles. Safe to own for the same reason as the other three: nothing
- * else writes it. CI only *validates* it (`deploy.yml`, `sync-google-sheet.yml`
- * both run `jq empty` over it), and the sheet sync has never touched it — the
- * six member records were hand-edited in the repo until now.
+ * Member profiles. Nothing else writes this file; CI only validates it
+ * (`jq empty` in `deploy.yml` and `sync-google-sheet.yml`).
  */
 export const CLUB_PATH = 'src/assets/club.json';
 /** Read-only: used to reject a rating write for a film the sheet doesn't know. */
@@ -285,14 +279,12 @@ export async function commitJson<T, R>(
 /**
  * The set of IMDb ids the club has actually watched.
  *
- * A rating write must name a film that already exists in `films.json`: the
- * worker cannot create films, that stays the sheet's job (§8.3). Fetched with
- * the raw media type because `films.json` is over half a megabyte and the
- * base64 `content` field caps out at 1 MB.
+ * Checked when a write names a club film. Fetched with the raw media type
+ * because `films.json` is over half a megabyte and the base64 `content` field
+ * caps out at 1 MB.
  *
- * Cached per isolate for a minute. Films only ever arrive by sheet sync, so the
- * cost of being a minute stale is that a film added *right now* can't be rated
- * for another minute — against re-downloading 500 KB on every save.
+ * Cached per isolate for a minute, so a newly synced film may be unknown for up
+ * to a minute, instead of re-downloading 500 KB on every save.
  */
 const FILM_ID_TTL_MS = 60_000;
 let filmIdCache: { ids: Set<string>; fetchedAt: number } | null = null;

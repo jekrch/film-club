@@ -1,25 +1,15 @@
 /**
  * The live copies of the editable JSON files, read straight from the repo.
  *
- * Four of these used to be worker endpoints (`GET /api/overrides`, `/api/lists`,
- * `/api/watched`, `/api/club`), which read `main` through the GitHub API and
- * spent a Workers request each time. They don't need to: the repository is
- * public, so `raw.githubusercontent.com` serves the same bytes to an
- * unauthenticated `fetch` with `access-control-allow-origin: *`, for free and
- * without a round trip through Cloudflare.
+ * The repository is public, so `raw.githubusercontent.com` serves these files to
+ * an unauthenticated `fetch` with `access-control-allow-origin: *`, without
+ * going through the worker.
  *
- * What is *not* free is freshness. Raw serves `cache-control: max-age=300`, so
- * a file fetched here can be up to five minutes behind `main` — where the
- * worker was always current. That would have undone the guarantee those
- * endpoints existed for (§8.8: never show a member a save that hasn't deployed
- * yet), so it is bought back a different way: every write already returns the
- * stored record, and `writeCache.ts` keeps this tab's own results to overlay
- * onto whatever the CDN hands back. The reads below apply that overlay, so a
- * caller sees the file as of `main` *or* better, never worse.
- *
- * The two endpoints that remain on the worker are the two that can't move:
- * `/api/session` verifies a Google token against a secret, and
- * `/api/films/search` keeps the OMDB key server-side.
+ * Raw serves `cache-control: max-age=300`, so a fetched file can be up to five
+ * minutes behind `main`. So a member never sees a stale copy of their own save,
+ * every write returns the stored record and `writeCache.ts` keeps this tab's
+ * results. The reads below overlay those onto the fetched file, so a caller sees
+ * `main` or newer.
  */
 
 import { DATA_BRANCH, DATA_REPO } from '../config/editorEnv';

@@ -14,24 +14,15 @@ import { recordWrite, writeKeys } from '../api/writeCache';
 import { useClubAuth } from '../auth/GoogleAuth';
 
 /**
- * Every member-authored edit to a club film, fetched once per session.
+ * Every member-authored edit to a club film, fetched once per session;
+ * `useFilmOverrides` slices it per film.
  *
- * This used to be per-film: `useFilmOverrides` fetched the whole of
- * `overrides.json` on every film-detail page view and then used one film's
- * worth of it. Reading ten films re-read the same file ten times. It is one
- * file for the whole site, so it is now one fetch for the whole site, and
- * `useFilmOverrides` slices it.
+ * The editor uses it so a member sees their own recent save before it reaches
+ * the bundle, and the ratings list uses it to mark rows edited on the site.
  *
- * Two things want it. The editor needs it so a member who saved a minute ago
- * sees their own value rather than the one baked into the bundle at the last
- * build (§8.8), and the ratings list needs it to mark rows the sheet no longer
- * controls (§8.7).
- *
- * It fetches only while signed in. That is no longer forced on us — the file is
- * public and the read needs no token — but it stays deliberate: the markers are
- * for members editing, not for visitors, and a signed-out visitor should see
- * the site exactly as the last deploy left it. Signed out it settles at an
- * empty map, so callers can render it unconditionally.
+ * It fetches only while signed in: the markers are for members editing, and a
+ * signed-out visitor sees the site as last deployed. Signed out it settles at
+ * an empty map, so callers can render it unconditionally.
  */
 interface OverridesValue {
     films: OverridesFile['films'];

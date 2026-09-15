@@ -9,12 +9,9 @@ import AccentCard from '../common/AccentCard';
 /**
  * One member's trophy shelf, grouped by award.
  *
- * The grouping is the point: five Togetherness Trophies is one shelf entry with
- * five films on it, not five rows. What changed when awards became structured is
- * only *how a trophy is claimed for this member* — it used to be a regex for
- * their name across every film's `trophyNotes`, and is now `recipient`, with
- * `trophyUtils` doing the name-matching for the sheet's older prose. See
- * `getMemberTrophies`.
+ * Five Togetherness Trophies are one shelf entry with five films, not five rows.
+ * Trophies are matched to this member by `recipient`, with `trophyUtils`
+ * name-matching the sheet's prose. See `getMemberTrophies`.
  */
 
 interface ProfileTrophyGalleryProps {

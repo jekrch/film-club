@@ -717,9 +717,8 @@ const FilmDetailPage = () => {
                                                                             }
                                                                         />
                                                                         {/* Visible only to a signed-in member, since that's the
-                                                                    only time the overrides are loaded. It marks a row the
-                                                                    sheet no longer controls — editing that cell in the
-                                                                    spreadsheet now has no effect (§8.7). */}
+                                                                    only time the overrides are loaded. It marks a row edited
+                                                                    on the site, whose spreadsheet cell is now ignored. */}
                                                                         {overrides.ratings[
                                                                             rating.user.toLowerCase()
                                                                         ] && (

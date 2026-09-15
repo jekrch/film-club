@@ -1,38 +1,28 @@
 #!/usr/bin/env python3
 """Overlay member-authored edits onto the sheet-derived films.json.
 
-Members edit scores, reviews, and a film's own club record on the site; a
-Cloudflare Worker commits those edits to `src/assets/overrides.json` and never
-touches `films.json`. This script folds one file into the other, which is what
-keeps the two writers — the Google Sheet sync and the worker — off the same file.
+The editing worker commits member edits to `src/assets/overrides.json` and never
+writes `films.json`; this script merges the former into the latter.
 
-Two kinds of edit live in that file and both are applied here:
+Two kinds of edit are applied:
 
-- **Per-member**, under `films.<id>.ratings.<user>` — a score, a qualifier, a
-  review. One row of one film, belonging to one person.
-- **Per-film**, under `films.<id>.film` — whose pick it was, when the club
-  watched it, and the two images the site cannot source for itself. Club
-  property rather than anyone's row, and the fields the Google Sheet used to be
-  the only way to set.
+- **Per-member**, under `films.<id>.ratings.<user>` — score, qualifier, review.
+- **Per-film**, under `films.<id>.film` — selector, watch date, poster, and
+  backdrop image.
 
-The precedence rule is deliberately unconditional: **the override wins**. There
-is no timestamp comparison and no "most recent writer", because reasoning about
-clocks across a spreadsheet and a browser is how edits get silently discarded.
-Once a member sets a value on the site, the sheet's cell for that field is
-inert. `sync_sheet_to_json.py` logs every field where the two disagree so that
-staleness is visible in the workflow log rather than silent.
+**The override always wins**; there is no timestamp comparison. Once a member
+sets a value on the site, the sheet's cell for that field is ignored.
+`sync_sheet_to_json.py` logs every field where the two disagree.
 
-Runs at two points, and needs both:
+Runs in two places:
 
-- Last in `sync_sheet_to_json.py`'s `main()`, so a sync never leaves overridden
-  fields holding sheet values. Without it the next deploy would put them back
-  and films.json would flip-flop twice a day, forever.
-- As a standalone step in `deploy.yml`, so an edit goes live in about a minute
-  rather than at the next scheduled sync.
+- At the end of `sync_sheet_to_json.py`'s `main()`, so a sync never restores
+  overridden fields to sheet values.
+- As a step in `deploy.yml`, so an edit goes live on the next deploy rather
+  than the next scheduled sync.
 
-With both, films.json is always exactly `sheet + overrides` and re-running is a
-no-op. Depends on nothing outside the standard library — in particular not
-pandas — so the deploy workflow doesn't have to install it.
+films.json is always `sheet + overrides`, and re-running is a no-op. Uses only
+the standard library, so the deploy workflow doesn't need pandas.
 """
 
 import json

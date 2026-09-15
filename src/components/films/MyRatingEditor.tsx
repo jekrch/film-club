@@ -21,23 +21,18 @@ import {
 } from '../../utils/ratingEditUtils';
 
 /**
- * The signed-in member's own row on a film, made editable (§8.9) — and, for an
- * admin, anyone else's.
+ * The signed-in member's own row on a film, made editable — and, for an admin,
+ * anyone else's.
  *
- * Rendered only for a signed-in member, and collapsed until asked for: someone
- * reading the page is never offered an editor, and never told how to sign in —
- * the nav's account control is the one place that happens.
+ * Rendered only for a signed-in member and collapsed by default. Sign-in lives
+ * in the nav's account control, not here.
  *
- * The member picker appears for admins only, and exists because the club enters
- * an evening's scores together: five people say a number, one person types them
- * in. That used to be a row of the Google Sheet. Everyone else sees exactly what
- * they saw before — their own row, no picker — and the worker enforces the same
- * rule again on the way in.
+ * Admins get a member picker because the club enters an evening's scores
+ * together, with one person typing them in. Other members see only their own
+ * row, and the worker enforces the same rule.
  *
- * A save commits to the repo and is live after the next Pages build — about a
- * minute. The panel therefore shows the value from its own state with a note
- * saying so, rather than a spinner pretending to wait on something (§8.8): a
- * member who saves an 8, reloads, and sees the old 7 will assume it failed.
+ * A save is live after the next Pages build (about a minute), so the panel shows
+ * the saved value from its own state with a note, rather than a spinner.
  */
 
 interface MyRatingEditorProps {

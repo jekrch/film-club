@@ -1,9 +1,8 @@
 /**
  * Lazy loader and typings for Google Identity Services.
  *
- * The script is fetched on first use, never at app start: an ordinary visit to
- * a film page should not run a third-party script, so nothing here executes
- * until a member actually opens an editing surface (§8.9).
+ * The script is fetched on first use, when a member opens an editing surface,
+ * so ordinary visits never run it.
  *
  * Only the ID-token flow is used, which needs the OAuth *client ID* and no
  * client secret — that is what makes it workable from a static origin. Redirect

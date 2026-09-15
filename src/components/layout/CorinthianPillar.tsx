@@ -186,9 +186,7 @@ const CorinthianPillar: React.FC<{
     opacity?: number; // 0-1; lets callers compensate for the backdrop behind the pillar
 }> = ({ side, className = '', flipped = false, width = 40, opacity = 0.15 }) => {
     // Mirrored inset: the same step at each breakpoint on both sides, so the two
-    // pillars stand equally far in from their edges. The right used to sit 8px
-    // nearer its edge than the left did below `lg`, which read as the colonnade
-    // being off-centre around the banner.
+    // pillars stand equally far in from their edges and stay centred on the banner.
     const positionClass =
         side === 'left' ? 'left-0 sm:left-2 lg:left-8' : 'right-0 sm:right-2 lg:right-8';
 

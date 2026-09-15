@@ -67,12 +67,9 @@ const VERTICAL_FADE =
 /**
  * One film, spread across the whole banner instead of standing in a third of it.
  *
- * A lone panel reads as a mistake — two thirds of the card empty and no reason
- * for it — which is why the collage used to render nothing at all below two
- * films. But a member's first logged film, or a list with one thing on it, is a
- * page that exists and deserves art, so a single frame gets a different
- * composition rather than no composition. The falloff keeps the collage's logic:
- * bright at the edges, subdued behind the copy.
+ * A lone panel would leave two thirds of the card empty, so a single frame gets
+ * its own composition. The falloff matches the collage: bright at the edges,
+ * subdued behind the copy.
  */
 const SOLO_MASK =
     'linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.38) 30%, rgba(0,0,0,0.38) 70%, rgba(0,0,0,1) 100%)';

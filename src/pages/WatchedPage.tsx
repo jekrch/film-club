@@ -66,9 +66,8 @@ const WatchedPage: React.FC = () => {
     /** Set only when an admin is editing someone else's log; the worker defaults to the caller. */
     const actingFor = owner && signedInAs && owner !== signedInAs ? owner : undefined;
 
-    // The bundle renders instantly and is right except for saves that haven't
-    // deployed yet; the live copy from the repo is what makes logging two films
-    // a minute apart behave (§8.8).
+    // The bundle renders instantly but lacks saves that haven't deployed yet;
+    // the live copy from the repo covers those.
     useEffect(() => {
         if (status !== 'signed-in' || !owner) return;
         const controller = new AbortController();

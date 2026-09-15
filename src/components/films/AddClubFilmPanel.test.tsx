@@ -5,12 +5,11 @@ import type { ClubAuthValue } from '../../auth/GoogleAuth';
 import * as clubApi from '../../api/clubApi';
 
 /**
- * Adding a film, which used to mean opening the Google Sheet.
+ * Adding a film to the club.
  *
- * The picker itself is `FilmSearchPicker` and is not re-tested here; what this
- * covers is the part that only exists on this panel — that a film the club
- * already has can't be added again, and that the submission carries the club
- * fields the member filled in.
+ * The picker (`FilmSearchPicker`) isn't re-tested here. These cover what's
+ * specific to this panel: a film the club already has can't be added again, and
+ * the submission carries the club fields the member filled in.
  */
 
 const auth: Partial<ClubAuthValue> = {

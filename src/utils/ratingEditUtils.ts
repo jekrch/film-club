@@ -5,11 +5,9 @@ import type { ClubRating } from '../types/film';
  * The pure half of the rating editor: what the member currently has, what they
  * typed, and the difference between the two.
  *
- * This is where §8.7's presence semantics live, and they are the reason it is
- * worth separating from the component. A patch carries only the fields the
- * member actually changed — an absent key means "whatever the sheet says
- * stands", so sending back an untouched field would quietly freeze the sheet's
- * own value as a member override and make that spreadsheet cell inert forever.
+ * A patch carries only the fields the member changed. An absent key means
+ * "whatever the sheet says stands", so sending an untouched field back would
+ * turn the sheet's value into a member override.
  */
 
 /** The three fields a member may set, normalized to what the worker stores. */
@@ -106,10 +104,8 @@ export function baselineRating(
 export type ParseResult = { values: RatingValues } | { error: string };
 
 /**
- * Parses the form with the same rules the worker applies (§8.3), so a mistake
- * is caught while the member is still looking at the field rather than after a
- * round trip. The worker validates again regardless — this is convenience, not
- * trust.
+ * Parses the form with the same rules the worker applies, so a mistake is caught
+ * before a round trip. The worker validates again regardless.
  */
 export function parseRatingForm(form: RatingFormValues): ParseResult {
     const parsedScore = parseScoreField(form.score);

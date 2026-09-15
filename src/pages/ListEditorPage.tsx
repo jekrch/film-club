@@ -29,16 +29,14 @@ import {
 import { isRankedList, type FilmListDefinition } from '../types/list';
 
 /**
- * The list editor: `/lists/new` and `/lists/:listId/edit` (§8.9).
+ * The list editor: `/lists/new` and `/lists/:listId/edit`.
  *
  * Writes are whole-list, not per-entry — the draft lives here in local state
- * until the member presses Save, which keeps the commit count low and makes
- * each commit a readable diff (§8.4).
+ * until the member presses Save, which keeps commits few and diffs readable.
  *
- * A draft entry carries its own title, year, and poster. For an existing list
- * those come from whichever source already knows the film; for one just added
- * they come from the search result. Either way the editor never waits on the CI
- * step that fills `listFilms.json` (§8.8).
+ * A draft entry carries its own title, year, and poster, taken from existing
+ * data or from the search result, so the editor never waits on the CI step that
+ * fills `listFilms.json`.
  */
 
 const FIELD_CLASS =
@@ -95,8 +93,7 @@ const ListEditorPage: React.FC = () => {
         if (bundled && !touched.current) seed(bundled);
     }, [creating, listId, seed]);
 
-    // Then the live copy from the repo, which is what makes editing a list
-    // twice in a minute work (§8.8).
+    // Then the live copy from the repo, which includes saves not yet deployed.
     useEffect(() => {
         if (creating || status !== 'signed-in') return;
         const controller = new AbortController();

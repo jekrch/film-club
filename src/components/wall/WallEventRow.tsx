@@ -691,22 +691,9 @@ const FoldedTrophies: React.FC<{ trophies: TrophyEvent[] }> = ({ trophies }) => 
 /**
  * Who did it, and in what act — the meta band's half of the sentence.
  *
- * The sentence a row used to carry in one run is split at its verb: the actor
- * and the verb ride up here beside the date, and what they acted on stays below
- * in {@link WallSubject}. Two reasons, and the second is why it is worth doing
- * at every width rather than only on a phone.
- *
- * The first is width. A phone gives a row about 200px of column once the
- * timeline, the poster and two card paddings have taken theirs, and "Jacob
- * logged" spent a third of it saying the thing the node beside it was already
- * saying with his face. Moving the attribution to a band that runs the full
- * width of the card gives the title the column to itself.
- *
- * The second is that every row now opens on what it is *about*. That was
- * already the intent behind setting "The club watched" small and lettered — so
- * the film's own title read first rather than the third word of a sentence that
- * opens the same way every time — and this is that intent applied to all four
- * kinds instead of one.
+ * The actor and verb sit here beside the date; what they acted on stays below in
+ * {@link WallSubject}. This gives the title the full column on a phone, and at
+ * every width it makes each row lead with what it's about.
  */
 const WallActor: React.FC<{ event: WallEvent }> = ({ event }) => {
     switch (event.kind) {
@@ -862,10 +849,8 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
         case 'list':
             return (
                 <>
-                    {/* Where the count used to sit. The count is a figure and has
-                        gone up to the badge cluster with the other figures; what
-                        the line under a subject is for is saying something about
-                        it, and on a list that is what's on it. */}
+                    {/* The count is in the badge cluster; this line says what's
+                        on the list. */}
                     <ListHead event={event} />
                     {/* Railed and expandable rather than run onto the line above:
                         a list's blurb is its owner talking, which is what the
@@ -888,11 +873,6 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
  * of holding width the sentence needed, which is the arrangement the watch log
  * uses for its score and trailer. The `ml-auto` that pushes it there belongs to
  * the cluster it shares with the details expander, not to this badge.
- *
- * A list used to end this line on nothing, which is most of why it read as the
- * thin row among four — every other kind closes on a figure or a chip, and the
- * eye scanning down the wall found a hole where the beat was. Its count is a
- * figure and it belongs here, not buried in grey prose under the title.
  */
 const WallFigure: React.FC<{ event: WallEvent }> = ({ event }) => {
     switch (event.kind) {
@@ -1013,12 +993,9 @@ const ListHead: React.FC<{ event: ListEvent }> = ({ event }) => {
 /**
  * How many of the deck's cards a phone shows.
  *
- * Five was the whole reason the deck used to sit out every width below `sm`: at
- * 2.4rem a card with 1.15rem showing, five of them run to 112px, and a phone's
- * row hasn't got it to give. Three run to 75px, which it has — and a list row
- * with no art at all was the barest thing on this wall. The two cards past the
- * third are hidden rather than dropped, so the deck grows into the space at
- * `sm` instead of being rebuilt at it.
+ * At 2.4rem a card with 1.15rem showing, five cards run to 112px, more than a
+ * phone's row has; three run to 75px. The cards past the third are hidden rather
+ * than dropped, so the deck grows into the space at `sm` instead of being rebuilt.
  */
 const DECK_PHONE_COUNT = 3;
 

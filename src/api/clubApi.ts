@@ -1,18 +1,12 @@
 /**
- * Typed wrappers around the editing worker (§8.4 of the lists plan).
+ * Typed wrappers around the editing worker.
  *
- * Nothing on an ordinary page load calls any of this: the site is static and
- * reads its data from the bundle. These are only reached while a signed-in
- * member is editing, and every one of them carries the Google ID token as a
- * bearer header — the worker has no unauthenticated surface beyond the CORS
- * preflight.
+ * Only used while a signed-in member is editing; ordinary page loads read from
+ * the bundle. Every call sends the Google ID token as a bearer header.
  *
- * Only the two endpoints that *need* the worker are here. Reading the editable
- * files no longer does: the repository is public, so `repoData.ts` fetches them
- * from `raw.githubusercontent.com` for free instead of spending a Workers
- * request on each. What remains is `/api/session`, which checks a Google token
- * against a secret, `/api/films/search`, which keeps the OMDB key server-side,
- * and every write.
+ * Covers `/api/session`, `/api/films/search` (which keeps the OMDB key
+ * server-side), and all writes. Reads of the editable JSON files go through
+ * `repoData.ts` instead.
  */
 
 import { EDITOR_API_URL as API_BASE, GOOGLE_CLIENT_ID } from '../config/editorEnv';
@@ -44,7 +38,7 @@ export class ClubApiError extends Error {
     }
 }
 
-/** `{ member, admin }` — resolves a token to a club member (§8.4). */
+/** `{ member, admin }` — resolves a token to a club member. */
 export interface SessionInfo {
     member: string;
     admin: boolean;
@@ -55,7 +49,7 @@ export interface SessionInfo {
  *
  * Presence is meaningful and mirrors the worker's type of the same name: an
  * absent key means "whatever the sheet says stands", an explicit `null` means
- * "deliberately blank" (§8.7).
+ * "deliberately blank".
  */
 export interface RatingOverride {
     score?: number | null;
@@ -70,10 +64,9 @@ export interface RatingOverride {
  * type of the same name.
  *
  * Presence is meaningful here too: an absent key defers to the sheet, an
- * explicit `null` is a deliberate blank. `poster` and `backdropImage` are the
- * two images the site can't source for itself — OMDb's cover is often the wrong
- * edition, and the wide still behind the selection committee was a hand-edit to
- * `films.json` until now.
+ * explicit `null` is a deliberate blank. `poster` and `backdropImage` replace
+ * OMDb's cover (often the wrong edition) and the wide still behind the
+ * selection committee.
  */
 export interface FilmOverride {
     /** A club member's name — whose pick it was. */

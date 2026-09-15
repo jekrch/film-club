@@ -1,19 +1,12 @@
 import trophiesData from '../assets/trophies.json';
 
 /**
- * The awards the club hands out, as members now record them on the site.
+ * The awards the club hands out, as members record them on the site.
  *
- * There have always been trophies — the Togetherness Trophy, the Bad Boy, the
- * Helmet — but until now they lived in one free-text `trophyNotes` cell per film
- * in the Google Sheet ("Joey gets both togetherness and bad boy, Andy gets
- * reframer trophy"). Every surface that drew one had to guess at the seams:
- * split on commas, regex the six member names out of the prose, and hope.
- *
- * This file is the structured half. A trophy written here names its recipient as
- * a field rather than as a substring, which is what lets a member's shelf be a
- * filter instead of a text search — and what makes the award editable at all.
- * The sheet's column keeps working and keeps rendering; `trophyUtils.ts` reads
- * both into one shape, and nothing migrates. See {@link ResolvedTrophy} there.
+ * A trophy names its recipient as a field, so a member's shelf is a filter
+ * rather than a text search. The sheet's free-text `trophyNotes` column still
+ * renders; `trophyUtils.ts` reads both into one shape. See
+ * {@link ResolvedTrophy} there.
  */
 
 /** One award, exactly as the worker stores it. Mirrors `Trophy` in `worker/src/types.ts`. */

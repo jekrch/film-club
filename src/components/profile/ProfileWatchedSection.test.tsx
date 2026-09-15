@@ -4,9 +4,8 @@ import ProfileWatchedSection from './ProfileWatchedSection';
 import { ClubAuthProvider } from '../../auth/GoogleAuth';
 
 // The bundled watched.json is the author's own local data, so the section is
-// exercised against a fixture. Two entries is the case that matters here: fewer
-// than the preview holds, which used to leave the card with no visible way
-// through to the log page at all.
+// exercised against a fixture. Two entries covers having fewer than the preview
+// holds, where the card must still link through to the log page.
 jest.mock('../../types/watched', () => ({
     watchedLog: {
         Andy: [

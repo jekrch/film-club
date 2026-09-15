@@ -34,9 +34,8 @@ const SCORE_SOURCE_NOTE: Record<ScoreSource, string> = {
  * on each other. Keep them defined here together — a poster resized on its own
  * would silently knock the numeral off center.
  *
- * 96 tall on a phone, 120 from `sm` up: the poster is the only image the row
- * has, and at the thumbnail size it used to be it read as a bullet beside the
- * numeral rather than as the film. Width is its own constant only because the
+ * 96 tall on a phone, 120 from `sm` up, so the poster reads as the film rather
+ * than a bullet beside the numeral. Width is its own constant only because the
  * numeral's band doesn't share it, and the two must stay an exact 2:3 — a
  * poster off its own ratio either letterboxes or crops the title off the top.
  */

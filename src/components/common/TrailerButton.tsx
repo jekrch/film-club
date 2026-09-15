@@ -15,16 +15,12 @@ interface TrailerButtonProps {
 /**
  * A row's trailer affordance: a badge-sized play button and the modal it opens.
  *
- * The film pages have had a trailer since the beginning; a list row and a watch
- * log row are where a member is most likely to meet a film they have never seen,
- * and until now those rows were the two surfaces that couldn't show one. This is
- * the pair of things every such row needs, kept together so a row only decides
+ * Used by list rows and watch log rows. Kept together so a row only decides
  * *where* the button goes.
  *
- * A row clips itself to its rounded corners (`overflow-hidden`, for the art
- * washed behind it) and there are dozens of them stacked down a page — both of
- * which a full-screen overlay has to escape. Modal portals itself to
- * `document.body` for exactly that reason, so the row can just render it.
+ * Rows clip to their rounded corners (`overflow-hidden`), which a full-screen
+ * overlay has to escape. Modal portals itself to `document.body`, so the row can
+ * render it directly.
  */
 const TrailerButton: React.FC<TrailerButtonProps> = ({ trailerKey, title, className = '' }) => {
     const [isOpen, setIsOpen] = useState(false);

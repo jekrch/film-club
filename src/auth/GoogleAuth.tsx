@@ -17,18 +17,14 @@ import { clearToken, loadToken, saveToken } from './sessionStore';
 /**
  * Who the current visitor is, for the editing surfaces only.
  *
- * The token is a Google ID token, kept in `sessionStorage` so a reload doesn't
- * cost a sign-in — a revision of §8.2, with the reasoning and the XSS tradeoff
- * set out in `sessionStore.ts`. Restoring is deliberately cheap and Google-free:
- * the stored token goes straight to our worker to be re-checked, so a refresh
- * loads no third-party script and shows no prompt.
+ * The Google ID token is kept in `sessionStorage` (see `sessionStore.ts`) so a
+ * reload doesn't require signing in again. On restore, the worker re-checks the
+ * stored token; no Google script loads and no prompt is shown.
  *
- * Google is involved again only when a token is about to expire, where GIS is
- * asked to issue a replacement. That path may quietly fail — it is best-effort,
- * and the session simply ends at expiry as it always did when it does.
+ * Near expiry, GIS is asked for a fresh token. This is best-effort; if it fails,
+ * the session ends at expiry.
  *
- * Nothing here runs for a visitor who has never signed in: with no stored token
- * the provider mounts, does nothing, and makes no request.
+ * With no stored token, the provider does nothing and makes no request.
  */
 
 export type AuthStatus = 'signed-out' | 'authenticating' | 'signed-in';

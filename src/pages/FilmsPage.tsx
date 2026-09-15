@@ -158,8 +158,7 @@ const FilmsPage = () => {
                 </div>
             </AccentCard>
 
-            {/* Adding a film used to mean opening the Google Sheet. Renders
-                nothing at all unless a member is signed in. */}
+            {/* Renders nothing unless a member is signed in. */}
             <AddClubFilmPanel />
 
             <div className="mb-4 text-sm text-slate-300">{resultsText}</div>

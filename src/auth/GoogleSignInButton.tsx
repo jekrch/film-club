@@ -8,14 +8,12 @@ import { initGoogleIdentity } from './gis';
 /**
  * The Sign in with Google button, rendered by Google's own library.
  *
- * **Mounting this loads a third-party script**, which is why it never appears
- * on an ordinary page view — it renders only inside an editing surface a member
- * has already opened (§8.9). Google requires its own rendered button for the ID
- * token flow; a hand-styled one isn't an option, so this is a thin wrapper that
- * hands the resulting credential to the auth context.
+ * **Mounting this loads a third-party script**, so it only renders inside an
+ * editing surface a member has opened. Google requires its own rendered button
+ * for the ID token flow, so this is a thin wrapper that passes the credential to
+ * the auth context.
  *
- * Everything it *can* choose is chosen here rather than at the five call sites,
- * so the button looks the same in the nav panel as it does in a rating editor.
+ * Button options are set here so it looks the same at every call site.
  */
 
 /**

@@ -31,15 +31,9 @@ const MAX_RATING = MAX_SCORE;
 /**
  * The poster's box, at a poster's own 2:3.
  *
- * It is the row's left anchor and is sized to be looked at. The date used to own
- * a band twice its width — 6rem of centered serif for "Aug 15, 2026", against a
- * 3rem poster — which spent the row's most valuable space on its least
- * interesting field. The date is now a caption over the title, where the profile
- * preview has always put it, and the poster has the room that band was using.
- *
- * Sized to be read as artwork rather than as an icon: 72x108 on a phone,
- * 88x132 from `sm` up. Both are exact 2:3, which is the one constraint here —
- * a poster off its own ratio either letterboxes or crops the title off the top.
+ * The row's left anchor, sized to read as artwork rather than an icon: 72x108
+ * on a phone, 88x132 from `sm` up. Both must stay exact 2:3 — a poster off its
+ * own ratio either letterboxes or crops the title off the top.
  */
 const POSTER_CLASS = 'h-27 w-18 sm:h-33 sm:w-22';
 
@@ -225,11 +219,8 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                 )}
 
                 <div className="col-start-2 row-start-1 ml-3 min-w-0 sm:ml-4">
-                    {/* The log is ordered by when, so the date leads the row —
-                        but as a caption over the title rather than a column
-                        beside it. Every row's is at the same place under the
-                        same poster edge, which is what makes a date scannable;
-                        the width it used to hold was never doing that work. */}
+                    {/* The log is ordered by date, so the date leads the row as a
+                        caption over the title, in the same place on every row. */}
                     <time
                         dateTime={watchDate}
                         className="block text-xs uppercase tracking-widest tabular-nums text-slate-500 transition-colors duration-200 group-hover:text-blue-300/80"

@@ -7,14 +7,9 @@ import { IMAGE_URL_LIMIT } from '../../utils/imageUrl';
 import type { FilmFormValues } from '../../utils/filmEditUtils';
 
 /**
- * The four fields that make up a film's club record, shared by the two places a
- * member fills them in: adding a film on the films page, and correcting one on
- * the film's own page.
- *
- * They are the same fields in both, and were the Google Sheet's `selected_by`
- * and `watch_date` columns until now. The two images never had a column at all —
- * a curated `backdropImage` meant editing `films.json` by hand, which is why 23
- * films have one and the rest make do with whatever TMDb had.
+ * The four fields that make up a film's club record (selector, watch date,
+ * poster, backdrop), shared by adding a film on the films page and editing one
+ * on the film's own page.
  */
 
 interface FilmClubFieldsProps {

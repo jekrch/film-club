@@ -57,7 +57,7 @@ function memberMap(env: Env): Map<string, string> {
     return members;
 }
 
-/** The club names the worker recognizes — the admin owner check in §8.3 needs them. */
+/** The club names the worker recognizes, needed for the admin owner check. */
 export function memberNames(env: Env): string[] {
     return [...new Set(memberMap(env).values())];
 }

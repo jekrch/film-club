@@ -22,12 +22,11 @@ interface FilmCardProps {
 /*
  * A single shared IntersectionObserver for every card on the page.
  *
- * Previously each FilmCard created its own observer, which (combined with a
- * per-card opacity/scale fade) thrashed iOS Safari's compositing layers during
- * momentum scrolling. The shared observer only decides *when to start fetching*
- * each poster: a generous rootMargin means images begin loading ~1.5 screens
- * before they enter view, so they are painted by the time you reach them
- * instead of popping in late. Native loading="lazy" fires too late on iOS.
+ * One observer per card (plus a per-card fade) thrashes iOS Safari's compositing
+ * layers during momentum scrolling. The observer only decides *when to start
+ * fetching* each poster: a generous rootMargin starts loading ~1.5 screens ahead,
+ * so images are painted before they enter view. Native loading="lazy" fires too
+ * late on iOS.
  */
 type IntersectCallback = (entry: IntersectionObserverEntry) => void;
 const observerCallbacks = new WeakMap<Element, IntersectCallback>();
