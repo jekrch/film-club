@@ -268,15 +268,15 @@
   "Jacob": [
     {
       "imdbID": "tt0058333",
-      "watchDate": "2026-09-19",
-      "score": null,
+      "watchDate": "2026-09-18",
+      "score": 7,
       "scoreQualifier": null,
-      "blurb": null,
+      "blurb": "Vincent Price sure does a convincing evil incarnate.",
       "image": null,
       "posterImage": null,
       "trailerKey": null,
       "hideTrailer": false,
-      "updatedAt": "2026-09-19T05:58:04Z"
+      "updatedAt": "2026-09-19T05:59:27Z"
     },
     {
       "imdbID": "tt0090756",
