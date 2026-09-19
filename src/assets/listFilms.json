@@ -1774,6 +1774,120 @@
       }
     ]
   },
+  "tt0058333": {
+    "imdbID": "tt0058333",
+    "title": "The Masque of the Red Death",
+    "year": "1964",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzUyYTM3MDYtNmZhZC00MTc1LTliNzUtYmNjNTBiZWI4MzUzXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "runtime": "89 min",
+    "genre": "Drama, Horror",
+    "director": "Roger Corman",
+    "writer": "Charles Beaumont, R. Wright Campbell, Edgar Allan Poe",
+    "imdbRating": "6.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "73%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "77/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "clT8P-v9uso",
+    "tagline": "Horror has a face.",
+    "plot": "A European prince terrorizes the local peasantry while using his castle as a refuge against the \"Red Death\" plague that stalks the land.",
+    "cast": [
+      {
+        "name": "Vincent Price",
+        "character": "Prince Prospero",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7JIv7U5kwveryP7hrPYgHlKea4d.jpg",
+        "tmdbId": 1905
+      },
+      {
+        "name": "Hazel Court",
+        "character": "Juliana",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qj36ImC6tuukuSqymwNWFruU65H.jpg",
+        "tmdbId": 101499
+      },
+      {
+        "name": "Jane Asher",
+        "character": "Francesca",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/65epDhqEq8hOOQtLwXQffRuIxwn.jpg",
+        "tmdbId": 22969
+      },
+      {
+        "name": "David Weston",
+        "character": "Gino",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fmflOS4alxtFpm7RocZod5riI71.jpg",
+        "tmdbId": 101504
+      },
+      {
+        "name": "Nigel Green",
+        "character": "Ludovico",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ksK243NEx8QACBBSW3fV6j1B04l.jpg",
+        "tmdbId": 29909
+      },
+      {
+        "name": "Patrick Magee",
+        "character": "Alfredo",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/99xStF5zQy6qkDxLnIVaKD3urzI.jpg",
+        "tmdbId": 2264
+      },
+      {
+        "name": "Paul Whitsun-Jones",
+        "character": "Scarlatti",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AdBuLsdZVcP5ysPVUrIsMILyuc0.jpg",
+        "tmdbId": 101506
+      },
+      {
+        "name": "Robert Brown",
+        "character": "Guard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zSWXxFXi5nAcZK6AzmVPY4nHvMB.jpg",
+        "tmdbId": 10513
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/oHVfPPSlii66NTQpOrRurivfrDW.jpg",
+      "https://image.tmdb.org/t/p/w1280/vrIYDpzFsjgDQMhb1WaYVpY6ME7.jpg",
+      "https://image.tmdb.org/t/p/w1280/ePSBpo8lvt8quJSQR8KqXYb3v3c.jpg",
+      "https://image.tmdb.org/t/p/w1280/2GvITgv9It0mWjmUKNCd8yuIKgL.jpg",
+      "https://image.tmdb.org/t/p/w1280/jmOt1jc3h35RWLmQVk8v0qBmEot.jpg",
+      "https://image.tmdb.org/t/p/w1280/vczzmH8ISlsMUCYFR6qCcchR9Ar.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Roger Corman",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m0ApZMol42l8vLV8MLpUSCpyA6n.jpg",
+        "tmdbId": 102429
+      },
+      {
+        "name": "Charles Beaumont",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gT46GTYuhWpqlmwRnNBa45Ai5YK.jpg",
+        "tmdbId": 46443
+      },
+      {
+        "name": "R. Wright Campbell ",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aqfpyGxCBOputpNRV08fTIqvryD.jpg",
+        "tmdbId": 111486
+      },
+      {
+        "name": "Nicolas Roeg",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t5EuHzllJjQrlVqzniVHDXBqUEC.jpg",
+        "tmdbId": 14132
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0061512": {
     "imdbID": "tt0061512",
     "title": "Cool Hand Luke",
