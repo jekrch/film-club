@@ -2662,6 +2662,120 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0080749": {
+    "imdbID": "tt0080749",
+    "title": "The Fog",
+    "year": "1980",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYWVlMmM5YmMtZGJkYy00ODgxLTgyNTctYzM2MTYwZDRkYTJmXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "89 min",
+    "genre": "Horror, Thriller",
+    "director": "John Carpenter",
+    "writer": "John Carpenter, Debra Hill",
+    "imdbRating": "6.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "76%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "55/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "XU-47N87G9M",
+    "tagline": "What you can't see won't hurt you...it'll kill you!",
+    "plot": "Strange things begin to occur as a tiny California coastal town prepares to commemorate its centenary. Inanimate objects spring eerily to life; Rev. Malone stumbles upon a dark secret about the town's founding; radio announcer Stevie witnesses a mystical fire; and hitchhiker Elizabeth discovers the mutilated corpse of a fisherman. Then a mysterious iridescent fog descends upon the village, and more people start to die.",
+    "cast": [
+      {
+        "name": "Adrienne Barbeau",
+        "character": "Stevie Wayne",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8uQqjG63SFCkmgdFB4SG8wRQmfp.jpg",
+        "tmdbId": 11782
+      },
+      {
+        "name": "Tom Atkins",
+        "character": "Nick Castle",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cqQnpAlq3FNLDr1jrAkUJokLw1M.jpg",
+        "tmdbId": 11784
+      },
+      {
+        "name": "Jamie Lee Curtis",
+        "character": "Elizabeth Solley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eWKubKAAssRzmFwCZKh1mdYqGCH.jpg",
+        "tmdbId": 8944
+      },
+      {
+        "name": "Hal Holbrook",
+        "character": "Father Malone",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rjUwo6mSutAljAHTqGhlnBBd9lO.jpg",
+        "tmdbId": 11066
+      },
+      {
+        "name": "Janet Leigh",
+        "character": "Kathy Williams",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2dv9IqJEx31RSoH7xAHlJZXF5uB.jpg",
+        "tmdbId": 7302
+      },
+      {
+        "name": "Nancy Kyes",
+        "character": "Sandy Fadel",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9LbRSE8soWZgkcHDLE6s8MSW6lG.jpg",
+        "tmdbId": 11787
+      },
+      {
+        "name": "Ty Mitchell",
+        "character": "Andy",
+        "profileUrl": null,
+        "tmdbId": 11788
+      },
+      {
+        "name": "John Houseman",
+        "character": "Mr. Machen",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aNWCBj1ApNIBJvFAAWuEwXWaGDw.jpg",
+        "tmdbId": 11783
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/pAOLiapALC7Q5pcCPDTA6P9pRuv.jpg",
+      "https://image.tmdb.org/t/p/w1280/ezxy4ncmiQEJdtlcHMak1KUhHtA.jpg",
+      "https://image.tmdb.org/t/p/w1280/3rgy8WHnkwrKDYFMhOwbFO9tbyY.jpg",
+      "https://image.tmdb.org/t/p/w1280/rJ6nZhPP4Fyp2Wk6vYDxNFfzJgA.jpg",
+      "https://image.tmdb.org/t/p/w1280/zvb53lLqlhToao0wjf5yi7TiGv0.jpg",
+      "https://image.tmdb.org/t/p/w1280/iv3OZj8FXHftkOHwxOjje2myHZl.jpg"
+    ],
+    "crew": [
+      {
+        "name": "John Carpenter",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3Qp0mg61u1qSZNJh30BFEUZrIMG.jpg",
+        "tmdbId": 11770
+      },
+      {
+        "name": "Debra Hill",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bpRZDGXm25CUqcejx2bAe1lf2QI.jpg",
+        "tmdbId": 2161
+      },
+      {
+        "name": "John Carpenter",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3Qp0mg61u1qSZNJh30BFEUZrIMG.jpg",
+        "tmdbId": 11770
+      },
+      {
+        "name": "Dean Cundey",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5f95wKLwh4OTjGEzNkDhOdixDxU.jpg",
+        "tmdbId": 1060
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0082971": {
     "imdbID": "tt0082971",
     "title": "Raiders of the Lost Ark",
