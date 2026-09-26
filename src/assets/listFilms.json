@@ -1660,6 +1660,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0053925": {
+    "imdbID": "tt0053925",
+    "title": "House of Usher",
+    "year": "1960",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNjA1ZTRmYjYtMTE0MC00ZGQzLWE3YjctNWQ1MzNkMTRjZjZmXkEyXkFqcGc@._V1_QL75_UX380_CR0,4,380,562_.jpg",
+    "runtime": "79 min",
+    "genre": "Drama, Horror",
+    "director": "Roger Corman",
+    "writer": "Richard Matheson, Edgar Allan Poe",
+    "imdbRating": "6.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "83%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "75/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "f0JK8RYmWt8",
+    "tagline": "Edgar Allan Poe's demonic tale of The Ungodly... The Evil House of Usher",
+    "plot": "Convinced that his family is tainted by generations of evil, Roderick Usher is hellbent on stopping his sister Madeline’s wedding to prevent the cursed Usher bloodline from expanding. When her fiancé Philip Winthrop arrives at the crumbling estate to claim his bride, Roderick goes to ruthless—even deadly—lengths to keep them apart.",
+    "cast": [
+      {
+        "name": "Vincent Price",
+        "character": "Roderick Usher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7JIv7U5kwveryP7hrPYgHlKea4d.jpg",
+        "tmdbId": 1905
+      },
+      {
+        "name": "Mark Damon",
+        "character": "Philip Winthrop",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2VpdzViRvdNYSIO5mtuusqLPId4.jpg",
+        "tmdbId": 6890
+      },
+      {
+        "name": "Myrna Fahey",
+        "character": "Madeline Usher",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7YQTO3UzV7NUOuGPe30FYiXWzG8.jpg",
+        "tmdbId": 100989
+      },
+      {
+        "name": "Harry Ellerbe",
+        "character": "Bristol",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tFwvKDwKjxSeX1X1f7AWyPKIw1G.jpg",
+        "tmdbId": 100990
+      },
+      {
+        "name": "David Andar",
+        "character": "Ghost (uncredited)",
+        "profileUrl": null,
+        "tmdbId": 1168068
+      },
+      {
+        "name": "Bill Borzage",
+        "character": "Ghost (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ldJNkX5yq7Q4Q8YkBcJRHAboPTc.jpg",
+        "tmdbId": 1434693
+      },
+      {
+        "name": "Mario Bellini",
+        "character": "Ghost (uncredited)",
+        "profileUrl": null,
+        "tmdbId": 2413035
+      },
+      {
+        "name": "Eleanor LeFaber",
+        "character": "Ghost (uncredited)",
+        "profileUrl": null,
+        "tmdbId": 4284267
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/bNFtjsp9v95DL9iL20Gue4gMddZ.jpg",
+      "https://image.tmdb.org/t/p/w1280/ponZghSLVUMwu6dYKUaJyoG3vBh.jpg",
+      "https://image.tmdb.org/t/p/w1280/6o5a96CiiVXAVg404Y2m0UFVnSQ.jpg",
+      "https://image.tmdb.org/t/p/w1280/8oz8Qj6TuewpQnXddilsMgJbwJI.jpg",
+      "https://image.tmdb.org/t/p/w1280/ok55LXHxu4FVWT8srZ27VWBgBEc.jpg",
+      "https://image.tmdb.org/t/p/w1280/k7Idj7xcGWsIhqNRVUfCqqMXW0X.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Roger Corman",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m0ApZMol42l8vLV8MLpUSCpyA6n.jpg",
+        "tmdbId": 102429
+      },
+      {
+        "name": "Richard Matheson",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fTsTj0EMqH5GfVN0Kj252jsYZnB.jpg",
+        "tmdbId": 12415
+      },
+      {
+        "name": "Floyd Crosby",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/47En3zTVdd30GgZ3wCYUuayqheQ.jpg",
+        "tmdbId": 4083
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0055256": {
     "imdbID": "tt0055256",
     "title": "One, Two, Three",
