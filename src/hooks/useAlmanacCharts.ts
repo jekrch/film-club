@@ -21,6 +21,91 @@ const daysBetween = (date1: Date, date2: Date): number => {
     return Math.floor(Math.abs(utc2 - utc1) / oneDay);
 };
 
+// Chart type, matched to the profile page's: labels in small-caps sans, figures
+// in serif. Highcharts draws to SVG and can't see Tailwind, so the slates the
+// rest of the page uses are spelled out here.
+const SANS = 'Inter, sans-serif';
+const SERIF = 'Merriweather, serif';
+const SLATE_100 = '#f1f5f9';
+const SLATE_300 = '#cbd5e1';
+const SLATE_400 = '#94a3b8';
+const SLATE_500 = '#64748b';
+const SLATE_600 = '#475569';
+// The page background (index.css). Slice borders in this color read as gaps.
+const PAGE_BG = '#0f172b';
+// slate-600 at the opacity the stat cards' rules use.
+const RULE = 'rgba(71, 85, 105, 0.4)';
+const COPPER = '#b76e41';
+
+const SMALL_CAPS: Highcharts.CSSObject = {
+    fontFamily: SANS,
+    fontSize: '10px',
+    fontWeight: '500',
+    letterSpacing: '0.14em',
+    textTransform: 'uppercase',
+    color: SLATE_400,
+};
+const FIGURES: Highcharts.CSSObject = { fontFamily: SERIF, fontSize: '11px', color: SLATE_400 };
+
+const escapeHtml = (text: string): string =>
+    text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/**
+ * A tooltip set like the stat cards: a small-caps label, the figure in serif,
+ * and an optional serif-italic note (a film title).
+ *
+ * The whole card is drawn here in HTML rather than by Highcharts' SVG box (see
+ * TOOLTIP_CARD), so it can have a real shadow, the modal's faint ring, and an
+ * accent rail down its left edge — the rail the page's cards carry, here in the
+ * hovered slice or line's own color so the tooltip reads as belonging to it.
+ */
+const tooltipCard = (label: string, figure: string, accent: string, note?: string): string =>
+    `<div style="position:relative;overflow:hidden;min-width:120px;padding:10px 14px 10px 16px;border-radius:8px;background:rgba(30,41,59,0.94);box-shadow:0 12px 28px -8px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)">` +
+    `<span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${accent}"></span>` +
+    `<div style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:${SLATE_400}">${escapeHtml(label)}</div>` +
+    `<div style="margin-top:4px;font-family:${SERIF};font-size:18px;line-height:1.1;color:${SLATE_100}">${figure}</div>` +
+    (note
+        ? `<div style="margin-top:4px;max-width:220px;white-space:normal;font-family:${SERIF};font-style:italic;font-size:12px;line-height:1.35;color:${SLATE_300}">${escapeHtml(note)}</div>`
+        : '') +
+    `</div>`;
+
+/** A small-caps word under a serif figure's unit: "34 <FILMS>". */
+const unit = (text: string): string =>
+    `<span style="margin-left:4px;font-family:${SANS};font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:${SLATE_400}">${text}</span>`;
+
+/** Highcharts' own box is switched off; `tooltipCard` draws the card. */
+const TOOLTIP_CARD: Highcharts.TooltipOptions = {
+    useHTML: true,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    shadow: false,
+    padding: 0,
+    style: { fontFamily: SANS, color: SLATE_300 },
+};
+
+/**
+ * On narrow screens the donut becomes a bar chart, one bar per category, and a
+ * club that has watched films from thirty countries gets a chart thirty bars
+ * tall. Past this many bars, the smallest are folded into one "Other" bar.
+ * Decades are exempt: there are only a dozen or so, and they read in order.
+ */
+const MOBILE_BAR_LIMIT = 10;
+const OTHER_LABEL = 'Other';
+
+/** The label a film is counted under in a category: its first country, language, or its decade. */
+const categoryValueOf = (film: Film, category: ChartCategory): string | null => {
+    switch (category) {
+        case 'country':
+            return film?.country?.split(',')[0].trim() || null;
+        case 'language':
+            return film?.language?.split(',')[0].trim() || null;
+        case 'decade': {
+            const yearNum = parseInt(film.year?.substring(0, 4) || '0', 10);
+            return !isNaN(yearNum) && yearNum > 1000 ? `${Math.floor(yearNum / 10) * 10}s` : null;
+        }
+    }
+};
+
 export interface UseAlmanacChartsReturn {
     // Donut Chart
     selectedCategory: ChartCategory;
@@ -162,6 +247,28 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
         }
     }, [selectedCategory, countryChartData, languageChartData, decadeChartData]);
 
+    // The bars the narrow-screen chart draws, and the categories its "Other"
+    // bar stands for.
+    const { mobileBarData, otherNames } = useMemo(() => {
+        if (selectedCategory === 'decade' || currentDonutChartData.length <= MOBILE_BAR_LIMIT) {
+            return { mobileBarData: currentDonutChartData, otherNames: new Set<string>() };
+        }
+        // Already sorted by count, largest first.
+        const kept = currentDonutChartData.slice(0, MOBILE_BAR_LIMIT - 1);
+        const rest = currentDonutChartData.slice(MOBILE_BAR_LIMIT - 1);
+        return {
+            mobileBarData: [
+                ...kept,
+                {
+                    name: OTHER_LABEL,
+                    y: rest.reduce((sum, d) => sum + (d.y ?? 0), 0),
+                    color: SLATE_500,
+                },
+            ],
+            otherNames: new Set(rest.map((d) => d.name ?? '')),
+        };
+    }, [selectedCategory, currentDonutChartData]);
+
     const currentDonutChartTitle = useMemo(() => {
         switch (selectedCategory) {
             case 'language':
@@ -183,33 +290,20 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                 return;
             }
 
-            let filtered: Film[] = [];
-            switch (selectedCategory) {
-                case 'country':
-                    filtered = allFilmsDataState.filter(
-                        (film) => film?.country?.split(',')[0].trim() === sliceName
-                    );
-                    break;
-                case 'language':
-                    filtered = allFilmsDataState.filter(
-                        (film) => film?.language?.split(',')[0].trim() === sliceName
-                    );
-                    break;
-                case 'decade':
-                    filtered = allFilmsDataState.filter((film) => {
-                        const yearNum = parseInt(film.year?.substring(0, 4) || '0', 10);
-                        return (
-                            !isNaN(yearNum) &&
-                            yearNum > 1000 &&
-                            `${Math.floor(yearNum / 10) * 10}s` === sliceName
-                        );
-                    });
-                    break;
-            }
+            // "Other" exists only on the narrow-screen bar chart, and stands
+            // for every category folded into it.
+            const matches = (value: string | null) =>
+                value !== null &&
+                (sliceName === OTHER_LABEL && otherNames.size > 0
+                    ? otherNames.has(value)
+                    : value === sliceName);
+            const filtered = allFilmsDataState.filter((film) =>
+                matches(categoryValueOf(film, selectedCategory))
+            );
             setSelectedPieSliceName(sliceName);
             setFilteredFilmsForPieSlice(filtered);
         },
-        [selectedCategory, allFilmsDataState, selectedPieSliceName]
+        [selectedCategory, allFilmsDataState, selectedPieSliceName, otherNames]
     );
 
     useEffect(() => {
@@ -223,42 +317,49 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
         const verticalPaddingPerBar = 15;
         const topBottomChartMargin = 80;
         const minChartHeight = 200;
-        const numberOfCategories = currentDonutChartData.length;
+        const numberOfCategories = mobileBarData.length;
         const calculatedHeight = Math.max(
             numberOfCategories * (pointWidthForCalc + verticalPaddingPerBar) + topBottomChartMargin,
             minChartHeight
         );
 
         return {
-            chart: { type: 'pie', backgroundColor: '', style: { fontFamily: 'Inter, sans-serif' } },
-            title: { text: currentDonutChartTitle, style: { color: '#d1d5db' } },
+            chart: { type: 'pie', backgroundColor: '', style: { fontFamily: SANS } },
+            // The title is set in the page, as a serif section head above the
+            // category chips, rather than drawn by Highcharts.
+            title: { text: undefined },
             tooltip: {
-                pointFormat:
-                    '{series.name}: <b>{point.percentage:.1f}%</b> ({point.y} film{point.plural})',
-                backgroundColor: 'rgba(31, 41, 55, 0.9)',
-                borderColor: '#4b5563',
-                style: { color: '#f3f4f6' },
+                ...TOOLTIP_CARD,
+                formatter: function () {
+                    const count = this.y ?? 0;
+                    return tooltipCard(
+                        this.name ?? '',
+                        `${(this.percentage ?? 0).toFixed(1)}%` +
+                            unit(`${count} film${count === 1 ? '' : 's'}`),
+                        String(this.color ?? COPPER)
+                    );
+                },
             },
             accessibility: { point: { valueSuffix: '%' } },
             plotOptions: {
                 pie: {
                     allowPointSelect: true,
                     cursor: 'pointer',
-                    borderColor: '#374151',
+                    borderColor: PAGE_BG,
+                    borderWidth: 2,
                     innerSize: '60%',
                     size: '90%',
                     dataLabels: {
                         enabled: true,
-                        format: '{point.name}: {point.percentage:.1f}%',
+                        // Small-caps name, serif figure: the stat cards' pairing.
+                        format: `{point.name} <span style="font-family:${SERIF};font-size:11px;letter-spacing:0;text-transform:none;color:${SLATE_300}">{point.percentage:.1f}%</span>`,
                         distance: 20,
                         style: {
-                            color: '#d1d5db',
+                            ...SMALL_CAPS,
                             textOutline: 'none',
-                            fontWeight: 'normal',
-                            fontSize: '11px',
                             cursor: 'pointer',
                         },
-                        connectorColor: '#6b7280',
+                        connectorColor: SLATE_600,
                         filter: { property: 'percentage', operator: '>', value: 3 },
                         events: {
                             click: function () {
@@ -279,7 +380,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
             series: [{ name: 'Films', type: 'pie', data: currentDonutChartData as any[] }],
             credits: { enabled: false },
             colors: [
-                '#b76e41',
+                COPPER,
                 '#d9a534',
                 '#1a7b6d',
                 '#be5a38',
@@ -307,31 +408,37 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                         chartOptions: {
                             chart: { type: 'bar', height: calculatedHeight },
                             xAxis: {
-                                categories: currentDonutChartData.map((d) => d.name || ''),
+                                categories: mobileBarData.map((d) => d.name || ''),
                                 title: { text: null },
-                                labels: { style: { color: '#9ca3af', fontSize: '10px' } },
-                                lineColor: '#4b5563',
-                                tickColor: '#4b5563',
+                                labels: { style: SMALL_CAPS },
+                                lineColor: RULE,
+                                tickColor: RULE,
                             },
                             yAxis: {
-                                title: { text: 'Number of Films', style: { color: '#d1d5db' } },
-                                labels: { style: { color: '#9ca3af' } },
-                                gridLineColor: '#374151',
+                                title: {
+                                    text: 'Number of Films',
+                                    style: { ...SMALL_CAPS, color: SLATE_500 },
+                                },
+                                labels: { style: FIGURES },
+                                gridLineColor: RULE,
+                                gridLineDashStyle: 'Dot',
                             },
                             plotOptions: {
                                 pie: {
                                     dataLabels: { enabled: false },
                                 } as Highcharts.PlotPieOptions,
                                 bar: {
-                                    borderColor: '#1f2937',
+                                    borderColor: PAGE_BG,
+                                    borderRadius: 2,
                                     dataLabels: {
                                         enabled: true,
                                         align: 'right',
-                                        color: '#d1d5db',
+                                        color: SLATE_300,
                                         style: {
+                                            ...FIGURES,
+                                            color: SLATE_300,
                                             textOutline: 'none',
                                             fontWeight: 'normal',
-                                            fontSize: '10px',
                                             cursor: 'pointer',
                                         },
                                         format: '{point.y}',
@@ -354,14 +461,28 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                                 } as Highcharts.PlotBarOptions,
                             },
                             tooltip: {
-                                pointFormat:
-                                    '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)',
+                                formatter: function () {
+                                    const count = this.y ?? 0;
+                                    const total = currentDonutChartData.reduce(
+                                        (sum, d) => sum + (d.y ?? 0),
+                                        0
+                                    );
+                                    const share = total ? (count / total) * 100 : 0;
+                                    return tooltipCard(
+                                        this.name ?? String(this.category ?? ''),
+                                        `${count}` +
+                                            unit(
+                                                `film${count === 1 ? '' : 's'} · ${share.toFixed(1)}%`
+                                            ),
+                                        String(this.color ?? COPPER)
+                                    );
+                                },
                             },
                             series: [
                                 {
                                     name: 'Films',
                                     type: 'bar',
-                                    data: currentDonutChartData as any[],
+                                    data: mobileBarData as any[],
                                 },
                             ],
                         },
@@ -369,7 +490,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                 ],
             },
         };
-    }, [currentDonutChartData, currentDonutChartTitle, handleCategoryClick]);
+    }, [currentDonutChartData, mobileBarData, handleCategoryClick]);
 
     const handleIntervalClick = useCallback(
         (event: Highcharts.PointClickEventObject) => {
@@ -398,42 +519,56 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
             chart: {
                 type: 'line',
                 backgroundColor: '',
-                style: { fontFamily: 'Inter, sans-serif' },
+                style: { fontFamily: SANS },
             },
-            title: { text: 'Time Between Club Meetings', style: { color: '#d1d5db' } },
+            // Set in the page as a serif section head; see donutChartOptions.
+            title: { text: undefined },
             xAxis: {
                 categories: meetingIntervalCategories,
-                labels: { rotation: -45, style: { color: '#9ca3af', fontSize: '10px' } },
-                lineColor: '#4b5563',
-                tickColor: '#4b5563',
+                labels: { rotation: -45, style: SMALL_CAPS },
+                lineColor: RULE,
+                tickColor: RULE,
             },
             yAxis: {
                 min: 0,
-                title: { text: 'Days Since Last Meeting', style: { color: '#d1d5db' } },
-                labels: { style: { color: '#9ca3af' } },
-                gridLineColor: '#374151',
+                title: {
+                    text: 'Days Since Last Meeting',
+                    style: { ...SMALL_CAPS, color: SLATE_500 },
+                },
+                labels: { style: FIGURES },
+                gridLineColor: RULE,
+                gridLineDashStyle: 'Dot',
             },
             legend: { enabled: false },
             tooltip: {
+                ...TOOLTIP_CARD,
+                // `this` is the hovered point; the film's title rides along in
+                // its options as `category` (see the interval data above).
                 formatter: function () {
-                    const point = this.points as any; // Access custom properties
-                    return `<b>${point.y} days</b><br/>Interval ended on: ${this.category}<br/>Film: <i>${point.options.category}</i>`;
+                    const days = this.y ?? 0;
+                    const film = (this.options as { category?: string }).category;
+                    return tooltipCard(
+                        `Ended ${this.category ?? ''}`,
+                        `${days}` + unit(days === 1 ? 'day' : 'days'),
+                        COPPER,
+                        film
+                    );
                 },
-                backgroundColor: 'rgba(31, 41, 55, 0.9)',
-                borderColor: '#4b5563',
-                style: { color: '#f3f4f6' },
             },
             plotOptions: {
                 line: {
-                    lineWidth: 2,
+                    lineWidth: 1.5,
+                    // Hollow rings in the page color, so the line reads as a
+                    // thread through the dates rather than a row of dots.
                     marker: {
                         enabled: true,
-                        radius: 4,
-                        fillColor: '#f3f4f6',
-                        lineColor: '#b76e41',
-                        lineWidth: 1,
+                        radius: 3,
+                        fillColor: PAGE_BG,
+                        lineColor: COPPER,
+                        lineWidth: 1.5,
+                        states: { hover: { radius: 5, fillColor: COPPER } },
                     },
-                    states: { hover: { lineWidth: 3 } },
+                    states: { hover: { lineWidth: 2 } },
                 },
                 series: {
                     cursor: 'pointer',
@@ -444,7 +579,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                 {
                     name: 'Days Between Meetings',
                     type: 'line',
-                    color: '#b76e41',
+                    color: COPPER,
                     data: meetingIntervalData as any[],
                 },
             ],
@@ -464,6 +599,11 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
 
     const filteredListTitle = useMemo(() => {
         if (!selectedPieSliceName) return '';
+        if (selectedPieSliceName === OTHER_LABEL && otherNames.size > 0) {
+            return selectedCategory === 'language'
+                ? 'Films in Other Languages'
+                : 'Films from Other Countries';
+        }
         switch (selectedCategory) {
             case 'country':
                 return `Films from ${selectedPieSliceName}`;
@@ -474,7 +614,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
             default:
                 return 'Selected Films';
         }
-    }, [selectedCategory, selectedPieSliceName]);
+    }, [selectedCategory, selectedPieSliceName, otherNames]);
 
     return {
         selectedCategory,

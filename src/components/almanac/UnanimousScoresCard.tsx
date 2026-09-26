@@ -77,7 +77,7 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
 
                 {/* Score badge */}
                 <div
-                    className={`text-2xl font-bold ${getScoreColorClass(score)} w-8 text-center flex-shrink-0`}
+                    className={`font-serif text-3xl leading-none tabular-nums ${getScoreColorClass(score)} w-8 text-center flex-shrink-0`}
                 >
                     {score}
                 </div>
@@ -87,9 +87,9 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
                     <p className="text-sm font-medium text-slate-200 group-hover:text-slate-100 truncate">
                         A "{stripLeadingArticle(namesakeFilm.title)}"
                     </p>
-                    <p className="text-xs text-slate-500">
+                    <p className="mt-0.5 text-[11px] uppercase tracking-[0.14em] text-slate-500">
                         {namesakeFilm.year}
-                        {films.length > 1 && ` · ${films.length} films total`}
+                        {films.length > 1 && ` · ${films.length} films`}
                     </p>
                 </div>
 
@@ -171,9 +171,7 @@ const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({ unanimousScor
     if (unanimousScores.length === 0) {
         return (
             <AccentCard accent="emerald" className="p-6">
-                <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-700/60">
-                    Unanimous Scores
-                </h4>
+                <h4 className="mb-3 font-serif text-2xl italic text-slate-100">Unanimous Scores</h4>
                 <p className="text-sm text-slate-400 italic text-center py-4">
                     No unanimous scores found yet. Keep watching!
                 </p>
@@ -183,9 +181,15 @@ const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({ unanimousScor
 
     return (
         <AccentCard accent="emerald" className="p-6">
-            <h4 className="text-lg font-semibold text-slate-200 mb-1 pb-2 border-b border-slate-700/60">
-                Unanimous Scores
-            </h4>
+            {/* Serif italic like the page's section heads, kept inside the
+                card because this one is a card of its own. */}
+            <div className="mb-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h4 className="font-serif text-2xl italic text-slate-100">Unanimous Scores</h4>
+                <span
+                    className="h-px flex-grow self-center bg-gradient-to-r from-emerald-400/25 via-slate-700/60 to-transparent"
+                    aria-hidden="true"
+                />
+            </div>
             {/* <p className="text-xs text-slate-500 mb-2">
                 <span className="text-slate-400">{totalCount}</span> films across{' '}
                 <span className="text-slate-400">{unanimousScores.length}</span> rating{unanimousScores.length !== 1 ? 's' : ''}

@@ -46,7 +46,10 @@ import TrophyGallery from '../components/common/TrophyGallery';
 import { resolveFilmTrophies } from '../utils/trophyUtils';
 import WatchTimelineNav from '../components/common/WatchTimelineNav';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
-import { CalendarDaysIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { CalendarDaysIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
+
+// Small-caps field label, the profile's stat-card label treatment.
+const FIELD_LABEL = 'text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400';
 
 // Crew fields shown as headshot cards in the "Crew" strip, with their display
 // role. Actors are intentionally excluded — they're covered by the cast strip.
@@ -172,6 +175,14 @@ const FilmDetailPage = () => {
             : formatCurrency(film.revenue);
     const budgetDisplay = formatCurrency(film.budget);
     const awardsDisplay = film.awards && film.awards.toLowerCase() !== 'n/a' ? film.awards : null;
+    const directorCredit =
+        film.director && film.director.toLowerCase() !== 'n/a'
+            ? film.director
+                  .split(',')
+                  .map((name) => name.trim())
+                  .filter(Boolean)
+                  .join(' & ')
+            : null;
     // Backdrop for the details strip (genres/budget/awards). Prefer a second
     // image so it differs from the right-anchored header backdrop; fall back to
     // the primary backdrop when only one is available.
@@ -227,21 +238,12 @@ const FilmDetailPage = () => {
                     onClick={() => navigate(-1)}
                     variant="link"
                     size="md"
-                    className="mb-6 group"
+                    className="mb-8 group"
                 >
-                    {/* ... back button svg ... */}
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
+                    <ChevronLeftIcon
                         className="h-5 w-5 transition-transform group-hover:-translate-x-1"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                    >
-                        <path
-                            fillRule="evenodd"
-                            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                            clipRule="evenodd"
-                        />
-                    </svg>
+                        aria-hidden="true"
+                    />
                     Back
                 </Button>
 
@@ -304,41 +306,48 @@ const FilmDetailPage = () => {
                                 />
                             )}
                             <div className="relative z-10">
-                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-                                    <h1 className="text-3xl lg:text-4xl font-bold text-slate-100 mb-1 sm:mb-0 pr-4">
-                                        {film.title}
-                                    </h1>
-                                    <span className="text-xl font-semibold text-slate-400 flex-shrink-0">
-                                        ({film.year})
-                                    </span>
-                                </div>
+                                {/* Set like a title card, as the profile banner is:
+                                    the year and director as a small-caps credit
+                                    over the title, a short rule, then the tagline
+                                    as an epigraph in serif italic. */}
+                                {(film.year || directorCredit) && (
+                                    <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
+                                        {film.year}
+                                        {film.year && directorCredit && (
+                                            <span
+                                                className="mx-2 text-slate-500"
+                                                aria-hidden="true"
+                                            >
+                                                ·
+                                            </span>
+                                        )}
+                                        {directorCredit && <>Directed by {directorCredit}</>}
+                                    </p>
+                                )}
+                                <h1 className="font-serif text-3xl lg:text-4xl leading-tight tracking-tight text-slate-100 break-words">
+                                    {film.title}
+                                </h1>
+                                <span
+                                    className="mt-4 mb-4 block h-px w-12 bg-slate-500/60"
+                                    aria-hidden="true"
+                                />
                                 {film.tagline && (
-                                    <p className="text-slate-400 italic mb-4 -mt-1">
+                                    <p className="mb-5 font-serif italic leading-relaxed text-slate-300">
                                         {film.tagline}
                                     </p>
                                 )}
                                 {film.popcornPod && <PopcornPodDisclaimer />}
-                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-400 mb-5">
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 mb-5">
                                     {clubAverageDisplay && (
                                         <div
-                                            className="flex items-center font-medium text-base"
+                                            className="flex items-baseline gap-1.5"
                                             title={`Average Club Rating (${numberOfValidRatings} ratings)`}
                                         >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-5 w-5 text-blue-400 mr-1.5"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                                            </svg>
-                                            <span className="text-slate-200">
+                                            <span className="font-serif text-lg normal-case tracking-normal tabular-nums leading-none text-blue-300">
                                                 {clubAverageDisplay}
                                             </span>
-                                            <span className="ml-1 text-slate-500">
-                                                / {MAX_RATING}
-                                            </span>{' '}
-                                            <span className="ml-1 text-xs">(Club Avg)</span>
+                                            <span className="text-slate-500">/ {MAX_RATING}</span>
+                                            <span>Club Avg</span>
                                         </div>
                                     )}
                                     {runtimeDisplay && (
@@ -411,11 +420,11 @@ const FilmDetailPage = () => {
                                                     : null;
                                             const chipContent = (
                                                 <>
-                                                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+                                                    <span className={FIELD_LABEL}>
                                                         {RATING_SOURCE_LABELS[rating.source] ??
                                                             rating.source}
                                                     </span>
-                                                    <span className="font-semibold text-slate-100">
+                                                    <span className="font-serif tabular-nums text-slate-100">
                                                         {rating.value}
                                                     </span>
                                                 </>
@@ -426,7 +435,7 @@ const FilmDetailPage = () => {
                                                     href={imdbUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="group inline-flex items-baseline gap-1.5 px-3 py-1 bg-slate-700/60 hover:bg-slate-600/60 ring-1 ring-yellow-500/30 hover:ring-yellow-500/60 rounded-md text-sm transition"
+                                                    className="group inline-flex items-baseline gap-2 px-3 py-1.5 bg-slate-700/25 hover:bg-slate-700/45 border border-yellow-500/25 hover:border-yellow-500/50 rounded-lg text-sm transition-colors duration-200"
                                                     title={`View on IMDb`}
                                                 >
                                                     {chipContent}
@@ -443,7 +452,7 @@ const FilmDetailPage = () => {
                                             ) : (
                                                 <span
                                                     key={rating.source}
-                                                    className="inline-flex items-baseline gap-1.5 px-3 py-1 bg-slate-700/60 rounded-md text-sm"
+                                                    className="inline-flex items-baseline gap-2 px-3 py-1.5 bg-slate-700/25 border border-slate-600/30 rounded-lg text-sm"
                                                     title={rating.source}
                                                 >
                                                     {chipContent}
@@ -453,7 +462,13 @@ const FilmDetailPage = () => {
                                     </div>
                                 )}
                                 <div className="mb-5 text-slate-300 ">
-                                    <CollapsibleContent buttonSize="sm" lineClamp={3}>
+                                    {/* Serif, like the interview answers on a profile. */}
+                                    <CollapsibleContent
+                                        buttonSize="sm"
+                                        lineClamp={3}
+                                        className="font-serif leading-relaxed"
+                                        buttonClassName="mt-2 font-sans not-italic"
+                                    >
                                         <PlotParagraphs
                                             plot={film.plot}
                                             fallback={
@@ -470,17 +485,13 @@ const FilmDetailPage = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm mb-6">
                                     {film.language && film.language.toLowerCase() !== 'n/a' && (
                                         <div>
-                                            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-                                                Language
-                                            </h3>
+                                            <h3 className={`${FIELD_LABEL} mb-1.5`}>Language</h3>
                                             <p className="text-slate-300">{film.language}</p>
                                         </div>
                                     )}
                                     {film.country && film.country.toLowerCase() !== 'n/a' && (
                                         <div>
-                                            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
-                                                Country
-                                            </h3>
+                                            <h3 className={`${FIELD_LABEL} mb-1.5`}>Country</h3>
                                             <p className="text-slate-300">{film.country}</p>
                                         </div>
                                     )}
@@ -513,9 +524,7 @@ const FilmDetailPage = () => {
                                     <div className="px-6 md:px-8 py-5 border-t border-slate-700/60 flex flex-col sm:flex-row sm:flex-wrap gap-6 sm:gap-x-10 sm:gap-y-6">
                                         {filmGenres.length > 0 && (
                                             <div className="flex-shrink-0">
-                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                                                    Genres
-                                                </h3>
+                                                <h3 className={`${FIELD_LABEL} mb-2`}>Genres</h3>
                                                 <div className="flex flex-wrap gap-2">
                                                     {filmGenres.map((genre) => (
                                                         <span
@@ -530,25 +539,25 @@ const FilmDetailPage = () => {
                                         )}
                                         {budgetDisplay && (
                                             <div className="flex-shrink-0">
-                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                                                    Budget
-                                                </h3>
-                                                <p className="text-slate-300">{budgetDisplay}</p>
+                                                <h3 className={`${FIELD_LABEL} mb-2`}>Budget</h3>
+                                                <p className="font-serif text-lg tabular-nums text-slate-200">
+                                                    {budgetDisplay}
+                                                </p>
                                             </div>
                                         )}
                                         {boxOfficeDisplay && (
                                             <div className="flex-shrink-0">
-                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                                                <h3 className={`${FIELD_LABEL} mb-2`}>
                                                     Box Office
                                                 </h3>
-                                                <p className="text-slate-300">{boxOfficeDisplay}</p>
+                                                <p className="font-serif text-lg tabular-nums text-slate-200">
+                                                    {boxOfficeDisplay}
+                                                </p>
                                             </div>
                                         )}
                                         {awardsDisplay && (
                                             <div className="sm:flex-1 sm:basis-80">
-                                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                                                    Awards
-                                                </h3>
+                                                <h3 className={`${FIELD_LABEL} mb-2`}>Awards</h3>
                                                 <p className="text-slate-300 leading-relaxed">
                                                     {awardsDisplay}
                                                 </p>
@@ -587,14 +596,13 @@ const FilmDetailPage = () => {
                                 className="pointer-events-none absolute -top-24 -right-16 h-64 w-64 rounded-full bg-blue-500/[0.07] blur-3xl"
                             />
                             <div className="relative z-10">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-blue-500/10 ring-1 ring-blue-400/20">
-                                        <UserGroupIcon className="h-5 w-5 text-blue-400" />
-                                    </div>
-                                    <h2 className="text-2xl font-semibold text-slate-100">
+                                {/* Serif italic, like the profile's Interview head:
+                                    this is the club's own account of the film. */}
+                                <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                    <h2 className="font-serif text-2xl italic text-slate-100">
                                         Film Club Facts
                                     </h2>
-                                    <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                                    <span className="h-px flex-grow self-center bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
                                 </div>
                                 <div className="md:flex md:justify-between md:items-start">
                                     <div className="flex-1 mb-6 md:mb-0 md:pr-6">
@@ -602,10 +610,10 @@ const FilmDetailPage = () => {
                                             <div className="mb-6 inline-flex items-center gap-3 rounded-lg border border-slate-700/50 bg-slate-800/40 px-4 py-2.5">
                                                 <CalendarDaysIcon className="h-5 w-5 flex-shrink-0 text-blue-400/80" />
                                                 <div className="leading-tight">
-                                                    <span className="block text-[11px] font-semibold text-slate-500 uppercase tracking-[0.15em]">
+                                                    <span className={`block ${FIELD_LABEL}`}>
                                                         Watch Date
                                                     </span>
-                                                    <span className="text-slate-100 text-base font-medium">
+                                                    <span className="mt-0.5 block font-serif text-base tabular-nums text-slate-100">
                                                         {film.movieClubInfo.watchDate}
                                                     </span>
                                                 </div>
@@ -613,18 +621,20 @@ const FilmDetailPage = () => {
                                         )}
                                         {numberOfValidRatings > 0 ? (
                                             <div>
-                                                <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">
+                                                <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
                                                     Club Rating
                                                 </h3>
                                                 {clubAverageDisplay &&
                                                     !isNaN(clubAverageDisplay) && (
                                                         <div className="mb-5 flex items-center gap-x-4 gap-y-2 flex-wrap">
+                                                            {/* Large serif numeral with the scale
+                                                                dropped to small caps, as the
+                                                                profile's stat cards set values. */}
                                                             <div className="flex items-baseline whitespace-nowrap">
-                                                                <span className="text-4xl font-bold text-blue-300">
+                                                                <span className="font-serif text-5xl leading-none tracking-tight tabular-nums text-blue-300">
                                                                     {clubAverageDisplay}
                                                                 </span>
-                                                                <span className="text-slate-400 text-lg">
-                                                                    {' '}
+                                                                <span className="ml-2 text-xs font-medium uppercase tracking-widest text-slate-400">
                                                                     / {MAX_RATING}
                                                                 </span>
                                                             </div>
@@ -643,9 +653,15 @@ const FilmDetailPage = () => {
                                                             average.
                                                         </p>
                                                     )}
-                                                <h4 className="text-sm font-semibold text-slate-300 mb-3 mt-4">
-                                                    Individual Ratings:
-                                                </h4>
+                                                <div className="mb-4 mt-4 flex items-center gap-2.5">
+                                                    <h4 className={FIELD_LABEL}>
+                                                        Individual Ratings
+                                                    </h4>
+                                                    <span
+                                                        className="h-px flex-1 bg-slate-600/40"
+                                                        aria-hidden="true"
+                                                    />
+                                                </div>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
                                                     {film.movieClubInfo.clubRatings
                                                         .filter(
@@ -673,16 +689,15 @@ const FilmDetailPage = () => {
                                                                     <div className="flex items-center space-x-2">
                                                                         <Link
                                                                             to={`/profile/${encodeURIComponent(capitalizeFirstLetter(rating.user))}`}
-                                                                            className="text-slate-300 hover:text-white transition font-medium capitalize w-16 truncate"
+                                                                            className="w-20 truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 transition-colors hover:text-blue-300"
                                                                             title={`View ${capitalizeFirstLetter(rating.user)}'s profile`}
                                                                         >
                                                                             {capitalizeFirstLetter(
                                                                                 rating.user
                                                                             )}
-                                                                            :
                                                                         </Link>
                                                                         <span
-                                                                            className={`font-semibold text-slate-200 whitespace-nowrap ${filmHasQualifier ? 'w-14' : 'w-8 text-right'}`}
+                                                                            className={`font-serif text-lg leading-none tabular-nums text-slate-100 whitespace-nowrap ${filmHasQualifier ? 'w-14' : 'w-8 text-right'}`}
                                                                         >
                                                                             {rating.score}
                                                                             {rating.scoreQualifier && (
@@ -762,7 +777,7 @@ const FilmDetailPage = () => {
                                         ) : (
                                             <div>
                                                 {' '}
-                                                <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2">
+                                                <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
                                                     Club Rating
                                                 </h3>{' '}
                                                 <p className="text-slate-400 italic">
@@ -844,7 +859,7 @@ const FilmDetailPage = () => {
                                 {film.movieClubInfo.trophyInfo &&
                                     !film.movieClubInfo.trophyNotes && (
                                         <div className="mt-8 pt-6 border-t border-slate-700">
-                                            <h3 className="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">
+                                            <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
                                                 Trophy Info
                                             </h3>
                                             <p className="text-slate-300 whitespace-pre-line">

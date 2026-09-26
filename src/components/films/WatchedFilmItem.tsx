@@ -37,6 +37,9 @@ const MAX_RATING = MAX_SCORE;
  */
 const POSTER_CLASS = 'h-27 w-18 sm:h-33 sm:w-22';
 
+/** The poster's cell in the row's grid, whichever element fills it. */
+const POSTER_SLOT_CLASS = 'col-start-1 row-start-1 block sm:row-span-3';
+
 const FIELD_CLASS =
     'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
     'placeholder:text-slate-500 focus:border-blue-400/60 focus:outline-none';
@@ -168,6 +171,24 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
             </a>
         );
 
+    const posterArt =
+        poster && !posterFailed ? (
+            <img
+                src={poster}
+                alt={`${displayTitle} poster`}
+                loading="lazy"
+                decoding="async"
+                className={`block ${POSTER_CLASS} rounded-md object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 transition-opacity hover:opacity-80`}
+                onError={() => setPosterFailed(true)}
+            />
+        ) : (
+            <span
+                className={`flex ${POSTER_CLASS} items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}
+            >
+                ?
+            </span>
+        );
+
     return (
         // `relative` and `overflow-hidden` are the wash's doing: it lays itself
         // over the row and has to be clipped to the rounded corners. The blocks
@@ -196,26 +217,32 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                 that half disappears, and the lines the reader was already
                 looking at jump up by it. Naming the second track `1fr` sends the
                 whole surplus there instead. Only from `sm`, which is where the
-                poster starts spanning. */}
-            <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start sm:grid-rows-[auto_1fr]">
-                {wrapLink(
-                    poster && !posterFailed ? (
-                        <img
-                            src={poster}
-                            alt={`${displayTitle} poster`}
-                            loading="lazy"
-                            decoding="async"
-                            className={`block ${POSTER_CLASS} rounded-md object-cover object-top shadow-sm shadow-black/40 ring-1 ring-slate-600/40 transition-opacity hover:opacity-80`}
-                            onError={() => setPosterFailed(true)}
-                        />
-                    ) : (
-                        <span
-                            className={`flex ${POSTER_CLASS} items-center justify-center rounded-md bg-slate-800 text-[10px] uppercase tracking-widest text-slate-600 ring-1 ring-slate-600/40`}
-                        >
-                            ?
-                        </span>
-                    ),
-                    'col-start-1 row-start-1 block sm:row-span-2'
+                poster starts spanning. The third track is the details toggle's,
+                which that same surplus pushes down level with the poster's foot. */}
+            <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start sm:grid-rows-[auto_1fr_auto]">
+                {/* The poster opens the row's own details rather than leaving
+                    for them — the title is still the way out. Only a row with
+                    nothing to open falls back to the title's link. Inert while
+                    the editor is open, since the panel is held shut then and a
+                    click would only arm it to spring open on save. */}
+                {details ? (
+                    <button
+                        type="button"
+                        onClick={() => setDetailsOpen((open) => !open)}
+                        disabled={editing}
+                        aria-expanded={detailsOpen}
+                        aria-controls={panelId}
+                        aria-label={
+                            detailsOpen
+                                ? `Hide details for ${displayTitle}`
+                                : `Show details for ${displayTitle}`
+                        }
+                        className={`${POSTER_SLOT_CLASS} rounded-md`}
+                    >
+                        {posterArt}
+                    </button>
+                ) : (
+                    wrapLink(posterArt, POSTER_SLOT_CLASS)
                 )}
 
                 <div className="col-start-2 row-start-1 ml-3 min-w-0 sm:ml-4">
@@ -259,12 +286,15 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                             </span>
                         )}
 
-                        {/* Trailer and score travel together at the end of the
-                            line, so the pair moves as one when the title wraps
-                            — a badge carrying `ml-auto` on its own would jump to
-                            the far edge of whatever row it landed on. */}
-                        {(entry.score !== null || trailerKey !== null || details !== null) && (
-                            <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+                        {/* Trailer and score travel together, so the pair moves
+                            as one. On a phone they take a line of their own under
+                            the title, left-aligned: pushed to the far edge they
+                            landed stranded on whatever line the wrap left them,
+                            and a two-line title left them floating in the middle
+                            of the card. From `sm` there is room for them at the
+                            end of the title's line. */}
+                        {(entry.score !== null || trailerKey !== null) && (
+                            <span className="mt-1 flex w-full flex-shrink-0 items-center gap-1.5 sm:ml-auto sm:mt-0 sm:w-auto">
                                 {trailerKey && (
                                     <TrailerButton trailerKey={trailerKey} title={displayTitle} />
                                 )}
@@ -284,17 +314,6 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                                         )}
                                         <span className="text-slate-500">/{MAX_RATING}</span>
                                     </span>
-                                )}
-
-                                {/* Last in the cluster: the badges before it are
-                                    labels, this is the one that acts on the row. */}
-                                {details && (
-                                    <EntryDetailsToggle
-                                        isOpen={detailsOpen}
-                                        onToggle={() => setDetailsOpen((open) => !open)}
-                                        title={displayTitle}
-                                        panelId={panelId}
-                                    />
                                 )}
                             </span>
                         )}
@@ -320,9 +339,25 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                     tagline and synopsis in the panel below are the same grey at
                     the same size, a hairline apart. */}
                 {blurb && !editing && (
-                    <div className="col-span-3 col-start-1 row-start-2 ml-3 mt-1.5 border-l-2 border-emerald-400/30 pl-3 prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-slate-300 sm:col-span-1 sm:col-start-2 sm:ml-4">
+                    <div className="col-span-3 col-start-1 row-start-2 mt-3 border-l-2 border-emerald-400/30 pl-3 prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-slate-300 sm:col-span-1 sm:col-start-2 sm:ml-4 sm:mt-1.5">
                         <Markdown>{blurb}</Markdown>
                     </div>
+                )}
+
+                {/* The card's bottom-right corner, labelled, rather than a bare
+                    chevron among the badges on the title line, where it was easy
+                    to read past. Spans the title's column and the edge's so it
+                    widens neither: a grid item spanning a flexible track adds
+                    nothing to an auto one. */}
+                {details && !editing && (
+                    <EntryDetailsToggle
+                        isOpen={detailsOpen}
+                        onToggle={() => setDetailsOpen((open) => !open)}
+                        title={displayTitle}
+                        panelId={panelId}
+                        labeled
+                        className="col-span-2 col-start-2 row-start-3 mt-2 self-end justify-self-end"
+                    />
                 )}
             </div>
 

@@ -15,20 +15,29 @@ interface EntryDetailsToggleProps {
     title: string;
     /** The panel's `id`, tying the two together for assistive tech. */
     panelId: string;
+    /**
+     * Says "Details" beside the chevron. For a toggle standing on its own at the
+     * foot of a card, where a bare chevron is easy to read past; the icon-only
+     * one is for a toggle tucked in among the badges on a title line.
+     */
+    labeled?: boolean;
+    className?: string;
 }
 
 /**
- * The chevron that opens a row's panel, styled to sit beside the trailer badge.
+ * The control that opens a row's panel.
  *
  * Exported separately from the panel because the two live in different cells of
- * a row's grid — the control belongs with the badges on the title line, the
- * panel spans the row underneath it.
+ * a row's grid — the control belongs on the card, the panel spans the row
+ * underneath it.
  */
 export const EntryDetailsToggle: React.FC<EntryDetailsToggleProps> = ({
     isOpen,
     onToggle,
     title,
     panelId,
+    labeled = false,
+    className = '',
 }) => (
     <button
         type="button"
@@ -36,8 +45,18 @@ export const EntryDetailsToggle: React.FC<EntryDetailsToggleProps> = ({
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Hide details for ${title}` : `Show details for ${title}`}
-        className="flex flex-shrink-0 items-center rounded-md bg-white/[0.04] px-1.5 py-0.5 text-slate-400 ring-1 ring-inset ring-white/[0.06] transition-colors hover:bg-white/[0.08] hover:text-slate-100"
+        className={`flex flex-shrink-0 items-center rounded-md transition-colors ${
+            // The labelled one is bare text: the word does the job the chip's
+            // fill did, and a filled chip in the corner of every card outweighed
+            // the badges it was meant to sit quieter than. It warms with the
+            // card, as the row's date does, so it surfaces when the reader is
+            // already looking at that row.
+            labeled
+                ? 'gap-0.5 py-0.5 pl-1.5 pr-0.5 text-xs text-slate-500 group-hover:text-slate-400 hover:text-slate-200!'
+                : 'bg-white/[0.04] px-1.5 py-0.5 text-slate-400 ring-1 ring-inset ring-white/[0.06] hover:bg-white/[0.08] hover:text-slate-100'
+        } ${className}`}
     >
+        {labeled && <span aria-hidden="true">Details</span>}
         <ChevronDownIcon
             className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
             aria-hidden="true"

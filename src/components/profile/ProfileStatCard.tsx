@@ -1,5 +1,6 @@
 import React from 'react';
 import AccentCard from '../common/AccentCard';
+import UnitValue from '../common/UnitValue';
 
 /**
  * Props for the ProfileStatCard component.
@@ -26,25 +27,6 @@ const ordinal = (n: number): string => {
     if (tens >= 11 && tens <= 13) return `${n}th`;
     return `${n}${['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'}`;
 };
-
-/**
- * Sets the digits of a formatted value as large numerals and drops the unit
- * words ("hrs", "min") down to small caps beside them, so "12 hrs 34 min"
- * reads as two figures rather than one long string.
- */
-const renderWithUnits = (value: string): React.ReactNode =>
-    value.split(/(\d+(?:\.\d+)?)/).map((part, i) =>
-        /^\d/.test(part) || part.trim() === '' ? (
-            part
-        ) : (
-            <span
-                key={i}
-                className="mx-1 font-sans text-xs font-medium uppercase tracking-widest text-slate-400"
-            >
-                {part.trim()}
-            </span>
-        )
-    );
 
 /**
  * One tick per ranked member, left to right from first place, with this
@@ -181,9 +163,11 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
                     <p
                         className={`font-serif text-4xl font-normal leading-none tracking-tight tabular-nums break-words ${valueClassName}`}
                     >
-                        {typeof value === 'string'
-                            ? renderWithUnits(value)
-                            : (value as React.ReactNode)}
+                        {typeof value === 'string' ? (
+                            <UnitValue value={value} />
+                        ) : (
+                            (value as React.ReactNode)
+                        )}
                     </p>
                 )}
             </div>

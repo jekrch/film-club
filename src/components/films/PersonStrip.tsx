@@ -28,7 +28,7 @@ const PersonStrip = ({ title, people, onPersonClick }: PersonStripProps) => {
 
     return (
         <div className="mt-6">
-            <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            <h2 className="mb-3 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
                 {title}
             </h2>
             {/* Negative margins + matching padding give the focus/amber rings room

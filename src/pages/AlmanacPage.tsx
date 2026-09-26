@@ -23,6 +23,7 @@ import PageLayout from '../components/layout/PageLayout';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
 import HeroBanner from '../components/common/HeroBanner';
+import SectionHeader from '../components/common/SectionHeader';
 import FilmFrameWash from '../components/common/FilmFrameWash';
 
 import { useUnanimousScores } from '../hooks/useUnanimousScores';
@@ -32,7 +33,7 @@ import FilmConnectionGraph from '../components/almanac/FilmConnectionGraph';
 // Helper Functions (can be moved to utils if not already there)
 const formatTotalMinutes = (totalMinutes: number): string => {
     if (isNaN(totalMinutes) || totalMinutes < 0) {
-        return '0 days : 00 hrs : 00 m';
+        return '0 days 00 hrs 00 min';
     }
     const minutesPerDay = 1440;
     const minutesPerHour = 60;
@@ -42,7 +43,8 @@ const formatTotalMinutes = (totalMinutes: number): string => {
     const minutes = remainingMinutesAfterDays % minutesPerHour;
     const pad = (num: number) => String(num).padStart(2, '0');
     const dayLabel = days === 1 ? 'day' : 'days';
-    return `${days} ${dayLabel} : ${pad(hours)} hrs : ${pad(minutes)} m`;
+    // Plain words between the figures: StatCard drops them to small caps.
+    return `${days} ${dayLabel} ${pad(hours)} hrs ${pad(minutes)} min`;
 };
 
 const daysBetween = (date1: Date, date2: Date): number => {
@@ -65,7 +67,24 @@ const AlmanacPage: React.FC = () => {
         meetingIntervalChartOptions,
         selectedIntervalDetail,
         closeIntervalDetail,
+        currentDonutChartData,
+        currentDonutChartTitle,
+        meetingIntervalData,
     } = useAlmanacCharts(filmData);
+
+    // The figures at the end of each chart's title rule.
+    const CATEGORY_PLURALS: Record<ChartCategory, string> = {
+        country: 'countries',
+        language: 'languages',
+        decade: 'decades',
+    };
+    const donutMeta = currentDonutChartData.length
+        ? `${currentDonutChartData.length} ${CATEGORY_PLURALS[selectedCategory]}`
+        : null;
+    const intervalDays = meetingIntervalData.map((point) => point.y ?? 0);
+    const intervalMeta = intervalDays.length
+        ? `Avg ${Math.round(intervalDays.reduce((sum, d) => sum + d, 0) / intervalDays.length)} days`
+        : null;
 
     const { allMemberStats, getHighlightClass, formatAverage, formatYear } = useMemberStatistics(
         filmData,
@@ -154,26 +173,29 @@ const AlmanacPage: React.FC = () => {
                 personName={creditsModalState.personName}
                 filmography={creditsModalState.filmography}
             />
-            {/*
-            <SectionHeader title="Almanac" className="text-center" />
-            */}
             {foundingDate && daysActive !== null && (
                 // Founding banner, given the profile page's hero treatment: a
                 // collage of the club's best-scored films washed behind the date.
+                // Set like the profile's title card: a small-caps credit over
+                // the date in serif, a short rule, then the tally as an epigraph.
                 <HeroBanner films={topRatedFilms} className="mb-4 sm:mb-6">
-                    <p className="text-[11px] uppercase tracking-[0.25em] text-blue-300/70 font-semibold mb-4">
-                        Founded
+                    <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
+                        The Almanac · Founded
                     </p>
-                    <p className="text-xl sm:text-2xl font-light text-slate-100">
+                    <h1 className="font-serif text-2xl sm:text-3xl leading-snug tracking-tight text-slate-200">
                         {foundingDate.toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
                         })}
-                    </p>
-                    <p className="mt-3 text-sm text-slate-400">
-                        Active{' '}
-                        <span className="font-mono text-slate-200">
+                    </h1>
+                    <span
+                        className="mx-auto mt-4 mb-4 block h-px w-10 bg-slate-500/60"
+                        aria-hidden="true"
+                    />
+                    <p className="font-serif italic text-slate-300">
+                        Active for{' '}
+                        <span className="not-italic tabular-nums text-slate-100">
                             {daysActive.toLocaleString()}
                         </span>{' '}
                         days
@@ -194,7 +216,7 @@ const AlmanacPage: React.FC = () => {
                 />
             </div>
 
-            <ChartContainer className="mb-4">
+            <ChartContainer className="mb-4" title={currentDonutChartTitle} meta={donutMeta}>
                 <CategorySelector
                     categories={['country', 'language', 'decade']}
                     selectedCategory={selectedCategory}
@@ -223,7 +245,11 @@ const AlmanacPage: React.FC = () => {
                 />
             )}
 
-            <ChartContainer className="mb-8 sm:mb-10">
+            <ChartContainer
+                className="mb-8 sm:mb-10"
+                title="Time Between Club Meetings"
+                meta={intervalMeta}
+            >
                 <p className="mb-2 text-center text-xs text-slate-400 italic">
                     Click on a point to see which film was watched at the end of that interval.
                 </p>
@@ -248,9 +274,7 @@ const AlmanacPage: React.FC = () => {
             </ChartContainer>
 
             <div className="mb-8 sm:mb-10">
-                <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
-                    Member Stats Breakdown
-                </h3>
+                <SectionHeader title="Member Stats Breakdown" />
                 {allMemberStats.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {allMemberStats.map(({ member, stats, highlights }) => (
@@ -273,9 +297,7 @@ const AlmanacPage: React.FC = () => {
             </div>
 
             <div className="mb-8 sm:mb-10">
-                <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
-                    Frequently Credited Artists
-                </h3>
+                <SectionHeader title="Frequently Credited Artists" />
                 {frequentPersons.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
                         {frequentPersons.map((person) => (
@@ -293,9 +315,9 @@ const AlmanacPage: React.FC = () => {
                                     />
                                 }
                             >
-                                <div className="flex justify-between items-center mb-3 border-b border-slate-700/60 pb-2">
+                                <div className="flex justify-between items-baseline mb-3 border-b border-slate-700/60 pb-2">
                                     <h4
-                                        className="text-lg font-semibold text-blue-400 hover:text-blue-300 cursor-pointer truncate"
+                                        className="font-serif text-lg text-slate-100 hover:text-blue-300 transition-colors cursor-pointer truncate"
                                         onClick={() =>
                                             handleFrequentPersonClick(
                                                 person.name,
@@ -306,8 +328,11 @@ const AlmanacPage: React.FC = () => {
                                     >
                                         {person.name}
                                     </h4>
-                                    <span className="text-sm text-slate-400 flex-shrink-0 ml-2">
-                                        ({person.count} films)
+                                    <span className="ml-2 flex-shrink-0 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500">
+                                        <span className="mr-1 font-serif text-sm normal-case tracking-normal tabular-nums text-slate-300">
+                                            {person.count}
+                                        </span>
+                                        films
                                     </span>
                                 </div>
                                 <ul className="space-y-2 text-sm">
@@ -319,10 +344,13 @@ const AlmanacPage: React.FC = () => {
                                                     to={`/films/${film.imdbID}`}
                                                     className="hover:text-slate-100 hover:underline"
                                                 >
-                                                    {film.title} ({film.year})
+                                                    {film.title}
                                                 </Link>
-                                                <span className="text-slate-400 text-xs block ml-2">
-                                                    - {roles.join(', ')}
+                                                <span className="ml-1.5 font-serif text-xs tabular-nums text-slate-500">
+                                                    {film.year}
+                                                </span>
+                                                <span className="mt-0.5 block text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">
+                                                    {roles.join(' · ')}
                                                 </span>
                                             </li>
                                         ))}

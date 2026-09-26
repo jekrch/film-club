@@ -190,7 +190,7 @@ const rowTrailerKey = (event: WallEvent): string | null => {
  * True when {@link WallFigure} will draw something.
  *
  * Asked one line above where the badge is rendered, because the figure and the
- * expander share a cluster at the end of the subject and the cluster shouldn't
+ * trailer share a cluster at the end of the subject and the cluster shouldn't
  * exist when neither does.
  */
 const hasFigure = (event: WallEvent): boolean =>
@@ -352,6 +352,10 @@ const FilmTitle: React.FC<{
  */
 const POSTER_CLASS = 'h-21 w-14 sm:h-27 sm:w-18';
 
+/** The poster's cell in the row's grid, whether it opens the details or links home. */
+const POSTER_SLOT_CLASS =
+    'col-start-1 row-start-1 block rounded-md transition-opacity duration-200 hover:opacity-80 sm:row-span-3';
+
 const EventPoster: React.FC<{ src: string | null; title: string }> = ({ src, title }) => {
     const [failed, setFailed] = useState(false);
 
@@ -418,7 +422,7 @@ const ScoreBadge: React.FC<{
  * the reader actually sees.
  */
 const Detail: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <div className="relative mt-1.5 border-l-2 border-emerald-400/30 pl-3">
+    <div className="relative mt-3 border-l-2 sm:mt-1.5 border-emerald-400/30 pl-3">
         <CollapsibleContent
             lineClamp={2}
             buttonSize="sm"
@@ -542,17 +546,40 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                         surplus there instead: the title's row is only ever as
                         tall as the title, and the prose under it starts at the
                         same place open or shut. Only from `sm`, which is where
-                        the poster starts spanning. */}
-                    <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start sm:grid-rows-[auto_1fr]">
-                        {film && (
-                            <Link
-                                to={eventHome(lead)}
-                                title={`Open ${eventHomeLabel(lead)}`}
-                                className="col-start-1 row-start-1 block rounded-md transition-opacity duration-200 hover:opacity-80 sm:row-span-2"
-                            >
-                                <EventPoster src={film.poster} title={film.title} />
-                            </Link>
-                        )}
+                        the poster starts spanning. The third track is the
+                        details toggle's, which that same surplus pushes down
+                        level with the poster's foot. */}
+                    <div className="relative grid grid-cols-[auto_minmax(0,1fr)_auto] items-start sm:grid-rows-[auto_1fr_auto]">
+                        {/* The poster opens the row's details in place, so a
+                            reader can find out what a film is without leaving
+                            the wall; the title and the names in the sentence
+                            are still the ways out. A row with nothing to open
+                            keeps the poster as its link home instead. */}
+                        {film &&
+                            (details ? (
+                                <button
+                                    type="button"
+                                    onClick={() => setDetailsOpen((open) => !open)}
+                                    aria-expanded={detailsOpen}
+                                    aria-controls={panelId}
+                                    aria-label={
+                                        detailsOpen
+                                            ? `Hide details for ${film.title}`
+                                            : `Show details for ${film.title}`
+                                    }
+                                    className={POSTER_SLOT_CLASS}
+                                >
+                                    <EventPoster src={film.poster} title={film.title} />
+                                </button>
+                            ) : (
+                                <Link
+                                    to={eventHome(lead)}
+                                    title={`Open ${eventHomeLabel(lead)}`}
+                                    className={POSTER_SLOT_CLASS}
+                                >
+                                    <EventPoster src={film.poster} title={film.title} />
+                                </Link>
+                            ))}
 
                         {/* The score travels at the end of the subject rather than in
                             a column of its own at the row's edge — the watch log's
@@ -566,14 +593,17 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                         >
                             <WallSubject event={lead} />
 
-                            {/* The trailer, the score and the expander travel
-                                together at the end of the line, so they move as
-                                one when the title wraps — the watch log's
-                                arrangement, and the reason the `ml-auto` is out
-                                here rather than on each of them: each would
-                                claim the free space and they would split apart. */}
-                            {(hasFigure(lead) || details || trailerKey) && (
-                                <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
+                            {/* The trailer and the score travel together, so
+                                they move as one — the watch log's arrangement.
+                                On a phone they take a line of their own under the
+                                title, left-aligned, rather than being pushed to
+                                the far edge of whatever line the wrap left them
+                                on. From `sm` they end the title's line, and the
+                                `ml-auto` is out here rather than on each of them:
+                                each would claim the free space and they would
+                                split apart. */}
+                            {(hasFigure(lead) || trailerKey) && (
+                                <span className="flex w-full flex-shrink-0 items-center gap-1.5 sm:ml-auto sm:w-auto">
                                     {/* First in the cluster, as it is on a watch
                                         log row: the figure beside it is what the
                                         row is *about*, and the trailer is an
@@ -583,18 +613,6 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                                     )}
 
                                     <WallFigure event={lead} />
-
-                                    {/* Last in the cluster: the badge before it
-                                        is a label, this is the one that acts on
-                                        the row. */}
-                                    {details && film && (
-                                        <EntryDetailsToggle
-                                            isOpen={detailsOpen}
-                                            onToggle={() => setDetailsOpen((open) => !open)}
-                                            title={film.title}
-                                            panelId={panelId}
-                                        />
-                                    )}
                                 </span>
                             )}
                         </div>
@@ -611,6 +629,23 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                             <WallDetail event={lead} />
                             <FoldedTrophies trophies={trophies} />
                         </div>
+
+                        {/* The box's bottom-right corner, labelled, rather than a
+                            bare chevron among the badges on the title line, where
+                            it was easy to read past — the watch log's placement.
+                            Spans the subject's column and the edge's so it widens
+                            neither: a grid item spanning a flexible track adds
+                            nothing to an auto one. */}
+                        {details && film && (
+                            <EntryDetailsToggle
+                                isOpen={detailsOpen}
+                                onToggle={() => setDetailsOpen((open) => !open)}
+                                title={film.title}
+                                panelId={panelId}
+                                labeled
+                                className="col-span-2 col-start-2 row-start-3 mt-2 self-end justify-self-end"
+                            />
+                        )}
                     </div>
 
                     {/* Across the whole box rather than in the subject's column:
@@ -872,7 +907,7 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
  * edge: this way the badge follows the sentence when it wraps on a phone instead
  * of holding width the sentence needed, which is the arrangement the watch log
  * uses for its score and trailer. The `ml-auto` that pushes it there belongs to
- * the cluster it shares with the details expander, not to this badge.
+ * the cluster it shares with the trailer button, not to this badge.
  */
 const WallFigure: React.FC<{ event: WallEvent }> = ({ event }) => {
     switch (event.kind) {
@@ -882,7 +917,7 @@ const WallFigure: React.FC<{ event: WallEvent }> = ({ event }) => {
                     {/* Named on a wide screen, and on a phone left to the badge's
                         own tooltip — the label is twice the width of the number
                         it explains, and this row has none to spare down there. */}
-                    <span className="hidden text-[10px] uppercase tracking-widest text-slate-600 sm:inline">
+                    <span className="hidden text-[10px] uppercase tracking-widest text-slate-400 sm:inline">
                         Club avg
                     </span>
                     <ScoreBadge
@@ -900,7 +935,7 @@ const WallFigure: React.FC<{ event: WallEvent }> = ({ event }) => {
                         is one person's and counts toward nothing, and the club
                         average sitting in the identical badge two rows up is
                         exactly what it must not be read as. */}
-                    <span className="hidden text-[10px] uppercase tracking-widest text-slate-600 sm:inline">
+                    <span className="hidden text-[10px] uppercase tracking-widest text-slate-400 sm:inline">
                         {event.member}'s
                     </span>
                     <ScoreBadge

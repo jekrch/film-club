@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import WatchedPage from './WatchedPage';
 import { filmData } from '../types/film';
@@ -93,22 +93,35 @@ describe('WatchedPage', () => {
         expect(screen.getByText(/Watched it again on my own/i)).toBeInTheDocument();
     });
 
-    // The poster and the title are separate anchors sharing one target, so both
-    // are asserted — a row whose picture and name went to different places
-    // would be worse than either being wrong. Scoped to the log itself: the
-    // banner credits the same films by name, and those links are the subject of
-    // their own test below.
+    // Scoped to the log itself: the banner credits the same films by name, and
+    // those links are the subject of their own test below.
     it('links a club film to its film page and marks it as one', () => {
         renderFor('Andy');
         const log = within(screen.getByRole('list'));
         const links = log.getAllByRole('link', { name: new RegExp(filmData[0].title, 'i') });
-        expect(links).toHaveLength(2);
-        links.forEach((link) =>
-            expect(link).toHaveAttribute('href', `/films/${filmData[0].imdbID}`)
-        );
+        expect(links).toHaveLength(1);
+        expect(links[0]).toHaveAttribute('href', `/films/${filmData[0].imdbID}`);
         expect(screen.getByText('Club film')).toBeInTheDocument();
     });
 
+    // The poster opens the row's details in place rather than leaving the page,
+    // and does the same thing as the chevron beside the title.
+    it('opens a row’s details from its poster', () => {
+        renderFor('Andy');
+        const log = within(screen.getByRole('list'));
+        const posterButton = log.getByAltText(`${filmData[0].title} poster`).closest('button');
+        expect(posterButton).not.toBeNull();
+        expect(posterButton).toHaveAttribute('aria-expanded', 'false');
+
+        fireEvent.click(posterButton!);
+        expect(posterButton).toHaveAttribute('aria-expanded', 'true');
+        expect(
+            document.getElementById(posterButton!.getAttribute('aria-controls')!)
+        ).not.toBeNull();
+    });
+
+    // With no details to open, the poster keeps linking where the title does,
+    // so the picture and the name never go to different places.
     it('links a film the club never watched out to IMDb', () => {
         renderFor('Andy');
         const log = within(screen.getByRole('list'));

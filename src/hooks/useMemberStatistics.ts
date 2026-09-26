@@ -128,9 +128,9 @@ export const useMemberStatistics = (
         // This function determines the color based on 'high' or 'low'
         // Typically, 'high' is green (good) and 'low' is blue/red (bad or just different)
         // Adjust as per your visual requirements.
-        if (highlight === 'high') return 'text-emerald-400 font-semibold';
-        if (highlight === 'low') return 'text-blue-400 font-semibold'; // Or 'text-rose-400' if low is "bad"
-        return 'text-slate-100 font-medium';
+        if (highlight === 'high') return 'text-emerald-300';
+        if (highlight === 'low') return 'text-blue-300'; // Or 'text-rose-400' if low is "bad"
+        return 'text-slate-100';
     }, []);
 
     return {

@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
+import SectionHeader from '../common/SectionHeader';
 import {
     ReactFlow,
     Node,
@@ -711,9 +712,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
 
     return (
         <>
-            <h3 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
-                Connection Graph
-            </h3>
+            <SectionHeader title="Connection Graph" />
             <div
                 ref={containerRef}
                 className={className}
