@@ -475,3 +475,38 @@ body {
         }
     }
 }
+
+/* Member stats expand/collapse (ProfileStatsSection). The clipped edge fades
+   out, and the fade's length is a registered property so it can animate with
+   the height: it grows in as the panel closes and shrinks away as it opens,
+   rather than snapping on over the full-height grid. @property has to live
+   at the top level, outside any layer. */
+@property --stats-fade {
+    syntax: '<length>';
+    inherits: false;
+    initial-value: 0px;
+}
+
+@layer components {
+    .stats-collapse {
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            black calc(100% - var(--stats-fade)),
+            transparent
+        );
+        mask-image: linear-gradient(to bottom, black calc(100% - var(--stats-fade)), transparent);
+        transition:
+            max-height 420ms cubic-bezier(0.22, 1, 0.36, 1),
+            --stats-fade 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .stats-collapse[data-collapsed='true'] {
+        --stats-fade: 4rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .stats-collapse {
+            transition: none;
+        }
+    }
+}

@@ -1,6 +1,11 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeftIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import {
+    ArrowUpRightIcon,
+    ChevronLeftIcon,
+    ChevronUpIcon,
+    ChevronDownIcon,
+} from '@heroicons/react/24/outline';
 
 import Markdown from '../components/common/Markdown';
 import CircularImage from '../components/common/CircularImage';
@@ -116,20 +121,36 @@ const ProfilePage: React.FC = () => {
                     size="w-36 h-36 sm:w-40 sm:h-40 md:w-48 md:h-48"
                     className="flex-shrink-0 border-2 border-slate-600 mb-4 !sm:mb-6 sm:mb-0 shadow-lg"
                 />
-                <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 mt-3 sm:mt-2">
-                    <h1 className="text-3xl sm:text-4xl text-slate-100 mb-2 break-words font-thin">
+                {/* Set like a title card: the member's role as a small-caps
+                    credit over their name, a short rule, then the bio as an
+                    epigraph in serif italic. */}
+                <div className="text-center sm:text-left flex-grow min-w-0 sm:ml-8 mt-3 sm:mt-4">
+                    {shown.title && (
+                        <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
+                            {shown.title}
+                        </p>
+                    )}
+                    <h1 className="font-serif text-4xl sm:text-5xl leading-tight tracking-tight text-slate-100 break-words">
                         {shown.name}
                     </h1>
-                    <p className="text-lg text-blue-400/90 mb-1">{shown.title}</p>
-                    <div className="text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
+                    <span
+                        className="mx-auto mt-5 mb-5 block h-px w-12 bg-slate-500/60 sm:mx-0"
+                        aria-hidden="true"
+                    />
+                    <div className="font-serif italic text-slate-300 leading-relaxed mx-auto sm:mx-0 prose prose-sm prose-invert max-w-none">
                         <Markdown>{shown.bio}</Markdown>
                     </div>
                     {shown.url && (
-                        <div className="mt-4">
-                            <a className="text-blue-400" href={shown.url}>
-                                {shown.url.replace('https://', '')}
-                            </a>
-                        </div>
+                        <a
+                            className="group mt-5 inline-flex items-center gap-1 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 transition-colors hover:text-blue-300"
+                            href={shown.url}
+                        >
+                            {shown.url.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                            <ArrowUpRightIcon
+                                className="h-3 w-3 transition-transform group-hover:-translate-y-px group-hover:translate-x-px"
+                                aria-hidden="true"
+                            />
+                        </a>
                     )}
                 </div>
             </HeroBanner>
@@ -159,22 +180,26 @@ const ProfilePage: React.FC = () => {
 
             {shown.interview && shown.interview.length > 0 && (
                 <AccentCard accent="blue" className="p-6 md:p-10 mb-8">
-                    <h3 className="text-2xl font-bold text-slate-100 mb-4 border-b border-slate-700/60 pb-3">
-                        {' '}
-                        Interview{' '}
-                    </h3>
+                    {/* Set in serif italic rather than the bold sans of the
+                        other sections: this one is editorial, closer to a
+                        printed interview than to a panel of data. */}
+                    <div className="mb-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                        <h3 className="font-serif text-2xl italic text-slate-100">Interview</h3>
+                        <span className="h-px flex-grow self-center bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                    </div>
                     <div
                         className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}
                     >
                         <div
                             className={`pr-2 -mr-2 ${!isInterviewExpanded && needsInterviewExpansion ? 'overflow-y-auto ' + collapsedInterviewMaxHeight : ''}`}
                         >
-                            <div className="divide-y divide-slate-700/60-mt-4">
+                            <div className="divide-y divide-slate-700/40">
                                 {shown.interview.map((item, index) => (
                                     <InterviewItem
                                         key={index}
                                         question={item.question}
                                         answer={item.answer}
+                                        speaker={shown.name}
                                     />
                                 ))}
                             </div>

@@ -135,7 +135,7 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
                                         </div>
 
                                         {formatWatchedScore(entry) && (
-                                            <span className="flex-shrink-0 font-mono text-sm text-slate-400">
+                                            <span className="flex-shrink-0 font-serif text-sm tabular-nums text-slate-400">
                                                 {formatWatchedScore(entry)}
                                             </span>
                                         )}

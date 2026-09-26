@@ -46,9 +46,8 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                             </h5>
                         </Link>
                         {blurbItem.watchDate && (
-                            // Watch date now on its own line, removed ml-2, whitespace-nowrap, flex-shrink-0
-                            <p className="text-xs text-slate-400 mt-0.5">
-                                (Watched: {blurbItem.watchDate})
+                            <p className="mt-0.5 text-xs uppercase tracking-widest text-slate-500">
+                                Watched {blurbItem.watchDate}
                             </p>
                         )}
                     </div>

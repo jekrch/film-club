@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import {
     FilmIcon,
     ClockIcon,
@@ -66,6 +66,8 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
     const [isExpanded, setIsExpanded] = useState(false);
     // Max number of cards to show when collapsed
     const MAX_VISIBLE_CARDS_COLLAPSED = 8;
+    // Collapsed height: two rows of cards at xl
+    const COLLAPSED_HEIGHT_REM = 21;
 
     // Memoize the configuration array for stat cards to avoid recalculation on every render
     const statCardDefinitions: StatCardConfig[] = useMemo(
@@ -79,7 +81,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'totalRuntime',
-                label: 'Total Runtime (Selected)',
+                label: 'Total Runtime',
                 getValue: (s) => s.totalRuntime,
                 formatValue: formatTotalRuntime,
                 getRank: (r) => r.totalRuntimeRank,
@@ -88,7 +90,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'avgRuntime',
-                label: 'Avg. Runtime (Selected)',
+                label: 'Avg. Runtime',
                 getValue: (s) => s.avgRuntime,
                 formatValue: (v) => {
                     const f = formatAverage(v, 0);
@@ -100,14 +102,14 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'topGenres',
-                label: 'Top Genres (Selected)',
+                label: 'Top Genres',
                 getValue: (s) => s.topGenres,
-                description: 'Most frequently selected genres (Top 3).',
+                description: 'Most frequently selected genres.',
                 icon: TagIcon,
             },
             {
                 id: 'avgSelectedScore',
-                label: 'Avg. Club Score (Selected)',
+                label: 'Avg. Club Score',
                 getValue: (s) => s.avgSelectedScore,
                 formatValue: (v) => formatAverage(v, 2),
                 getRank: (r) => r.avgSelectedScoreRank,
@@ -125,7 +127,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'avgDivergence',
-                label: 'Avg. Score Divergence',
+                label: 'Avg. Divergence',
                 getValue: (s) => s.avgAbsoluteDivergence, // Change this to use absolute!
                 formatValue: (v) => formatAverage(v, 2), // Remove the +/- logic
                 getRank: (r) => r.avgDivergenceRank,
@@ -134,7 +136,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'languageCount',
-                label: 'Unique Languages (Selected)',
+                label: 'Languages',
                 getValue: (s) => s.languageCount,
                 formatValue: (v) => (v !== null && v > 0 ? v : null),
                 description: 'Primary languages of selected films.',
@@ -142,7 +144,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'countryCount',
-                label: 'Unique Countries (Selected)',
+                label: 'Countries',
                 getValue: (s) => s.countryCount,
                 formatValue: (v: any, stats?: UserProfileStats) => {
                     if (v === null || v === 0) return null;
@@ -155,7 +157,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
                                 {v}{' '}
                                 <span
                                     title="diversity percentage"
-                                    className="text-sm text-slate-400"
+                                    className="ml-1 font-sans text-sm tracking-normal text-slate-400"
                                 >
                                     ({diversityPercentage}%)
                                 </span>
@@ -239,6 +241,18 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
         );
     }, [stats, rankings, statCardDefinitions]); // Dependencies for recalculation
 
+    // Track the grid's natural height so expanding animates to exactly that.
+    // Re-run when the cards change, since the grid isn't mounted while empty.
+    const contentRef = useRef<HTMLDivElement>(null);
+    const [contentHeight, setContentHeight] = useState<number | null>(null);
+    useEffect(() => {
+        const el = contentRef.current;
+        if (!el || typeof ResizeObserver === 'undefined') return;
+        const observer = new ResizeObserver(() => setContentHeight(el.offsetHeight));
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [visibleStatCards]);
+
     // Don't render the section if there are no valid stats to display
     if (!stats || visibleStatCards.length === 0) {
         return null;
@@ -246,21 +260,32 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
 
     // Determine if the expansion button is needed
     const needsExpansion = visibleStatCards.length > MAX_VISIBLE_CARDS_COLLAPSED;
-    // Define max-height classes for smooth transition
-    const collapsedMaxHeight = 'max-h-72'; // ~18rem
-    const expandedMaxHeight = 'max-h-[3000px]'; // Effectively unlimited height
+    const isCollapsed = needsExpansion && !isExpanded;
+
+    // Animate to the grid's measured height rather than a large placeholder:
+    // against a placeholder the easing plays out over empty space, so opening
+    // lands almost instantly and closing sits still before anything moves.
+    // Without a measurement (first paint, no ResizeObserver) it simply snaps.
+    let maxHeight: string | undefined;
+    if (isCollapsed) {
+        maxHeight = `${COLLAPSED_HEIGHT_REM}rem`;
+    } else if (needsExpansion && contentHeight !== null) {
+        maxHeight = `${contentHeight}px`;
+    }
 
     return (
         <AccentCard accent="blue" className="h-full p-6 md:p-8">
             <h3 className="text-2xl font-bold text-slate-100 mb-5 border-b border-slate-700/60 pb-3">
                 Member Stats
             </h3>
-            {/* Container managing the expand/collapse animation */}
+            {/* Container managing the expand/collapse animation; see .stats-collapse */}
             <div
-                className={`transition-all duration-500 ease-in-out overflow-hidden ${!isExpanded && needsExpansion ? collapsedMaxHeight : expandedMaxHeight}`}
+                className={needsExpansion ? 'stats-collapse' : undefined}
+                data-collapsed={isCollapsed}
+                style={{ maxHeight }}
             >
                 {/* Inner container for padding/margin adjustments, if needed */}
-                <div className={`pr-2 -mr-2`}>
+                <div ref={contentRef} className={`pr-2 -mr-2`}>
                     {' '}
                     {/* Adjust padding for potential scrollbar */}
                     {/* Grid layout for the stat cards */}
