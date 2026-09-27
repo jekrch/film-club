@@ -1230,6 +1230,115 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0046478": {
+    "imdbID": "tt0046478",
+    "title": "Ugetsu",
+    "year": "1953",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZjk2NmRiMWItOTNlOS00OTgyLWE4NWItZGM0Mjk1YmE5ZTg4XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "96 min",
+    "genre": "Drama, Fantasy, War",
+    "director": "Kenji Mizoguchi",
+    "writer": "Hisakazu Tsuji, Akinari Ueda, Matsutarô Kawaguchi",
+    "imdbRating": "8.1",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "CLrlhu0XxdY",
+    "plot": "In 16th century Japan, peasants Genjuro and Tobei sell their earthenware pots to a group of soldiers in a nearby village, in defiance of a local sage's warning against seeking to profit from warfare. Genjuro's pursuit of both riches and the mysterious Lady Wakasa, as well as Tobei's desire to become a samurai, run the risk of destroying both themselves and their wives, Miyagi and Ohama.",
+    "cast": [
+      {
+        "name": "Machiko Kyō",
+        "character": "Lady Wakasa",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/neliTpXsuAfUj5CR5OGi2j5fCgg.jpg",
+        "tmdbId": 7451
+      },
+      {
+        "name": "Mitsuko Mito",
+        "character": "Ohama",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kCyFyOJieZ70TnYUmGQatdzET4n.jpg",
+        "tmdbId": 108021
+      },
+      {
+        "name": "Kinuyo Tanaka",
+        "character": "Miyagi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1OnULAXSOskknSCxTzx3Naqoe5O.jpg",
+        "tmdbId": 24551
+      },
+      {
+        "name": "Masayuki Mori",
+        "character": "Genjurô",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4HZFAdEGIOk7HxJjcdcxfL4k1x3.jpg",
+        "tmdbId": 7452
+      },
+      {
+        "name": "Eitarō Ozawa",
+        "character": "Tôbei",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5ppJVvKljVAvBaXxEoCb7rbkjEJ.jpg",
+        "tmdbId": 97203
+      },
+      {
+        "name": "Sugisaku Aoyama",
+        "character": "Old Priest",
+        "profileUrl": null,
+        "tmdbId": 1049221
+      },
+      {
+        "name": "Mitsusaburō Ramon",
+        "character": "Captain of Tamba Soldiers",
+        "profileUrl": null,
+        "tmdbId": 134387
+      },
+      {
+        "name": "Ryōsuke Kagawa",
+        "character": "Village Master",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/c6A6LKaPacYsgl4GOMsIfqXA6oa.jpg",
+        "tmdbId": 551748
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/iB1tCWl4MKl6OO1kMBD5LxM5BmJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/ujAJvEsEwJDwZsmJQ62mcBWaxRI.jpg",
+      "https://image.tmdb.org/t/p/w1280/6MZSIVCXSfTY2X2WRaQMm6kTCIR.jpg",
+      "https://image.tmdb.org/t/p/w1280/qRw6FpnfZcltbPvBp2Fsslaj9sN.jpg",
+      "https://image.tmdb.org/t/p/w1280/d9WAljj2EcSLhhaJ0Bzjx5JuRW6.jpg",
+      "https://image.tmdb.org/t/p/w1280/46vluCKtSFbr6AGl4KXyCLxVgzy.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Kenji Mizoguchi",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ngKRZZPKh8d7GaeMgcM0eXbzMte.jpg",
+        "tmdbId": 97202
+      },
+      {
+        "name": "Yoshikata Yoda",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 134343
+      },
+      {
+        "name": "Hisakazu Tsuji",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 134382
+      },
+      {
+        "name": "Kazuo Miyagawa",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zOuiKy1s39qfm1eY6HBF6OIFIBu.jpg",
+        "tmdbId": 7461
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0047811": {
     "imdbID": "tt0047811",
     "title": "All That Heaven Allows",
