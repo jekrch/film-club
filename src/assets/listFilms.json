@@ -2328,6 +2328,114 @@
       }
     ]
   },
+  "tt0069427": {
+    "imdbID": "tt0069427",
+    "title": "Twins of Evil",
+    "year": "1971",
+    "poster": "https://m.media-amazon.com/images/M/MV5BY2YxNTcxZGQtZGU3Yy00NmM4LWEwOTUtMzY1YzA3N2IwOWIyXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "87 min",
+    "genre": "Horror",
+    "director": "John Hough",
+    "writer": "Tudor Gates, Sheridan Le Fanu",
+    "imdbRating": "6.6",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "79%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "62/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "3_Ri5W6GmHU",
+    "tagline": "Which is the Virgin? Which is the Vampire?",
+    "plot": "While dabbling in Satanism, Count Karstein resurrects Mircalla Karnstein who initiates him into vampirism. As a rash of deaths afflicts the village, Gustav the head of Puritan group leads his men to seek out and destroy the pestilence. One of his twin nieces has become inflicted with the witchcraft but Gustav's zeal and venom has trapped the innocent Maria, threatening her with a tortuous execution, whilst Frieda remains free to continue her orgy of evil.",
+    "cast": [
+      {
+        "name": "Peter Cushing",
+        "character": "Gustav Weil",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/if5g03wn6uvHx7F6FxXHLebKc0q.jpg",
+        "tmdbId": 5
+      },
+      {
+        "name": "Dennis Price",
+        "character": "Dietrich",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ax3BdKRYdmbGtY8a6RBj8bxk6Qd.jpg",
+        "tmdbId": 30766
+      },
+      {
+        "name": "Madeleine Collinson",
+        "character": "Frieda Gellhorn",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rtTEF4BuvZolaB72S5ntCDeQULT.jpg",
+        "tmdbId": 102039
+      },
+      {
+        "name": "Mary Collinson",
+        "character": "Maria Gellhorn",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rXV5zjS11POm3zqLK13Co6PNPAG.jpg",
+        "tmdbId": 102040
+      },
+      {
+        "name": "Isobel Black",
+        "character": "Ingrid Hoffer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/itUDIK78hrfgfp3nH5gYZJgBHW3.jpg",
+        "tmdbId": 102041
+      },
+      {
+        "name": "Kathleen Byron",
+        "character": "Katy Weil",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AftFBxZ30sYwhg7Eh7Sv5DfckYm.jpg",
+        "tmdbId": 99905
+      },
+      {
+        "name": "Shelagh Wilcocks",
+        "character": "Lady in Coach",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vK848nZgvT3xoHanTwgySjkNSgl.jpg",
+        "tmdbId": 107265
+      },
+      {
+        "name": "Damien Thomas",
+        "character": "Count Karnstein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9uJWHe9GFOmABmlIl38nJ6wzN9C.jpg",
+        "tmdbId": 26679
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/rYzNJv3Ee2kM0HUCdEvgdADdDy5.jpg",
+      "https://image.tmdb.org/t/p/w1280/pyovfNqlqG8A54ZvtQR0bbhZxIG.jpg",
+      "https://image.tmdb.org/t/p/w1280/f6zKPHUbucIhph1NXFMnFuVw3hv.jpg",
+      "https://image.tmdb.org/t/p/w1280/eq22XPUcVV84JkRXRLRWQNAdnmJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/7lSCHOcRtI7h7NMGjp6s4FzWzQh.jpg",
+      "https://image.tmdb.org/t/p/w1280/kGY7WASDuSmSUNdzhtpochHqCz0.jpg"
+    ],
+    "crew": [
+      {
+        "name": "John Hough",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fBV6a7aSVxQQMLQOA1rO19M4iU5.jpg",
+        "tmdbId": 19032
+      },
+      {
+        "name": "Tudor Gates",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 29885
+      },
+      {
+        "name": "Dick Bush",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fbtTLgLKreulTeOc8mWL0MUHhCu.jpg",
+        "tmdbId": 58660
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0073540": {
     "imdbID": "tt0073540",
     "title": "Picnic at Hanging Rock",
