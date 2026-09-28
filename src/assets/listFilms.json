@@ -2095,6 +2095,126 @@
       }
     ]
   },
+  "tt0057603": {
+    "imdbID": "tt0057603",
+    "title": "Black Sabbath",
+    "year": "1963",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNGQyNDI5MDMtNWEwMC00Mzk4LThlYWItNzUzNjBjZTI5NjE2XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "97 min",
+    "genre": "Horror",
+    "director": "Mario Bava",
+    "writer": "Anton Chekhov, Aleksei Tolstoy, Guy de Maupassant",
+    "imdbRating": "7.0",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "89%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "82/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "t7MyJMlOpdE",
+    "tagline": "A story that goes beyond the boundaries of the Supernatural to the half-world of the living dead...Where a woman's soul inhabits a fly's body...Where vampires suck only the blood of those they love dearest.",
+    "plot": "Three tales of supernatural horror include a woman plagued by threatening phone calls, a family targeted by vampiric monsters, and a deceased medium who wreaks havoc upon the living.",
+    "cast": [
+      {
+        "name": "Boris Karloff",
+        "character": "Gorca (segment \"The Wurdalak\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fVi0QkiziavXB8HnWk5NzRcnCO1.jpg",
+        "tmdbId": 2922
+      },
+      {
+        "name": "Mark Damon",
+        "character": "Vladimire d'Urfe (segment \"The Wurdalak\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2VpdzViRvdNYSIO5mtuusqLPId4.jpg",
+        "tmdbId": 6890
+      },
+      {
+        "name": "Michèle Mercier",
+        "character": "Rosy (segment \"The Telephone\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bktgqSJAuD3MQoJl8fomncfWpef.jpg",
+        "tmdbId": 19270
+      },
+      {
+        "name": "Susy Andersen",
+        "character": "Sdenka (segment \"The Wurdalak\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vIdtML5t6F5vCUF2dcHio5D63hE.jpg",
+        "tmdbId": 99455
+      },
+      {
+        "name": "Lidia Alfonsi",
+        "character": "Mary (segment \"The Telephone\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/85BrcBOeIcfV9XkV523wN0VGNRR.jpg",
+        "tmdbId": 9240
+      },
+      {
+        "name": "Jacqueline Pierreux",
+        "character": "Helen Chester (segment  \"A Drop Of Water\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/w60ZZS6EiXOmyVv6I9mQbduShRr.jpg",
+        "tmdbId": 24787
+      },
+      {
+        "name": "Glauco Onorato",
+        "character": "Giorgio (segment \"The Wurdalak\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AuCQy0vgGBk6nvJ78OQFLdD1bra.jpg",
+        "tmdbId": 72660
+      },
+      {
+        "name": "Massimo Righi",
+        "character": "Pietro (segment \"The Wurdalak\")",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cxoR8eYBh9p421tpprrm4DQov1n.jpg",
+        "tmdbId": 98494
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/vELycsAjczFbhneSJG1V6gvTz0D.jpg",
+      "https://image.tmdb.org/t/p/w1280/NTZ9Hz9beqEEmU1fSvwlDP5f4I.jpg",
+      "https://image.tmdb.org/t/p/w1280/tsa6nOAa17qmNnuajKz16D1n0mh.jpg",
+      "https://image.tmdb.org/t/p/w1280/1WTrz1ymwHEee5i0E7IMGwKFuWK.jpg",
+      "https://image.tmdb.org/t/p/w1280/aXz4FqJViBPmmEyyv5eGaA9p2EA.jpg",
+      "https://image.tmdb.org/t/p/w1280/kIBqjIEePsr1sFKa2sVZ1dVtAi.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Mario Bava",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vDx5usGSp8Fygmvo4jnepQ4EQRN.jpg",
+        "tmdbId": 25826
+      },
+      {
+        "name": "Marcello Fondato",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2qByTqvp3QW5JBoeNJd9sxkWn7p.jpg",
+        "tmdbId": 51421
+      },
+      {
+        "name": "Alberto Bevilacqua",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tbjZyUZuU3aqt50ze9QJvKROj0L.jpg",
+        "tmdbId": 32308
+      },
+      {
+        "name": "Mario Bava",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vDx5usGSp8Fygmvo4jnepQ4EQRN.jpg",
+        "tmdbId": 25826
+      },
+      {
+        "name": "Ubaldo Terzano",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 98483
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0058333": {
     "imdbID": "tt0058333",
     "title": "The Masque of the Red Death",
