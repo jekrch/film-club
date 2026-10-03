@@ -2,15 +2,15 @@
   "Gabe": [
     {
       "imdbID": "tt1131734",
-      "watchDate": "2026-10-03",
-      "score": null,
+      "watchDate": "2026-10-02",
+      "score": 4,
       "scoreQualifier": null,
-      "blurb": null,
+      "blurb": "Thoroughly mediocre and easily forgotten.",
       "image": null,
       "posterImage": null,
       "trailerKey": null,
       "hideTrailer": false,
-      "updatedAt": "2026-10-03T11:12:26Z"
+      "updatedAt": "2026-10-03T11:12:56Z"
     },
     {
       "imdbID": "tt0046478",
