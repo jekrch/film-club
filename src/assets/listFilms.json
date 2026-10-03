@@ -4004,6 +4004,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt1131734": {
+    "imdbID": "tt1131734",
+    "title": "Jennifer's Body",
+    "year": "2009",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTMxNzYwMjc1Ml5BMl5BanBnXkFtZTcwNDI3MDE3Mg@@._V1_QL75_UY562_CR0,0,380,562_.jpg",
+    "runtime": "102 min",
+    "genre": "Comedy, Horror",
+    "director": "Karyn Kusama",
+    "writer": "Diablo Cody",
+    "imdbRating": "5.6",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "5.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "47%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "47/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "C8azftM5puI",
+    "tagline": "She's evil... and not just high school evil.",
+    "plot": "Jennifer, a gorgeous, seductive cheerleader takes evil to a whole new level after she's possessed by a sinister demon. Now it's up to her best friend to stop Jennifer's reign of terror before it's too late.",
+    "cast": [
+      {
+        "name": "Megan Fox",
+        "character": "Jennifer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9khvk5svs81TLqIGlI3ZJqYtqaY.jpg",
+        "tmdbId": 19537
+      },
+      {
+        "name": "Amanda Seyfried",
+        "character": "Needy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wcHYErlynY8xWe6X7RmqEqpMBGl.jpg",
+        "tmdbId": 71070
+      },
+      {
+        "name": "Johnny Simmons",
+        "character": "Chip",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/51LZiAAI3ZW4vabNOQnd3weYgUm.jpg",
+        "tmdbId": 27104
+      },
+      {
+        "name": "Adam Brody",
+        "character": "Nikolai",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qKBWrohBYegm6AAaLrtxEqqouIK.jpg",
+        "tmdbId": 11702
+      },
+      {
+        "name": "Sal Cortez",
+        "character": "Chas",
+        "profileUrl": null,
+        "tmdbId": 1908774
+      },
+      {
+        "name": "Ryan Levine",
+        "character": "Mick",
+        "profileUrl": null,
+        "tmdbId": 1908773
+      },
+      {
+        "name": "Juan Riedinger",
+        "character": "Dirk",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3ZnaEy9oCGyVtlSXfNzMH51VgXM.jpg",
+        "tmdbId": 85613
+      },
+      {
+        "name": "Colin Askey",
+        "character": "Keyboardist",
+        "profileUrl": null,
+        "tmdbId": 3236779
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/rNvn89IcEJPqRKxIgwTAPXl9qjJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/9yEP30ajNWAtAOGvqmxBOIRY260.jpg",
+      "https://image.tmdb.org/t/p/w1280/dcqbt5j5K6oMnz2kdEpJY8iG20i.jpg",
+      "https://image.tmdb.org/t/p/w1280/aTmh5w201d86lt3juFk8tbK297Y.jpg",
+      "https://image.tmdb.org/t/p/w1280/ygGp5Um7henZZyGJMz8nOpPow0F.jpg",
+      "https://image.tmdb.org/t/p/w1280/69efECuZHC4UMtIwiewSey8T0Cf.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Karyn Kusama",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pfVHh9OEfgYPouqO3aSOxwmqoFS.jpg",
+        "tmdbId": 54025
+      },
+      {
+        "name": "Diablo Cody",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/941SrZwRQ0W4JShomOid0sgjtpU.jpg",
+        "tmdbId": 52444
+      },
+      {
+        "name": "M. David Mullen",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3OkvEm6hnHrdHHFFZS7kKk2X1HJ.jpg",
+        "tmdbId": 22119
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt13521006": {
     "imdbID": "tt13521006",
     "title": "Beau Is Afraid",
