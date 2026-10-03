@@ -3325,6 +3325,120 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0081505": {
+    "imdbID": "tt0081505",
+    "title": "The Shining",
+    "year": "1980",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNmM5ZThhY2ItOGRjOS00NzZiLWEwYTItNDgyMjFkOTgxMmRiXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "146 min",
+    "genre": "Drama, Horror",
+    "director": "Stanley Kubrick",
+    "writer": "Stephen King, Stanley Kubrick, Diane Johnson",
+    "imdbRating": "8.4",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "84%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "68/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "jAE7dNurHR4",
+    "tagline": "A masterpiece of modern horror.",
+    "plot": "Jack Torrance accepts a caretaker job at the Overlook Hotel, where he, along with his wife Wendy and their son Danny, must live isolated from the rest of the world for the winter. But they aren't prepared for the madness that lurks within.",
+    "cast": [
+      {
+        "name": "Jack Nicholson",
+        "character": "Jack Torrance",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6h12pZsgj3WWjMtykUgfLkLEBWz.jpg",
+        "tmdbId": 514
+      },
+      {
+        "name": "Shelley Duvall",
+        "character": "Wendy Torrance",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zwscEWl7QLiOsfsvzGXFjAQCVp3.jpg",
+        "tmdbId": 10409
+      },
+      {
+        "name": "Danny Lloyd",
+        "character": "Danny",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5pEmugZ6m25RB0cXbL4t5D4kZAO.jpg",
+        "tmdbId": 10410
+      },
+      {
+        "name": "Scatman Crothers",
+        "character": "Hallorann",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ughfThqQuuoPLSsC9HfkxwX370w.jpg",
+        "tmdbId": 7077
+      },
+      {
+        "name": "Barry Nelson",
+        "character": "Ullman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fSrHmvOxZJbeKpNM0uWGvha1aK9.jpg",
+        "tmdbId": 10411
+      },
+      {
+        "name": "Philip Stone",
+        "character": "Grady",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/l9riEGDgSK1NkVDUN6fn1TaXdpy.jpg",
+        "tmdbId": 694
+      },
+      {
+        "name": "Joe Turkel",
+        "character": "Lloyd",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rqpNzjLFCoMrvGSf6SIL5JnWwMT.jpg",
+        "tmdbId": 592
+      },
+      {
+        "name": "Anne Jackson",
+        "character": "Doctor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tRXdd8JVhClmM0LsuyD7lWbbw4a.jpg",
+        "tmdbId": 10412
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/AdKA2F1SzYPhSZdEbjH1Zh75UVQ.jpg",
+      "https://image.tmdb.org/t/p/w1280/mmd1HnuvAzFc4iuVJcnBrhDNEKr.jpg",
+      "https://image.tmdb.org/t/p/w1280/hWbC1ix65Ln7GySSvt6oe31A9GY.jpg",
+      "https://image.tmdb.org/t/p/w1280/dQMjySqD3rC8hSueCw3inXRJmIU.jpg",
+      "https://image.tmdb.org/t/p/w1280/peAaGKPSAgMADAkeufEg1xP0i49.jpg",
+      "https://image.tmdb.org/t/p/w1280/wyje7U49V6SU9XcmArU4Zly3X5b.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Stanley Kubrick",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yFT0VyIelI9aegZrsAwOG5iVP4v.jpg",
+        "tmdbId": 240
+      },
+      {
+        "name": "Stanley Kubrick",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yFT0VyIelI9aegZrsAwOG5iVP4v.jpg",
+        "tmdbId": 240
+      },
+      {
+        "name": "Diane Johnson",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8k3ZWYwBYeCAZQdkn9i0ObgeURX.jpg",
+        "tmdbId": 10404
+      },
+      {
+        "name": "John Alcott",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vpWpMQirRnTpNwhVwgcXYWmFE54.jpg",
+        "tmdbId": 2286
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0082971": {
     "imdbID": "tt0082971",
     "title": "Raiders of the Lost Ark",
