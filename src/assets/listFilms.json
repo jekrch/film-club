@@ -4666,6 +4666,114 @@
       }
     ]
   },
+  "tt5606664": {
+    "imdbID": "tt5606664",
+    "title": "Doctor Sleep",
+    "year": "2019",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNGUyNTg0NWItODdkZS00YWY0LTljNjItMDYwMTI1ZmZkMjExXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "runtime": "152 min",
+    "genre": "Drama, Fantasy, Horror",
+    "director": "Mike Flanagan",
+    "writer": "Mike Flanagan, Stephen King",
+    "imdbRating": "7.3",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "79%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "59/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "6u8ggerDcwg",
+    "tagline": "Return to the Overlook.",
+    "plot": "Still scarred by the trauma he endured as a child at the Overlook Hotel, Dan Torrance faces the ghosts of the past when he meets Abra, a courageous teen who desperately needs his help -- and who possesses a powerful extrasensory ability called the \"shine\".",
+    "cast": [
+      {
+        "name": "Ewan McGregor",
+        "character": "Danny Torrance",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/q2UDxfwWnmXTB7khOUF3J9puBVP.jpg",
+        "tmdbId": 3061
+      },
+      {
+        "name": "Rebecca Ferguson",
+        "character": "Rose the Hat",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ra53cM1aNmdH0aFhj8yBqPOj2fb.jpg",
+        "tmdbId": 933238
+      },
+      {
+        "name": "Kyliegh Curran",
+        "character": "Abra Stone",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cVXqQWI46Dg518IRNYURw3N3Ewd.jpg",
+        "tmdbId": 2118623
+      },
+      {
+        "name": "Cliff Curtis",
+        "character": "Billy Freeman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dfaElGoyJWseFWxXwEMLL9WTi7V.jpg",
+        "tmdbId": 7248
+      },
+      {
+        "name": "Zahn McClarnon",
+        "character": "Crow Daddy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/54M2t1gziirkDdvj4SxAl6dXaVO.jpg",
+        "tmdbId": 42376
+      },
+      {
+        "name": "Emily Alyn Lind",
+        "character": "Snakebite Andi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oyamam9VmA6KsBCNUPLK8BfseVH.jpg",
+        "tmdbId": 112742
+      },
+      {
+        "name": "Selena Anduze",
+        "character": "Apron Annie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/15m6yIUm9NxFIwkVLR92Thri7nf.jpg",
+        "tmdbId": 1853396
+      },
+      {
+        "name": "Robert Longstreet",
+        "character": "Barry the Chunk",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/j9e2HBqicMM59lErK8pL94Jh59v.jpg",
+        "tmdbId": 79416
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/ap6Zc5NDOfbZaMhkRDyghbGeLf0.jpg",
+      "https://image.tmdb.org/t/p/w1280/gKk8Bg4qpHfniAJC3phzCZpkaIg.jpg",
+      "https://image.tmdb.org/t/p/w1280/1nm0sk8UUx9jHCTHuMKe2jkt4Pn.jpg",
+      "https://image.tmdb.org/t/p/w1280/A1lvRqwbLz0PIs5QyivFVzCarc6.jpg",
+      "https://image.tmdb.org/t/p/w1280/sZAXOoOMyCbBskmqR0f4LShxXtw.jpg",
+      "https://image.tmdb.org/t/p/w1280/b1SGSQrWsvtThke5m7sMjCIZHNq.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Mike Flanagan",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sjnAyb7un3eS7THLQQzJBzkv2Yo.jpg",
+        "tmdbId": 551463
+      },
+      {
+        "name": "Mike Flanagan",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sjnAyb7un3eS7THLQQzJBzkv2Yo.jpg",
+        "tmdbId": 551463
+      },
+      {
+        "name": "Michael Fimognari",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8ETxK0seKQDqvfHNzHwGcvl51B8.jpg",
+        "tmdbId": 63099
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt6335734": {
     "imdbID": "tt6335734",
     "title": "The Night Is Short, Walk on Girl",
