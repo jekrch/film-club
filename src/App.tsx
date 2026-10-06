@@ -16,6 +16,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 import { OverridesProvider } from './contexts/OverridesContext';
 import { TrophiesProvider } from './contexts/TrophiesContext';
+import { ResponsesProvider } from './contexts/ResponsesContext';
 import { ClubAuthProvider } from './auth/GoogleAuth';
 import './index.css';
 import ScrollToTop from './components/layout/ScrollToTop';
@@ -34,7 +35,13 @@ function AppContent() {
         // `isolate` gives the shell its own stacking context, so the backdrop's
         // z-index of -1 lands just above this background and below everything
         // else on the page. See `.site-backdrop` in index.css.
-        <div className="relative isolate flex flex-col min-h-screen bg-[#0f172b] font-se overflow-x-hidden">
+        //
+        // The page runs edge to edge under iOS's bars (`viewport-fit=cover` in
+        // index.html) so the backdrop can light them; the safe-area padding
+        // keeps the nav out from under the status bar, the footer clear of the
+        // home indicator, and both clear of the notch in landscape. Each inset
+        // is 0 everywhere else.
+        <div className="relative isolate flex flex-col min-h-screen bg-[#0f172b] font-se overflow-x-hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
             <div className="site-backdrop" aria-hidden="true" />
 
             {/* Background pillar wrapper - stretches to full document height */}
@@ -102,12 +109,16 @@ function App() {
                     {/* The club's trophies, serving the bundled file until a member
                   signs in and the live one is worth fetching. */}
                     <TrophiesProvider>
-                        <Router>
-                            <ScrollToTop />
-                            <ErrorBoundary>
-                                <AppContent />
-                            </ErrorBoundary>
-                        </Router>
+                        {/* Reactions and comments on log entries. Fetched live for
+                      everyone, but only once something on the page shows one. */}
+                        <ResponsesProvider>
+                            <Router>
+                                <ScrollToTop />
+                                <ErrorBoundary>
+                                    <AppContent />
+                                </ErrorBoundary>
+                            </Router>
+                        </ResponsesProvider>
                     </TrophiesProvider>
                 </OverridesProvider>
             </ClubAuthProvider>

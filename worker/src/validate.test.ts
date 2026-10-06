@@ -33,6 +33,13 @@ import {
     validateTrophyInput,
     validateWatchDate,
     validateWatchedPatch,
+    REACTION_KEYS,
+    assertMayDeleteComment,
+    assertMayEditComment,
+    assignCommentId,
+    parseThreadId,
+    validateCommentInput,
+    validateReactionKey,
 } from './validate';
 
 /** Asserts the call is rejected, and with the status the router will return. */
@@ -1140,5 +1147,112 @@ describe('validateFilmPatch', () => {
             return;
         }
         throw new Error('expected the call to throw');
+    });
+});
+
+describe('validateReactionKey', () => {
+    it('accepts every key the picker offers', () => {
+        for (const key of REACTION_KEYS) expect(validateReactionKey(key)).toBe(key);
+    });
+
+    it('refuses anything else, raw emoji included', () => {
+        expectStatus(() => validateReactionKey('👍'), 400);
+        expectStatus(() => validateReactionKey('Bravo'), 400);
+        expectStatus(() => validateReactionKey(undefined), 400);
+    });
+});
+
+describe('parseThreadId', () => {
+    const members = ['Andy', 'Jacob', 'Mary-Kate'];
+
+    it('resolves a log entry and canonicalizes the member', () => {
+        expect(parseThreadId('log-jacob-tt0046478', members)).toEqual({
+            threadId: 'log-Jacob-tt0046478',
+            owner: 'Jacob',
+            imdbId: 'tt0046478',
+        });
+    });
+
+    it('reads the IMDb id from the end, so a hyphenated name survives', () => {
+        expect(parseThreadId('log-Mary-Kate-tt0046478', members).owner).toBe('Mary-Kate');
+    });
+
+    it('refuses a member who is not in the club', () => {
+        expectStatus(() => parseThreadId('log-Werner-tt0046478', members), 400);
+    });
+
+    it('refuses anything that is not a log entry', () => {
+        expectStatus(() => parseThreadId('club-tt0046478', members), 400);
+        expectStatus(() => parseThreadId('log-Andy-nm0000001', members), 400);
+        expectStatus(() => parseThreadId('log--tt0046478', members), 400);
+    });
+});
+
+describe('validateCommentInput', () => {
+    it('trims the body', () => {
+        expect(validateCommentInput({ body: '  Agreed.  ' })).toEqual({ body: 'Agreed.' });
+    });
+
+    it('drops fields the client has no business setting', () => {
+        expect(validateCommentInput({ body: 'Hi', author: 'Andy', id: 'x' })).toEqual({
+            body: 'Hi',
+        });
+    });
+
+    it('refuses an empty comment', () => {
+        expectStatus(() => validateCommentInput({ body: '   ' }), 400);
+        expectStatus(() => validateCommentInput({}), 400);
+    });
+
+    it('refuses one over the limit', () => {
+        expectStatus(() => validateCommentInput({ body: 'x'.repeat(LIMITS.comment + 1) }), 400);
+    });
+});
+
+describe('assignCommentId', () => {
+    it('stamps the author and the instant', () => {
+        expect(assignCommentId('Jacob', '2026-10-05T14:02:11Z', [])).toBe('jacob-20261005t140211');
+    });
+
+    it('suffixes on collision', () => {
+        expect(assignCommentId('Jacob', '2026-10-05T14:02:11Z', ['jacob-20261005t140211'])).toBe(
+            'jacob-20261005t140211-2'
+        );
+    });
+});
+
+describe('assertMayEditComment', () => {
+    const comment = { author: 'Andy' };
+
+    it('lets the author edit', () => {
+        expect(() => assertMayEditComment(comment, { name: 'andy' })).not.toThrow();
+    });
+
+    it('forbids everyone else, admins included', () => {
+        // An edit puts words in the author's mouth under their name.
+        expectStatus(() => assertMayEditComment(comment, { name: 'Jacob' }), 403);
+    });
+});
+
+describe('assertMayDeleteComment', () => {
+    const comment = { author: 'Andy' };
+
+    it('lets the author, the log owner, and an admin remove it', () => {
+        expect(() =>
+            assertMayDeleteComment(comment, 'Gabe', { name: 'Andy', admin: false })
+        ).not.toThrow();
+        expect(() =>
+            assertMayDeleteComment(comment, 'Gabe', { name: 'gabe', admin: false })
+        ).not.toThrow();
+        expect(() =>
+            assertMayDeleteComment(comment, 'Gabe', { name: 'Mark', admin: true })
+        ).not.toThrow();
+    });
+
+    it('forbids a third member', () => {
+        expectStatus(
+            () => assertMayDeleteComment(comment, 'Gabe', { name: 'Mark', admin: false }),
+            403
+        );
     });
 });

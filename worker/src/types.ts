@@ -7,6 +7,8 @@
  * has no build-time link to the site bundle; if either side changes, both must.
  */
 
+import type { REACTION_KEYS } from './validate';
+
 /** Bindings declared in `wrangler.toml` plus the secrets set with `wrangler secret put`. */
 export interface Env {
     /** OAuth web client ID; the `aud` every ID token must carry. */
@@ -152,6 +154,52 @@ export interface Trophy {
  */
 export interface TrophiesFile {
     films: Record<string, Trophy[]>;
+}
+
+/**
+ * The marks a member can leave on someone's log entry. A fixed set rather than
+ * free emoji, so validation is an allowlist and the site has art for each one.
+ * The list itself is `REACTION_KEYS` in `validate.ts`.
+ */
+export type ReactionKey = (typeof REACTION_KEYS)[number];
+
+/**
+ * One member's comment on a log entry, as stored in `responses.json`.
+ *
+ * `author` comes from the token and never from the body, which is the same
+ * rule `awardedBy` follows on a trophy and for the same reason: it is the field
+ * that decides who may change the row later.
+ */
+export interface ResponseComment {
+    /** Assigned by the worker on create and immutable after. */
+    id: string;
+    author: string;
+    /** Markdown, typed into a plain textarea. */
+    body: string;
+    createdAt: string;
+    /** Null until the author edits it. */
+    editedAt: string | null;
+}
+
+/**
+ * Everything the club has said about one log entry: who left which reaction,
+ * and the comments under it, oldest first.
+ */
+export interface ResponseThread {
+    /** Reaction key → the members who left it, in the order they did. */
+    reactions: Partial<Record<ReactionKey, string[]>>;
+    comments: ResponseComment[];
+}
+
+/**
+ * The shape of `src/assets/responses.json`: thread id → thread.
+ *
+ * A thread id is the wall's own event id, `log-<member>-<imdbID>`, which is
+ * stable because a rewatch moves an entry's date rather than adding a row.
+ * Other kinds of wall event can get threads later without changing this shape.
+ */
+export interface ResponsesFile {
+    threads: Record<string, ResponseThread>;
 }
 
 /**

@@ -149,7 +149,10 @@ const Modal: React.FC<ModalProps> = ({
     return createPortal(
         <div
             className={classNames(
-                'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-[3px]',
+                // The overlay dims the whole screen, iOS's bars included; the
+                // padding keeps the panel itself out from under them.
+                'fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 backdrop-blur-[3px]',
+                'pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]',
                 isClosing
                     ? 'animate-modal-backdrop-out pointer-events-none'
                     : 'animate-modal-backdrop-in'

@@ -1,6 +1,7 @@
 import { Film, filmData } from '../types/film';
 import { FilmListDefinition, filmLists } from '../types/list';
 import { trophyIndex, type Trophy } from '../types/trophy';
+import { logThreadId } from '../types/responses';
 import { watchedLog, type WatchedLog } from '../types/watched';
 import { parseWatchDate } from './filmUtils';
 import {
@@ -241,7 +242,8 @@ const logEvents = (log: WatchedLog, sources: WallDataSources): LogEvent[] =>
                 summaries: sources.summaries,
             });
             return {
-                id: `log-${member}-${entry.imdbID}`,
+                // Also the thread id reactions and comments hang from.
+                id: logThreadId(member, entry.imdbID),
                 kind: 'log' as const,
                 date: entry.watchDate,
                 at: entry.updatedAt ?? null,

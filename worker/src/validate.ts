@@ -16,7 +16,13 @@
  */
 
 import { badRequest, forbidden } from './errors';
-import type { BackdropMode, FilmListEntry, InterviewItem } from './types';
+import type {
+    BackdropMode,
+    FilmListEntry,
+    InterviewItem,
+    ReactionKey,
+    ResponseComment,
+} from './types';
 
 /** IMDb ids as they appear in `films.json`. */
 export const IMDB_ID_PATTERN = /^tt\d{7,9}$/;
@@ -83,6 +89,10 @@ export const LIMITS = {
      * six members, so this is a runaway-client bound rather than a house rule.
      */
     trophiesPerFilm: 24,
+    /** One comment on a log entry. A few sentences, not a second review. */
+    comment: 1000,
+    /** Comments under one log entry. A runaway-client bound, like the trophy one. */
+    commentsPerThread: 200,
 } as const;
 
 /** Fields a member may set on their own rating. Anything else in a body is ignored. */
@@ -1031,4 +1041,184 @@ export function assignTrophyId(recipient: string, award: string, taken: Iterable
         const candidate = `${base}-${suffix}`;
         if (!existing.has(candidate)) return candidate;
     }
+}
+
+// --- Responses ----------------------------------------------------------
+
+/**
+ * The reactions a member may leave, in the order the picker shows them. A
+ * closed set: anything else is a 400, so `responses.json` can only ever hold
+ * keys the site has an emoji for. `ReactionKey` is derived from this list.
+ * Mirrors `REACTION_KEYS` in `src/types/responses.ts`.
+ */
+export const REACTION_KEYS = [
+    'like',
+    'dislike',
+    'love',
+    'heartbreak',
+    'laugh',
+    'wow',
+    'sad',
+    'clap',
+    'fire',
+    'mind-blown',
+    'hmm',
+    'yikes',
+    'trophy',
+    'check',
+    'on-my-list',
+    'snooze',
+    'heart-eyes',
+    'star-struck',
+    'rofl',
+    'smirk',
+    'cool',
+    'relieved',
+    'moved',
+    'sob',
+    'scream',
+    'flushed',
+    'peeking',
+    'gasp',
+    'skeptical',
+    'monocle',
+    'nerd',
+    'eye-roll',
+    'meh',
+    'melting',
+    'dizzy',
+    'woozy',
+    'nauseated',
+    'angry',
+    'yawn',
+    'dead',
+    'clown',
+    'ghost',
+    'raised-hands',
+    'pray',
+    'heart-hands',
+    'chefs-kiss',
+    'ok',
+    'salute',
+    'shrug',
+    'hundred',
+    'sparkles',
+    'star',
+    'gem',
+    'bullseye',
+    'brain',
+    'popcorn',
+    'clapper',
+    'film',
+    'masks',
+    'music',
+    'rose',
+    'wilted',
+    'tomato',
+    'trash',
+] as const;
+
+export function validateReactionKey(value: unknown): ReactionKey {
+    if (typeof value === 'string' && (REACTION_KEYS as readonly string[]).includes(value)) {
+        return value as ReactionKey;
+    }
+    throw badRequest('reaction: not one the site offers');
+}
+
+/** The one kind of thread there is so far: a member's watch-log entry. */
+export interface LogThreadTarget {
+    /** Canonical: rebuilt from the resolved member, whatever casing the path used. */
+    threadId: string;
+    /** The `club.json` name whose log this is. */
+    owner: string;
+    imdbId: string;
+}
+
+/**
+ * The wall's event id for a log entry is `log-<member>-<imdbID>`. A member name
+ * may itself contain hyphens, which is why the IMDb id is matched from the end.
+ */
+const LOG_THREAD_PATTERN = /^log-(.+)-(tt\d{7,9})$/;
+
+/**
+ * Resolves a thread id from a path to the log entry it is about.
+ *
+ * Only checks the shape and the member. Whether that member actually logged
+ * the film needs `watched.json`, which this pure module can't read, so the
+ * router checks it before any write that adds to a thread.
+ */
+export function parseThreadId(value: string, memberNames: readonly string[]): LogThreadTarget {
+    const match = LOG_THREAD_PATTERN.exec(value);
+    if (!match) throw badRequest(`thread: "${value}" is not a log entry`);
+
+    const wanted = match[1].toLowerCase();
+    const owner = memberNames.find((name) => name.toLowerCase() === wanted);
+    if (!owner) throw badRequest(`thread: "${match[1]}" is not a club member`);
+
+    const imdbId = match[2];
+    return { threadId: `log-${owner}-${imdbId}`, owner, imdbId };
+}
+
+/** What a client sends for a comment. `id`, `author`, and the stamps are the worker's. */
+export interface CommentInput {
+    body: string;
+}
+
+export function validateCommentInput(body: unknown): CommentInput {
+    const raw = asRecord(body, 'comment');
+    const text = optionalText(raw.body, LIMITS.comment, 'body');
+    if (text === null) throw badRequest('body: a comment needs some words');
+    return { body: text };
+}
+
+/**
+ * Assigns a comment's permanent id from its author and when it was written:
+ * `jacob-20261005t140211`, with a suffix in the unlikely case of a collision.
+ *
+ * Time rather than a counter so a deleted comment's id is never handed to a
+ * new one. The site's write cache keys on it, and a reused id could briefly
+ * show the old comment's tombstone over the new one.
+ */
+export function assignCommentId(author: string, at: string, taken: Iterable<string>): string {
+    const existing = new Set(taken);
+    const stamp = at.replace(/[^0-9T]/g, '').toLowerCase();
+    const base = `${slugify(author) || 'member'}-${stamp}`;
+    if (!existing.has(base)) return base;
+    for (let suffix = 2; ; suffix++) {
+        const candidate = `${base}-${suffix}`;
+        if (!existing.has(candidate)) return candidate;
+    }
+}
+
+/**
+ * Only the author may reword a comment. An admin can't either, because an edit
+ * would put words in someone else's mouth under their name. Removing one is
+ * a different question; see {@link assertMayDeleteComment}.
+ */
+export function assertMayEditComment(
+    comment: Pick<ResponseComment, 'author'>,
+    caller: { name: string }
+): void {
+    if (comment.author.toLowerCase() === caller.name.toLowerCase()) return;
+    throw forbidden(`That comment is ${comment.author}'s. Only they can edit it.`);
+}
+
+/**
+ * The author may remove their comment, and so may an admin and the member
+ * whose log it's on. That's the opposite of the trophy rule, where the
+ * recipient may not withdraw one, and the difference is deliberate. A trophy
+ * is the club's verdict on you. A comment is a guest on your post.
+ */
+export function assertMayDeleteComment(
+    comment: Pick<ResponseComment, 'author'>,
+    threadOwner: string,
+    caller: { name: string; admin: boolean }
+): void {
+    if (caller.admin) return;
+    const name = caller.name.toLowerCase();
+    if (comment.author.toLowerCase() === name) return;
+    if (threadOwner.toLowerCase() === name) return;
+    throw forbidden(
+        `That comment is ${comment.author}'s. Only they or ${threadOwner} can remove it.`
+    );
 }

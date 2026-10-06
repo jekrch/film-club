@@ -9,6 +9,7 @@ import RowFrameWash from '../common/RowFrameWash';
 import TrailerButton from '../common/TrailerButton';
 import EntryDetailsPanel, { EntryDetailsToggle } from '../films/EntryDetailsPanel';
 import MemberScoreTiles from '../films/MemberScoreTiles';
+import LogResponses from '../responses/LogResponses';
 import { resolveTrophyIcon, type IconComponent } from '../common/trophyIcons';
 import { clubFilmDetails, type EntryDetails } from '../../utils/entryDetails';
 import { getRatingColorClass } from '../../utils/ratingUtils';
@@ -451,6 +452,18 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
     // point every one of their toggles at whichever came first.
     const panelId = `wall-details-${row.id}`;
 
+    /** The row's Details toggle, which a log's response bar carries at its end. */
+    const detailsToggle =
+        details && film ? (
+            <EntryDetailsToggle
+                isOpen={detailsOpen}
+                onToggle={() => setDetailsOpen((open) => !open)}
+                title={film.title}
+                panelId={panelId}
+                labeled
+            />
+        ) : null;
+
     return (
         // `group` on the row rather than on the card: the caption and the node
         // now stand outside the box, and a row that lit only the part the cursor
@@ -636,15 +649,27 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                             Spans the subject's column and the edge's so it widens
                             neither: a grid item spanning a flexible track adds
                             nothing to an auto one. */}
-                        {details && film && (
-                            <EntryDetailsToggle
-                                isOpen={detailsOpen}
-                                onToggle={() => setDetailsOpen((open) => !open)}
-                                title={film.title}
-                                panelId={panelId}
-                                labeled
-                                className="col-span-2 col-start-2 row-start-3 mt-2 self-end justify-self-end"
+                        {/* A log's foot carries its reactions and comments as
+                            well, with the toggle at the end of that same line —
+                            the watch log's arrangement, so a log reads the same
+                            here as on its member's page. Every other kind keeps
+                            the toggle alone. */}
+                        {lead.kind === 'log' ? (
+                            <LogResponses
+                                threadId={lead.id}
+                                owner={lead.member}
+                                title={film?.title ?? 'this film'}
+                                trailing={detailsToggle}
+                                className={`col-span-3 col-start-1 row-start-3 mt-2 self-end sm:col-span-2 sm:col-start-2${
+                                    film ? ' sm:ml-4' : ''
+                                }`}
                             />
+                        ) : (
+                            detailsToggle && (
+                                <div className="col-span-2 col-start-2 row-start-3 mt-2 self-end justify-self-end">
+                                    {detailsToggle}
+                                </div>
+                            )
                         )}
                     </div>
 

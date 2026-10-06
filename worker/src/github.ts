@@ -2,8 +2,9 @@
  * GitHub-as-database: read a JSON file from `main`, mutate it, commit it back.
  *
  * **One writer per file**: CI owns `films.json` and `listFilms.json`; the worker
- * owns `overrides.json`, `lists.json`, `watched.json`, `club.json`, and
- * `trophies.json`. There is no merge to get wrong — only the sha to respect.
+ * owns `overrides.json`, `lists.json`, `watched.json`, `club.json`,
+ * `trophies.json`, and `responses.json`. There is no merge to get wrong — only
+ * the sha to respect.
  *
  * Paths are constants in this module and never derived from request input, which
  * limits a stolen token to the files below rather than the whole repo.
@@ -17,7 +18,7 @@ const GITHUB_API = 'https://api.github.com';
 const USER_AGENT = 'film-club-editor';
 const BRANCH = 'main';
 
-/** The only five paths this worker will ever write. */
+/** The only JSON paths this worker will ever write. */
 export const LISTS_PATH = 'src/assets/lists.json';
 export const OVERRIDES_PATH = 'src/assets/overrides.json';
 export const WATCHED_PATH = 'src/assets/watched.json';
@@ -32,6 +33,23 @@ export const TROPHIES_PATH = 'src/assets/trophies.json';
  * (`jq empty` in `deploy.yml` and `sync-google-sheet.yml`).
  */
 export const CLUB_PATH = 'src/assets/club.json';
+/**
+ * Reactions and comments on members' log entries. The site fetches this file
+ * live from the repo, so its commits skip the Pages build; see {@link SKIP_DEPLOY}.
+ */
+export const RESPONSES_PATH = 'src/assets/responses.json';
+
+/**
+ * Appended to a commit message to keep GitHub Actions from running on that
+ * push: no Pages build, no test run.
+ *
+ * Only for files the site reads live from `raw.githubusercontent.com` instead of
+ * from the bundle, where a build would add nothing a reader can see. A reaction
+ * is a commit, and without this each one would also cost a full deploy. The
+ * next deploy for any other reason picks the file up into the bundle anyway, so
+ * the bundled copy is never more than one deploy behind.
+ */
+export const SKIP_DEPLOY = '[skip ci]';
 /** Read-only: used to reject a rating write for a film the sheet doesn't know. */
 export const FILMS_PATH = 'src/assets/films.json';
 /**

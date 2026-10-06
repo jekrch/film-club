@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import WallPage from './WallPage';
+import { ClubAuthProvider } from '../auth/GoogleAuth';
+import { ResponsesProvider } from '../contexts/ResponsesContext';
 
 // The bundled data is the club's real history — seventy-odd screenings — so the
 // page is exercised against a fixture holding one of each kind of event instead.
@@ -88,9 +90,13 @@ jest.mock('../types/trophy', () => ({
 
 const renderWall = () =>
     render(
-        <MemoryRouter>
-            <WallPage />
-        </MemoryRouter>
+        <ClubAuthProvider>
+            <ResponsesProvider>
+                <MemoryRouter>
+                    <WallPage />
+                </MemoryRouter>
+            </ResponsesProvider>
+        </ClubAuthProvider>
     );
 
 /**

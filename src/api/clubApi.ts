@@ -13,6 +13,7 @@ import { EDITOR_API_URL as API_BASE, GOOGLE_CLIENT_ID } from '../config/editorEn
 import type { FilmListDefinition, FilmListEntry } from '../types/list';
 import type { BackdropMode, InterviewItem, TeamMember } from '../types/team';
 import type { Trophy } from '../types/trophy';
+import type { ReactionKey, ResponseComment, ResponseThread } from '../types/responses';
 import type { WatchedEntry } from '../types/watched';
 
 export { GOOGLE_CLIENT_ID };
@@ -526,6 +527,87 @@ export const putProfileImage = (
     upload: ProfileImageUpload
 ): Promise<ProfileImageResult> =>
     request<ProfileImageResult>('/api/profile/image', token, { method: 'PUT', body: upload });
+
+/**
+ * What every response write answers with: the thread as committed, or null once
+ * its last reaction and comment are gone.
+ */
+export interface ThreadWriteResult {
+    threadId: string;
+    thread: ResponseThread | null;
+    changed: boolean;
+}
+
+const threadPath = (threadId: string) => `/api/responses/${encodeURIComponent(threadId)}`;
+
+/**
+ * Leaves the caller's reaction on a log entry. Idempotent, and there is no
+ * `owner`: who reacted is the token's business, admin or not.
+ *
+ * These commits skip the Pages build, so a reaction is live as soon as raw
+ * GitHub's cache turns over rather than after a deploy.
+ */
+export const putReaction = (
+    token: string,
+    threadId: string,
+    key: ReactionKey
+): Promise<ThreadWriteResult> =>
+    request<ThreadWriteResult>(`${threadPath(threadId)}/reactions/${key}`, token, {
+        method: 'PUT',
+    });
+
+/** Takes the caller's reaction back. Removing one that isn't there is a no-op, not an error. */
+export const deleteReaction = (
+    token: string,
+    threadId: string,
+    key: ReactionKey
+): Promise<ThreadWriteResult> =>
+    request<ThreadWriteResult>(`${threadPath(threadId)}/reactions/${key}`, token, {
+        method: 'DELETE',
+    });
+
+/**
+ * A comment, as it goes to the worker. `author` is deliberately absent, the
+ * same way `awardedBy` is on a trophy: it decides who may edit the comment
+ * later, so the worker takes it from the token.
+ */
+export interface CommentInput {
+    body: string;
+}
+
+export interface CommentWriteResult extends ThreadWriteResult {
+    comment: ResponseComment;
+    created: boolean;
+}
+
+/** The documented placeholder id for a new comment. Any unmatched id behaves the same. */
+export const NEW_COMMENT_ID = 'new';
+
+/**
+ * Posts a comment, or edits one the caller already posted. Pass
+ * {@link NEW_COMMENT_ID} to post; the worker assigns the permanent id.
+ */
+export const putComment = (
+    token: string,
+    threadId: string,
+    id: string,
+    input: CommentInput
+): Promise<CommentWriteResult> =>
+    request<CommentWriteResult>(
+        `${threadPath(threadId)}/comments/${encodeURIComponent(id)}`,
+        token,
+        { method: 'PUT', body: input }
+    );
+
+/** Removes a comment: the author's own, or any on the caller's own log (or anywhere, for an admin). */
+export const deleteComment = (
+    token: string,
+    threadId: string,
+    id: string
+): Promise<ThreadWriteResult & { id: string; deleted: boolean }> =>
+    request(`${threadPath(threadId)}/comments/${encodeURIComponent(id)}`, token, {
+        method: 'DELETE',
+    });
 
 export const searchFilms = async (
     token: string,

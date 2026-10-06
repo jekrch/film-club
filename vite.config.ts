@@ -102,7 +102,16 @@ export default defineConfig({
                         // Cache JSON data files (films.json, club.json)
                         // Strategy: StaleWhileRevalidate - serve from cache if available, then update in background.
                         // This ensures users get data fast, and it gets updated when they are online.
-                        urlPattern: ({ url }) => url.pathname.endsWith('.json'),
+                        //
+                        // Not raw.githubusercontent.com. `src/api/repoData.ts` reads the
+                        // live data files from there precisely to get something newer than
+                        // the bundle, and stale-while-revalidate would hand it the copy from
+                        // the previous visit instead. For `responses.json`, whose commits
+                        // skip the deploy, that would put everyone else's reactions a
+                        // whole visit behind.
+                        urlPattern: ({ url }) =>
+                            url.hostname !== 'raw.githubusercontent.com' &&
+                            url.pathname.endsWith('.json'),
                         handler: 'StaleWhileRevalidate',
                         options: {
                             cacheName: 'json-data-cache',

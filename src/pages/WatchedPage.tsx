@@ -253,6 +253,7 @@ const WatchedPage: React.FC = () => {
                             <li key={entry.imdbID} id={watchedRowId(entry.imdbID)}>
                                 <WatchedFilmItem
                                     entry={entry}
+                                    owner={owner}
                                     canEdit={canEdit}
                                     onSave={save}
                                     onRemove={remove}

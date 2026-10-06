@@ -15,12 +15,13 @@
 import { DATA_BRANCH, DATA_REPO } from '../config/editorEnv';
 import type { FilmListDefinition } from '../types/list';
 import type { TeamMember } from '../types/team';
+import type { ResponseComment, ResponseThread, ResponsesFile } from '../types/responses';
 import type { TrophiesFile, Trophy } from '../types/trophy';
 import type { WatchedEntry, WatchedLog } from '../types/watched';
 import { compareTrophies } from '../utils/trophyUtils';
 import { compareWatched } from '../utils/watchedUtils';
 import type { FilmRecordPatch, OverridesFile, RatingOverride } from './clubApi';
-import { pendingWrites, reconcile, splitKey } from './writeCache';
+import { pendingWrites, reconcile, splitKey, splitTupleKey } from './writeCache';
 
 const RAW_BASE = `https://raw.githubusercontent.com/${DATA_REPO}/${DATA_BRANCH}/src/assets`;
 
@@ -208,4 +209,98 @@ export async function fetchClub(signal?: AbortSignal): Promise<TeamMember[]> {
 
     reconcile('profile', source);
     return club;
+}
+
+/** Oldest first, ties on id, so an overlaid comment lands where the worker would put it. */
+const compareComments = (a: ResponseComment, b: ResponseComment): number =>
+    a.createdAt === b.createdAt ? a.id.localeCompare(b.id) : a.createdAt.localeCompare(b.createdAt);
+
+/**
+ * Lays this tab's pending reactions and comments over a copy of the threads.
+ *
+ * Idempotent, so it is safe to run over threads it has already been run over.
+ * `ResponsesContext` relies on that: it re-applies the overlay after every
+ * write so a reaction still in flight doesn't flicker off when an earlier one
+ * comes back with the server's copy of the thread.
+ *
+ * `source`, when given, is filled with what the threads themselves say for each
+ * pending key, which is what {@link reconcile} needs. It has to be read before
+ * the overlay changes anything.
+ */
+export function overlayResponses(
+    threads: Record<string, ResponseThread>,
+    source?: { reaction: Map<string, unknown>; comment: Map<string, unknown> }
+): Record<string, ResponseThread> {
+    const next = { ...threads };
+    const thread = (id: string): ResponseThread => next[id] ?? { reactions: {}, comments: [] };
+
+    for (const [key, value] of pendingWrites<true>('reaction')) {
+        const parts = splitTupleKey(key);
+        if (!parts || parts.length !== 3) continue;
+        const [threadId, reaction, member] = parts as [
+            string,
+            keyof ResponseThread['reactions'],
+            string,
+        ];
+
+        const current = thread(threadId);
+        const who = current.reactions[reaction] ?? [];
+        const has = who.some((name) => name.toLowerCase() === member.toLowerCase());
+        source?.reaction.set(key, has ? true : null);
+
+        if (Boolean(value) === has) continue;
+        const reactions = { ...current.reactions };
+        const updated = value
+            ? [...who, member]
+            : who.filter((name) => name.toLowerCase() !== member.toLowerCase());
+        if (updated.length === 0) delete reactions[reaction];
+        else reactions[reaction] = updated;
+        next[threadId] = { ...current, reactions };
+    }
+
+    for (const [key, value] of pendingWrites<ResponseComment>('comment')) {
+        const parts = splitTupleKey(key);
+        if (!parts || parts.length !== 2) continue;
+        const [threadId, id] = parts;
+
+        const current = thread(threadId);
+        source?.comment.set(key, current.comments.find((comment) => comment.id === id) ?? null);
+
+        const without = current.comments.filter((comment) => comment.id !== id);
+        const comments = value ? [...without, value].sort(compareComments) : without;
+        next[threadId] = { ...current, comments };
+    }
+
+    // The worker stores an emptied thread as no thread at all; match it, so a
+    // reader can test for presence.
+    for (const [id, value] of Object.entries(next)) {
+        if (Object.keys(value.reactions).length === 0 && value.comments.length === 0) {
+            delete next[id];
+        }
+    }
+    return next;
+}
+
+/**
+ * `responses.json`: reactions and comments on log entries, keyed by thread.
+ *
+ * Unlike the other files here this one is read for signed-out visitors too.
+ * Its commits skip the Pages build (see `SKIP_DEPLOY` in the worker), so the
+ * bundled copy can be several reactions behind, and this read is how anyone
+ * sees them.
+ */
+export async function fetchResponses(
+    signal?: AbortSignal
+): Promise<Record<string, ResponseThread>> {
+    const file = await fetchAsset<ResponsesFile>('responses.json', signal);
+    const threads: Record<string, ResponseThread> = {};
+    for (const [id, thread] of Object.entries(file?.threads ?? {})) {
+        threads[id] = { reactions: thread?.reactions ?? {}, comments: thread?.comments ?? [] };
+    }
+
+    const source = { reaction: new Map<string, unknown>(), comment: new Map<string, unknown>() };
+    const overlaid = overlayResponses(threads, source);
+    reconcile('reaction', source.reaction);
+    reconcile('comment', source.comment);
+    return overlaid;
 }

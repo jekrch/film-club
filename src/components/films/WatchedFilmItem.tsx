@@ -9,6 +9,8 @@ import ImageUrlPreview from '../common/ImageUrlPreview';
 import RowFrameWash from '../common/RowFrameWash';
 import TrailerButton from '../common/TrailerButton';
 import EntryDetailsPanel, { EntryDetailsToggle } from './EntryDetailsPanel';
+import LogResponses from '../responses/LogResponses';
+import { logThreadId } from '../../types/responses';
 import { entryFrameImage } from '../../utils/frameSources';
 import { getRatingColorClass } from '../../utils/ratingUtils';
 import { formatWatchDate, type ResolvedWatchedEntry } from '../../utils/watchedUtils';
@@ -54,6 +56,8 @@ const REVIEW_CLASS = `${FIELD_CLASS} min-h-48 resize-y leading-relaxed`;
 
 interface WatchedFilmItemProps {
     entry: ResolvedWatchedEntry;
+    /** Whose log this row is in. Names the thread its reactions and comments hang from. */
+    owner: string;
     /** True for the log's owner (or an admin), who gets the edit affordance. */
     canEdit: boolean;
     /** Saves a patch of the changed fields. Resolves when the write lands. */
@@ -83,6 +87,7 @@ interface WatchedFilmItemProps {
  */
 const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
     entry,
+    owner,
     canEdit,
     onSave,
     onRemove,
@@ -344,19 +349,29 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                     </div>
                 )}
 
-                {/* The card's bottom-right corner, labelled, rather than a bare
-                    chevron among the badges on the title line, where it was easy
-                    to read past. Spans the title's column and the edge's so it
-                    widens neither: a grid item spanning a flexible track adds
-                    nothing to an auto one. */}
-                {details && !editing && (
-                    <EntryDetailsToggle
-                        isOpen={detailsOpen}
-                        onToggle={() => setDetailsOpen((open) => !open)}
+                {/* The row's foot: reactions and comments, with the Details
+                    toggle at its right end. One line for both, in the grid's
+                    third track, which from `sm` sits level with the poster's
+                    foot and so usually costs the row no height at all. On a
+                    phone it takes the full width under the review. Gone while
+                    the editor is open, since the form is the row then. */}
+                {!editing && (
+                    <LogResponses
+                        threadId={logThreadId(owner, imdbID)}
+                        owner={owner}
                         title={displayTitle}
-                        panelId={panelId}
-                        labeled
-                        className="col-span-2 col-start-2 row-start-3 mt-2 self-end justify-self-end"
+                        trailing={
+                            details && (
+                                <EntryDetailsToggle
+                                    isOpen={detailsOpen}
+                                    onToggle={() => setDetailsOpen((open) => !open)}
+                                    title={displayTitle}
+                                    panelId={panelId}
+                                    labeled
+                                />
+                            )
+                        }
+                        className="col-span-3 col-start-1 row-start-3 mt-2 self-end sm:col-span-2 sm:col-start-2 sm:ml-4"
                     />
                 )}
             </div>

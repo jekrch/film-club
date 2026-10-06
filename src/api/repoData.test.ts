@@ -10,8 +10,16 @@
  * the value they replaced.
  */
 
-import { fetchClub, fetchLists, fetchOverrides, fetchWatched } from './repoData';
-import { recordWrite, writeKeys } from './writeCache';
+import {
+    fetchClub,
+    fetchLists,
+    fetchOverrides,
+    fetchResponses,
+    fetchWatched,
+    overlayResponses,
+} from './repoData';
+import { pendingWrites, recordWrite, writeKeys } from './writeCache';
+import type { ResponseComment } from '../types/responses';
 import type { FilmOverride, RatingOverride } from './clubApi';
 import type { FilmListDefinition } from '../types/list';
 import type { TeamMember } from '../types/team';
@@ -320,5 +328,76 @@ describe('fetchClub', () => {
         recordWrite('profile', writeKeys.profile('Nobody'), member('Nobody', 'x'));
 
         await expect(fetchClub()).resolves.toHaveLength(1);
+    });
+});
+
+describe('fetchResponses', () => {
+    const thread = 'log-Gabe-tt0046478';
+    const comment = (id: string, createdAt: string, author = 'Andy'): ResponseComment => ({
+        id,
+        author,
+        body: `${author} says hi`,
+        createdAt,
+        editedAt: null,
+    });
+
+    it('reads responses.json from the repo', async () => {
+        mockFetch.mockResolvedValue(respond(200, { threads: {} }));
+        await fetchResponses();
+        expect(mockFetch.mock.calls[0][0]).toBe(`${RAW}/responses.json`);
+    });
+
+    it("adds this tab's reaction the CDN hasn't caught up with", async () => {
+        recordWrite('reaction', writeKeys.reaction(thread, 'clap', 'Jacob'), true);
+        mockFetch.mockResolvedValue(
+            respond(200, {
+                threads: { [thread]: { reactions: { clap: ['Andy'] }, comments: [] } },
+            })
+        );
+
+        const threads = await fetchResponses();
+        expect(threads[thread].reactions.clap).toEqual(['Andy', 'Jacob']);
+    });
+
+    it('takes back a reaction this tab removed, and drops the emptied thread', async () => {
+        recordWrite('reaction', writeKeys.reaction(thread, 'ha', 'Jacob'), null);
+        mockFetch.mockResolvedValue(
+            respond(200, { threads: { [thread]: { reactions: { ha: ['Jacob'] }, comments: [] } } })
+        );
+
+        expect(await fetchResponses()).toEqual({});
+    });
+
+    it('slots a pending comment in by time and removes a deleted one', async () => {
+        const kept = comment('andy-1', '2026-10-01T10:00:00Z');
+        const gone = comment('mark-1', '2026-10-02T10:00:00Z', 'Mark');
+        const posted = comment('jacob-1', '2026-10-03T10:00:00Z', 'Jacob');
+        recordWrite('comment', writeKeys.comment(thread, posted.id), posted);
+        recordWrite('comment', writeKeys.comment(thread, gone.id), null);
+        mockFetch.mockResolvedValue(
+            respond(200, { threads: { [thread]: { reactions: {}, comments: [kept, gone] } } })
+        );
+
+        const threads = await fetchResponses();
+        expect(threads[thread].comments.map((c) => c.id)).toEqual(['andy-1', 'jacob-1']);
+    });
+
+    it('clears an entry once the file agrees with it', async () => {
+        recordWrite('reaction', writeKeys.reaction(thread, 'clap', 'Jacob'), true);
+        mockFetch.mockResolvedValue(
+            respond(200, {
+                threads: { [thread]: { reactions: { clap: ['Jacob'] }, comments: [] } },
+            })
+        );
+
+        await fetchResponses();
+        expect(pendingWrites('reaction').size).toBe(0);
+    });
+
+    it('is idempotent, so the context can lay it over threads it already overlaid', () => {
+        recordWrite('reaction', writeKeys.reaction(thread, 'clap', 'Jacob'), true);
+        const once = overlayResponses({});
+        expect(overlayResponses(once)).toEqual(once);
+        expect(once[thread].reactions.clap).toEqual(['Jacob']);
     });
 });

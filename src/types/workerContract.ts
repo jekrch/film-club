@@ -1,8 +1,8 @@
 /**
  * The client/server wire contract, checked by the compiler.
  *
- * The editing worker writes `lists.json`, `watched.json`, `club.json` and
- * `overrides.json`; this app reads them. The shapes describing those files exist
+ * The editing worker writes `lists.json`, `watched.json`, `club.json`,
+ * `responses.json` and `overrides.json`; this app reads them. The shapes describing those files exist
  * in three independently-maintained copies — `worker/src/types.ts`,
  * `src/types/*.ts`, and the request/response types in `src/api/clubApi.ts` —
  * because the worker deploys on its own and has no build-time link to the site
@@ -39,11 +39,13 @@ import type {
     ProfilePatch,
     RatingOverride,
     RatingPatch,
+    CommentInput,
     TrophyInput,
     WatchedPatch,
 } from '../api/clubApi';
 import type { FilmListDefinition, FilmListEntry } from './list';
 import type { InterviewItem, TeamMember } from './team';
+import type { ReactionKey, ResponseComment, ResponseThread, ResponsesFile } from './responses';
 import type { TrophiesFile, Trophy } from './trophy';
 import type { WatchedEntry, WatchedLog } from './watched';
 
@@ -108,6 +110,23 @@ export type StoredFileContract = {
     InterviewItem: [
         WriterFitsReader<Worker.InterviewItem, InterviewItem>,
         Assert<SameKeys<Worker.InterviewItem, InterviewItem>>,
+    ];
+    /** Both directions: a key the worker accepts but the site has no glyph for is as broken as the reverse. */
+    ReactionKey: [
+        WriterFitsReader<Worker.ReactionKey, ReactionKey>,
+        WriterFitsReader<ReactionKey, Worker.ReactionKey>,
+    ];
+    ResponseComment: [
+        WriterFitsReader<Worker.ResponseComment, ResponseComment>,
+        Assert<SameKeys<Worker.ResponseComment, ResponseComment>>,
+    ];
+    ResponseThread: [
+        WriterFitsReader<Worker.ResponseThread, ResponseThread>,
+        Assert<SameKeys<Worker.ResponseThread, ResponseThread>>,
+    ];
+    ResponsesFile: [
+        WriterFitsReader<Worker.ResponsesFile, ResponsesFile>,
+        Assert<SameKeys<Worker.ResponsesFile, ResponsesFile>>,
     ];
 };
 
@@ -189,4 +208,6 @@ export type RequestContract = {
      * than the body — so unlike the writes above there is nothing to exclude.
      */
     TrophyInput: Assert<FieldsTheWorkerStores<keyof TrophyInput, Worker.Trophy>>;
+    /** Like a trophy, a comment carries no `owner`: `author` comes from the token. */
+    CommentInput: Assert<FieldsTheWorkerStores<keyof CommentInput, Worker.ResponseComment>>;
 };

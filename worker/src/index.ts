@@ -5,11 +5,15 @@
  * to the repo. The site stays static; a save is live once the Pages build
  * triggered by the commit finishes, about a minute.
  *
- * Five files, one writer each: `overrides.json` for club films — scores,
+ * Six files, one writer each: `overrides.json` for club films — scores,
  * reviews, and the film's own record — `lists.json` for member lists,
- * `watched.json` for personal watch logs, `club.json` for member profiles, and
- * `trophies.json` for awards. CI owns `films.json` and `listFilms.json`, which
- * this worker never touches.
+ * `watched.json` for personal watch logs, `club.json` for member profiles,
+ * `trophies.json` for awards, and `responses.json` for reactions and comments
+ * on log entries. CI owns `films.json` and `listFilms.json`, which this worker
+ * never touches.
+ *
+ * `responses.json` is the one write that skips the Pages build. The site reads
+ * it live, so a deploy would add nothing; see `SKIP_DEPLOY` in `github.ts`.
  *
  * So adding a film commits an `added` marker to `overrides.json`, and
  * `create_submitted_films.py` builds the full record on the next deploy.
@@ -21,6 +25,8 @@ import {
     CLUB_PATH,
     LISTS_PATH,
     OVERRIDES_PATH,
+    RESPONSES_PATH,
+    SKIP_DEPLOY,
     TROPHIES_PATH,
     WATCHED_PATH,
     commitBinary,
@@ -39,6 +45,10 @@ import type {
     Member,
     OverridesFile,
     RatingOverride,
+    ReactionKey,
+    ResponseComment,
+    ResponseThread,
+    ResponsesFile,
     TeamMember,
     TrophiesFile,
     Trophy,
@@ -48,20 +58,28 @@ import type {
 import {
     FILM_PATCH_FIELDS,
     LIMITS,
+    REACTION_KEYS,
+    assertMayDeleteComment,
+    assertMayEditComment,
     assertMayEditTrophy,
+    assignCommentId,
     assignListId,
     assignTrophyId,
+    parseThreadId,
     resolveListOwner,
     resolveOwner,
     validateAvatarUpload,
+    validateCommentInput,
     validateFilmPatch,
     validateImdbId,
     validateListInput,
     validateProfilePatch,
     validateRatingPatch,
+    validateReactionKey,
     validateTrophyInput,
     validateWatchedPatch,
     type FilmPatch,
+    type LogThreadTarget,
     type ProfilePatch,
     type RatingPatch,
     type TrophyInput,
@@ -72,6 +90,8 @@ const EMPTY_OVERRIDES: OverridesFile = { films: {} };
 const EMPTY_LISTS: FilmListDefinition[] = [];
 const EMPTY_WATCHED: WatchedLog = {};
 const EMPTY_TROPHIES: TrophiesFile = { films: {} };
+const EMPTY_RESPONSES: ResponsesFile = { threads: {} };
+const EMPTY_THREAD: ResponseThread = { reactions: {}, comments: [] };
 /**
  * There is no empty club: `club.json` is the roster the whole site is built
  * around, and a missing or emptied file is a repo problem rather than a state
@@ -1066,6 +1086,288 @@ async function putProfileImage(request: Request, env: Env, member: Member): Prom
     return { ...result, image, uploaded };
 }
 
+// --- Responses ----------------------------------------------------------
+
+/**
+ * What every response write answers with: the whole thread as committed, so
+ * the client can replace its copy rather than replay the change. `null` once
+ * the last reaction or comment is gone.
+ */
+interface ThreadResult {
+    threadId: string;
+    thread: ResponseThread | null;
+    changed: boolean;
+}
+
+/**
+ * Refuses a write that adds to a thread for a log entry that doesn't exist.
+ *
+ * Only adding is checked. Taking a reaction or comment back still works after
+ * the entry is gone, so nobody is stuck with words on a thread they can no
+ * longer reach through the worker.
+ */
+async function assertLogged(env: Env, target: LogThreadTarget): Promise<void> {
+    const { data } = await readJson<WatchedLog>(env, WATCHED_PATH);
+    const log = data ?? EMPTY_WATCHED;
+    const key = Object.keys(log).find((name) => name.toLowerCase() === target.owner.toLowerCase());
+    if (key !== undefined && log[key].some((entry) => entry.imdbID === target.imdbId)) return;
+    throw notFound(`${target.owner} hasn't logged ${target.imdbId}.`);
+}
+
+/**
+ * Reactions in the picker's order rather than the order they were first left,
+ * so two members reacting in a different order never reshuffles the diff.
+ * A key with nobody left on it is dropped.
+ */
+function orderedReactions(reactions: ResponseThread['reactions']): ResponseThread['reactions'] {
+    const next: ResponseThread['reactions'] = {};
+    for (const key of REACTION_KEYS) {
+        const who = reactions[key];
+        if (who && who.length > 0) next[key] = who;
+    }
+    return next;
+}
+
+/**
+ * Writes one thread back into the file, dropping it once it's empty and
+ * keeping thread keys sorted so diffs stay local.
+ */
+function storeThread(
+    current: ResponsesFile,
+    threadId: string,
+    thread: ResponseThread
+): ResponsesFile {
+    const threads = { ...(current.threads ?? {}) };
+    if (Object.keys(thread.reactions).length === 0 && thread.comments.length === 0) {
+        delete threads[threadId];
+    } else {
+        threads[threadId] = thread;
+    }
+
+    const sorted: ResponsesFile['threads'] = {};
+    for (const id of Object.keys(threads).sort()) sorted[id] = threads[id];
+    return { ...current, threads: sorted };
+}
+
+/** `Jacob on Gabe's tt0046478`, the part of every response commit message that names the row. */
+const threadLabel = (member: Member, target: LogThreadTarget): string =>
+    `${member.name} on ${target.owner}'s ${target.imdbId}`;
+
+/**
+ * Leaves the caller's reaction on a log entry. Idempotent: reacting twice is
+ * a no-op rather than a second mark, and it costs no commit.
+ *
+ * Any member may react to any entry, their own included. Who reacted is taken
+ * from the token; there is no `owner` to send, admin or not.
+ */
+async function putReaction(
+    env: Env,
+    member: Member,
+    target: LogThreadTarget,
+    key: ReactionKey
+): Promise<ThreadResult> {
+    await assertLogged(env, target);
+    const { threadId } = target;
+
+    return commitJson<ResponsesFile, ThreadResult>(
+        env,
+        RESPONSES_PATH,
+        EMPTY_RESPONSES,
+        (current): CommitPlan<ResponsesFile, ThreadResult> => {
+            const thread = current.threads?.[threadId] ?? EMPTY_THREAD;
+            const who = thread.reactions[key] ?? [];
+
+            if (who.some((name) => name.toLowerCase() === member.name.toLowerCase())) {
+                return { commit: false, result: { threadId, thread, changed: false } };
+            }
+
+            const next: ResponseThread = {
+                ...thread,
+                reactions: orderedReactions({ ...thread.reactions, [key]: [...who, member.name] }),
+            };
+
+            return {
+                commit: true,
+                next: storeThread(current, threadId, next),
+                message: `React ${key}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                result: { threadId, thread: next, changed: true },
+            };
+        }
+    );
+}
+
+/**
+ * Takes the caller's reaction back. Removing one that isn't there is a no-op,
+ * not a 404, so a toggle that fires twice can't fail on its second press.
+ */
+async function deleteReaction(
+    env: Env,
+    member: Member,
+    target: LogThreadTarget,
+    key: ReactionKey
+): Promise<ThreadResult> {
+    const { threadId } = target;
+
+    return commitJson<ResponsesFile, ThreadResult>(
+        env,
+        RESPONSES_PATH,
+        EMPTY_RESPONSES,
+        (current): CommitPlan<ResponsesFile, ThreadResult> => {
+            const stored = current.threads?.[threadId];
+            const who = stored?.reactions[key] ?? [];
+            const remaining = who.filter(
+                (name) => name.toLowerCase() !== member.name.toLowerCase()
+            );
+
+            if (!stored || remaining.length === who.length) {
+                return {
+                    commit: false,
+                    result: { threadId, thread: stored ?? null, changed: false },
+                };
+            }
+
+            const next: ResponseThread = {
+                ...stored,
+                reactions: orderedReactions({ ...stored.reactions, [key]: remaining }),
+            };
+            const file = storeThread(current, threadId, next);
+
+            return {
+                commit: true,
+                next: file,
+                message: `Unreact ${key}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                result: { threadId, thread: file.threads[threadId] ?? null, changed: true },
+            };
+        }
+    );
+}
+
+/** A comment write's answer: the thread, plus the stored comment itself. */
+interface CommentResult extends ThreadResult {
+    comment: ResponseComment;
+    created: boolean;
+}
+
+/**
+ * Posts a comment on a log entry, or edits one the caller already posted.
+ *
+ * The id in the path is a lookup key, as it is for a list or a trophy: an
+ * unmatched one creates and the worker assigns the permanent id. Clients
+ * posting should PUT to `/api/responses/:threadId/comments/new`.
+ */
+async function putComment(
+    request: Request,
+    env: Env,
+    member: Member,
+    target: LogThreadTarget,
+    pathId: string
+): Promise<CommentResult> {
+    const input = validateCommentInput(await readBody(request));
+    await assertLogged(env, target);
+    const { threadId } = target;
+
+    return commitJson<ResponsesFile, CommentResult>(
+        env,
+        RESPONSES_PATH,
+        EMPTY_RESPONSES,
+        (current): CommitPlan<ResponsesFile, CommentResult> => {
+            const thread = current.threads?.[threadId] ?? EMPTY_THREAD;
+            const comments = [...thread.comments];
+            const index = comments.findIndex((comment) => comment.id === pathId);
+            const existing = index === -1 ? undefined : comments[index];
+
+            if (existing) {
+                assertMayEditComment(existing, member);
+                if (existing.body === input.body) {
+                    return {
+                        commit: false,
+                        result: {
+                            threadId,
+                            thread,
+                            comment: existing,
+                            created: false,
+                            changed: false,
+                        },
+                    };
+                }
+            } else if (comments.length >= LIMITS.commentsPerThread) {
+                throw badRequest(`A thread holds at most ${LIMITS.commentsPerThread} comments.`);
+            }
+
+            const now = timestamp();
+            const comment: ResponseComment = existing
+                ? { ...existing, body: input.body, editedAt: now }
+                : {
+                      id: assignCommentId(
+                          member.name,
+                          now,
+                          comments.map((c) => c.id)
+                      ),
+                      author: member.name,
+                      body: input.body,
+                      createdAt: now,
+                      editedAt: null,
+                  };
+
+            // Appended, not sorted: the file is already oldest-first, and a new
+            // comment is by definition the newest.
+            if (existing) comments[index] = comment;
+            else comments.push(comment);
+            const next: ResponseThread = { ...thread, comments };
+
+            return {
+                commit: true,
+                next: storeThread(current, threadId, next),
+                message: `${existing ? 'Edit comment' : 'Comment'}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                result: { threadId, thread: next, comment, created: !existing, changed: true },
+            };
+        }
+    );
+}
+
+/** Removes a comment. Its author, the log's owner, or an admin; see `assertMayDeleteComment`. */
+async function deleteComment(
+    env: Env,
+    member: Member,
+    target: LogThreadTarget,
+    commentId: string
+): Promise<ThreadResult & { id: string; deleted: boolean }> {
+    const { threadId } = target;
+
+    return commitJson<ResponsesFile, ThreadResult & { id: string; deleted: boolean }>(
+        env,
+        RESPONSES_PATH,
+        EMPTY_RESPONSES,
+        (current) => {
+            const stored = current.threads?.[threadId];
+            const existing = stored?.comments.find((comment) => comment.id === commentId);
+            if (!stored || !existing) throw notFound(`No comment "${commentId}" on that entry.`);
+
+            assertMayDeleteComment(existing, target.owner, member);
+
+            const next: ResponseThread = {
+                ...stored,
+                comments: stored.comments.filter((comment) => comment.id !== commentId),
+            };
+            const file = storeThread(current, threadId, next);
+            const by = existing.author === member.name ? '' : ` (${existing.author}'s)`;
+
+            return {
+                commit: true,
+                next: file,
+                message: `Remove comment${by}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                result: {
+                    threadId,
+                    thread: file.threads[threadId] ?? null,
+                    changed: true,
+                    id: commentId,
+                    deleted: true,
+                },
+            };
+        }
+    );
+}
+
 // --- Routing ------------------------------------------------------------
 
 /**
@@ -1120,6 +1422,24 @@ async function route(request: Request, env: Env): Promise<unknown> {
         const query = (url.searchParams.get('q') ?? '').trim();
         if (query.length < 2) throw badRequest('Search needs at least two characters.');
         return { results: await searchFilms(env, query) };
+    }
+
+    const reactionMatch = /^\/api\/responses\/([^/]+)\/reactions\/([^/]+)$/.exec(path);
+    if (reactionMatch) {
+        const target = parseThreadId(decodeURIComponent(reactionMatch[1]), memberNames(env));
+        const key = validateReactionKey(decodeURIComponent(reactionMatch[2]));
+        if (method === 'PUT') return putReaction(env, member, target, key);
+        if (method === 'DELETE') return deleteReaction(env, member, target, key);
+        throw new HttpError(405, `${method} not allowed on ${path}.`);
+    }
+
+    const commentMatch = /^\/api\/responses\/([^/]+)\/comments\/([^/]+)$/.exec(path);
+    if (commentMatch) {
+        const target = parseThreadId(decodeURIComponent(commentMatch[1]), memberNames(env));
+        const commentId = decodeURIComponent(commentMatch[2]);
+        if (method === 'PUT') return putComment(request, env, member, target, commentId);
+        if (method === 'DELETE') return deleteComment(env, member, target, commentId);
+        throw new HttpError(405, `${method} not allowed on ${path}.`);
     }
 
     const trophyMatch = /^\/api\/films\/([^/]+)\/trophies\/([^/]+)$/.exec(path);

@@ -153,6 +153,27 @@ const AboutPage: React.FC = () => {
                         <p className="text-slate-500">
                             This product uses the TMDB API but is not endorsed or certified by TMDB.
                         </p>
+                        <p className="text-slate-500">
+                            Reaction emoji are from{' '}
+                            <a
+                                href="https://github.com/jdecked/twemoji"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:text-blue-300 transition"
+                            >
+                                Twemoji
+                            </a>
+                            , © Twitter, Inc and other contributors, licensed under{' '}
+                            <a
+                                href="https://creativecommons.org/licenses/by/4.0/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:text-blue-300 transition"
+                            >
+                                CC-BY 4.0
+                            </a>
+                            .
+                        </p>
                     </div>
                 </div>
             </AccentCard>

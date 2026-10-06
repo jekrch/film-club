@@ -40,7 +40,7 @@ jobs:
                   # Everything the app imports at build time, plus overrides.json, which
                   # the derived-data steps below read. Validating first means a bad file
                   # fails here with its own name rather than deep inside a Python step.
-                  for file in club.json films.json lists.json listFilms.json overrides.json trophies.json watched.json; do
+                  for file in club.json films.json lists.json listFilms.json overrides.json responses.json trophies.json watched.json; do
                     path="src/assets/$file"
                     if [ -f "$path" ]; then
                       echo "Validating $file..."

@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import WatchedPage from './WatchedPage';
 import { filmData } from '../types/film';
 import { ClubAuthProvider } from '../auth/GoogleAuth';
+import { ResponsesProvider } from '../contexts/ResponsesContext';
 
 // The bundled watched.json is the author's own local data, so the page is
 // exercised against a fixture instead. One entry is a real club film, which is
@@ -65,11 +66,13 @@ jest.mock('../types/list', () => ({
 const renderFor = (memberName: string, hash = '') =>
     render(
         <ClubAuthProvider>
-            <MemoryRouter initialEntries={[`/watched/${memberName}${hash}`]}>
-                <Routes>
-                    <Route path="/watched/:memberName" element={<WatchedPage />} />
-                </Routes>
-            </MemoryRouter>
+            <ResponsesProvider>
+                <MemoryRouter initialEntries={[`/watched/${memberName}${hash}`]}>
+                    <Routes>
+                        <Route path="/watched/:memberName" element={<WatchedPage />} />
+                    </Routes>
+                </MemoryRouter>
+            </ResponsesProvider>
         </ClubAuthProvider>
     );
 

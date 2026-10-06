@@ -32,7 +32,15 @@ const KEY = 'cc.editor.writes';
 const TTL_MS = 24 * 60 * 60 * 1000;
 
 /** Which file an entry belongs to. One namespace per file keeps keys short. */
-export type WriteKind = 'rating' | 'list' | 'watched' | 'profile' | 'trophy' | 'film';
+export type WriteKind =
+    | 'rating'
+    | 'list'
+    | 'watched'
+    | 'profile'
+    | 'trophy'
+    | 'film'
+    | 'reaction'
+    | 'comment';
 
 /** A recorded write. `value: null` is a delete — the row should be absent. */
 interface CachedWrite<T> {
@@ -92,6 +100,20 @@ export function recordWrite<T>(kind: WriteKind, key: string, value: T | null): v
     const bucket = store[kind] ?? {};
     bucket[key] = { value, at: Date.now() };
     store[kind] = bucket;
+    write(store);
+}
+
+/**
+ * Drops one recorded write without anything having confirmed it. For an
+ * optimistic write that failed: the overlay was claiming a save that never
+ * happened.
+ */
+export function forgetWrite(kind: WriteKind, key: string): void {
+    const store = read();
+    const bucket = store[kind];
+    if (!bucket || !(key in bucket)) return;
+    delete bucket[key];
+    if (Object.keys(bucket).length === 0) delete store[kind];
     write(store);
 }
 
@@ -188,7 +210,31 @@ export const writeKeys = {
      * the id.
      */
     film: (imdbId: string) => imdbId,
+    /**
+     * Thread ids embed a member's display name, which may contain a space, so
+     * these two are JSON tuples rather than space-joined. Read them back with
+     * {@link splitTupleKey}.
+     *
+     * A reaction is keyed down to the member: the cached value is only "this
+     * member's mark is there" (`true`) or "it isn't" (`null`), so two members'
+     * reactions on the same key never overwrite each other's pending state.
+     */
+    reaction: (threadId: string, key: string, member: string) =>
+        JSON.stringify([threadId, key, member]),
+    comment: (threadId: string, id: string) => JSON.stringify([threadId, id]),
 };
+
+/** Takes a {@link writeKeys.reaction} or {@link writeKeys.comment} key apart. Null if it isn't one. */
+export function splitTupleKey(key: string): string[] | null {
+    try {
+        const parsed: unknown = JSON.parse(key);
+        return Array.isArray(parsed) && parsed.every((part) => typeof part === 'string')
+            ? (parsed as string[])
+            : null;
+    } catch {
+        return null;
+    }
+}
 
 /** Splits a two-part key back into its IMDb id and its second part. */
 export function splitKey(key: string): { imdbId: string; owner: string } {
