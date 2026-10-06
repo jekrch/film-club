@@ -1,7 +1,11 @@
 {
   "threads": {
     "log-Jacob-tt0084649": {
-      "reactions": {},
+      "reactions": {
+        "rose": [
+          "Jacob"
+        ]
+      },
       "comments": [
         {
           "id": "jacob-20261006t005756",
