@@ -45,6 +45,8 @@ import FilmDetailsEditor from '../components/films/FilmDetailsEditor';
 import TrophyGallery from '../components/common/TrophyGallery';
 import { resolveFilmTrophies } from '../utils/trophyUtils';
 import WatchTimelineNav from '../components/common/WatchTimelineNav';
+import LogResponses from '../components/responses/LogResponses';
+import { clubThreadId } from '../types/responses';
 import SelectionCommitteeBackground from '../components/common/SelectionCommitteeBackground';
 import { CalendarDaysIcon, ChevronLeftIcon } from '@heroicons/react/24/outline';
 
@@ -867,6 +869,17 @@ const FilmDetailPage = () => {
                                             </p>
                                         </div>
                                     )}
+
+                                {/* What the club says back about the screening, as
+                                on its wall row: the same thread, read and written
+                                in either place. Draws nothing for a visitor when
+                                nobody has responded, border included. */}
+                                <LogResponses
+                                    threadId={clubThreadId(film.imdbID)}
+                                    owner={null}
+                                    title={film.title}
+                                    className="mt-8 border-t border-slate-700 pt-6"
+                                />
 
                                 {/* Previous / Next film in the club's watch timeline */}
                                 <WatchTimelineNav

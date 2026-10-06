@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ListPage from './ListPage';
 import { filmData } from '../types/film';
 import { ClubAuthProvider } from '../auth/GoogleAuth';
+import { ResponsesProvider } from '../contexts/ResponsesContext';
 
 // The bundled lists.json is empty (lists are authored on the site), so the page
 // is exercised against a fixture. The first entry is a real club film so the
@@ -53,11 +54,13 @@ jest.mock('../types/list', () => {
 const renderAt = (listId: string) =>
     render(
         <ClubAuthProvider>
-            <MemoryRouter initialEntries={[`/lists/${listId}`]}>
-                <Routes>
-                    <Route path="/lists/:listId" element={<ListPage />} />
-                </Routes>
-            </MemoryRouter>
+            <ResponsesProvider>
+                <MemoryRouter initialEntries={[`/lists/${listId}`]}>
+                    <Routes>
+                        <Route path="/lists/:listId" element={<ListPage />} />
+                    </Routes>
+                </MemoryRouter>
+            </ResponsesProvider>
         </ClubAuthProvider>
     );
 

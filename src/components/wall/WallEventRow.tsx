@@ -188,6 +188,22 @@ const rowTrailerKey = (event: WallEvent): string | null => {
 };
 
 /**
+ * Who may remove any comment on this row's thread: the log's or the list's
+ * owner. A screening is the club's, not its selector's, so it has none.
+ */
+const threadOwner = (event: WallEvent): string | null => {
+    switch (event.kind) {
+        case 'log':
+            return event.member;
+        case 'list':
+            return event.list.owner;
+        case 'club-watch':
+        case 'trophy':
+            return null;
+    }
+};
+
+/**
  * True when {@link WallFigure} will draw something.
  *
  * Asked one line above where the badge is rendered, because the figure and the
@@ -649,16 +665,21 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                             Spans the subject's column and the edge's so it widens
                             neither: a grid item spanning a flexible track adds
                             nothing to an auto one. */}
-                        {/* A log's foot carries its reactions and comments as
-                            well, with the toggle at the end of that same line —
-                            the watch log's arrangement, so a log reads the same
-                            here as on its member's page. Every other kind keeps
-                            the toggle alone. */}
-                        {lead.kind === 'log' ? (
+                        {/* A log's, a screening's, and a list's foot carry their
+                            reactions and comments as well, with the toggle at the
+                            end of that same line — the watch log's arrangement, so
+                            a log reads the same here as on its member's page. A
+                            lone trophy keeps the toggle alone; one given at a
+                            screening is folded into that screening's thread. */}
+                        {lead.kind !== 'trophy' ? (
                             <LogResponses
                                 threadId={lead.id}
-                                owner={lead.member}
-                                title={film?.title ?? 'this film'}
+                                owner={threadOwner(lead)}
+                                title={
+                                    lead.kind === 'list'
+                                        ? lead.list.name
+                                        : (film?.title ?? 'this film')
+                                }
                                 trailing={detailsToggle}
                                 className={`col-span-3 col-start-1 row-start-3 mt-2 self-end sm:col-span-2 sm:col-start-2${
                                     film ? ' sm:ml-4' : ''

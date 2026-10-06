@@ -1167,6 +1167,7 @@ describe('parseThreadId', () => {
 
     it('resolves a log entry and canonicalizes the member', () => {
         expect(parseThreadId('log-jacob-tt0046478', members)).toEqual({
+            kind: 'log',
             threadId: 'log-Jacob-tt0046478',
             owner: 'Jacob',
             imdbId: 'tt0046478',
@@ -1181,10 +1182,31 @@ describe('parseThreadId', () => {
         expectStatus(() => parseThreadId('log-Werner-tt0046478', members), 400);
     });
 
-    it('refuses anything that is not a log entry', () => {
-        expectStatus(() => parseThreadId('club-tt0046478', members), 400);
+    it('resolves a screening', () => {
+        expect(parseThreadId('club-tt0046478', members)).toEqual({
+            kind: 'club',
+            threadId: 'club-tt0046478',
+            imdbId: 'tt0046478',
+        });
+    });
+
+    it('resolves a list by its slug', () => {
+        expect(parseThreadId('list-andy-top-10-horror', members)).toEqual({
+            kind: 'list',
+            threadId: 'list-andy-top-10-horror',
+            listId: 'andy-top-10-horror',
+        });
+    });
+
+    it('refuses anything that is not a log entry, screening, or list', () => {
         expectStatus(() => parseThreadId('log-Andy-nm0000001', members), 400);
         expectStatus(() => parseThreadId('log--tt0046478', members), 400);
+        expectStatus(() => parseThreadId('club-nm0000001', members), 400);
+        expectStatus(() => parseThreadId('club-Andy-tt0046478', members), 400);
+        expectStatus(() => parseThreadId('list-', members), 400);
+        expectStatus(() => parseThreadId('list-Andy-Top', members), 400);
+        expectStatus(() => parseThreadId('list-andy--top', members), 400);
+        expectStatus(() => parseThreadId('trophy-tt0046478-x', members), 400);
     });
 });
 
@@ -1252,6 +1274,19 @@ describe('assertMayDeleteComment', () => {
     it('forbids a third member', () => {
         expectStatus(
             () => assertMayDeleteComment(comment, 'Gabe', { name: 'Mark', admin: false }),
+            403
+        );
+    });
+
+    it('leaves an ownerless thread to the author and an admin', () => {
+        expect(() =>
+            assertMayDeleteComment(comment, null, { name: 'Andy', admin: false })
+        ).not.toThrow();
+        expect(() =>
+            assertMayDeleteComment(comment, null, { name: 'Mark', admin: true })
+        ).not.toThrow();
+        expectStatus(
+            () => assertMayDeleteComment(comment, null, { name: 'Mark', admin: false }),
             403
         );
     });

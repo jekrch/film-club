@@ -55,11 +55,14 @@ const TEXT_TOGGLE =
     'inline-flex h-6 flex-shrink-0 items-center gap-1 rounded-md px-1.5 text-xs transition-colors';
 
 interface LogResponsesProps {
-    /** `logThreadId(owner, imdbID)`. */
+    /** `logThreadId(owner, imdbID)`, `clubThreadId(imdbID)`, or `listThreadId(id)`. */
     threadId: string;
-    /** Whose log entry this is. They may remove any comment on it. */
-    owner: string;
-    /** What the entry is about, for accessible names ("React to Ikiru"). */
+    /**
+     * Whose log entry or list this is. They may remove any comment on it. Null
+     * for a screening, which is the club's rather than any one member's.
+     */
+    owner: string | null;
+    /** What the thread is about, for accessible names ("React to Ikiru"). */
     title: string;
     /**
      * Drawn at the right end of the bar. The row's Details toggle, which would
@@ -88,8 +91,8 @@ const hasReacted = (thread: ResponseThread | undefined, key: ReactionKey, member
     (thread?.reactions[key] ?? []).some((name) => name.toLowerCase() === member.toLowerCase());
 
 /**
- * The foot of a log entry: what the club says back to it, and the row's own
- * Details toggle, on one line. The reactions tray and the comments open out
+ * The foot of a log entry, a screening, or a list: what the club says back to
+ * it, and the row's own Details toggle, on one line. The reactions tray and the comments open out
  * under that line with the same gesture the details panel uses.
  *
  * Anyone can read the responses. Only a signed-in member can add to them.
@@ -248,7 +251,8 @@ const LogResponses: React.FC<LogResponsesProps> = ({
                                     canRespond &&
                                     (admin ||
                                         comment.author.toLowerCase() === member?.toLowerCase() ||
-                                        owner.toLowerCase() === member?.toLowerCase())
+                                        (owner !== null &&
+                                            owner.toLowerCase() === member?.toLowerCase()))
                                 }
                                 onSave={(body) =>
                                     saveComment(threadId, body, comment.id).then(() => {})

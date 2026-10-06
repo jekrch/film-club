@@ -1,7 +1,8 @@
 import responsesData from '../assets/responses.json';
 
 /**
- * What the club says back to a member's log entry: reactions and comments.
+ * What the club says back to a log entry, a screening, or a list: reactions and
+ * comments.
  *
  * Written by the editor worker into `responses.json`, one commit per reaction,
  * and those commits skip the Pages build. So unlike `trophies.json` this
@@ -84,7 +85,7 @@ export const REACTION_KEYS = [
 
 export type ReactionKey = (typeof REACTION_KEYS)[number];
 
-/** One comment on a log entry, exactly as the worker stores it. */
+/** One comment on a thread, exactly as the worker stores it. */
 export interface ResponseComment {
     /** Assigned by the worker on create and immutable after. */
     id: string;
@@ -97,7 +98,7 @@ export interface ResponseComment {
     editedAt: string | null;
 }
 
-/** Everything said about one log entry. */
+/** Everything said about one log entry, screening, or list. */
 export interface ResponseThread {
     /** Reaction key → the members who left it, in the order they did. */
     reactions: Partial<Record<ReactionKey, string[]>>;
@@ -112,9 +113,16 @@ export interface ResponsesFile {
 
 /**
  * The thread id for a member's log entry. It is the wall's own event id for
- * that entry, so a thread follows the entry wherever the site draws it.
+ * that entry, so a thread follows the entry wherever the site draws it. The
+ * same goes for the two below.
  */
 export const logThreadId = (member: string, imdbID: string): string => `log-${member}-${imdbID}`;
+
+/** The thread id for a club screening. */
+export const clubThreadId = (imdbID: string): string => `club-${imdbID}`;
+
+/** The thread id for a member's list. */
+export const listThreadId = (listId: string): string => `list-${listId}`;
 
 /**
  * Validates the bundled file at module-load time. Shallow, like the other

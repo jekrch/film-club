@@ -1,7 +1,7 @@
 import { Film, filmData } from '../types/film';
 import { FilmListDefinition, filmLists } from '../types/list';
 import { trophyIndex, type Trophy } from '../types/trophy';
-import { logThreadId } from '../types/responses';
+import { clubThreadId, listThreadId, logThreadId } from '../types/responses';
 import { watchedLog, type WatchedLog } from '../types/watched';
 import { parseWatchDate } from './filmUtils';
 import {
@@ -221,7 +221,7 @@ const clubWatchEvents = (films: Film[]): ClubWatchEvent[] =>
 
         return [
             {
-                id: `club-${film.imdbID}`,
+                id: clubThreadId(film.imdbID),
                 kind: 'club-watch' as const,
                 date,
                 at: null,
@@ -288,7 +288,7 @@ const listEvents = (lists: FilmListDefinition[], sources: WallDataSources): List
 
         return [
             {
-                id: `list-${list.id}`,
+                id: listThreadId(list.id),
                 kind: 'list' as const,
                 date,
                 at: list.createdAt,

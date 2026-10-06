@@ -89,9 +89,9 @@ export const LIMITS = {
      * six members, so this is a runaway-client bound rather than a house rule.
      */
     trophiesPerFilm: 24,
-    /** One comment on a log entry. A few sentences, not a second review. */
+    /** One comment on a thread. A few sentences, not a second review. */
     comment: 1000,
-    /** Comments under one log entry. A runaway-client bound, like the trophy one. */
+    /** Comments under one thread. A runaway-client bound, like the trophy one. */
     commentsPerThread: 200,
 } as const;
 
@@ -1125,8 +1125,9 @@ export function validateReactionKey(value: unknown): ReactionKey {
     throw badRequest('reaction: not one the site offers');
 }
 
-/** The one kind of thread there is so far: a member's watch-log entry. */
+/** A member's watch-log entry. */
 export interface LogThreadTarget {
+    kind: 'log';
     /** Canonical: rebuilt from the resolved member, whatever casing the path used. */
     threadId: string;
     /** The `club.json` name whose log this is. */
@@ -1134,29 +1135,57 @@ export interface LogThreadTarget {
     imdbId: string;
 }
 
+/** A club screening. It belongs to the club, not to whoever picked it. */
+export interface ClubThreadTarget {
+    kind: 'club';
+    threadId: string;
+    imdbId: string;
+}
+
+/** A member's list. Its owner comes from `lists.json`, which the router reads. */
+export interface ListThreadTarget {
+    kind: 'list';
+    threadId: string;
+    listId: string;
+}
+
+/** What a thread is about. */
+export type ThreadTarget = LogThreadTarget | ClubThreadTarget | ListThreadTarget;
+
 /**
- * The wall's event id for a log entry is `log-<member>-<imdbID>`. A member name
- * may itself contain hyphens, which is why the IMDb id is matched from the end.
+ * Each kind's thread id is the wall's event id for that thing:
+ * `log-<member>-<imdbID>`, `club-<imdbID>`, `list-<listId>`. A member name may
+ * itself contain hyphens, which is why a log's IMDb id is matched from the end.
  */
 const LOG_THREAD_PATTERN = /^log-(.+)-(tt\d{7,9})$/;
+const CLUB_THREAD_PATTERN = /^club-(tt\d{7,9})$/;
+/** A list id is a `slugify` slug, so this is the only shape one can take. */
+const LIST_THREAD_PATTERN = /^list-([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 
 /**
- * Resolves a thread id from a path to the log entry it is about.
+ * Resolves a thread id from a path to the thing it is about.
  *
- * Only checks the shape and the member. Whether that member actually logged
- * the film needs `watched.json`, which this pure module can't read, so the
- * router checks it before any write that adds to a thread.
+ * Only checks the shape, and for a log the member. Whether the entry, the
+ * screening, or the list actually exists needs the data files, which this pure
+ * module can't read, so the router checks it before any write that adds to a
+ * thread.
  */
-export function parseThreadId(value: string, memberNames: readonly string[]): LogThreadTarget {
-    const match = LOG_THREAD_PATTERN.exec(value);
-    if (!match) throw badRequest(`thread: "${value}" is not a log entry`);
+export function parseThreadId(value: string, memberNames: readonly string[]): ThreadTarget {
+    const club = CLUB_THREAD_PATTERN.exec(value);
+    if (club) return { kind: 'club', threadId: value, imdbId: club[1] };
 
-    const wanted = match[1].toLowerCase();
+    const list = LIST_THREAD_PATTERN.exec(value);
+    if (list) return { kind: 'list', threadId: value, listId: list[1] };
+
+    const log = LOG_THREAD_PATTERN.exec(value);
+    if (!log) throw badRequest(`thread: "${value}" is not a log entry, screening, or list`);
+
+    const wanted = log[1].toLowerCase();
     const owner = memberNames.find((name) => name.toLowerCase() === wanted);
-    if (!owner) throw badRequest(`thread: "${match[1]}" is not a club member`);
+    if (!owner) throw badRequest(`thread: "${log[1]}" is not a club member`);
 
-    const imdbId = match[2];
-    return { threadId: `log-${owner}-${imdbId}`, owner, imdbId };
+    const imdbId = log[2];
+    return { kind: 'log', threadId: `log-${owner}-${imdbId}`, owner, imdbId };
 }
 
 /** What a client sends for a comment. `id`, `author`, and the stamps are the worker's. */
@@ -1205,20 +1234,26 @@ export function assertMayEditComment(
 
 /**
  * The author may remove their comment, and so may an admin and the member
- * whose log it's on. That's the opposite of the trophy rule, where the
+ * whose log or list it's on. That's the opposite of the trophy rule, where the
  * recipient may not withdraw one, and the difference is deliberate. A trophy
  * is the club's verdict on you. A comment is a guest on your post.
+ *
+ * `threadOwner` is null for a screening, which is the club's rather than any
+ * one member's, and for a list that has since been deleted. Then it's the
+ * author or an admin.
  */
 export function assertMayDeleteComment(
     comment: Pick<ResponseComment, 'author'>,
-    threadOwner: string,
+    threadOwner: string | null,
     caller: { name: string; admin: boolean }
 ): void {
     if (caller.admin) return;
     const name = caller.name.toLowerCase();
     if (comment.author.toLowerCase() === name) return;
-    if (threadOwner.toLowerCase() === name) return;
+    if (threadOwner !== null && threadOwner.toLowerCase() === name) return;
     throw forbidden(
-        `That comment is ${comment.author}'s. Only they or ${threadOwner} can remove it.`
+        threadOwner === null
+            ? `That comment is ${comment.author}'s. Only they can remove it.`
+            : `That comment is ${comment.author}'s. Only they or ${threadOwner} can remove it.`
     );
 }

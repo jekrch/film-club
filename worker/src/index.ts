@@ -79,7 +79,7 @@ import {
     validateTrophyInput,
     validateWatchedPatch,
     type FilmPatch,
-    type LogThreadTarget,
+    type ThreadTarget,
     type ProfilePatch,
     type RatingPatch,
     type TrophyInput,
@@ -1100,18 +1100,52 @@ interface ThreadResult {
 }
 
 /**
- * Refuses a write that adds to a thread for a log entry that doesn't exist.
+ * Refuses a write that adds to a thread whose log entry, screening, or list
+ * doesn't exist.
  *
  * Only adding is checked. Taking a reaction or comment back still works after
- * the entry is gone, so nobody is stuck with words on a thread they can no
+ * the subject is gone, so nobody is stuck with words on a thread they can no
  * longer reach through the worker.
  */
-async function assertLogged(env: Env, target: LogThreadTarget): Promise<void> {
-    const { data } = await readJson<WatchedLog>(env, WATCHED_PATH);
-    const log = data ?? EMPTY_WATCHED;
-    const key = Object.keys(log).find((name) => name.toLowerCase() === target.owner.toLowerCase());
-    if (key !== undefined && log[key].some((entry) => entry.imdbID === target.imdbId)) return;
-    throw notFound(`${target.owner} hasn't logged ${target.imdbId}.`);
+async function assertThreadSubject(env: Env, target: ThreadTarget): Promise<void> {
+    switch (target.kind) {
+        case 'log': {
+            const { data } = await readJson<WatchedLog>(env, WATCHED_PATH);
+            const log = data ?? EMPTY_WATCHED;
+            const key = Object.keys(log).find(
+                (name) => name.toLowerCase() === target.owner.toLowerCase()
+            );
+            if (key !== undefined && log[key].some((entry) => entry.imdbID === target.imdbId)) {
+                return;
+            }
+            throw notFound(`${target.owner} hasn't logged ${target.imdbId}.`);
+        }
+        case 'club':
+            return assertClubFilm(env, target.imdbId);
+        case 'list':
+            if (await findList(env, target.listId)) return;
+            throw notFound(`No list "${target.listId}".`);
+    }
+}
+
+const findList = async (env: Env, listId: string): Promise<FilmListDefinition | undefined> => {
+    const { data } = await readJson<FilmListDefinition[]>(env, LISTS_PATH);
+    return (data ?? EMPTY_LISTS).find((list) => list.id === listId);
+};
+
+/**
+ * The member who may remove anyone's comment on a thread: whose log or list it
+ * is. Null for a screening, which is the club's, and for a list since deleted.
+ */
+async function threadOwner(env: Env, target: ThreadTarget): Promise<string | null> {
+    switch (target.kind) {
+        case 'log':
+            return target.owner;
+        case 'club':
+            return null;
+        case 'list':
+            return (await findList(env, target.listId))?.owner ?? null;
+    }
 }
 
 /**
@@ -1149,12 +1183,23 @@ function storeThread(
     return { ...current, threads: sorted };
 }
 
-/** `Jacob on Gabe's tt0046478`, the part of every response commit message that names the row. */
-const threadLabel = (member: Member, target: LogThreadTarget): string =>
-    `${member.name} on ${target.owner}'s ${target.imdbId}`;
+/**
+ * `Jacob on Gabe's tt0046478`, `Jacob on screening tt0046478`, `Jacob on list
+ * gabe-noir`: the part of every response commit message that names the row.
+ */
+const threadLabel = (member: Member, target: ThreadTarget): string => {
+    switch (target.kind) {
+        case 'log':
+            return `${member.name} on ${target.owner}'s ${target.imdbId}`;
+        case 'club':
+            return `${member.name} on screening ${target.imdbId}`;
+        case 'list':
+            return `${member.name} on list ${target.listId}`;
+    }
+};
 
 /**
- * Leaves the caller's reaction on a log entry. Idempotent: reacting twice is
+ * Leaves the caller's reaction on a thread. Idempotent: reacting twice is
  * a no-op rather than a second mark, and it costs no commit.
  *
  * Any member may react to any entry, their own included. Who reacted is taken
@@ -1163,10 +1208,10 @@ const threadLabel = (member: Member, target: LogThreadTarget): string =>
 async function putReaction(
     env: Env,
     member: Member,
-    target: LogThreadTarget,
+    target: ThreadTarget,
     key: ReactionKey
 ): Promise<ThreadResult> {
-    await assertLogged(env, target);
+    await assertThreadSubject(env, target);
     const { threadId } = target;
 
     return commitJson<ResponsesFile, ThreadResult>(
@@ -1203,7 +1248,7 @@ async function putReaction(
 async function deleteReaction(
     env: Env,
     member: Member,
-    target: LogThreadTarget,
+    target: ThreadTarget,
     key: ReactionKey
 ): Promise<ThreadResult> {
     const { threadId } = target;
@@ -1249,7 +1294,7 @@ interface CommentResult extends ThreadResult {
 }
 
 /**
- * Posts a comment on a log entry, or edits one the caller already posted.
+ * Posts a comment on a thread, or edits one the caller already posted.
  *
  * The id in the path is a lookup key, as it is for a list or a trophy: an
  * unmatched one creates and the worker assigns the permanent id. Clients
@@ -1259,11 +1304,11 @@ async function putComment(
     request: Request,
     env: Env,
     member: Member,
-    target: LogThreadTarget,
+    target: ThreadTarget,
     pathId: string
 ): Promise<CommentResult> {
     const input = validateCommentInput(await readBody(request));
-    await assertLogged(env, target);
+    await assertThreadSubject(env, target);
     const { threadId } = target;
 
     return commitJson<ResponsesFile, CommentResult>(
@@ -1325,14 +1370,18 @@ async function putComment(
     );
 }
 
-/** Removes a comment. Its author, the log's owner, or an admin; see `assertMayDeleteComment`. */
+/**
+ * Removes a comment. Its author, the log's or list's owner, or an admin; see
+ * `assertMayDeleteComment`.
+ */
 async function deleteComment(
     env: Env,
     member: Member,
-    target: LogThreadTarget,
+    target: ThreadTarget,
     commentId: string
 ): Promise<ThreadResult & { id: string; deleted: boolean }> {
     const { threadId } = target;
+    const owner = await threadOwner(env, target);
 
     return commitJson<ResponsesFile, ThreadResult & { id: string; deleted: boolean }>(
         env,
@@ -1341,9 +1390,9 @@ async function deleteComment(
         (current) => {
             const stored = current.threads?.[threadId];
             const existing = stored?.comments.find((comment) => comment.id === commentId);
-            if (!stored || !existing) throw notFound(`No comment "${commentId}" on that entry.`);
+            if (!stored || !existing) throw notFound(`No comment "${commentId}" on that thread.`);
 
-            assertMayDeleteComment(existing, target.owner, member);
+            assertMayDeleteComment(existing, owner, member);
 
             const next: ResponseThread = {
                 ...stored,

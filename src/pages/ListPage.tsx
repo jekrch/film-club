@@ -9,8 +9,10 @@ import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import RankedListItem from '../components/films/RankedListItem';
+import LogResponses from '../components/responses/LogResponses';
 import { getListById, resolveListEntries } from '../utils/listUtils';
 import { isRankedList } from '../types/list';
+import { listThreadId } from '../types/responses';
 import { entryFrameSource } from '../utils/frameSources';
 import { getTeamMemberByName } from '../types/team';
 import { useClubAuth } from '../auth/GoogleAuth';
@@ -122,6 +124,15 @@ const ListPage: React.FC = () => {
                         This list doesn't have any films yet.
                     </p>
                 )}
+
+                {/* The same thread the list's wall row carries. Draws nothing
+                    for a visitor when nobody has responded, border included. */}
+                <LogResponses
+                    threadId={listThreadId(list.id)}
+                    owner={list.owner}
+                    title={list.name}
+                    className="mt-6 border-t border-slate-700/60 pt-5"
+                />
             </AccentCard>
         </PageLayout>
     );

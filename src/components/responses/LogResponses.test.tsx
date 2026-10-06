@@ -46,7 +46,7 @@ jest.mock('../../api/repoData', () => {
     return { ...actual, fetchResponses: () => new Promise(() => {}) };
 });
 
-const renderRow = (owner = 'Gabe') =>
+const renderRow = (owner: string | null = 'Gabe') =>
     render(
         <ResponsesProvider>
             <MemoryRouter>
@@ -195,6 +195,18 @@ describe('LogResponses', () => {
         const row = screen.getByRole('listitem');
         expect(within(row).getByRole('button', { name: 'Remove' })).toBeInTheDocument();
         expect(within(row).queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument();
+    });
+
+    it('leaves a screening’s comments to their authors, since nobody owns it', () => {
+        bundled = {
+            [THREAD]: { reactions: {}, comments: [comment('j', 'Jacob'), comment('a', 'Andy')] },
+        };
+        renderRow(null);
+        fireEvent.click(screen.getByRole('button', { name: /2 comments/i }));
+
+        const [mine, theirs] = screen.getAllByRole('listitem');
+        expect(within(mine).getByRole('button', { name: 'Remove' })).toBeInTheDocument();
+        expect(within(theirs).queryByRole('button', { name: 'Remove' })).not.toBeInTheDocument();
     });
 
     it('posts a new comment and shows what the worker stored', async () => {
