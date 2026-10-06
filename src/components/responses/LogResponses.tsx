@@ -11,6 +11,7 @@ import { AddReactionGlyph, ReactionEmoji } from './reactionGlyphs';
 import { QUICK_REACTIONS, REACTIONS } from './reactions';
 import { useClubAuth } from '../../auth/GoogleAuth';
 import { useResponses } from '../../contexts/ResponsesContext';
+import { getTeamMemberByName } from '../../types/team';
 import {
     REACTION_KEYS,
     type ReactionKey,
@@ -33,9 +34,9 @@ const FIELD_CLASS =
     'min-h-[calc(1lh+1rem+2px)]';
 
 /**
- * A pill, at rest and lit. Lit means *you* left this one. That's the only
- * state worth color, and it takes the warm amber of the "Club film" badge: a
- * spot on the stage rather than a notification dot.
+ * A pill, at rest and lit. There's one per member who reacted, and lit means
+ * it's *yours*. That's the only state worth color, and it takes the warm amber
+ * of the "Club film" badge: a spot on the stage rather than a notification dot.
  *
  * Small on purpose. The bar shares a line with the row's Details toggle and
  * should weigh about what that does: a caption under the entry, not a toolbar.
@@ -44,7 +45,6 @@ const PILL_BASE =
     'inline-flex h-6 items-center gap-1 rounded-full px-2 text-[11px] leading-none tabular-nums ring-1 ring-inset transition-colors duration-150';
 const PILL_REST = 'bg-white/[0.03] text-slate-400 ring-slate-600/50';
 const PILL_LIT = 'bg-amber-400/[0.08] text-amber-200 ring-amber-400/35';
-const PILL_HOVER = 'hover:bg-white/[0.06] hover:text-slate-200 hover:ring-slate-500/60';
 
 /**
  * The labelled Details toggle's look (see `EntryDetailsToggle`): bare text that
@@ -83,12 +83,6 @@ const formatCommentDate = (iso: string): string => {
     });
 };
 
-/** `Jacob`, `Jacob and Andy`, `Jacob, Andy and Gabe`. */
-const listNames = (names: string[]): string =>
-    names.length <= 1
-        ? (names[0] ?? '')
-        : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
-
 const hasReacted = (thread: ResponseThread | undefined, key: ReactionKey, member: string | null) =>
     member !== null &&
     (thread?.reactions[key] ?? []).some((name) => name.toLowerCase() === member.toLowerCase());
@@ -120,9 +114,9 @@ const LogResponses: React.FC<LogResponsesProps> = ({
     const trayId = useId();
     const commentsId = useId();
 
-    const present = REACTION_KEYS.filter((key) => (thread?.reactions[key]?.length ?? 0) > 0);
+    const reactors = reactorsOf(thread);
     const comments = thread?.comments ?? [];
-    const responds = canRespond || present.length > 0 || comments.length > 0;
+    const responds = canRespond || reactors.length > 0 || comments.length > 0;
 
     // A tray left open by someone who then signed out would offer taps that
     // can only fail.
@@ -147,38 +141,38 @@ const LogResponses: React.FC<LogResponsesProps> = ({
     return (
         <div className={`relative ${className}`}>
             <div className="flex flex-wrap items-center gap-1">
-                {present.map((key) => {
-                    const { label } = REACTIONS[key];
-                    const who = thread?.reactions[key] ?? [];
-                    const mine = hasReacted(thread, key, member);
-                    const summary = `${label}: ${listNames(who)}`;
-                    const body = (
-                        <>
-                            <ReactionEmoji reaction={key} className="h-3.5 w-3.5 flex-shrink-0" />
-                            <span className="font-mono">{who.length}</span>
-                        </>
-                    );
-
-                    return canRespond ? (
-                        <button
-                            key={key}
-                            type="button"
-                            onClick={() => react(key)}
-                            aria-pressed={mine}
-                            aria-label={`${summary}. ${mine ? 'Take yours back' : 'Add yours'}.`}
-                            title={listNames(who)}
-                            className={`${PILL_BASE} ${mine ? PILL_LIT : `${PILL_REST} ${PILL_HOVER}`}`}
-                        >
-                            {body}
-                        </button>
-                    ) : (
+                {reactors.map(({ name, keys }) => {
+                    const mine = canRespond && name.toLowerCase() === member?.toLowerCase();
+                    return (
                         <span
-                            key={key}
-                            title={listNames(who)}
-                            aria-label={summary}
-                            className={`${PILL_BASE} ${PILL_REST}`}
+                            key={name}
+                            role="group"
+                            aria-label={`${name}: ${labelsOf(keys)}`}
+                            title={name}
+                            className={`${PILL_BASE} ${mine ? PILL_LIT : PILL_REST}`}
                         >
-                            {body}
+                            <ReactorFace name={name} />
+                            <span className="flex items-center gap-0.5">
+                                {keys.map((key) =>
+                                    mine ? (
+                                        <button
+                                            key={key}
+                                            type="button"
+                                            onClick={() => react(key)}
+                                            aria-label={`Take back your ${REACTIONS[key].label}`}
+                                            className="rounded-sm transition-opacity hover:opacity-60"
+                                        >
+                                            <ReactionEmoji reaction={key} className="h-3.5 w-3.5" />
+                                        </button>
+                                    ) : (
+                                        <ReactionEmoji
+                                            key={key}
+                                            reaction={key}
+                                            className="h-3.5 w-3.5"
+                                        />
+                                    )
+                                )}
+                            </span>
                         </span>
                     );
                 })}
@@ -200,7 +194,7 @@ const LogResponses: React.FC<LogResponsesProps> = ({
                         }`}
                     >
                         <AddReactionGlyph className="h-4 w-4" />
-                        {present.length === 0 && <span aria-hidden="true">React</span>}
+                        {reactors.length === 0 && <span aria-hidden="true">React</span>}
                     </button>
                 )}
 
@@ -239,6 +233,7 @@ const LogResponses: React.FC<LogResponsesProps> = ({
             </Collapse>
 
             <Collapse open={commentsOpen} id={commentsId} innerClassName="space-y-3 pt-2.5">
+                {reactors.length > 0 && <ReactionRoll reactors={reactors} />}
                 {comments.length > 0 && (
                     <ol className="space-y-3">
                         {comments.map((comment) => (
@@ -278,6 +273,96 @@ const LogResponses: React.FC<LogResponsesProps> = ({
         </div>
     );
 };
+
+/** One member and every reaction they left on an entry. */
+interface Reactor {
+    name: string;
+    keys: ReactionKey[];
+}
+
+/**
+ * The thread's reactions turned around: by who left them rather than by emoji.
+ * `responses.json` doesn't record when, so people come in the order they first
+ * turn up walking `REACTION_KEYS`, and each one's emoji in that order too.
+ */
+const reactorsOf = (thread: ResponseThread | undefined): Reactor[] => {
+    const byName = new Map<string, Reactor>();
+    for (const key of REACTION_KEYS) {
+        for (const name of thread?.reactions[key] ?? []) {
+            const id = name.toLowerCase();
+            const reactor = byName.get(id) ?? { name, keys: [] };
+            reactor.keys.push(key);
+            byName.set(id, reactor);
+        }
+    }
+    return [...byName.values()];
+};
+
+/** `Like, Fire`: what a screen reader hears for a run of emoji. */
+const labelsOf = (keys: ReactionKey[]): string =>
+    keys.map((key) => REACTIONS[key].label).join(', ');
+
+/**
+ * A member's face, small enough to sit in a pill beside the emoji. Not
+ * `CircularImage`: at this size its border would be most of the picture, and
+ * it zooms on the row's hover. Falls back to an initial when there's no photo.
+ * Decorative: whatever it sits in names the member.
+ */
+const ReactorFace: React.FC<{ name: string; className?: string }> = ({
+    name,
+    className = 'h-4 w-4 text-[9px]',
+}) => {
+    const [failed, setFailed] = useState(false);
+    const src = getTeamMemberByName(name)?.image ?? `/images/${name.toLowerCase()}.jpg`;
+
+    return (
+        <span
+            aria-hidden="true"
+            className={`inline-flex flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-700 font-semibold uppercase text-slate-200 ${className}`}
+        >
+            {failed ? (
+                name.charAt(0)
+            ) : (
+                <img
+                    src={src}
+                    alt=""
+                    loading="lazy"
+                    onError={() => setFailed(true)}
+                    className="h-full w-full object-cover"
+                />
+            )}
+        </span>
+    );
+};
+
+/**
+ * Who reacted with what, spelled out with names, at the head of the comments.
+ * The bar above says the same with faces alone; this is where it's read.
+ */
+const ReactionRoll: React.FC<{ reactors: Reactor[] }> = ({ reactors }) => (
+    <ul
+        aria-label="Reactions"
+        className="flex flex-wrap gap-x-4 gap-y-1.5 border-b border-slate-700/50 pb-2.5"
+    >
+        {reactors.map(({ name, keys }) => (
+            <li key={name} className="flex items-center gap-1.5 text-xs">
+                <ReactorFace name={name} className="h-5 w-5 text-[10px]" />
+                <Link
+                    to={`/profile/${encodeURIComponent(name)}`}
+                    className="font-medium text-slate-300 hover:text-slate-100"
+                >
+                    {name}
+                </Link>
+                <span className="flex items-center gap-0.5">
+                    {keys.map((key) => (
+                        <ReactionEmoji key={key} reaction={key} className="h-4 w-4" />
+                    ))}
+                    <span className="sr-only">{labelsOf(keys)}</span>
+                </span>
+            </li>
+        ))}
+    </ul>
+);
 
 /** Everything the tray keeps behind "More", in `REACTION_KEYS` order. */
 const MORE_REACTIONS = REACTION_KEYS.filter((key) => !QUICK_REACTIONS.includes(key));

@@ -10,6 +10,12 @@
              of them with env(safe-area-inset-*). -->
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="theme-color" content="#0f172b" />
+        <!-- In the installed iOS app, draw the page under a transparent status bar
+             rather than reserving an opaque strip for it. Pairs with
+             viewport-fit=cover above; the app shell's safe-area padding keeps the
+             nav out from under the clock. -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
         <!-- Primary SEO -->
         <title>Criterion Club — The leading unrecorded podcast on cinema</title>

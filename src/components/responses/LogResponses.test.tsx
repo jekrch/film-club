@@ -79,13 +79,53 @@ describe('LogResponses', () => {
         expect(container).toBeEmptyDOMElement();
     });
 
-    it('shows a visitor the reactions, read-only, with who left them', () => {
+    it('shows a visitor the reactions, read-only, one pill per member', () => {
         auth.status = 'signed-out';
-        bundled = { [THREAD]: { reactions: { clap: ['Andy', 'Mark'] }, comments: [] } };
+        bundled = {
+            [THREAD]: {
+                reactions: { like: ['Andy'], clap: ['Andy', 'Mark'] },
+                comments: [],
+            },
+        };
         renderRow();
 
-        expect(screen.getByLabelText('Bravo: Andy and Mark')).toHaveTextContent('2');
+        expect(screen.getByRole('group', { name: 'Andy: Like, Bravo' })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: 'Mark: Bravo' })).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: /React to/ })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Take back/ })).not.toBeInTheDocument();
+    });
+
+    it('lists who reacted with what at the head of the comments', () => {
+        bundled = {
+            [THREAD]: {
+                reactions: { like: ['Andy'], fire: ['Andy', 'Mark'] },
+                comments: [comment('a', 'Andy')],
+            },
+        };
+        renderRow();
+        fireEvent.click(screen.getByRole('button', { name: /1 comment/i }));
+
+        const [andy, mark] = within(screen.getByRole('list', { name: 'Reactions' })).getAllByRole(
+            'listitem'
+        );
+        expect(andy).toHaveTextContent('AndyLike, Fire');
+        expect(mark).toHaveTextContent('MarkFire');
+    });
+
+    it('lets you take back your own reaction, and only yours, from the bar', async () => {
+        const remove = jest.spyOn(clubApi, 'deleteReaction').mockResolvedValue({
+            threadId: THREAD,
+            thread: { reactions: { fire: ['Andy'] }, comments: [] },
+            changed: true,
+        });
+        bundled = { [THREAD]: { reactions: { fire: ['Andy', 'Jacob'] }, comments: [] } };
+        renderRow();
+
+        expect(screen.getAllByRole('button', { name: /Take back/ })).toHaveLength(1);
+        fireEvent.click(screen.getByRole('button', { name: 'Take back your Fire' }));
+
+        expect(screen.queryByRole('group', { name: /^Jacob/ })).not.toBeInTheDocument();
+        await waitFor(() => expect(remove).toHaveBeenCalledWith('token', THREAD, 'fire'));
     });
 
     it('shows a reaction at once and sends it', async () => {
@@ -99,8 +139,7 @@ describe('LogResponses', () => {
         fireEvent.click(screen.getByRole('button', { name: 'React to Ugetsu' }));
         fireEvent.click(screen.getByRole('button', { name: 'Mind-blown' }));
 
-        const pill = screen.getByRole('button', { name: /^Mind-blown: Jacob/ });
-        expect(pill).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByRole('group', { name: 'Jacob: Mind-blown' })).toBeInTheDocument();
         await waitFor(() => expect(put).toHaveBeenCalledWith('token', THREAD, 'mind-blown'));
     });
 
@@ -118,7 +157,7 @@ describe('LogResponses', () => {
         fireEvent.click(screen.getByRole('button', { name: 'More reactions' }));
         fireEvent.click(screen.getByRole('button', { name: "Chef's kiss" }));
 
-        expect(screen.getByRole('button', { name: /^Chef's kiss: Jacob/ })).toBeInTheDocument();
+        expect(screen.getByRole('group', { name: "Jacob: Chef's kiss" })).toBeInTheDocument();
         await waitFor(() => expect(put).toHaveBeenCalledWith('token', THREAD, 'chefs-kiss'));
     });
 
@@ -130,7 +169,7 @@ describe('LogResponses', () => {
         fireEvent.click(screen.getByRole('button', { name: 'Bravo' }));
 
         expect(await screen.findByText('GitHub is down.')).toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /^Bravo: Jacob/ })).not.toBeInTheDocument();
+        expect(screen.queryByRole('group', { name: /^Jacob/ })).not.toBeInTheDocument();
     });
 
     it('offers edit on your own comment and nothing on a third member’s', () => {

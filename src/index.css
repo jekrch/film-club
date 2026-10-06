@@ -171,8 +171,13 @@ body {
 
    Three quiet layers, each borrowed from the cinema rather than from UI chrome:
      - the element itself: the slate base, lit from above by a cool wash in the
-       site's blue accent (the projector's throw) and answered by a fainter
-       indigo pool in the lower-left so the field has depth in both directions;
+       site's blue accent (the projector's throw), answered from below by a
+       fainter wash of the same light (the screen's spill on the floor) and an
+       indigo pool in the lower-left, so the field has depth in both
+       directions. The base ends on #0f172b, the colour iOS gives its toolbar
+       strip, so the bottom edge meets that strip the way the top meets the
+       status bar: lit page fading down into it, not a pale band under a
+       darker page;
      - ::before, a vignette that darkens the edges the way a screen falls off
        toward its frame;
      - ::after, a still layer of film grain, so the dark reads as stock rather
@@ -194,8 +199,9 @@ body {
     pointer-events: none;
     background:
         radial-gradient(ellipse 75% 55% at 50% -12%, rgb(96 165 250 / 0.11), transparent 70%),
+        radial-gradient(ellipse 70% 40% at 50% 112%, rgb(96 165 250 / 0.07), transparent 70%),
         radial-gradient(ellipse 55% 45% at 0% 105%, rgb(129 140 248 / 0.07), transparent 70%),
-        linear-gradient(to bottom, #111a31, #0c1324);
+        linear-gradient(to bottom, #111a31, #0f172b);
 }
 
 .site-backdrop::before,
@@ -205,8 +211,35 @@ body {
     inset: 0;
 }
 
+/* Vignette, under two edge fades.
+
+   The fades are for iOS Safari in a browser tab. At the top and bottom of the
+   scroll it fills the status-bar and toolbar strips with one flat colour taken
+   from the page (#0f172b, the root background), and no CSS can draw a gradient
+   there. Left alone, the glow peaks right at that edge and meets the strip in a
+   hard seam. Starting both edges on that exact colour lets the strip read as
+   the dark top of the room instead of a block laid over it. They are listed
+   before the vignette so they paint over it and the corners land on the same
+   colour as the centre.
+
+   An installed app is different: with `black-translucent` (index.html) and
+   `viewport-fit=cover` the backdrop itself runs under the bars, so there is no
+   strip to meet and the fades would only dim the glow. */
 .site-backdrop::before {
-    background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgb(2 6 23 / 0.6));
+    background:
+        linear-gradient(to bottom, #0f172b, transparent 5rem),
+        linear-gradient(to top, #0f172b, transparent 5rem),
+        radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgb(2 6 23 / 0.6));
+}
+
+@media (display-mode: standalone) {
+    .site-backdrop::before {
+        background: radial-gradient(
+            ellipse 120% 90% at 50% 40%,
+            transparent 55%,
+            rgb(2 6 23 / 0.6)
+        );
+    }
 }
 
 .site-backdrop::after {
