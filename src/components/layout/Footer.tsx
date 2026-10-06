@@ -4,6 +4,7 @@ import { teamMembers } from '../../types/team';
 const QUICK_LINKS = [
     { to: '/', label: 'Home' },
     { to: '/films', label: 'Films' },
+    { to: '/log', label: 'Log' },
     { to: '/about', label: 'About' },
     { to: '/almanac', label: 'Almanac' },
 ];

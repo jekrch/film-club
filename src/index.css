@@ -167,6 +167,55 @@ body {
     }
 }
 
+/* The page's backdrop: a darkened screening room rather than a flat field.
+
+   Three quiet layers, each borrowed from the cinema rather than from UI chrome:
+     - the element itself: the slate base, lit from above by a cool wash in the
+       site's blue accent (the projector's throw) and answered by a fainter
+       indigo pool in the lower-left so the field has depth in both directions;
+     - ::before, a vignette that darkens the edges the way a screen falls off
+       toward its frame;
+     - ::after, a still layer of film grain, so the dark reads as stock rather
+       than as an empty fill.
+
+   Fixed to the viewport, not stretched over the document: the old full-height
+   gradient spread its change of shade across the whole page, so on the films
+   grid or a long wall it looked flat. Pinned, every page gets the same lit
+   room whatever its length. It sits at z-index -1 inside App's `isolate`
+   shell, which keeps it above the shell's own background and below everything
+   else, including the unpositioned footer and the background pillars.
+
+   The grain is static on purpose. Animated grain flickers behind reading text
+   and costs a repaint every frame. */
+.site-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 75% 55% at 50% -12%, rgb(96 165 250 / 0.11), transparent 70%),
+        radial-gradient(ellipse 55% 45% at 0% 105%, rgb(129 140 248 / 0.07), transparent 70%),
+        linear-gradient(to bottom, #111a31, #0c1324);
+}
+
+.site-backdrop::before,
+.site-backdrop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+
+.site-backdrop::before {
+    background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgb(2 6 23 / 0.6));
+}
+
+.site-backdrop::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+}
+
 /* Thin, dark-themed scrollbar matching the site's slate palette.
    Used for overflow containers like the cast strip. */
 .themed-scrollbar {

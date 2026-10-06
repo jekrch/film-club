@@ -11,7 +11,7 @@ const links = [
     { to: '/films', label: 'Films' },
     // Next to Films rather than at the end: the two are the same history read
     // two ways, one by film and one by date.
-    { to: '/wall', label: 'Wall' },
+    { to: '/log', label: 'Log' },
     { to: '/about', label: 'About' },
     { to: '/almanac', label: 'Almanac' },
 ];

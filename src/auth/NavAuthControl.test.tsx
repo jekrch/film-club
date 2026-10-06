@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import type { ClubAuthValue } from './GoogleAuth';
 import NavAuthControl from './NavAuthControl';
@@ -60,20 +60,22 @@ describe.each(['inline', 'icon'] as const)('NavAuthControl (%s)', (variant) => {
         expect(screen.getByTestId('google-button')).toBeInTheDocument();
     });
 
-    it('closes on a press outside it', () => {
+    // The panel animates out, so it leaves the document a few frames after
+    // the press rather than on it.
+    it('closes on a press outside it', async () => {
         openPanel(variant);
 
         fireEvent.mouseDown(document.body);
 
-        expect(screen.queryByTestId('google-button')).not.toBeInTheDocument();
+        await waitFor(() => expect(screen.queryByTestId('google-button')).not.toBeInTheDocument());
     });
 
-    it('closes on Escape', () => {
+    it('closes on Escape', async () => {
         openPanel(variant);
 
         fireEvent.keyDown(document, { key: 'Escape' });
 
-        expect(screen.queryByTestId('google-button')).not.toBeInTheDocument();
+        await waitFor(() => expect(screen.queryByTestId('google-button')).not.toBeInTheDocument());
     });
 
     it('stays open while a credential is in flight', () => {

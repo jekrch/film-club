@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import CorinthianPillar from './components/layout/CorinthianPillar';
@@ -25,13 +25,18 @@ import ErrorBoundary from './components/common/ErrorBoundary';
 function AppContent() {
     const location = useLocation();
     // The pages that raise a colonnade of their own — the home page's pair and
-    // the wall's single left pillar — go without the site-wide one behind them.
+    // the log's single left pillar — go without the site-wide one behind them.
     // Two sets of columns in one view read as an accident rather than as
     // architecture.
-    const drawsOwnPillars = location.pathname === '/' || location.pathname === '/wall';
+    const drawsOwnPillars = location.pathname === '/' || location.pathname === '/log';
 
     return (
-        <div className="relative flex flex-col min-h-screen bg-gradient-to-t from-slate-900 via-slate-800 to-slate-900 font-se overflow-x-hidden">
+        // `isolate` gives the shell its own stacking context, so the backdrop's
+        // z-index of -1 lands just above this background and below everything
+        // else on the page. See `.site-backdrop` in index.css.
+        <div className="relative isolate flex flex-col min-h-screen bg-[#0f172b] font-se overflow-x-hidden">
+            <div className="site-backdrop" aria-hidden="true" />
+
             {/* Background pillar wrapper - stretches to full document height */}
             {!drawsOwnPillars && (
                 <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -54,7 +59,10 @@ function AppContent() {
                         {/* The club's activity in one chronological column. Reads
                 the same four bundled files the pages below do; see
                 `utils/wallUtils.ts`. */}
-                        <Route path="/wall" element={<WallPage />} />
+                        <Route path="/log" element={<WallPage />} />
+                        {/* The page's old name, kept so bookmarks and shared links
+                still land. `replace`, so Back doesn't bounce off it. */}
+                        <Route path="/wall" element={<Navigate to="/log" replace />} />
                         <Route path="/films/:imdbId" element={<FilmDetailPage />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/almanac" element={<AlmanacPage />} />
