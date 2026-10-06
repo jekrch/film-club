@@ -1,7 +1,6 @@
 import Button from '../common/Button';
 import React from 'react';
-
-type ChartCategory = 'country' | 'language' | 'decade';
+import { CATEGORY_LABELS, ChartCategory } from '../../hooks/useAlmanacCharts';
 
 interface CategorySelectorProps {
     categories: ChartCategory[];
@@ -25,7 +24,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                     active={selectedCategory === category}
                     aria-pressed={selectedCategory === category}
                 >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                    {CATEGORY_LABELS[category]}
                 </Button>
             ))}
         </div>

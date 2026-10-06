@@ -486,6 +486,19 @@ body {
         }
     }
 
+    /* Content that resizes in place rather than opening — see AnimatedHeight.
+     The details panel's duration and curve, so a chart growing a bar taller
+     and a row opening out read as the same move. */
+    .animate-height {
+        transition: height 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .animate-height {
+            transition: none;
+        }
+    }
+
     /* Modal enter/exit — see Modal.tsx.
 
      The backdrop leads and the panel follows on the longer, softer curve, so

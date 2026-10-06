@@ -1,9 +1,20 @@
 import { useState, useEffect, useMemo, useCallback, useRef, RefObject } from 'react';
 import { Film } from '../types/film';
 import { parseWatchDate } from '../utils/filmUtils';
+import { prefersReducedMotion } from '../utils/motion';
+import { parseRuntime } from '../utils/statUtils';
 import Highcharts from 'highcharts';
 
-export type ChartCategory = 'country' | 'language' | 'decade';
+export type ChartCategory = 'country' | 'language' | 'decade' | 'runtime' | 'genre';
+
+/** The chip label for each category. */
+export const CATEGORY_LABELS: Record<ChartCategory, string> = {
+    country: 'Country',
+    language: 'Language',
+    decade: 'Decade',
+    runtime: 'Runtime',
+    genre: 'Genre',
+};
 type FilmWithDate = Film & { parsedWatchDate: Date };
 
 interface IntervalDetail {
@@ -87,30 +98,78 @@ const TOOLTIP_CARD: Highcharts.TooltipOptions = {
  * On narrow screens the donut becomes a bar chart, one bar per category, and a
  * club that has watched films from thirty countries gets a chart thirty bars
  * tall. Past this many bars, the smallest are folded into one "Other" bar.
- * Decades are exempt: there are only a dozen or so, and they read in order.
+ * Ordered categories are exempt: they have only a handful of values, and they
+ * read in order.
  */
 const MOBILE_BAR_LIMIT = 10;
 const OTHER_LABEL = 'Other';
 
-/** The label a film is counted under in a category: its first country, language, or its decade. */
-const categoryValueOf = (film: Film, category: ChartCategory): string | null => {
+/** Runtime bands, shortest first; a film falls in the first whose `under` it is below. */
+const RUNTIME_BANDS = [
+    { under: 90, label: 'Under 90 min' },
+    { under: 120, label: '90–119 min' },
+    { under: 150, label: '120–149 min' },
+    { under: Infinity, label: '150+ min' },
+];
+
+/** The entries of a comma-separated field, leaving out blanks and "N/A". */
+const listed = (field: string | undefined): string[] =>
+    (field ?? '')
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter((entry) => entry && entry.toLowerCase() !== 'n/a');
+
+/**
+ * The labels a film is counted under in a category: its first country or
+ * language, its decade, its runtime band, or every one of its genres. Genre is
+ * the one category a film can be counted under more than once — OMDb lists a
+ * film's genres alphabetically, so its first is no truer than its last.
+ */
+const categoryValuesOf = (film: Film, category: ChartCategory): string[] => {
     switch (category) {
         case 'country':
-            return film?.country?.split(',')[0].trim() || null;
+            return listed(film?.country).slice(0, 1);
         case 'language':
-            return film?.language?.split(',')[0].trim() || null;
+            return listed(film?.language).slice(0, 1);
         case 'decade': {
             const yearNum = parseInt(film.year?.substring(0, 4) || '0', 10);
-            return !isNaN(yearNum) && yearNum > 1000 ? `${Math.floor(yearNum / 10) * 10}s` : null;
+            return !isNaN(yearNum) && yearNum > 1000 ? [`${Math.floor(yearNum / 10) * 10}s`] : [];
         }
+        case 'runtime': {
+            const minutes = parseRuntime(film.runtime);
+            return minutes ? [RUNTIME_BANDS.find((band) => minutes < band.under)!.label] : [];
+        }
+        case 'genre':
+            return listed(film?.genre);
     }
 };
+
+/** Where a category value sits in its category's natural order; unordered categories return null. */
+const orderOf = (category: ChartCategory, value: string): number | null => {
+    switch (category) {
+        case 'decade':
+            return parseInt(value, 10);
+        case 'runtime':
+            return RUNTIME_BANDS.findIndex((band) => band.label === value);
+        default:
+            return null;
+    }
+};
+
+const isOrdered = (category: ChartCategory): boolean =>
+    category === 'decade' || category === 'runtime';
+
+const CATEGORIES = Object.keys(CATEGORY_LABELS) as ChartCategory[];
+
+/** A slice or bar: how many films carry the value, and what percentage of films that is. */
+type CategoryPoint = { name: string; y: number; share: number; color?: string };
 
 export interface UseAlmanacChartsReturn {
     // Donut Chart
     selectedCategory: ChartCategory;
-    setSelectedCategory: React.Dispatch<React.SetStateAction<ChartCategory>>;
-    currentDonutChartData: Highcharts.PointOptionsObject[];
+    /** Switches the chart, closing any film list opened from the old one. */
+    setSelectedCategory: (category: ChartCategory) => void;
+    currentDonutChartData: CategoryPoint[];
     currentDonutChartTitle: string;
     donutChartOptions: Highcharts.Options;
     selectedPieSliceName: string | null;
@@ -137,10 +196,10 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
     const [watchedFilmsSorted, setWatchedFilmsSorted] = useState<FilmWithDate[]>([]);
 
     // Donut Chart State
-    const [selectedCategory, setSelectedCategory] = useState<ChartCategory>('country');
-    const [countryChartData, setCountryChartData] = useState<Highcharts.PointOptionsObject[]>([]);
-    const [languageChartData, setLanguageChartData] = useState<Highcharts.PointOptionsObject[]>([]);
-    const [decadeChartData, setDecadeChartData] = useState<Highcharts.PointOptionsObject[]>([]);
+    const [selectedCategory, setSelectedCategoryState] = useState<ChartCategory>('country');
+    const [chartDataByCategory, setChartDataByCategory] = useState<
+        Partial<Record<ChartCategory, CategoryPoint[]>>
+    >({});
     const [selectedPieSliceName, setSelectedPieSliceName] = useState<string | null>(null);
     const [filteredFilmsForPieSlice, setFilteredFilmsForPieSlice] = useState<Film[]>([]);
     const filmListRef = useRef<HTMLDivElement>(null);
@@ -172,41 +231,29 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
         }));
         setWatchedFilmsSorted(finalSortedWatched);
 
-        // Process Donut Chart Data
-        const countryCounts = new Map<string, number>();
-        const languageCounts = new Map<string, number>();
-        const decadeCounts = new Map<string, number>();
-
-        allFilmsDataState.forEach((film) => {
-            if (film?.country?.trim() && film.country.toLowerCase() !== 'n/a') {
-                const primaryCountry = film.country.split(',')[0].trim();
-                countryCounts.set(primaryCountry, (countryCounts.get(primaryCountry) || 0) + 1);
-            }
-            if (film?.language?.trim() && film.language.toLowerCase() !== 'n/a') {
-                const primaryLanguage = film.language.split(',')[0].trim();
-                languageCounts.set(primaryLanguage, (languageCounts.get(primaryLanguage) || 0) + 1);
-            }
-            if (film?.year?.substring(0, 4)) {
-                const yearNum = parseInt(film.year.substring(0, 4), 10);
-                if (!isNaN(yearNum) && yearNum > 1000) {
-                    // Basic year validation
-                    const decadeLabel = `${Math.floor(yearNum / 10) * 10}s`;
-                    decadeCounts.set(decadeLabel, (decadeCounts.get(decadeLabel) || 0) + 1);
-                }
-            }
+        // Process Donut Chart Data: count each category's values, then sort
+        // ordered categories in their order and the rest largest first.
+        const dataByCategory: Partial<Record<ChartCategory, CategoryPoint[]>> = {};
+        CATEGORIES.forEach((category) => {
+            const counts = new Map<string, number>();
+            let filmsCounted = 0;
+            allFilmsDataState.forEach((film) => {
+                const values = categoryValuesOf(film, category);
+                if (values.length) filmsCounted++;
+                values.forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+            });
+            // `share` is of films, not of the slices: for genre, where a film
+            // counts under each of its genres, the two differ.
+            dataByCategory[category] = Array.from(counts.entries())
+                .map(([name, y]) => ({ name, y, share: (y / filmsCounted) * 100 }))
+                .sort((a, b) =>
+                    isOrdered(category)
+                        ? orderOf(category, a.name)! - orderOf(category, b.name)! ||
+                          a.name.localeCompare(b.name)
+                        : b.y - a.y
+                );
         });
-
-        const formatAndSort = (map: Map<string, number>) =>
-            Array.from(map.entries())
-                .map(([name, y]) => ({ name, y }))
-                .sort((a, b) => b.y - a.y);
-        setCountryChartData(formatAndSort(countryCounts));
-        setLanguageChartData(formatAndSort(languageCounts));
-        setDecadeChartData(
-            Array.from(decadeCounts.entries())
-                .map(([name, y]) => ({ name, y }))
-                .sort((a, b) => parseInt(a.name) - parseInt(b.name))
-        ); // Sort decades chronologically
+        setChartDataByCategory(dataByCategory);
 
         // Process Interval Chart Data
         const intervals: Highcharts.PointOptionsObject[] = [];
@@ -235,39 +282,39 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
         setMeetingIntervalCategories(intervalCategories);
     }, [allFilmsDataState]);
 
-    const currentDonutChartData = useMemo(() => {
-        switch (selectedCategory) {
-            case 'language':
-                return languageChartData;
-            case 'decade':
-                return decadeChartData;
-            case 'country':
-            default:
-                return countryChartData;
-        }
-    }, [selectedCategory, countryChartData, languageChartData, decadeChartData]);
+    const currentDonutChartData = useMemo(
+        () => chartDataByCategory[selectedCategory] ?? [],
+        [selectedCategory, chartDataByCategory]
+    );
 
     // The bars the narrow-screen chart draws, and the categories its "Other"
     // bar stands for.
     const { mobileBarData, otherNames } = useMemo(() => {
-        if (selectedCategory === 'decade' || currentDonutChartData.length <= MOBILE_BAR_LIMIT) {
+        if (isOrdered(selectedCategory) || currentDonutChartData.length <= MOBILE_BAR_LIMIT) {
             return { mobileBarData: currentDonutChartData, otherNames: new Set<string>() };
         }
         // Already sorted by count, largest first.
         const kept = currentDonutChartData.slice(0, MOBILE_BAR_LIMIT - 1);
-        const rest = currentDonutChartData.slice(MOBILE_BAR_LIMIT - 1);
+        const rest = new Set(currentDonutChartData.slice(MOBILE_BAR_LIMIT - 1).map((d) => d.name));
+        // Counted in films rather than summed from the folded bars, which for
+        // genre would count a film once for each folded genre it has.
+        const counted = allFilmsDataState
+            .map((film) => categoryValuesOf(film, selectedCategory))
+            .filter((values) => values.length);
+        const inOther = counted.filter((values) => values.some((v) => rest.has(v))).length;
         return {
             mobileBarData: [
                 ...kept,
                 {
                     name: OTHER_LABEL,
-                    y: rest.reduce((sum, d) => sum + (d.y ?? 0), 0),
+                    y: inOther,
+                    share: (inOther / counted.length) * 100,
                     color: SLATE_500,
                 },
             ],
-            otherNames: new Set(rest.map((d) => d.name ?? '')),
+            otherNames: rest,
         };
-    }, [selectedCategory, currentDonutChartData]);
+    }, [selectedCategory, currentDonutChartData, allFilmsDataState]);
 
     const currentDonutChartTitle = useMemo(() => {
         switch (selectedCategory) {
@@ -275,6 +322,10 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                 return 'Films by Primary Language';
             case 'decade':
                 return 'Films by Decade of Release';
+            case 'runtime':
+                return 'Films by Runtime';
+            case 'genre':
+                return 'Films by Genre';
             case 'country':
             default:
                 return 'Films by Country of Origin';
@@ -292,13 +343,12 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
 
             // "Other" exists only on the narrow-screen bar chart, and stands
             // for every category folded into it.
-            const matches = (value: string | null) =>
-                value !== null &&
-                (sliceName === OTHER_LABEL && otherNames.size > 0
+            const matches = (value: string) =>
+                sliceName === OTHER_LABEL && otherNames.size > 0
                     ? otherNames.has(value)
-                    : value === sliceName);
+                    : value === sliceName;
             const filtered = allFilmsDataState.filter((film) =>
-                matches(categoryValueOf(film, selectedCategory))
+                categoryValuesOf(film, selectedCategory).some(matches)
             );
             setSelectedPieSliceName(sliceName);
             setFilteredFilmsForPieSlice(filtered);
@@ -306,11 +356,31 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
         [selectedCategory, allFilmsDataState, selectedPieSliceName, otherNames]
     );
 
+    // A slice of one category means nothing on another's chart, so its list
+    // goes when the chart changes. Picking the chart already showing keeps it.
+    const setSelectedCategory = useCallback(
+        (category: ChartCategory) => {
+            if (category === selectedCategory) return;
+            setSelectedCategoryState(category);
+            setSelectedPieSliceName(null);
+            setFilteredFilmsForPieSlice([]);
+        },
+        [selectedCategory]
+    );
+
+    // A frame late, because the list opens in a `Collapse`, which mounts its
+    // content a render after it's told to open; by the next frame it's there.
+    // Scrolled to at its full height while it's still opening, so the page
+    // and the list arrive together.
     useEffect(() => {
-        if (selectedPieSliceName && filmListRef.current) {
-            filmListRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+        if (!selectedPieSliceName) return;
+        const frame = requestAnimationFrame(() =>
+            filmListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        );
+        return () => cancelAnimationFrame(frame);
     }, [selectedPieSliceName]);
+
+    const multiValued = selectedCategory === 'genre';
 
     const donutChartOptions = useMemo((): Highcharts.Options => {
         const pointWidthForCalc = 15;
@@ -332,16 +402,25 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                 ...TOOLTIP_CARD,
                 formatter: function () {
                     const count = this.y ?? 0;
+                    const share = (this.options as CategoryPoint).share;
                     return tooltipCard(
                         this.name ?? '',
-                        `${(this.percentage ?? 0).toFixed(1)}%` +
-                            unit(`${count} film${count === 1 ? '' : 's'}`),
+                        multiValued
+                            ? `${count}` +
+                                  unit(
+                                      `film${count === 1 ? '' : 's'} · ${share.toFixed(0)}% of all`
+                                  )
+                            : `${share.toFixed(1)}%` +
+                                  unit(`${count} film${count === 1 ? '' : 's'}`),
                         String(this.color ?? COPPER)
                     );
                 },
             },
             accessibility: { point: { valueSuffix: '%' } },
             plotOptions: {
+                // The chart remounts on every category switch to replay this
+                // intro (see AlmanacPage), so it honors the reader's setting.
+                series: { animation: !prefersReducedMotion() },
                 pie: {
                     allowPointSelect: true,
                     cursor: 'pointer',
@@ -352,7 +431,10 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                     dataLabels: {
                         enabled: true,
                         // Small-caps name, serif figure: the stat cards' pairing.
-                        format: `{point.name} <span style="font-family:${SERIF};font-size:11px;letter-spacing:0;text-transform:none;color:${SLATE_300}">{point.percentage:.1f}%</span>`,
+                        // A count for genre, whose slices are sized by genre
+                        // rather than by film; a share of films there would
+                        // overstate the slice it labels.
+                        format: `{point.name} <span style="font-family:${SERIF};font-size:11px;letter-spacing:0;text-transform:none;color:${SLATE_300}">${multiValued ? '{point.y}' : '{point.percentage:.1f}%'}</span>`,
                         distance: 20,
                         style: {
                             ...SMALL_CAPS,
@@ -463,16 +545,15 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                             tooltip: {
                                 formatter: function () {
                                     const count = this.y ?? 0;
-                                    const total = currentDonutChartData.reduce(
-                                        (sum, d) => sum + (d.y ?? 0),
-                                        0
-                                    );
-                                    const share = total ? (count / total) * 100 : 0;
+                                    const share = (this.options as CategoryPoint).share;
                                     return tooltipCard(
                                         this.name ?? String(this.category ?? ''),
                                         `${count}` +
                                             unit(
-                                                `film${count === 1 ? '' : 's'} · ${share.toFixed(1)}%`
+                                                `film${count === 1 ? '' : 's'} · ` +
+                                                    (multiValued
+                                                        ? `${share.toFixed(0)}% of all`
+                                                        : `${share.toFixed(1)}%`)
                                             ),
                                         String(this.color ?? COPPER)
                                     );
@@ -490,7 +571,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                 ],
             },
         };
-    }, [currentDonutChartData, mobileBarData, handleCategoryClick]);
+    }, [currentDonutChartData, mobileBarData, handleCategoryClick, multiValued]);
 
     const handleIntervalClick = useCallback(
         (event: Highcharts.PointClickEventObject) => {
@@ -600,9 +681,14 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
     const filteredListTitle = useMemo(() => {
         if (!selectedPieSliceName) return '';
         if (selectedPieSliceName === OTHER_LABEL && otherNames.size > 0) {
-            return selectedCategory === 'language'
-                ? 'Films in Other Languages'
-                : 'Films from Other Countries';
+            switch (selectedCategory) {
+                case 'language':
+                    return 'Films in Other Languages';
+                case 'genre':
+                    return 'Films in Other Genres';
+                default:
+                    return 'Films from Other Countries';
+            }
         }
         switch (selectedCategory) {
             case 'country':
@@ -611,6 +697,10 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                 return `Films in ${selectedPieSliceName}`;
             case 'decade':
                 return `Films Released in the ${selectedPieSliceName}`;
+            case 'runtime':
+                return `Films Running ${selectedPieSliceName}`;
+            case 'genre':
+                return `${selectedPieSliceName} Films`;
             default:
                 return 'Selected Films';
         }

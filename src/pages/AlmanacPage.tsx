@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -25,6 +25,8 @@ import Button from '../components/common/Button';
 import HeroBanner from '../components/common/HeroBanner';
 import SectionHeader from '../components/common/SectionHeader';
 import FilmFrameWash from '../components/common/FilmFrameWash';
+import AnimatedHeight from '../components/common/AnimatedHeight';
+import Collapse from '../components/common/Collapse';
 
 import { useUnanimousScores } from '../hooks/useUnanimousScores';
 import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
@@ -72,11 +74,25 @@ const AlmanacPage: React.FC = () => {
         meetingIntervalData,
     } = useAlmanacCharts(filmData);
 
+    // The slice's film list as it last stood while open. Closing clears the
+    // selection at once, but the list takes a moment to fold away, and it
+    // should fold away showing the films it opened with rather than empty.
+    const [shownFilmList, setShownFilmList] = useState({ title: '', films: [] as Film[] });
+    if (
+        selectedPieSliceName &&
+        (shownFilmList.title !== filteredListTitle ||
+            shownFilmList.films !== filteredFilmsForPieSlice)
+    ) {
+        setShownFilmList({ title: filteredListTitle, films: filteredFilmsForPieSlice });
+    }
+
     // The figures at the end of each chart's title rule.
     const CATEGORY_PLURALS: Record<ChartCategory, string> = {
         country: 'countries',
         language: 'languages',
         decade: 'decades',
+        runtime: 'lengths',
+        genre: 'genres',
     };
     const donutMeta = currentDonutChartData.length
         ? `${currentDonutChartData.length} ${CATEGORY_PLURALS[selectedCategory]}`
@@ -218,32 +234,48 @@ const AlmanacPage: React.FC = () => {
 
             <ChartContainer className="mb-4" title={currentDonutChartTitle} meta={donutMeta}>
                 <CategorySelector
-                    categories={['country', 'language', 'decade']}
+                    categories={['country', 'language', 'decade', 'runtime', 'genre']}
                     selectedCategory={selectedCategory}
                     onSelectCategory={handleCategorySelected}
                 />
                 <p className="mb-2 text-center text-xs text-slate-400 mt-3 italic">
                     Click on a category slice, bar, or label to view the corresponding films below.
                 </p>
-                {donutChartOptions.series &&
-                ((donutChartOptions.series[0] as Highcharts.SeriesPieOptions).data?.length || 0) >
-                    0 ? (
-                    <HighchartsReact highcharts={Highcharts} options={donutChartOptions} />
-                ) : (
-                    <div className="text-center py-8 text-slate-400 text-sm">Loading chart...</div>
-                )}
+                {/* Each category draws its own height on narrow screens (one bar
+                    per value), so a switch eases to the new height rather than
+                    jumping the page below. */}
+                <AnimatedHeight>
+                    {donutChartOptions.series &&
+                    ((donutChartOptions.series[0] as Highcharts.SeriesPieOptions).data?.length ||
+                        0) > 0 ? (
+                        // Keyed on the category so a switch mounts a fresh chart
+                        // and Highcharts plays its intro (the donut sweeping round,
+                        // the narrow-screen bars growing out) rather than updating
+                        // the old one in place, which cuts straight to the new data.
+                        <div key={selectedCategory} className="animate-fade-in">
+                            <HighchartsReact highcharts={Highcharts} options={donutChartOptions} />
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-slate-400 text-sm">
+                            Loading chart...
+                        </div>
+                    )}
+                </AnimatedHeight>
             </ChartContainer>
 
-            {selectedPieSliceName && (
+            <Collapse open={selectedPieSliceName !== null}>
                 <FilteredFilmListSection
                     listRef={filmListRef as any}
-                    title={filteredListTitle}
-                    films={filteredFilmsForPieSlice}
+                    title={shownFilmList.title}
+                    films={shownFilmList.films}
                     onClose={closeFilteredList}
                     layoutMode="horizontal"
                     hideSizeButtons={true}
+                    // The section's default, less its fade-in: `Collapse`
+                    // fades it as it opens.
+                    containerClassName="p-4 mb-8 sm:mb-10 mt-4"
                 />
-            )}
+            </Collapse>
 
             <ChartContainer
                 className="mb-8 sm:mb-10"
