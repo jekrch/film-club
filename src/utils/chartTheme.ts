@@ -41,12 +41,12 @@ export const escapeHtml = (text: string): string =>
  *
  * The whole card is drawn here in HTML rather than by Highcharts' SVG box (see
  * TOOLTIP_CARD), so it can have a real shadow, the modal's faint ring, and an
- * accent rail down its left edge — the rail the page's cards carry, here in the
- * hovered slice or line's own color so the tooltip reads as belonging to it.
+ * accent-lit top edge — the hairline the page's cards carry, here in the hovered
+ * slice or line's own color so the tooltip reads as belonging to it.
  */
 export const tooltipCard = (label: string, figure: string, accent: string, note?: string): string =>
-    `<div style="position:relative;overflow:hidden;min-width:120px;padding:10px 14px 10px 16px;border-radius:8px;background:rgba(30,41,59,0.94);box-shadow:0 12px 28px -8px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)">` +
-    `<span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${accent}"></span>` +
+    `<div style="position:relative;overflow:hidden;min-width:120px;padding:10px 14px;border-radius:8px;background:rgba(30,41,59,0.94);box-shadow:0 12px 28px -8px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)">` +
+    `<span style="position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(to right,transparent,${accent},transparent)"></span>` +
     `<div style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:${SLATE_400}">${escapeHtml(label)}</div>` +
     `<div style="margin-top:4px;font-family:${SERIF};font-size:18px;line-height:1.1;color:${SLATE_100}">${figure}</div>` +
     (note

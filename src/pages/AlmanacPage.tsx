@@ -312,11 +312,11 @@ const AlmanacPage: React.FC = () => {
                 {frequentPersons.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
                         {frequentPersons.map((person) => (
-                            // No rail: one card per artist, repeating in a grid.
+                            // No edge: one card per artist, repeating in a grid.
                             // The wash is drawn from the artist's own films.
                             <AccentCard
                                 key={person.name}
-                                rail={false}
+                                edge={false}
                                 className="p-4"
                                 decoration={
                                     <FilmFrameWash

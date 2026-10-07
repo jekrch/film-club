@@ -37,8 +37,7 @@ const desktopLink = ({ isActive }: { isActive: boolean }) =>
 
 /**
  * Mobile nav item. An underline reads as an afterthought on a full-width row,
- * so the current page is marked with a left rail instead — the same device
- * AccentCard uses to flag a card's accent.
+ * so the current page is marked with a left rule instead.
  */
 const mobileLink = ({ isActive }: { isActive: boolean }) =>
     classNames(

@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React from 'react';
-import { ACCENT_RAIL, type CardAccent } from './accents';
+import { ACCENT_EDGE, ACCENT_EDGE_BASE, type CardAccent } from './accents';
 
-// The accent set and the rail live in `accents.ts`, shared with Modal. Re-
+// The accent set and the edge live in `accents.ts`, shared with Modal. Re-
 // exported here because every call site already reaches for the type through
 // this module.
 export type { CardAccent };
@@ -24,7 +24,7 @@ export type CardSurface = 'card' | 'inset';
 
 const SURFACE: Record<CardSurface, string> = {
     // No fill: the page background reads straight through, so a card is defined
-    // by its border and rail rather than by a panel of color. This is deliberate
+    // by its border and edge rather than by a panel of color. This is deliberate
     // — do not add a background here.
     card: 'border-slate-700/60 shadow-sm shadow-black/30',
     inset: 'bg-slate-700/25 border-slate-600/30',
@@ -47,10 +47,10 @@ interface AccentCardProps {
      */
     decoration?: React.ReactNode;
     /**
-     * The accent rail down the left edge. Disable for repeating grid items — a
-     * wall of rails reads as noise rather than emphasis.
+     * The accent-lit hairline along the top edge. Disable for repeating grid
+     * items — a wall of them reads as noise rather than emphasis.
      */
-    rail?: boolean;
+    edge?: boolean;
     /** Page-level card, or a card nested inside another one. */
     surface?: CardSurface;
     className?: string;
@@ -64,7 +64,7 @@ interface AccentCardProps {
 
 /**
  * Shared card shell: flat body, soft border that warms to the accent on hover,
- * an accent rail, and an optional masked watermark. Padding is left to the
+ * an accent-lit top edge, and an optional masked watermark. Padding is left to the
  * caller via className.
  *
  * The card root is deliberately NOT `overflow-hidden`: that would trap any
@@ -76,7 +76,7 @@ const AccentCard: React.FC<AccentCardProps> = ({
     accent = 'blue',
     watermarkSrc,
     decoration,
-    rail = true,
+    edge = true,
     surface = 'card',
     className,
     contentClassName,
@@ -90,13 +90,13 @@ const AccentCard: React.FC<AccentCardProps> = ({
         )}
     >
         {/* Decoration layer: clips the watermark, the `decoration` slot, and the
-        rail against the card's rounded corners, without clipping the card's own
+        edge against the card's rounded corners, without clipping the card's own
         children. `rounded-[inherit]` tracks any radius a caller overrides.
 
         Not `aria-hidden`: the decoration slot can hold real content (a credit
         link naming the art). Everything else in here is already ignored — the
-        watermark is `alt=""` and the rail is an empty span. */}
-        {(watermarkSrc || decoration || rail) && (
+        watermark is `alt=""` and the edge is an empty span. */}
+        {(watermarkSrc || decoration || edge) && (
             <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
                 {decoration}
                 {watermarkSrc && (
@@ -113,14 +113,7 @@ const AccentCard: React.FC<AccentCardProps> = ({
                         }}
                     />
                 )}
-                {rail && (
-                    <span
-                        className={classNames(
-                            'absolute inset-y-0 left-0 w-0.5',
-                            ACCENT_RAIL[accent]
-                        )}
-                    />
-                )}
+                {edge && <span className={classNames(ACCENT_EDGE_BASE, ACCENT_EDGE[accent])} />}
             </div>
         )}
         <div className={classNames('relative z-10', contentClassName)}>{children}</div>

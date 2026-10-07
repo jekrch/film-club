@@ -22,8 +22,8 @@ const StatCard: React.FC<StatCardProps> = ({
     valueClassName = 'text-slate-100 text-3xl sm:text-4xl',
 }) => {
     return (
-        // No rail: these repeat in a grid
-        <AccentCard key={`card-${label}`} rail={false} className="p-4 sm:p-5">
+        // No edge: these repeat in a grid
+        <AccentCard key={`card-${label}`} edge={false} className="p-4 sm:p-5">
             <div className="flex items-center gap-2.5">
                 <p className="truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
                     {label}

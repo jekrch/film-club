@@ -133,9 +133,9 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
     }
 
     return (
-        // No rail: these repeat in a grid, where a wall of rails reads as noise
+        // No edge: these repeat in a grid, where a wall of them reads as noise
         <AccentCard
-            rail={false}
+            edge={false}
             surface="inset"
             className="min-h-[132px]"
             contentClassName="flex h-full flex-col p-4"

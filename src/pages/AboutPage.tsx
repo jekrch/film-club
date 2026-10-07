@@ -83,9 +83,9 @@ const AboutPage: React.FC = () => {
                             to={`/profile/${encodeURIComponent(member.name)}`}
                             className="group block h-full"
                         >
-                            {/* No rail: one card per member, repeating in a grid */}
+                            {/* No edge: one card per member, repeating in a grid */}
                             <AccentCard
-                                rail={false}
+                                edge={false}
                                 className="h-full"
                                 contentClassName="flex h-full flex-col items-center p-5 text-center"
                             >

@@ -16,7 +16,7 @@ import { getRatingColorClass } from '../../utils/ratingUtils';
 import { MAX_SCORE } from '../../utils/ratingEditUtils';
 import { formatWatchDate, watchedRowId } from '../../utils/watchedUtils';
 import { isRankedList } from '../../types/list';
-import type { CardAccent } from '../common/accents';
+import { ACCENT_EDGE, ACCENT_EDGE_BASE, type CardAccent } from '../common/accents';
 import type { ListEvent, TrophyEvent, WallEvent, WallRow } from '../../utils/wallUtils';
 import {
     CLUB_PICK_NODE_CLASS,
@@ -543,16 +543,16 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                 >
                     <RowFrameWash image={lead.wash} />
 
-                    {/* The club pick's spine, drawn after the wash so the art never
-                        passes over it. A painted bar rather than a `border-l-2`,
-                        because a border can only be one flat color and this one
-                        fades out down the row — and because a flat 2px left rail is
-                        already spoken for on this wall: it is what `Detail` draws in
-                        emerald when somebody is talking. Inside the article's own
-                        rounded clip, so it takes the corner radius with it. */}
+                    {/* The club pick's lit top edge — the cards' accent edge, in
+                        the blue the row already wears at rest. Drawn after the
+                        wash so the art never passes over it. Not a left rail: a
+                        flat 2px left rail is already spoken for on this wall (it
+                        is what `Detail` draws in emerald when somebody is
+                        talking), and a bar down the side gets bent into a
+                        fingernail by the row's rounded corners. */}
                     {clubPick && (
                         <span
-                            className="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-blue-400/80 via-blue-400/45 to-blue-400/10"
+                            className={`${ACCENT_EDGE_BASE} ${ACCENT_EDGE.blue}`}
                             aria-hidden="true"
                         />
                     )}

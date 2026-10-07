@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { ACCENT_RAIL, type CardAccent } from './accents';
+import { ACCENT_EDGE, ACCENT_EDGE_BASE, type CardAccent } from './accents';
 import Button from './Button';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useModalPresence } from '../../hooks/useModalPresence';
@@ -58,9 +58,9 @@ interface ModalProps {
  * portal to `document.body`.
  *
  * The panel is built the way the cards are (see AccentCard): a light border and
- * an accent rail, not a drop shadow. On a dark UI a black shadow over a dark
- * scrim over a near-black page is invisible, and a panel whose edge you can't
- * find reads as flat no matter how much elevation the shadow claims. The white
+ * an accent-lit top edge, not a drop shadow. On a dark UI a black shadow over a
+ * dark scrim over a near-black page is invisible, and a panel whose edge you
+ * can't find reads as flat no matter how much elevation the shadow claims. The
  * hairline along the top edge is the light catch that makes it look raised.
  *
  * Portalling is load-bearing rather than tidiness: callers render modals deep
@@ -188,15 +188,9 @@ const Modal: React.FC<ModalProps> = ({
                     </div>
                 )}
 
-                {/* The lit top edge and the accent rail, above the decoration so
-                    art washed into the panel can't bury them. */}
-                <span className="pointer-events-none absolute inset-x-0 top-0 z-20 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
-                <span
-                    className={classNames(
-                        'pointer-events-none absolute inset-y-0 left-0 z-20 w-0.5',
-                        ACCENT_RAIL[accent]
-                    )}
-                />
+                {/* The accent-lit top edge, above the decoration so art washed
+                    into the panel can't bury it. */}
+                <span className={classNames(ACCENT_EDGE_BASE, 'z-20', ACCENT_EDGE[accent])} />
 
                 {hideHeader ? (
                     <>

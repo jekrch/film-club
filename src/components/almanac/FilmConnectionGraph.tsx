@@ -33,7 +33,7 @@ import {
 import { Film } from '../../types/film';
 import ChartContainer from './ChartContainer';
 import Button from '../common/Button';
-import { ACCENT_RAIL } from '../common/accents';
+import { ACCENT_EDGE, ACCENT_EDGE_BASE } from '../common/accents';
 import CreditsModal from '../common/CreditsModal';
 import { getAllFilmCreditsForPerson, PersonCredit } from '../../utils/filmUtils';
 
@@ -649,7 +649,7 @@ function ConnectionDetailPanel({
     const count = detail.sharedCredits.length;
     return (
         // Floats over the canvas, so it takes the Modal panel's surface: solid
-        // fill, light border, lit top edge and the accent rail.
+        // fill, light border and the accent-lit top edge.
         <div
             className={classNames(
                 'absolute inset-x-3 bottom-3 z-20 flex max-h-[calc(100%-1.5rem)] flex-col overflow-hidden rounded-xl',
@@ -657,17 +657,7 @@ function ConnectionDetailPanel({
                 'animate-fadeIn sm:left-1/2 sm:right-auto sm:w-[26rem] sm:-translate-x-1/2'
             )}
         >
-            <span
-                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
-                aria-hidden="true"
-            />
-            <span
-                className={classNames(
-                    'pointer-events-none absolute inset-y-0 left-0 w-0.5',
-                    ACCENT_RAIL.blue
-                )}
-                aria-hidden="true"
-            />
+            <span className={classNames(ACCENT_EDGE_BASE, ACCENT_EDGE.blue)} aria-hidden="true" />
 
             <div className="flex items-center gap-2.5 pl-4 pr-2 pt-2.5">
                 <h4 className="text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
