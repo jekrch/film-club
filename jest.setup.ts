@@ -18,3 +18,11 @@ if (typeof globalThis.TextDecoder === 'undefined') {
 if (typeof Element.prototype.scrollIntoView !== 'function') {
     Element.prototype.scrollIntoView = function scrollIntoView() {};
 }
+
+// Highcharts asks `CSS.supports` about the browser while it loads, and jsdom has
+// no `CSS` at all, so a test that imports Highcharts for its values (rather than
+// only its types) fails before it starts. Answering "no" to every feature is
+// what an older browser would say; Highcharts falls back accordingly.
+if (typeof globalThis.CSS?.supports !== 'function') {
+    globalThis.CSS = { ...globalThis.CSS, supports: () => false } as typeof globalThis.CSS;
+}

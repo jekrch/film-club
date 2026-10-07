@@ -1,42 +1,41 @@
-import React, { useMemo, useCallback } from 'react';
-import SectionHeader from '../common/SectionHeader';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import classNames from 'classnames';
 import {
     ReactFlow,
     Node,
     Edge,
+    EdgeProps,
     Background,
     BackgroundVariant,
-    Controls,
+    BaseEdge,
+    EdgeLabelRenderer,
+    Panel,
+    getBezierPath,
+    useReactFlow,
+    useStore,
+    ReactFlowState,
     useNodesState,
     useEdgesState,
     Position,
     Handle,
     NodeProps,
-    MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import dagre from '@dagrejs/dagre';
 import { Link } from 'react-router-dom';
+import {
+    ArrowsPointingOutIcon,
+    FilmIcon,
+    MinusIcon,
+    PlusIcon,
+    XMarkIcon,
+} from '@heroicons/react/24/outline';
 import { Film } from '../../types/film';
+import ChartContainer from './ChartContainer';
+import Button from '../common/Button';
+import { ACCENT_RAIL } from '../common/accents';
 import CreditsModal from '../common/CreditsModal';
 import { getAllFilmCreditsForPerson, PersonCredit } from '../../utils/filmUtils';
-
-// Dark theme overrides for ReactFlow controls
-const DARK_FLOW_STYLES = `
-.react-flow__controls--dark button {
-    background: #1e293b !important;
-    border-bottom: 1px solid #475569 !important;
-    fill: #94a3b8 !important;
-    color: #94a3b8 !important;
-}
-.react-flow__controls--dark button:hover {
-    background: #334155 !important;
-    fill: #e2e8f0 !important;
-}
-.dark-flow .react-flow__pane {
-    background: transparent;
-}
-`;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -48,6 +47,8 @@ interface SharedCredit {
 interface FilmEdgeData {
     sharedCredits: SharedCredit[];
     weight: number;
+    /** `weight` over the heaviest tie in the graph, 0–1. Drives stroke weight. */
+    normalised: number;
     [key: string]: unknown;
 }
 
@@ -118,7 +119,12 @@ function computeSharedCredits(filmA: Film, filmB: Film): SharedCredit[] {
 const NODE_WIDTH = 160;
 const NODE_HEIGHT = 240;
 
-const GAP = 80; // spacing between nodes and between packed components
+const GAP = 90; // spacing between nodes within a rank
+const RANK_SEP = 180; // vertical run between ranks — the length of most ties
+const COMPONENT_GAP = 120; // breathing room between separately packed groups
+
+/** Width:height to pack toward before the canvas has been measured. */
+const DEFAULT_ASPECT = 2;
 
 interface LaidComponent {
     // Node centre positions, normalised so the component's top-left box corner is (0,0).
@@ -213,7 +219,7 @@ function alignLeafNodes(
 function layoutComponent(nodeIds: string[], edges: Edge[]): LaidComponent {
     const g = new dagre.graphlib.Graph();
     g.setDefaultEdgeLabel(() => ({}));
-    g.setGraph({ rankdir: 'TB', nodesep: GAP, ranksep: 120, marginx: 0, marginy: 0 });
+    g.setGraph({ rankdir: 'TB', nodesep: GAP, ranksep: RANK_SEP, marginx: 0, marginy: 0 });
 
     const idSet = new Set(nodeIds);
     nodeIds.forEach((id) => g.setNode(id, { width: NODE_WIDTH, height: NODE_HEIGHT }));
@@ -247,10 +253,18 @@ function layoutComponent(nodeIds: string[], edges: Edge[]): LaidComponent {
 /**
  * Lays out the whole graph: each connected component is positioned independently
  * (so disconnected chains stay in their own lane and never cross), then the
- * components are shelf-packed left-to-right, wrapping onto a new row once a
- * roughly square overall bound is reached so the result stays compact.
+ * components are shelf-packed left-to-right, wrapping onto a new row once the
+ * overall bound reaches the canvas's own proportions — so fit-to-view fills the
+ * space instead of leaving a band empty above and below, or to the sides.
+ *
+ * Within a shelf each group is centred vertically, and each shelf is centred
+ * horizontally, so short groups and short rows don't all pile up top-left.
  */
-function applyDagreLayout(nodes: Node<FilmNodeData>[], edges: Edge[]): Node<FilmNodeData>[] {
+function applyDagreLayout(
+    nodes: Node<FilmNodeData>[],
+    edges: Edge[],
+    aspect: number
+): Node<FilmNodeData>[] {
     const components = connectedComponents(
         nodes.map((n) => n.id),
         edges
@@ -259,28 +273,39 @@ function applyDagreLayout(nodes: Node<FilmNodeData>[], edges: Edge[]): Node<Film
         // Tallest first packs into tidier shelves.
         .sort((a, b) => b.height - a.height);
 
-    // Bias the packing toward a wide bound (the graph canvas is much wider than
-    // it is tall), so components spread across the width instead of stacking into
-    // tall shelves. ASPECT ≈ target width:height of the overall layout.
-    const ASPECT = 2.6;
-    const totalArea = components.reduce((sum, c) => sum + (c.width + GAP) * (c.height + GAP), 0);
-    const targetWidth = Math.max(Math.sqrt(totalArea * ASPECT), ...components.map((c) => c.width));
+    const totalArea = components.reduce(
+        (sum, c) => sum + (c.width + COMPONENT_GAP) * (c.height + COMPONENT_GAP),
+        0
+    );
+    const targetWidth = Math.max(Math.sqrt(totalArea * aspect), ...components.map((c) => c.width));
 
-    const centreById = new Map<string, { x: number; y: number }>();
-    let shelfX = 0;
-    let shelfY = 0;
-    let shelfHeight = 0;
+    // First pass: decide which shelf each component sits on.
+    const shelves: { items: LaidComponent[]; width: number; height: number }[] = [];
     components.forEach((c) => {
-        if (shelfX > 0 && shelfX + c.width > targetWidth) {
-            shelfX = 0;
-            shelfY += shelfHeight + GAP;
-            shelfHeight = 0;
+        const shelf = shelves[shelves.length - 1];
+        if (!shelf || shelf.width + COMPONENT_GAP + c.width > targetWidth) {
+            shelves.push({ items: [c], width: c.width, height: c.height });
+        } else {
+            shelf.items.push(c);
+            shelf.width += COMPONENT_GAP + c.width;
+            shelf.height = Math.max(shelf.height, c.height);
         }
-        c.centres.forEach((p, id) => {
-            centreById.set(id, { x: shelfX + p.x, y: shelfY + p.y });
+    });
+
+    // Second pass: place them, centred within their shelf and the overall width.
+    const layoutWidth = Math.max(...shelves.map((sh) => sh.width));
+    const centreById = new Map<string, { x: number; y: number }>();
+    let shelfY = 0;
+    shelves.forEach((shelf) => {
+        let x = (layoutWidth - shelf.width) / 2;
+        shelf.items.forEach((c) => {
+            const y = shelfY + (shelf.height - c.height) / 2;
+            c.centres.forEach((p, id) => {
+                centreById.set(id, { x: x + p.x, y: y + p.y });
+            });
+            x += c.width + COMPONENT_GAP;
         });
-        shelfX += c.width + GAP;
-        shelfHeight = Math.max(shelfHeight, c.height);
+        shelfY += shelf.height + COMPONENT_GAP;
     });
 
     return nodes.map((node) => {
@@ -295,107 +320,121 @@ function applyDagreLayout(nodes: Node<FilmNodeData>[], edges: Edge[]): Node<Film
     });
 }
 
+// ─── Focus ──────────────────────────────────────────────────────────────────
+
+/**
+ * What the graph is currently looking at. Tapping a film lights it, its ties
+ * and its neighbours; selecting a line lights that pair. Everything else
+ * recedes. While nothing is selected, hovering a film previews the same thing.
+ * `null` sets mean nothing is in focus and the whole graph reads at rest.
+ *
+ * Shared through context rather than written into node/edge data so a hover
+ * doesn't rebuild the node array React Flow is tracking.
+ */
+interface GraphFocus {
+    focusedId: string | null;
+    selectedEdgeId: string | null;
+    /** The line under the pointer; lit on its own, without dimming the rest. */
+    hoveredEdgeId: string | null;
+    litNodeIds: Set<string> | null;
+    litEdgeIds: Set<string> | null;
+    selectEdge: (id: string) => void;
+    hoverEdge: (id: string | null) => void;
+}
+
+const GraphFocusContext = createContext<GraphFocus>({
+    focusedId: null,
+    selectedEdgeId: null,
+    hoveredEdgeId: null,
+    litNodeIds: null,
+    litEdgeIds: null,
+    selectEdge: () => {},
+    hoverEdge: () => {},
+});
+
 // ─── Custom Film Node ───────────────────────────────────────────────────────
 
-function FilmNode({ data }: NodeProps<Node<FilmNodeData>>) {
+/** Share of the busiest film's ties at which a film counts as a hub. */
+const HUB_THRESHOLD = 0.5;
+
+function FilmNode({ id, data }: NodeProps<Node<FilmNodeData>>) {
     const { film, connectionCount, maxConnections } = data;
-    const intensity = maxConnections > 0 ? connectionCount / maxConnections : 0;
+    const { focusedId, litNodeIds } = useContext(GraphFocusContext);
 
-    // Border glow scales with how connected the film is
-    const glowOpacity = 0.5 + intensity * 0.5;
-    const borderColor = `rgba(99, 179, 237, ${glowOpacity})`;
-
+    const lit = litNodeIds?.has(id) ?? false;
+    const dimmed = litNodeIds !== null && !lit;
+    const isHub = maxConnections > 0 && connectionCount / maxConnections >= HUB_THRESHOLD;
     const posterUrl = film.poster && film.poster !== 'N/A' ? film.poster : undefined;
 
     return (
+        // A poster, set the way the film cards set one: full bleed, a scrim at
+        // the foot, and the title in serif over it.
         <div
-            style={{
-                width: NODE_WIDTH,
-                height: NODE_HEIGHT,
-                border: `2px solid ${borderColor}`,
-                borderRadius: 8,
-                overflow: 'hidden',
-                background: '#1e293b',
-                boxShadow: `0 0 ${8 + intensity * 16}px rgba(99, 179, 237, ${glowOpacity * 0.5})`,
-                display: 'flex',
-                flexDirection: 'column',
-                cursor: 'pointer',
-                transition: 'box-shadow 0.2s, border-color 0.2s',
-            }}
+            className={classNames(
+                'relative cursor-pointer overflow-hidden rounded-lg bg-slate-800 shadow-lg shadow-black/40 ring-1',
+                'transition-[opacity,filter,box-shadow] duration-200',
+                focusedId === id
+                    ? 'ring-2 ring-blue-300/60'
+                    : lit
+                      ? 'ring-blue-300/40'
+                      : 'ring-white/10 hover:ring-white/30',
+                dimmed && 'opacity-30 saturate-50 hover:opacity-60'
+            )}
+            style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
         >
             <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
             <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
 
-            {/* Poster area */}
-            <div
-                style={{
-                    flex: 1,
-                    background: posterUrl ? `url(${posterUrl}) center/cover no-repeat` : '#334155',
-                    minHeight: 0,
-                    position: 'relative',
-                }}
-            >
-                {!posterUrl && (
-                    <div
-                        style={{
-                            position: 'absolute',
-                            inset: 0,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: '#64748b',
-                            fontSize: 11,
-                            padding: 8,
-                            textAlign: 'center',
-                        }}
-                    >
-                        No poster
-                    </div>
-                )}
-                {/* Connection badge */}
-                {connectionCount > 0 && (
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: 6,
-                            right: 6,
-                            background: 'rgba(30, 41, 59, 0.9)',
-                            color: '#93c5fd',
-                            fontSize: 11,
-                            fontWeight: 700,
-                            padding: '2px 6px',
-                            borderRadius: 4,
-                            backdropFilter: 'blur(4px)',
-                        }}
-                    >
-                        {connectionCount}
-                    </div>
-                )}
-            </div>
+            {posterUrl ? (
+                <img
+                    src={posterUrl}
+                    alt=""
+                    draggable={false}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
+                />
+            ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-700/40">
+                    <FilmIcon className="h-8 w-8 text-slate-500" />
+                </div>
+            )}
 
-            {/* Title bar */}
             <div
-                style={{
-                    padding: '6px 8px',
-                    background: '#0f172a',
-                    borderTop: '1px solid #334155',
-                }}
-            >
+                className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-slate-950 via-slate-950/75 to-transparent"
+                aria-hidden="true"
+            />
+            <div className="absolute inset-x-0 bottom-0 px-2.5 pb-2.5">
                 <div
-                    style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: '#e2e8f0',
-                        lineHeight: 1.3,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                    }}
+                    className="line-clamp-2 font-serif text-[13px] leading-snug text-slate-100"
                     title={film.title}
                 >
                     {film.title}
                 </div>
-                <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 1 }}>{film.year}</div>
+                {/* Year, then shared credits across all of this film's ties.
+                    Hubs take the accent so the busiest films stand out. */}
+                <div className="mt-1 flex items-baseline justify-between gap-2">
+                    <span className="font-serif text-[11px] tabular-nums text-slate-400">
+                        {film.year}
+                    </span>
+                    {connectionCount > 0 && (
+                        <span
+                            className={classNames(
+                                'text-[9px] font-medium uppercase tracking-[0.14em]',
+                                isHub ? 'text-blue-300/90' : 'text-slate-500'
+                            )}
+                        >
+                            <span
+                                className={classNames(
+                                    'mr-0.5 font-serif text-[11px] normal-case tracking-normal tabular-nums',
+                                    isHub ? 'text-blue-200' : 'text-slate-300'
+                                )}
+                            >
+                                {connectionCount}
+                            </span>
+                            shared
+                        </span>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -403,7 +442,200 @@ function FilmNode({ data }: NodeProps<Node<FilmNodeData>>) {
 
 const nodeTypes = { filmNode: FilmNode };
 
+// ─── Custom Connection Edge ─────────────────────────────────────────────────
+
+/**
+ * How much to counter-scale a line's stroke and label against the canvas zoom.
+ * Fit-to-view usually zooms well out, which shrank the ties to hairlines and
+ * their labels to specks; this keeps them a readable, clickable size on screen.
+ * Never below 1, so zooming in doesn't shrink them either.
+ */
+const MAX_COUNTER_SCALE = 1.8;
+
+/** Zoom, rounded so edges re-render in steps rather than on every wheel tick. */
+const zoomSelector = (s: ReactFlowState) => Math.round(s.transform[2] * 20) / 20;
+
+/**
+ * An undirected tie: no arrowhead, since sharing a credit runs both ways.
+ * Stroke weight and opacity rise with the number of shared credits; the count
+ * itself sits on the line as a badge that also opens the pair's details.
+ */
+function ConnectionEdge({
+    id,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    data,
+}: EdgeProps<Edge<FilmEdgeData>>) {
+    const { litEdgeIds, selectedEdgeId, hoveredEdgeId, selectEdge, hoverEdge } =
+        useContext(GraphFocusContext);
+    const zoom = useStore(zoomSelector);
+    const [path, labelX, labelY] = getBezierPath({
+        sourceX,
+        sourceY,
+        sourcePosition,
+        targetX,
+        targetY,
+        targetPosition,
+    });
+
+    const scale = Math.min(MAX_COUNTER_SCALE, Math.max(1, 1 / zoom));
+    const weight = data?.weight ?? 1;
+    const normalised = data?.normalised ?? 0;
+    const hovered = hoveredEdgeId === id;
+    const selected = selectedEdgeId === id;
+    const lit = hovered || (litEdgeIds?.has(id) ?? false);
+    const dimmed = litEdgeIds !== null && !lit;
+
+    return (
+        <>
+            <BaseEdge
+                id={id}
+                path={path}
+                // A generous invisible hit area, so the line itself is easy to
+                // catch with a pointer or a finger.
+                interactionWidth={48 * scale}
+                style={{
+                    // Inline because the stroke scales continuously with weight.
+                    stroke: lit
+                        ? 'rgba(147, 197, 253, 0.85)'
+                        : `rgba(148, 163, 184, ${0.35 + normalised * 0.3})`,
+                    strokeWidth: (1.25 + normalised * 2 + (selected || hovered ? 0.75 : 0)) * scale,
+                    strokeLinecap: 'round',
+                    opacity: dimmed ? 0.25 : 1,
+                    transition: 'stroke 200ms, stroke-width 200ms, opacity 200ms',
+                    cursor: 'pointer',
+                }}
+            />
+            <EdgeLabelRenderer>
+                {/* The padding is a transparent hit area around the badge. */}
+                <button
+                    type="button"
+                    onClick={() => selectEdge(id)}
+                    onMouseEnter={() => hoverEdge(id)}
+                    onMouseLeave={() => hoverEdge(null)}
+                    className="nodrag nopan absolute cursor-pointer p-2.5"
+                    style={{
+                        transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px) scale(${scale})`,
+                        pointerEvents: 'all',
+                        zIndex: lit ? 1 : undefined,
+                    }}
+                    aria-label={`${weight} shared credit${weight !== 1 ? 's' : ''} — show who`}
+                    title="Show shared credits"
+                >
+                    <span
+                        className={classNames(
+                            'flex h-6 min-w-6 items-center justify-center rounded-full bg-slate-900 px-2 font-serif text-xs tabular-nums ring-1',
+                            'transition-[opacity,color,box-shadow] duration-200',
+                            lit
+                                ? 'text-blue-100 ring-blue-300/50'
+                                : 'text-slate-400 ring-slate-600/60',
+                            dimmed && 'opacity-40'
+                        )}
+                    >
+                        {weight}
+                    </span>
+                </button>
+            </EdgeLabelRenderer>
+        </>
+    );
+}
+
+const edgeTypes = { connection: ConnectionEdge };
+
+// ─── Canvas controls ────────────────────────────────────────────────────────
+
+/** Zoom and fit, as a small toolbar in the app's own surface rather than React Flow's. */
+function GraphControls() {
+    const { zoomIn, zoomOut, fitView } = useReactFlow();
+    const buttonClass =
+        'flex h-8 w-8 items-center justify-center text-slate-400 transition-colors hover:bg-slate-700/45 hover:text-slate-100';
+
+    return (
+        <Panel
+            position="bottom-left"
+            className="flex flex-col divide-y divide-slate-700/60 overflow-hidden rounded-lg border border-slate-700/60 bg-slate-900/90 shadow-lg shadow-black/40"
+            style={{ margin: 12 }}
+        >
+            <button
+                type="button"
+                className={buttonClass}
+                onClick={() => zoomIn({ duration: 200 })}
+                aria-label="Zoom in"
+                title="Zoom in"
+            >
+                <PlusIcon className="h-4 w-4" />
+            </button>
+            <button
+                type="button"
+                className={buttonClass}
+                onClick={() => zoomOut({ duration: 200 })}
+                aria-label="Zoom out"
+                title="Zoom out"
+            >
+                <MinusIcon className="h-4 w-4" />
+            </button>
+            <button
+                type="button"
+                className={buttonClass}
+                onClick={() => fitView({ padding: FIT_PADDING, duration: 300 })}
+                aria-label="Fit graph to view"
+                title="Fit to view"
+            >
+                <ArrowsPointingOutIcon className="h-4 w-4" />
+            </button>
+        </Panel>
+    );
+}
+
 // ─── Edge detail panel ──────────────────────────────────────────────────────
+
+/** One side of the pair: poster thumbnail and title, linking to the film. */
+function PairFilm({
+    film,
+    onNavigate,
+    align = 'left',
+}: {
+    film: Film;
+    onNavigate: () => void;
+    align?: 'left' | 'right';
+}) {
+    const posterUrl = film.poster && film.poster !== 'N/A' ? film.poster : undefined;
+    return (
+        <Link
+            to={`/films/${film.imdbID}`}
+            onClick={onNavigate}
+            className={classNames(
+                'group/film flex min-w-0 items-center gap-2.5',
+                align === 'right' && 'flex-row-reverse text-right'
+            )}
+            title={`${film.title} (${film.year})`}
+        >
+            {posterUrl ? (
+                <img
+                    src={posterUrl}
+                    alt=""
+                    className="h-12 w-8 flex-shrink-0 rounded object-cover shadow-sm ring-1 ring-white/10 transition-shadow group-hover/film:ring-blue-300/50"
+                />
+            ) : (
+                <span className="flex h-12 w-8 flex-shrink-0 items-center justify-center rounded bg-slate-700/50">
+                    <FilmIcon className="h-4 w-4 text-slate-500" />
+                </span>
+            )}
+            <span className="min-w-0">
+                <span className="block truncate font-serif text-sm italic text-slate-100 transition-colors group-hover/film:text-blue-300">
+                    {film.title}
+                </span>
+                <span className="block font-serif text-xs tabular-nums text-slate-500">
+                    {film.year}
+                </span>
+            </span>
+        </Link>
+    );
+}
 
 function ConnectionDetailPanel({
     detail,
@@ -414,105 +646,68 @@ function ConnectionDetailPanel({
     onClose: () => void;
     onPersonClick: (name: string) => void;
 }) {
-    const filmLinkStyle: React.CSSProperties = {
-        color: '#e2e8f0',
-        textDecoration: 'none',
-        borderBottom: '1px dashed rgba(147, 197, 253, 0.5)',
-    };
+    const count = detail.sharedCredits.length;
     return (
+        // Floats over the canvas, so it takes the Modal panel's surface: solid
+        // fill, light border, lit top edge and the accent rail.
         <div
-            style={{
-                position: 'absolute',
-                bottom: 16,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: '#1e293b',
-                border: '1px solid #475569',
-                borderRadius: 10,
-                padding: '16px 20px',
-                maxWidth: 420,
-                width: '90vw',
-                zIndex: 50,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-                color: '#e2e8f0',
-                fontSize: 13,
-            }}
+            className={classNames(
+                'absolute inset-x-3 bottom-3 z-20 flex max-h-[calc(100%-1.5rem)] flex-col overflow-hidden rounded-xl',
+                'border border-slate-700/60 bg-slate-900/95 text-slate-200 shadow-2xl shadow-black/60 ring-1 ring-white/[0.06]',
+                'animate-fadeIn sm:left-1/2 sm:right-auto sm:w-[26rem] sm:-translate-x-1/2'
+            )}
         >
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    marginBottom: 10,
-                }}
-            >
-                <div style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.3 }}>
-                    <Link
-                        to={`/films/${detail.filmA.imdbID}`}
-                        onClick={onClose}
-                        style={filmLinkStyle}
-                    >
-                        {detail.filmA.title}
-                    </Link>{' '}
-                    <span style={{ color: '#64748b', fontWeight: 400 }}>&</span>{' '}
-                    <Link
-                        to={`/films/${detail.filmB.imdbID}`}
-                        onClick={onClose}
-                        style={filmLinkStyle}
-                    >
-                        {detail.filmB.title}
-                    </Link>
-                </div>
-                <button
+            <span
+                className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
+                aria-hidden="true"
+            />
+            <span
+                className={classNames(
+                    'pointer-events-none absolute inset-y-0 left-0 w-0.5',
+                    ACCENT_RAIL.blue
+                )}
+                aria-hidden="true"
+            />
+
+            <div className="flex items-center gap-2.5 pl-4 pr-2 pt-2.5">
+                <h4 className="text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
+                    <span className="mr-1 font-serif text-sm normal-case tracking-normal tabular-nums text-slate-200">
+                        {count}
+                    </span>
+                    shared credit{count !== 1 ? 's' : ''}
+                </h4>
+                <span className="h-px flex-1 bg-slate-600/40" aria-hidden="true" />
+                <Button
+                    variant="ghost"
+                    size="xs"
                     onClick={onClose}
-                    style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#94a3b8',
-                        cursor: 'pointer',
-                        fontSize: 18,
-                        lineHeight: 1,
-                        padding: '0 0 0 12px',
-                    }}
+                    aria-label="Close connection details"
                 >
-                    ×
-                </button>
+                    <XMarkIcon className="h-4 w-4" />
+                </Button>
             </div>
-            <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 8 }}>
-                {detail.sharedCredits.length} shared credit
-                {detail.sharedCredits.length !== 1 ? 's' : ''}
+
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 border-b border-slate-700/60 px-4 pb-3 pt-2">
+                <PairFilm film={detail.filmA} onNavigate={onClose} />
+                <span className="font-serif text-sm italic text-slate-500" aria-hidden="true">
+                    &amp;
+                </span>
+                <PairFilm film={detail.filmB} onNavigate={onClose} align="right" />
             </div>
-            <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+
+            <ul className="themed-scrollbar min-h-0 flex-1 divide-y divide-slate-700/40 overflow-y-auto px-4 py-1.5">
                 {detail.sharedCredits.map((sc) => (
-                    <li
-                        key={sc.name}
-                        style={{
-                            padding: '4px 0',
-                            borderBottom: '1px solid #334155',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            gap: 8,
-                            alignItems: 'center',
-                        }}
-                    >
+                    <li key={sc.name} className="flex items-baseline justify-between gap-3 py-1.5">
                         <button
+                            type="button"
                             onClick={() => onPersonClick(sc.name)}
-                            style={{
-                                fontWeight: 500,
-                                background: 'none',
-                                border: 'none',
-                                padding: 0,
-                                color: '#93c5fd',
-                                cursor: 'pointer',
-                                textAlign: 'left',
-                                font: 'inherit',
-                            }}
+                            className="min-w-0 truncate text-left text-sm text-slate-200 transition-colors hover:text-blue-300"
                             title={`View ${sc.name}'s credits`}
                         >
                             {sc.name}
                         </button>
-                        <span style={{ color: '#64748b', fontSize: 11, flexShrink: 0 }}>
-                            {sc.roles.join(', ')}
+                        <span className="flex-shrink-0 text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">
+                            {sc.roles.join(' · ')}
                         </span>
                     </li>
                 ))}
@@ -523,6 +718,10 @@ function ConnectionDetailPanel({
 
 // ─── Main component ─────────────────────────────────────────────────────────
 
+const FIT_PADDING = 0.15;
+
+const GRAPH_TITLE = 'Connection Graph';
+
 interface FilmConnectionGraphProps {
     films: Film[];
     className?: string;
@@ -530,9 +729,12 @@ interface FilmConnectionGraphProps {
 }
 
 const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, className, style }) => {
-    const [selectedConnection, setSelectedConnection] = React.useState<ConnectionDetail | null>(
-        null
-    );
+    const [selectedEdgeId, setSelectedEdgeId] = React.useState<string | null>(null);
+    const [hoveredId, setHoveredId] = React.useState<string | null>(null);
+    const [hoveredEdgeId, setHoveredEdgeId] = React.useState<string | null>(null);
+    // A clicked film keeps its ties lit after the pointer leaves — the only way
+    // to trace them on a touch screen, where there's no hover.
+    const [pinnedId, setPinnedId] = React.useState<string | null>(null);
     const [creditsPerson, setCreditsPerson] = React.useState<{
         name: string;
         filmography: PersonCredit[];
@@ -560,6 +762,24 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
         };
     }, [zoomEnabled]);
 
+    // The canvas's proportions, which the layout packs toward. Bucketed so a
+    // small resize doesn't re-run the layout (and throw away any dragging).
+    const [canvasAspect, setCanvasAspect] = React.useState(DEFAULT_ASPECT);
+    const canvasRef = useCallback((el: HTMLDivElement | null) => {
+        containerRef.current = el;
+        if (!el) return;
+        const measure = () => {
+            const { width, height } = el.getBoundingClientRect();
+            if (width === 0 || height === 0) return;
+            setCanvasAspect(Math.min(3, Math.max(0.6, Math.round((width / height) * 4) / 4)));
+        };
+        measure();
+        if (typeof ResizeObserver === 'undefined') return;
+        const observer = new ResizeObserver(measure);
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
     const handlePersonClick = useCallback(
         (name: string) => {
             setCreditsPerson({ name, filmography: getAllFilmCreditsForPerson(name, films) });
@@ -570,6 +790,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
     // Compute all pairwise shared credits once
     const pairData = useMemo(() => {
         const pairs: {
+            id: string;
             idA: string;
             idB: string;
             filmA: Film;
@@ -582,6 +803,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
                 const shared = computeSharedCredits(films[i], films[j]);
                 if (shared.length > 0) {
                     pairs.push({
+                        id: `${films[i].imdbID}-${films[j].imdbID}`,
                         idA: films[i].imdbID,
                         idB: films[j].imdbID,
                         filmA: films[i],
@@ -593,6 +815,8 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
         }
         return pairs;
     }, [films]);
+
+    const pairById = useMemo(() => new Map(pairData.map((p) => [p.id, p])), [pairData]);
 
     const maxWeight = useMemo(
         () => Math.max(1, ...pairData.map((p) => p.shared.length)),
@@ -631,179 +855,198 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
             },
         }));
 
-        const edges: Edge[] = filteredPairs.map((p) => {
+        const edges: Edge<FilmEdgeData>[] = filteredPairs.map((p) => {
             const weight = p.shared.length;
-            const normalised = weight / maxWeight;
             return {
-                id: `${p.idA}-${p.idB}`,
+                id: p.id,
                 source: p.idA,
                 target: p.idB,
-                type: 'default',
-                animated: weight >= maxWeight * 0.75,
-                // Widen the invisible hit area so the thin edges are far easier
-                // to click (default is ~20px).
-                interactionWidth: 40,
-                label: `${weight}`,
-                labelStyle: { fill: '#93c5fd', fontSize: 11, fontWeight: 600 },
-                labelBgStyle: { fill: '#0f172a', fillOpacity: 0.85 },
-                labelBgPadding: [4, 6] as [number, number],
-                labelBgBorderRadius: 4,
-                style: {
-                    stroke: `rgba(99, 179, 237, ${0.3 + normalised * 0.7})`,
-                    strokeWidth: 1.5 + normalised * 3.5,
-                    cursor: 'pointer',
-                },
-                markerEnd: {
-                    type: MarkerType.ArrowClosed,
-                    color: `rgba(99, 179, 237, ${0.3 + normalised * 0.7})`,
-                    width: 12,
-                    height: 12,
-                },
-                data: { sharedCredits: p.shared, weight } as FilmEdgeData,
+                type: 'connection',
+                data: { sharedCredits: p.shared, weight, normalised: weight / maxWeight },
             };
         });
 
-        const laid = applyDagreLayout(nodes, edges);
+        const laid = applyDagreLayout(nodes, edges, canvasAspect);
         return { initialNodes: laid, initialEdges: edges };
-    }, [films, pairData, threshold, maxWeight]);
+    }, [films, pairData, threshold, maxWeight, canvasAspect]);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-    // Re-sync when inputs change
-    React.useEffect(() => {
+    // Adopt a fresh layout in the same render that computes it, so React Flow
+    // never mounts with — or fits the view to — stale positions. The version
+    // keys React Flow below: remounting is what makes `fitView` run again, so a
+    // new layout is always framed to the canvas.
+    const [layout, setLayout] = React.useState({ nodes: initialNodes, version: 0 });
+    if (layout.nodes !== initialNodes) {
+        setLayout({ nodes: initialNodes, version: layout.version + 1 });
         setNodes(initialNodes);
         setEdges(initialEdges);
-    }, [initialNodes, initialEdges, setNodes, setEdges]);
-
-    const onEdgeClick = useCallback(
-        (_: React.MouseEvent, edge: Edge) => {
-            const pair = pairData.find(
-                (p) =>
-                    (p.idA === edge.source && p.idB === edge.target) ||
-                    (p.idB === edge.source && p.idA === edge.target)
-            );
-            if (pair) {
-                setSelectedConnection({
-                    filmA: pair.filmA,
-                    filmB: pair.filmB,
-                    sharedCredits: pair.shared,
-                });
-            }
-        },
-        [pairData]
-    );
-
-    if (films.length === 0) {
-        return (
-            <div style={{ padding: 32, textAlign: 'center', color: '#94a3b8' }}>
-                No films provided.
-            </div>
-        );
     }
 
-    if (initialNodes.length === 0) {
+    const selectEdge = useCallback((id: string) => {
+        setSelectedEdgeId(id);
+        setPinnedId(null);
+    }, []);
+
+    // Leaving a film clears its hover a beat late, so sliding from one poster
+    // to the next across the gap goes straight from one focus to the other
+    // instead of flashing the whole graph back to rest in between.
+    const hoverClearTimer = useRef<number | undefined>(undefined);
+    const hoverNode = useCallback((id: string) => {
+        window.clearTimeout(hoverClearTimer.current);
+        setHoveredId(id);
+    }, []);
+    const unhoverNode = useCallback(() => {
+        window.clearTimeout(hoverClearTimer.current);
+        hoverClearTimer.current = window.setTimeout(() => setHoveredId(null), 150);
+    }, []);
+    useEffect(() => () => window.clearTimeout(hoverClearTimer.current), []);
+
+    // A selection holds until it's changed by a click: hover only previews
+    // while nothing is selected, so passing over other films on the way to the
+    // details panel (or anywhere else) doesn't pull focus away.
+    const focusedId = pinnedId ?? (selectedEdgeId ? null : hoveredId);
+
+    const focus = useMemo<GraphFocus>(() => {
+        let litNodeIds: Set<string> | null = null;
+        let litEdgeIds: Set<string> | null = null;
+
+        if (focusedId) {
+            const nodeIds = new Set([focusedId]);
+            const edgeIds = new Set<string>();
+            initialEdges.forEach((e) => {
+                if (e.source !== focusedId && e.target !== focusedId) return;
+                edgeIds.add(e.id);
+                nodeIds.add(e.source);
+                nodeIds.add(e.target);
+            });
+            litNodeIds = nodeIds;
+            litEdgeIds = edgeIds;
+        } else if (selectedEdgeId) {
+            const pair = pairById.get(selectedEdgeId);
+            if (pair) {
+                litNodeIds = new Set([pair.idA, pair.idB]);
+                litEdgeIds = new Set([selectedEdgeId]);
+            }
+        }
+
+        return {
+            focusedId,
+            selectedEdgeId,
+            hoveredEdgeId,
+            litNodeIds,
+            litEdgeIds,
+            selectEdge,
+            hoverEdge: setHoveredEdgeId,
+        };
+    }, [focusedId, selectedEdgeId, hoveredEdgeId, initialEdges, pairById, selectEdge]);
+
+    const selectedPair = selectedEdgeId ? pairById.get(selectedEdgeId) : undefined;
+
+    const filmCount = initialNodes.length;
+    const linkCount = initialEdges.length;
+
+    if (films.length === 0 || initialNodes.length === 0) {
         return (
-            <div style={{ padding: 32, textAlign: 'center', color: '#94a3b8' }}>
-                No shared credits found between films.
-            </div>
+            <ChartContainer className="" title={GRAPH_TITLE}>
+                <p className="py-4 text-center text-sm italic text-slate-400">
+                    {films.length === 0
+                        ? 'No films to connect yet.'
+                        : 'No shared credits found between films.'}
+                </p>
+            </ChartContainer>
         );
     }
 
     return (
-        <>
-            <SectionHeader title="Connection Graph" />
+        <ChartContainer
+            className=""
+            title={GRAPH_TITLE}
+            meta={
+                <>
+                    <span className="mr-1 font-serif text-sm normal-case tracking-normal tabular-nums text-slate-300">
+                        {filmCount}
+                    </span>
+                    films
+                    <span className="mx-2 text-slate-600" aria-hidden="true">
+                        ·
+                    </span>
+                    <span className="mr-1 font-serif text-sm normal-case tracking-normal tabular-nums text-slate-300">
+                        {linkCount}
+                    </span>
+                    tie{linkCount !== 1 ? 's' : ''}
+                </>
+            }
+        >
+            <p className="mb-3 px-1 text-xs italic text-slate-400">
+                Films joined by shared credits. Tap a connection line to see their common credits.
+            </p>
             <div
-                ref={containerRef}
-                className={className}
+                ref={canvasRef}
+                className={classNames(
+                    'relative h-[460px] overflow-hidden rounded-lg border border-slate-600/30 sm:h-[560px]',
+                    className
+                )}
                 onPointerDown={() => setZoomEnabled(true)}
-                style={{
-                    width: '100%',
-                    height: 500,
-                    // Matches AccentCard: rounded-xl (12px) and a slate-700 border.
-                    // Inline because React Flow needs concrete values here.
-                    borderRadius: 12,
-                    overflow: 'hidden',
-                    position: 'relative',
-                    border: '1px solid #334155',
-                    // Own the canvas backdrop rather than letting the page show
-                    // through: a flat slate base with a soft top-centre lift.
-                    background:
-                        'radial-gradient(120% 90% at 50% 0%, #16203a 0%, #121b30 45%, #0e1526 100%)',
-                    ...style,
-                }}
+                style={style}
             >
-                <style>{DARK_FLOW_STYLES}</style>
-                <ReactFlow
-                    nodes={nodes}
-                    edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
-                    onEdgeClick={onEdgeClick}
-                    nodeTypes={nodeTypes}
-                    fitView
-                    fitViewOptions={{ padding: 0.15 }}
-                    minZoom={0.2}
-                    maxZoom={1.5}
-                    zoomOnScroll={zoomEnabled}
-                    // Leave the wheel event alone while inactive so it scrolls
-                    // the page instead of being swallowed by the canvas.
-                    preventScrolling={zoomEnabled}
-                    proOptions={{ hideAttribution: true }}
-                    className="dark-flow"
-                >
-                    <Background
-                        variant={BackgroundVariant.Lines}
-                        color="rgba(148, 163, 184, 0.07)"
-                        gap={40}
-                        lineWidth={1}
-                    />
-                    <Controls
-                        className="react-flow__controls--dark"
-                        style={{
-                            // Opaque on purpose: these controls float over the graph
-                            // and need a solid backing to stay legible.
-                            background: '#1e293b',
-                            border: '1px solid #334155',
-                            borderRadius: 8,
+                <GraphFocusContext.Provider value={focus}>
+                    <ReactFlow
+                        key={layout.version}
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        onEdgeClick={(_, edge) => selectEdge(edge.id)}
+                        onNodeClick={(_, node) => {
+                            setSelectedEdgeId(null);
+                            setPinnedId((prev) => (prev === node.id ? null : node.id));
                         }}
-                    />
-                    {/* <MiniMap
-                    nodeColor={() => '#3b82f6'}
-                    maskColor="rgba(15, 23, 42, 0.8)"
-                    style={{
-                        background: '#1e293b',
-                        border: '1px solid #475569',
-                        borderRadius: 8,
-                    }}
-                /> */}
-                </ReactFlow>
+                        onNodeMouseEnter={(_, node) => hoverNode(node.id)}
+                        onNodeMouseLeave={unhoverNode}
+                        onEdgeMouseEnter={(_, edge) => setHoveredEdgeId(edge.id)}
+                        onEdgeMouseLeave={() => setHoveredEdgeId(null)}
+                        onPaneClick={() => {
+                            setPinnedId(null);
+                            setSelectedEdgeId(null);
+                        }}
+                        nodeTypes={nodeTypes}
+                        edgeTypes={edgeTypes}
+                        fitView
+                        fitViewOptions={{ padding: FIT_PADDING }}
+                        minZoom={0.2}
+                        maxZoom={1.5}
+                        zoomOnScroll={zoomEnabled}
+                        // Leave the wheel event alone while inactive so it scrolls
+                        // the page instead of being swallowed by the canvas.
+                        preventScrolling={zoomEnabled}
+                        proOptions={{ hideAttribution: true }}
+                    >
+                        <Background
+                            variant={BackgroundVariant.Dots}
+                            color="rgba(148, 163, 184, 0.18)"
+                            gap={24}
+                            size={1}
+                        />
+                        <GraphControls />
+                    </ReactFlow>
+                </GraphFocusContext.Provider>
 
                 {!zoomEnabled && (
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: 10,
-                            right: 10,
-                            pointerEvents: 'none',
-                            background: 'rgba(15, 23, 42, 0.75)',
-                            border: '1px solid #334155',
-                            borderRadius: 6,
-                            padding: '3px 8px',
-                            fontSize: 11,
-                            color: '#94a3b8',
-                            backdropFilter: 'blur(4px)',
-                            zIndex: 20,
-                        }}
-                    >
+                    <div className="pointer-events-none absolute right-3 top-3 z-10 rounded-full border border-slate-700/60 bg-slate-900/90 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400">
                         Click to zoom
                     </div>
                 )}
 
-                {selectedConnection && (
+                {selectedPair && (
                     <ConnectionDetailPanel
-                        detail={selectedConnection}
-                        onClose={() => setSelectedConnection(null)}
+                        detail={{
+                            filmA: selectedPair.filmA,
+                            filmB: selectedPair.filmB,
+                            sharedCredits: selectedPair.shared,
+                        }}
+                        onClose={() => setSelectedEdgeId(null)}
                         onPersonClick={handlePersonClick}
                     />
                 )}
@@ -816,7 +1059,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
                     filmography={creditsPerson?.filmography ?? null}
                 />
             </div>
-        </>
+        </ChartContainer>
     );
 };
 

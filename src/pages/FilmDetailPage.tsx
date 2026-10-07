@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import FilmList from '../components/films/FilmList';
-import CircularImage from '../components/common/CircularImage';
 import PopcornRating from '../components/common/PopcornRating';
 import CreditsModal from '../components/common/CreditsModal';
 import TrailerModal from '../components/common/TrailerModal';
@@ -22,6 +21,7 @@ import FilmCastStrip from '../components/films/FilmCastStrip';
 import FilmStills from '../components/films/FilmStills';
 import PlotParagraphs from '../components/films/PlotParagraphs';
 import ScoreQualifierNote from '../components/films/ScoreQualifierNote';
+import SelectorPickBadge from '../components/films/SelectorPickBadge';
 import {
     PopcornPodStamp,
     PopcornPodDisclaimer,
@@ -201,6 +201,14 @@ const FilmDetailPage = () => {
     const watchDateObj = parseWatchDate(film.movieClubInfo?.watchDate);
     const prevWatchDateObj = parseWatchDate(previousFilm?.movieClubInfo?.watchDate);
     const nextWatchDateObj = parseWatchDate(nextFilm?.movieClubInfo?.watchDate);
+    // Where this film falls among its picker's screenings — one plus the
+    // dated picks of theirs that came before it. Undated means not watched yet.
+    const selectorPickNumber = watchDateObj
+        ? filmsBySameSelector.filter((other) => {
+              const otherDate = parseWatchDate(other.movieClubInfo?.watchDate);
+              return otherDate !== null && otherDate < watchDateObj;
+          }).length + 1
+        : null;
     const MS_PER_DAY = 1000 * 60 * 60 * 24;
     const sincePreviousGap =
         watchDateObj && prevWatchDateObj
@@ -789,28 +797,10 @@ const FilmDetailPage = () => {
                                         )}
                                     </div>
                                     {selectorName && (
-                                        <Link
-                                            to={`/profile/${encodeURIComponent(capitalizeFirstLetter(selectorName))}`}
-                                            className="flex flex-col items-center md:ml-8 md:flex-shrink-0 mt-6 md:mt-0 group"
-                                            title={`View ${capitalizeFirstLetter(selectorName)}'s profile`}
-                                        >
-                                            <div className="relative mb-2">
-                                                <CircularImage
-                                                    alt={capitalizeFirstLetter(selectorName)}
-                                                    size="w-32 h-32 md:w-36 md:h-36"
-                                                />
-                                                <div
-                                                    className="absolute bottom-0 transform -translate-x-1/2 translate-y-1/4 bg-emerald-600 text-slate-100 px-4 py-1 rounded text-base font-semibold whitespace-nowrap shadow-lg group-hover:scale-105 group-hover:rotate-[5deg] transition-transform duration-200 ease-in-out"
-                                                    style={{
-                                                        transform:
-                                                            'translateX(55%) translateY(5%) rotate(-7deg)',
-                                                        transformOrigin: 'center bottom',
-                                                    }}
-                                                >
-                                                    {capitalizeFirstLetter(selectorName)}'s Pick
-                                                </div>
-                                            </div>
-                                        </Link>
+                                        <SelectorPickBadge
+                                            name={capitalizeFirstLetter(selectorName)}
+                                            pickNumber={selectorPickNumber}
+                                        />
                                     )}
                                 </div>
 

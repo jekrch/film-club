@@ -4,6 +4,21 @@ import { parseWatchDate } from '../utils/filmUtils';
 import { prefersReducedMotion } from '../utils/motion';
 import { parseRuntime } from '../utils/statUtils';
 import Highcharts from 'highcharts';
+import {
+    SANS,
+    SERIF,
+    SLATE_300,
+    SLATE_500,
+    SLATE_600,
+    PAGE_BG,
+    RULE,
+    COPPER,
+    SMALL_CAPS,
+    FIGURES,
+    TOOLTIP_CARD,
+    tooltipCard,
+    unit,
+} from '../utils/chartTheme';
 
 export type ChartCategory = 'country' | 'language' | 'decade' | 'runtime' | 'genre';
 
@@ -17,7 +32,7 @@ export const CATEGORY_LABELS: Record<ChartCategory, string> = {
 };
 type FilmWithDate = Film & { parsedWatchDate: Date };
 
-interface IntervalDetail {
+export interface IntervalDetail {
     startDate: Date;
     endDate: Date;
     days: number;
@@ -30,68 +45,6 @@ const daysBetween = (date1: Date, date2: Date): number => {
     const utc1 = Date.UTC(date1.getUTCFullYear(), date1.getUTCMonth(), date1.getUTCDate());
     const utc2 = Date.UTC(date2.getUTCFullYear(), date2.getUTCMonth(), date2.getUTCDate());
     return Math.floor(Math.abs(utc2 - utc1) / oneDay);
-};
-
-// Chart type, matched to the profile page's: labels in small-caps sans, figures
-// in serif. Highcharts draws to SVG and can't see Tailwind, so the slates the
-// rest of the page uses are spelled out here.
-const SANS = 'Inter, sans-serif';
-const SERIF = 'Merriweather, serif';
-const SLATE_100 = '#f1f5f9';
-const SLATE_300 = '#cbd5e1';
-const SLATE_400 = '#94a3b8';
-const SLATE_500 = '#64748b';
-const SLATE_600 = '#475569';
-// The page background (index.css). Slice borders in this color read as gaps.
-const PAGE_BG = '#0f172b';
-// slate-600 at the opacity the stat cards' rules use.
-const RULE = 'rgba(71, 85, 105, 0.4)';
-const COPPER = '#b76e41';
-
-const SMALL_CAPS: Highcharts.CSSObject = {
-    fontFamily: SANS,
-    fontSize: '10px',
-    fontWeight: '500',
-    letterSpacing: '0.14em',
-    textTransform: 'uppercase',
-    color: SLATE_400,
-};
-const FIGURES: Highcharts.CSSObject = { fontFamily: SERIF, fontSize: '11px', color: SLATE_400 };
-
-const escapeHtml = (text: string): string =>
-    text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-/**
- * A tooltip set like the stat cards: a small-caps label, the figure in serif,
- * and an optional serif-italic note (a film title).
- *
- * The whole card is drawn here in HTML rather than by Highcharts' SVG box (see
- * TOOLTIP_CARD), so it can have a real shadow, the modal's faint ring, and an
- * accent rail down its left edge — the rail the page's cards carry, here in the
- * hovered slice or line's own color so the tooltip reads as belonging to it.
- */
-const tooltipCard = (label: string, figure: string, accent: string, note?: string): string =>
-    `<div style="position:relative;overflow:hidden;min-width:120px;padding:10px 14px 10px 16px;border-radius:8px;background:rgba(30,41,59,0.94);box-shadow:0 12px 28px -8px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)">` +
-    `<span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${accent}"></span>` +
-    `<div style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:${SLATE_400}">${escapeHtml(label)}</div>` +
-    `<div style="margin-top:4px;font-family:${SERIF};font-size:18px;line-height:1.1;color:${SLATE_100}">${figure}</div>` +
-    (note
-        ? `<div style="margin-top:4px;max-width:220px;white-space:normal;font-family:${SERIF};font-style:italic;font-size:12px;line-height:1.35;color:${SLATE_300}">${escapeHtml(note)}</div>`
-        : '') +
-    `</div>`;
-
-/** A small-caps word under a serif figure's unit: "34 <FILMS>". */
-const unit = (text: string): string =>
-    `<span style="margin-left:4px;font-family:${SANS};font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:${SLATE_400}">${text}</span>`;
-
-/** Highcharts' own box is switched off; `tooltipCard` draws the card. */
-const TOOLTIP_CARD: Highcharts.TooltipOptions = {
-    useHTML: true,
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    shadow: false,
-    padding: 0,
-    style: { fontFamily: SANS, color: SLATE_300 },
 };
 
 /**
@@ -652,6 +605,9 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                     states: { hover: { lineWidth: 2 } },
                 },
                 series: {
+                    // Remounted on every switch of the timeline chips, like the
+                    // donut; see donutChartOptions.
+                    animation: !prefersReducedMotion(),
                     cursor: 'pointer',
                     point: { events: { click: handleIntervalClick } },
                 },

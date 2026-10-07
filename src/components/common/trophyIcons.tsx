@@ -1,16 +1,17 @@
 import type { JSX } from 'react';
 import { TrophyIcon } from '@heroicons/react/24/outline';
-import { TrophyIcon as TrophyIconSolid } from '@heroicons/react/24/solid';
 
 type IconProps = { className?: string };
 
-// A large, faded trophy silhouette for seating behind a card/panel.
-// Bleeds off the corner and gradient-masks toward the content so text stays legible.
-// Pass position/size utilities via `className`; the host element must be `relative overflow-hidden`.
-export const TrophyWatermark = ({ className = '' }: IconProps) => (
-    <TrophyIconSolid
+// One large trophy in hairline strokes, for seating behind a trophy section's
+// header — once per section, not once per tile, where a cropped repeat reads as
+// noise. Thin lines at this size look engraved rather than like a blob, and the
+// radial mask keeps it to its corner. Pass position/size utilities (and any hover
+// tint) via `className`; the host must be `relative overflow-hidden`.
+export const TrophyEmblem = ({ className = '' }: IconProps) => (
+    <TrophyIcon
         aria-hidden="true"
-        className={`pointer-events-none absolute select-none text-amber-400/[0.06] [mask-image:linear-gradient(to_left,black,transparent_80%)] ${className}`}
+        className={`pointer-events-none absolute select-none rotate-[8deg] [stroke-width:0.5] text-amber-400/[0.08] transition-colors duration-300 [mask-image:radial-gradient(circle_at_65%_35%,black_25%,transparent_68%)] ${className}`}
     />
 );
 

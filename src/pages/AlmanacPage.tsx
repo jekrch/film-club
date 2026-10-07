@@ -8,7 +8,7 @@ import { TeamMember, teamMembers as teamMembersData } from '../types/team';
 import { parseWatchDate as parseWatchDateUtil, countValidRatings } from '../utils/filmUtils'; // Renamed to avoid conflict
 import { calculateClubAverage } from '../utils/ratingUtils';
 
-import { useAlmanacCharts, ChartCategory } from '../hooks/useAlmanacCharts';
+import { useAlmanacCharts, ChartCategory, CATEGORY_LABELS } from '../hooks/useAlmanacCharts';
 import { useMemberStatistics } from '../hooks/useMemberStatistics';
 import { useFrequentPersons } from '../hooks/useFrequentPersons';
 
@@ -16,7 +16,7 @@ import StatCard from '../components/almanac/StatCard';
 import ChartContainer from '../components/almanac/ChartContainer';
 import CategorySelector from '../components/almanac/CategorySelector';
 import FilteredFilmListSection from '../components/almanac/FilteredFilmSection';
-import IntervalDetailDisplay from '../components/almanac/IntervalDetailDisplay';
+import TimelineChartsCard from '../components/almanac/TimelineChartsCard';
 import MemberStatCard from '../components/almanac/MemberStatCard';
 import CreditsModal from '../components/common/CreditsModal';
 import PageLayout from '../components/layout/PageLayout';
@@ -31,6 +31,7 @@ import Collapse from '../components/common/Collapse';
 import { useUnanimousScores } from '../hooks/useUnanimousScores';
 import UnanimousScoresCard from '../components/almanac/UnanimousScoresCard';
 import FilmConnectionGraph from '../components/almanac/FilmConnectionGraph';
+import TrophyCabinetCard from '../components/almanac/TrophyCabinetCard';
 
 // Helper Functions (can be moved to utils if not already there)
 const formatTotalMinutes = (totalMinutes: number): string => {
@@ -96,10 +97,6 @@ const AlmanacPage: React.FC = () => {
     };
     const donutMeta = currentDonutChartData.length
         ? `${currentDonutChartData.length} ${CATEGORY_PLURALS[selectedCategory]}`
-        : null;
-    const intervalDays = meetingIntervalData.map((point) => point.y ?? 0);
-    const intervalMeta = intervalDays.length
-        ? `Avg ${Math.round(intervalDays.reduce((sum, d) => sum + d, 0) / intervalDays.length)} days`
         : null;
 
     const { allMemberStats, getHighlightClass, formatAverage, formatYear } = useMemberStatistics(
@@ -235,6 +232,7 @@ const AlmanacPage: React.FC = () => {
             <ChartContainer className="mb-4" title={currentDonutChartTitle} meta={donutMeta}>
                 <CategorySelector
                     categories={['country', 'language', 'decade', 'runtime', 'genre']}
+                    labels={CATEGORY_LABELS}
                     selectedCategory={selectedCategory}
                     onSelectCategory={handleCategorySelected}
                 />
@@ -277,33 +275,14 @@ const AlmanacPage: React.FC = () => {
                 />
             </Collapse>
 
-            <ChartContainer
-                className="mb-8 sm:mb-10"
-                title="Time Between Club Meetings"
-                meta={intervalMeta}
-            >
-                <p className="mb-2 text-center text-xs text-slate-400 italic">
-                    Click on a point to see which film was watched at the end of that interval.
-                </p>
-                {meetingIntervalChartOptions.series &&
-                ((meetingIntervalChartOptions.series[0] as Highcharts.SeriesLineOptions).data
-                    ?.length || 0) > 0 ? (
-                    <HighchartsReact
-                        highcharts={Highcharts}
-                        options={meetingIntervalChartOptions}
-                    />
-                ) : (
-                    <div className="text-center py-8 text-slate-400 text-sm">
-                        Loading intervals...
-                    </div>
-                )}
-                {selectedIntervalDetail && (
-                    <IntervalDetailDisplay
-                        detail={selectedIntervalDetail}
-                        onClose={closeIntervalDetail}
-                    />
-                )}
-            </ChartContainer>
+            <TimelineChartsCard
+                films={filmData}
+                members={teamMembersData as TeamMember[]}
+                meetingIntervalChartOptions={meetingIntervalChartOptions}
+                meetingIntervalData={meetingIntervalData}
+                selectedIntervalDetail={selectedIntervalDetail}
+                closeIntervalDetail={closeIntervalDetail}
+            />
 
             <div className="mb-8 sm:mb-10">
                 <SectionHeader title="Member Stats Breakdown" />
@@ -422,6 +401,9 @@ const AlmanacPage: React.FC = () => {
                 unanimousScores={unanimousScores}
                 totalCount={totalUnanimousCount}
             />
+
+            <div className="h-8" />
+            <TrophyCabinetCard films={filmData} />
         </PageLayout>
     );
 };

@@ -1,6 +1,9 @@
 import {
+    awardKey,
     compareTrophies,
+    getClubTrophies,
     getMemberTrophies,
+    groupByRecipient,
     groupTrophies,
     parseTrophyNotes,
     resolveFilmTrophies,
@@ -45,7 +48,33 @@ describe('parseTrophyNotes', () => {
         );
 
         expect(award.recipient).toBe('Andy');
-        expect(award.award).toBe('Special Connection Award for his Parajanov-Vartanov award');
+        expect(award.award).toBe('Special Connection Award');
+    });
+
+    it('treats a "for …" clause as the award’s note, not its name', () => {
+        expect(
+            parseTrophyNotes('Joey gets a Bad Boy trophy for having a lot of work to do')
+        ).toMatchObject([
+            { recipient: 'Joey', award: 'Bad Boy trophy', note: 'for having a lot of work to do' },
+        ]);
+        expect(parseTrophyNotes('Andy gets togetherness trophy')[0].note).toBeNull();
+    });
+
+    it('counts "both X and Y" as two awards to the same member', () => {
+        const parsed = parseTrophyNotes(
+            'Joey gets both togetherness and bad boy, Andy gets reframer trophy'
+        );
+
+        expect(parsed.map((t) => [t.recipient, t.award])).toEqual([
+            ['Joey', 'Togetherness'],
+            ['Joey', 'Bad boy'],
+            ['Andy', 'Reframer trophy'],
+        ]);
+        expect(new Set(parsed.map((t) => t.key)).size).toBe(3);
+    });
+
+    it('leaves an "and" inside a single award name alone', () => {
+        expect(parseTrophyNotes('Joey gets in sickness and in health trophy')).toHaveLength(1);
     });
 
     it('strips the connector however it was phrased', () => {
@@ -147,6 +176,62 @@ describe('getMemberTrophies', () => {
     });
 });
 
+describe('getClubTrophies', () => {
+    const suspiria = makeFilm({
+        title: 'Suspiria',
+        movieClubInfo: makeClubInfo({
+            trophyNotes: 'Andy gets togetherness trophy, Joey gets bad boy',
+        }),
+    });
+    const stalker = makeFilm({ title: 'Stalker' });
+
+    it('collects every member’s awards, sheet and site, with the film attached', () => {
+        const live = {
+            [stalker.imdbID]: [makeTrophy({ recipient: 'Gabe', award: 'Helmet' })],
+        };
+
+        expect(getClubTrophies([suspiria, stalker], live)).toMatchObject([
+            { recipient: 'Andy', film: { title: 'Suspiria' } },
+            { recipient: 'Joey', film: { title: 'Suspiria' } },
+            { recipient: 'Gabe', award: 'Helmet', film: { title: 'Stalker' } },
+        ]);
+    });
+});
+
+describe('resolveFilmTrophies, site awards', () => {
+    it('splits a "for …" reason out of a site award with no note', () => {
+        const film = makeFilm();
+        const [award] = resolveFilmTrophies(film, [
+            makeTrophy({ award: 'Helmet for bravery', note: null }),
+        ]);
+
+        expect(award).toMatchObject({ award: 'Helmet', note: 'for bravery' });
+    });
+
+    it('leaves a site award alone when it already has a note', () => {
+        const film = makeFilm();
+        const [award] = resolveFilmTrophies(film, [
+            makeTrophy({ award: 'Award for Valor', note: 'saved the screening' }),
+        ]);
+
+        expect(award).toMatchObject({ award: 'Award for Valor', note: 'saved the screening' });
+    });
+});
+
+describe('awardKey', () => {
+    it('treats a trailing "trophy" or "award" as the same award', () => {
+        expect(awardKey('togetherness trophy')).toBe('togetherness');
+        expect(awardKey('Togetherness Award')).toBe('togetherness');
+        expect(awardKey('Helmet')).toBe('helmet');
+    });
+
+    it('keeps "award" when it is the middle of the name', () => {
+        expect(awardKey('Special Connection Award for his Parajanov-Vartanov award')).toBe(
+            'special connection award for his parajanov-vartanov'
+        );
+    });
+});
+
 describe('groupTrophies', () => {
     const film = makeFilm();
 
@@ -187,6 +272,44 @@ describe('groupTrophies', () => {
 
     it('puts the most-won award first', () => {
         expect(groupTrophies(shelf).map((g) => g.award)).toEqual(['Togetherness Trophy', 'Helmet']);
+    });
+
+    it('groups "trophy" and "award" spellings together', () => {
+        const groups = groupTrophies([
+            ...shelf,
+            { ...shelf[0], key: 'd', award: 'Togetherness Award' },
+        ]);
+
+        expect(groups[0].trophies).toHaveLength(3);
+    });
+});
+
+describe('groupByRecipient', () => {
+    const film = makeFilm();
+    const award = (key: string, recipient: string | null) => ({
+        key,
+        recipient,
+        award: 'Togetherness Trophy',
+        note: null,
+        source: 'sheet' as const,
+        film,
+    });
+
+    it('puts the most-decorated member first, ties by name, nobody last', () => {
+        const groups = groupByRecipient([
+            award('a', null),
+            award('b', 'Joey'),
+            award('c', 'Gabe'),
+            award('d', 'Andy'),
+            award('e', 'Gabe'),
+        ]);
+
+        expect(groups.map((g) => [g.recipient, g.trophies.length])).toEqual([
+            ['Gabe', 2],
+            ['Andy', 1],
+            ['Joey', 1],
+            [null, 1],
+        ]);
     });
 });
 

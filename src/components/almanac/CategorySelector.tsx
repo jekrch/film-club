@@ -1,18 +1,19 @@
 import Button from '../common/Button';
-import React from 'react';
-import { CATEGORY_LABELS, ChartCategory } from '../../hooks/useAlmanacCharts';
 
-interface CategorySelectorProps {
-    categories: ChartCategory[];
-    selectedCategory: ChartCategory;
-    onSelectCategory: (category: ChartCategory) => void;
+interface CategorySelectorProps<T extends string> {
+    categories: T[];
+    /** The chip label for each category. */
+    labels: Record<T, string>;
+    selectedCategory: T;
+    onSelectCategory: (category: T) => void;
 }
 
-const CategorySelector: React.FC<CategorySelectorProps> = ({
+const CategorySelector = <T extends string>({
     categories,
+    labels,
     selectedCategory,
     onSelectCategory,
-}) => {
+}: CategorySelectorProps<T>) => {
     return (
         <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-4 border-b border-slate-700/60 pb-3">
             {categories.map((category) => (
@@ -24,7 +25,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
                     active={selectedCategory === category}
                     aria-pressed={selectedCategory === category}
                 >
-                    {CATEGORY_LABELS[category]}
+                    {labels[category]}
                 </Button>
             ))}
         </div>

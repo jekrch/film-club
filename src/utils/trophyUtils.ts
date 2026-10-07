@@ -32,7 +32,11 @@ export interface ResolvedTrophy {
     recipient: string | null;
     /** What the award is called, with the recipient and any connector taken out. */
     award: string;
-    /** Why it was given, when that was recorded apart from the name. Sheet awards have none. */
+    /**
+     * Why it was given. A site award's own note; for a sheet award, the "for …"
+     * clause that followed its name, which is a parenthetical rather than part
+     * of what the award is called.
+     */
     note: string | null;
     /** Where it came from. Only a `club` award can be edited on the site. */
     source: 'club' | 'sheet';
@@ -81,47 +85,68 @@ function findRecipient(text: string): { name: string; start: number; end: number
 }
 
 /**
+ * The reason trailing an award's name: "Bad Boy trophy *for having a lot of
+ * work to do*". The first "for" splits, so the reason keeps any of its own.
+ */
+const FOR_CLAUSE = /^(.+?)\s+(for\s+.+)$/i;
+
+/** Two awards in one breath: "both togetherness and bad boy". */
+const BOTH_AND = /^both\s+(.+?)\s+and\s+(.+)$/i;
+
+/**
+ * Separates an award's name from the "for …" reason after it, so "Bad Boy
+ * trophy for having a lot of work to do" shelves with every other Bad Boy
+ * trophy and keeps its reason as a note.
+ */
+export function splitAwardReason(text: string): { award: string; note: string | null } {
+    const match = FOR_CLAUSE.exec(text.trim());
+    return match ? { award: match[1], note: match[2] } : { award: text.trim(), note: null };
+}
+
+/**
  * Parses one film's `trophyNotes` cell into awards.
  *
  * Comma-separated, one award per part — which is the convention the club has
  * used from the start and the reason a comma has never appeared inside an award
  * name. A part naming no member still yields an award, since the text is what
  * the club wrote and dropping it would silently lose a trophy.
+ *
+ * Within a part, a "for …" clause becomes the award's note, and "both X and Y"
+ * is two awards to the same member.
  */
 export function parseTrophyNotes(notes: string): ResolvedTrophy[] {
     return notes
         .split(',')
         .map((part) => part.trim())
         .filter((part) => part !== '')
-        .map((part, index) => {
+        .flatMap((part, index) => {
             const found = findRecipient(part);
-            const key = `sheet-${index}`;
 
-            if (!found) {
-                return {
-                    key,
-                    recipient: null,
-                    award: capitalize(part),
-                    note: null,
-                    source: 'sheet' as const,
-                };
-            }
-
-            const award = (part.slice(0, found.start) + part.slice(found.end))
-                .replace(/\s+/g, ' ')
-                .replace(EDGE_PUNCTUATION, '')
-                .replace(CONNECTOR, '')
-                .replace(EDGE_PUNCTUATION, '');
-
-            return {
-                key,
-                recipient: found.name,
+            let text = part;
+            if (found) {
+                const stripped = (part.slice(0, found.start) + part.slice(found.end))
+                    .replace(/\s+/g, ' ')
+                    .replace(EDGE_PUNCTUATION, '')
+                    .replace(CONNECTOR, '')
+                    .replace(EDGE_PUNCTUATION, '');
                 // A part that was nothing but a name leaves no award to show;
                 // the original text is a better answer than an empty row.
-                award: capitalize(award.length >= 3 ? award : part),
-                note: null,
+                if (stripped.length >= 3) text = stripped;
+            }
+
+            const { award, note } = splitAwardReason(text);
+            const both = BOTH_AND.exec(award);
+            const awards = both ? [both[1], both[2]] : [award];
+
+            return awards.map((name, n) => ({
+                // Unsplit parts keep the plain positional key; the halves of a
+                // "both" are qualified so they stay distinct within the film.
+                key: both ? `sheet-${index}-${n}` : `sheet-${index}`,
+                recipient: found?.name ?? null,
+                award: capitalize(name),
+                note,
                 source: 'sheet' as const,
-            };
+            }));
         });
 }
 
@@ -139,11 +164,17 @@ export const compareTrophies = (a: Trophy, b: Trophy): number =>
 
 /** One site award, in the shape the galleries render. */
 function resolveStored(trophy: Trophy): ResolvedTrophy {
+    // The site has a note field, but an award typed as "X for Y" with the note
+    // left empty should shelve as X all the same.
+    const { award, note } = trophy.note
+        ? { award: trophy.award, note: trophy.note }
+        : splitAwardReason(trophy.award);
+
     return {
         key: trophy.id,
         recipient: trophy.recipient,
-        award: trophy.award,
-        note: trophy.note,
+        award,
+        note,
         source: 'club',
         id: trophy.id,
         awardedBy: trophy.awardedBy,
@@ -179,27 +210,16 @@ export interface TrophyGroup {
 }
 
 /**
- * Every award one member holds, with the film each was given for.
- *
- * Matching is on `recipient` rather than on the text, which is the whole point
- * of the structured file — but sheet awards are matched the same way here
- * because {@link parseTrophyNotes} has already resolved their prose to a name.
+ * Every award the club has given, with the film each was given for.
  *
  * `live` is the whole of `trophies.json` as read from `main`. A film missing
  * from it has no site awards, which is why it isn't merged with the bundle
  * per-film: the live copy is the same file, later, not a patch on it.
  */
-export function getMemberTrophies(
-    films: Film[],
-    memberName: string,
-    live?: Record<string, Trophy[]>
-): MemberTrophy[] {
-    const wanted = memberName.trim().toLowerCase();
-
+export function getClubTrophies(films: Film[], live?: Record<string, Trophy[]>): MemberTrophy[] {
     return films.flatMap((film) =>
-        resolveFilmTrophies(film, live ? (live[film.imdbID] ?? []) : undefined)
-            .filter((trophy) => trophy.recipient?.toLowerCase() === wanted)
-            .map((trophy) => ({
+        resolveFilmTrophies(film, live ? (live[film.imdbID] ?? []) : undefined).map(
+            (trophy) => ({
                 ...trophy,
                 // A sheet award's key is only unique within its film ("sheet-0"),
                 // and a shelf draws awards from many films side by side — so it
@@ -211,27 +231,88 @@ export function getMemberTrophies(
                     year: film.year,
                     poster: film.poster,
                 },
-            }))
+            })
+        )
     );
 }
 
 /**
- * Groups a member's awards by what they are called, most-won first.
+ * Every award one member holds, with the film each was given for.
  *
- * Grouping is case-insensitive so "togetherness trophy" from the sheet and
- * "Togetherness Trophy" typed on the site land on one shelf — which is the
- * behavior the profile has always had, now that both writers feed it. The
- * displayed name is the first spelling encountered.
+ * Matching is on `recipient` rather than on the text, which is the whole point
+ * of the structured file — but sheet awards are matched the same way here
+ * because {@link parseTrophyNotes} has already resolved their prose to a name.
+ */
+export function getMemberTrophies(
+    films: Film[],
+    memberName: string,
+    live?: Record<string, Trophy[]>
+): MemberTrophy[] {
+    const wanted = memberName.trim().toLowerCase();
+
+    return getClubTrophies(films, live).filter(
+        (trophy) => trophy.recipient?.toLowerCase() === wanted
+    );
+}
+
+/**
+ * What two spellings of one award have in common.
+ *
+ * The sheet says "togetherness trophy" and "togetherness award" for the same
+ * thing, and the site says "Togetherness Award" — so case, spacing and a
+ * trailing "trophy" or "award" are not part of an award's identity.
+ */
+export const awardKey = (award: string): string =>
+    award
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/\s+(?:trophy|award)$/, '');
+
+/**
+ * Groups awards by what they are called, most-won first.
+ *
+ * Grouping is on {@link awardKey} so "togetherness trophy" from the sheet and
+ * "Togetherness Award" typed on the site land on one shelf. The displayed name
+ * is the first spelling encountered.
  */
 export function groupTrophies(trophies: MemberTrophy[]): TrophyGroup[] {
     const groups = new Map<string, TrophyGroup>();
 
     trophies.forEach((trophy) => {
-        const key = trophy.award.toLowerCase();
+        const key = awardKey(trophy.award);
         const existing = groups.get(key);
         if (existing) existing.trophies.push(trophy);
         else groups.set(key, { award: trophy.award, trophies: [trophy] });
     });
 
     return [...groups.values()].sort((a, b) => b.trophies.length - a.trophies.length);
+}
+
+/** Awards that went to one member — or, for `null`, to nobody the club recognizes. */
+export interface RecipientGroup {
+    recipient: string | null;
+    trophies: MemberTrophy[];
+}
+
+/**
+ * Groups awards by who received them, most-decorated first.
+ *
+ * Ties are broken on name so the order is stable between renders, and
+ * unattributed sheet awards always come last.
+ */
+export function groupByRecipient(trophies: MemberTrophy[]): RecipientGroup[] {
+    const groups = new Map<string | null, RecipientGroup>();
+
+    trophies.forEach((trophy) => {
+        const existing = groups.get(trophy.recipient);
+        if (existing) existing.trophies.push(trophy);
+        else groups.set(trophy.recipient, { recipient: trophy.recipient, trophies: [trophy] });
+    });
+
+    return [...groups.values()].sort((a, b) => {
+        if (a.recipient === null) return 1;
+        if (b.recipient === null) return -1;
+        return b.trophies.length - a.trophies.length || a.recipient.localeCompare(b.recipient);
+    });
 }
