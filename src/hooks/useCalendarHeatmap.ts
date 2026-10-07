@@ -146,6 +146,14 @@ export const useCalendarHeatmap = (films: Film[]): UseCalendarHeatmapReturn => {
                 style: { fontFamily: SANS },
                 // A row per year, tall enough to hold a figure.
                 height: years.length * 38 + 110,
+                events: {
+                    // Cells paint in order, so a later neighbour's border would
+                    // cover half the open cell's outline; lift it above them.
+                    render: function () {
+                        const index = cells.findIndex((cell) => cell.key === selectedKey);
+                        if (index >= 0) this.series[0]?.points[index]?.graphic?.toFront();
+                    },
+                },
             },
             // Set in the page as a serif section head; see donutChartOptions.
             title: { text: undefined },
@@ -208,6 +216,9 @@ export const useCalendarHeatmap = (films: Film[]): UseCalendarHeatmapReturn => {
                     borderColor: PAGE_BG,
                     borderWidth: 2,
                     borderRadius: 3,
+                    // The outline straddles the cell's edge; unclipped, so an
+                    // edge cell's shows in full.
+                    clip: false,
                     nullColor: EMPTY_CELL,
                     dataLabels: {
                         enabled: true,
