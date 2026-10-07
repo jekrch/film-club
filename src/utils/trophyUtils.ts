@@ -218,21 +218,19 @@ export interface TrophyGroup {
  */
 export function getClubTrophies(films: Film[], live?: Record<string, Trophy[]>): MemberTrophy[] {
     return films.flatMap((film) =>
-        resolveFilmTrophies(film, live ? (live[film.imdbID] ?? []) : undefined).map(
-            (trophy) => ({
-                ...trophy,
-                // A sheet award's key is only unique within its film ("sheet-0"),
-                // and a shelf draws awards from many films side by side — so it
-                // is qualified here, where the film is known.
-                key: `${film.imdbID}-${trophy.key}`,
-                film: {
-                    imdbID: film.imdbID,
-                    title: film.title,
-                    year: film.year,
-                    poster: film.poster,
-                },
-            })
-        )
+        resolveFilmTrophies(film, live ? (live[film.imdbID] ?? []) : undefined).map((trophy) => ({
+            ...trophy,
+            // A sheet award's key is only unique within its film ("sheet-0"),
+            // and a shelf draws awards from many films side by side — so it
+            // is qualified here, where the film is known.
+            key: `${film.imdbID}-${trophy.key}`,
+            film: {
+                imdbID: film.imdbID,
+                title: film.title,
+                year: film.year,
+                poster: film.poster,
+            },
+        }))
     );
 }
 

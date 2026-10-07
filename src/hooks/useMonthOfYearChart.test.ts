@@ -37,10 +37,7 @@ describe('monthOfYearScores', () => {
     it('counts each film once, however many members scored it', () => {
         // One film at 9 from three members, one at 4 from one: the films
         // average 6.5, where the ratings would average 7.75.
-        const months = monthOfYearScores([
-            scored('05/01/2022', 9, 9, 9),
-            scored('05/09/2023', 4),
-        ]);
+        const months = monthOfYearScores([scored('05/01/2022', 9, 9, 9), scored('05/09/2023', 4)]);
         expect(months[4].average).toBe(6.5);
     });
 
