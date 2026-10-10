@@ -38,6 +38,7 @@ const logEvent = (member: string): LogEvent => ({
         score: 8,
         scoreQualifier: null,
         blurb: 'Saw this on 35mm.',
+        updatedAt: '2026-10-03T21:14:02Z',
         title: 'The Shining',
         year: '1980',
         poster: null,
