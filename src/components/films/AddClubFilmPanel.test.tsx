@@ -53,7 +53,7 @@ beforeEach(() => {
     (auth.withToken as jest.Mock).mockImplementation((call: (token: string) => unknown) =>
         call('token')
     );
-    jest.spyOn(clubApi, 'searchFilms').mockResolvedValue([hit]);
+    jest.spyOn(clubApi, 'searchFilms').mockResolvedValue({ results: [hit], total: 1 });
 });
 
 describe('AddClubFilmPanel', () => {

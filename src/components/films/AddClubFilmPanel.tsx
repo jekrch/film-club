@@ -156,7 +156,7 @@ const AddClubFilmPanel: React.FC<AddClubFilmPanelProps> = ({ onAdded }) => {
                     onPick={handlePick}
                     chosen={clubFilmIds}
                     label="Find the film"
-                    placeholder="Search OMDb by title…"
+                    placeholder="Search OMDb by title or IMDb id…"
                     chosenLabel="in the club"
                 />
             ) : (

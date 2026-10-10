@@ -331,6 +331,11 @@ describe('WallPage', () => {
         expect(screen.queryByRole('button', { name: /Read more/ })).not.toBeInTheDocument();
     });
 
+    it('offers a signed-out visitor no way to log a film', () => {
+        renderWall();
+        expect(screen.queryByRole('button', { name: /Log a film/i })).not.toBeInTheDocument();
+    });
+
     it('narrows to one kind of event, and back', () => {
         renderWall();
 

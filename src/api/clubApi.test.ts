@@ -109,6 +109,14 @@ describe('request — outgoing shape', () => {
         );
     });
 
+    it('asks for a page only past the first', async () => {
+        mockFetch.mockResolvedValue(respond(200, { results: [], total: 0 }));
+        await searchFilms(TOKEN, 'tokyo', 3);
+        expect(mockFetch.mock.calls[0][0]).toBe(
+            'https://worker.test/api/films/search?q=tokyo&page=3'
+        );
+    });
+
     // `owner` is an admin acting on someone else's log. Absent, the worker uses
     // the caller — so an empty query string and a missing one must differ.
     it('appends the owner query only when one is given', async () => {
@@ -198,7 +206,7 @@ describe('request — failure handling', () => {
     it('passes an abort signal through to fetch', async () => {
         const controller = new AbortController();
         mockFetch.mockResolvedValue(respond(200, { results: [] }));
-        await searchFilms(TOKEN, 'q', controller.signal);
+        await searchFilms(TOKEN, 'q', 1, controller.signal);
         expect(lastInit().signal).toBe(controller.signal);
     });
 });
@@ -208,10 +216,18 @@ describe('request — failure handling', () => {
 // logic in it, and getting that wrong yields `undefined` rather than an error:
 // a silently empty picker.
 describe('read wrappers unwrap their payload key', () => {
-    it('searchFilms returns the results array', async () => {
+    it('searchFilms returns the results and the total', async () => {
+        const hit = { imdbID: 'tt1', title: 'Tokyo Story', year: '1953', poster: null };
+        mockFetch.mockResolvedValue(respond(200, { results: [hit], total: 24 }));
+        await expect(searchFilms(TOKEN, 'tokyo')).resolves.toEqual({ results: [hit], total: 24 });
+    });
+
+    // A worker deployed before paging sends no total. Counting the page as
+    // everything keeps the picker from offering a "load more" it can't serve.
+    it('searchFilms treats a missing total as just this page', async () => {
         const hit = { imdbID: 'tt1', title: 'Tokyo Story', year: '1953', poster: null };
         mockFetch.mockResolvedValue(respond(200, { results: [hit] }));
-        await expect(searchFilms(TOKEN, 'tokyo')).resolves.toEqual([hit]);
+        await expect(searchFilms(TOKEN, 'tokyo')).resolves.toEqual({ results: [hit], total: 1 });
     });
 });
 

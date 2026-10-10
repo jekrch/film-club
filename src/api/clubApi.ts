@@ -609,15 +609,28 @@ export const deleteComment = (
         method: 'DELETE',
     });
 
+/** One page of a film search, and how many hits there are across every page. */
+export interface FilmSearchPage {
+    results: FilmSearchResult[];
+    total: number;
+}
+
+/**
+ * One page of OMDB's ten. An IMDb id or IMDb link as the query comes back as
+ * that one film, for when a title search won't surface it.
+ */
 export const searchFilms = async (
     token: string,
     query: string,
+    page = 1,
     signal?: AbortSignal
-): Promise<FilmSearchResult[]> => {
-    const { results } = await request<{ results: FilmSearchResult[] }>(
-        `/api/films/search?q=${encodeURIComponent(query)}`,
+): Promise<FilmSearchPage> => {
+    const { results, total } = await request<{ results: FilmSearchResult[]; total?: number }>(
+        `/api/films/search?q=${encodeURIComponent(query)}${page > 1 ? `&page=${page}` : ''}`,
         token,
         { signal }
     );
-    return results;
+    // A worker older than paging sends no total; treating the page as all there
+    // is just hides "load more" until it's redeployed.
+    return { results, total: total ?? results.length };
 };

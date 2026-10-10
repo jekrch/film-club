@@ -1,8 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid';
-import { EyeIcon, FilmIcon, NumberedListIcon, QueueListIcon } from '@heroicons/react/24/outline';
+import {
+    EyeIcon,
+    FilmIcon,
+    NumberedListIcon,
+    PencilSquareIcon,
+    QueueListIcon,
+} from '@heroicons/react/24/outline';
 
+import Button from '../common/Button';
 import CircularImage from '../common/CircularImage';
 import CollapsibleContent from '../common/CollapsableContent';
 import RowFrameWash from '../common/RowFrameWash';
@@ -55,6 +62,11 @@ interface WallEventRowProps {
     row: WallRow;
     /** False on the last box of the wall, which has nothing below to connect to. */
     connected: boolean;
+    /**
+     * Opens the editor for a log row the reader may edit — their own, or any
+     * for an admin. Absent everywhere else, and then the row draws no pencil.
+     */
+    onEdit?: () => void;
 }
 
 /** The icon in the timeline node, per kind. A trophy gets its own award's icon. */
@@ -452,7 +464,7 @@ const Detail: React.FC<{ children: React.ReactNode }> = ({ children }) => (
     </div>
 );
 
-const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
+const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected, onEdit }) => {
     const { lead, trophies } = row;
     const accent = KIND_ACCENT[lead.kind];
     /** A list has no single film, so its poster slot and its expander are both absent. */
@@ -647,6 +659,23 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected }) => {
                         </div>
 
                         <ListPosters event={lead} />
+
+                        {/* Where the log page keeps its own pencil: the row's
+                            top-right corner, in the edge column a list's
+                            posters use and a log leaves empty. */}
+                        {onEdit && film && (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={onEdit}
+                                aria-label={`Edit ${film.title}`}
+                                title="Edit your log entry"
+                                className="col-start-3 row-start-1 -my-1 ml-2 hover:text-emerald-300"
+                            >
+                                <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
+                            </Button>
+                        )}
 
                         {/* Full width beneath everything on a phone, back in the
                             subject's column from `sm` up. */}

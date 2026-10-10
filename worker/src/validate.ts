@@ -525,6 +525,32 @@ export function validateImdbId(value: unknown, field = 'imdbID'): string {
 }
 
 /**
+ * Picks an IMDb id out of a film search, for a member who couldn't find the
+ * film by title and pasted its id or its IMDb page instead. Null when the query
+ * is a title — so a film actually named with a `tt…` word still searches.
+ */
+export function parseImdbIdQuery(query: string): string | null {
+    const text = query.trim();
+    const bare = /^tt\d{7,9}$/i.exec(text);
+    if (bare) return bare[0].toLowerCase();
+    const link = /imdb\.com\/(?:[a-z-]+\/)?title\/(tt\d{7,9})(?!\d)/i.exec(text);
+    return link ? link[1].toLowerCase() : null;
+}
+
+/** OMDB serves at most 100 pages of 10, so anything past that is a typo or a probe. */
+export const MAX_SEARCH_PAGE = 100;
+
+/** The `page` of a film search: 1 when absent, a 400 when it isn't a page OMDB has. */
+export function validateSearchPage(value: string | null): number {
+    if (value === null || value === '') return 1;
+    const page = /^\d{1,3}$/.test(value) ? Number(value) : NaN;
+    if (!(page >= 1 && page <= MAX_SEARCH_PAGE)) {
+        throw badRequest(`page: expected a whole number from 1 to ${MAX_SEARCH_PAGE}`);
+    }
+    return page;
+}
+
+/**
  * Scores are numbers in 0–{@link MAX_SCORE} with at most one decimal place.
  *
  * The sheet path tolerates unparseable cells by storing them verbatim; the

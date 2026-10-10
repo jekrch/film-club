@@ -12,6 +12,7 @@ import {
     assignListId,
     assignTrophyId,
     base64ByteLength,
+    parseImdbIdQuery,
     resolveListOwner,
     resolveOwner,
     resolveRecipient,
@@ -28,6 +29,7 @@ import {
     validateClubWatchDate,
     validateFilmPatch,
     validateRatingPatch,
+    validateSearchPage,
     resolveSelector,
     validateTrailerKey,
     validateTrophyInput,
@@ -118,6 +120,47 @@ describe('validateImdbId', () => {
         expectStatus(() => validateImdbId('tt12345'), 400);
         expectStatus(() => validateImdbId('../../../etc/passwd'), 400);
         expectStatus(() => validateImdbId(undefined), 400);
+    });
+});
+
+describe('parseImdbIdQuery', () => {
+    it('recognizes a bare id, in any case', () => {
+        expect(parseImdbIdQuery('tt0081505')).toBe('tt0081505');
+        expect(parseImdbIdQuery('  TT0081505 ')).toBe('tt0081505');
+    });
+
+    it('pulls the id out of an IMDb link', () => {
+        expect(parseImdbIdQuery('https://www.imdb.com/title/tt0081505/')).toBe('tt0081505');
+        expect(parseImdbIdQuery('imdb.com/title/tt0081505/?ref_=fn_al_tt_1')).toBe('tt0081505');
+        expect(parseImdbIdQuery('https://m.imdb.com/title/tt0081505')).toBe('tt0081505');
+        expect(parseImdbIdQuery('https://www.imdb.com/de/title/tt0081505/')).toBe('tt0081505');
+    });
+
+    it('leaves titles alone', () => {
+        expect(parseImdbIdQuery('The Shining')).toBeNull();
+        expect(parseImdbIdQuery('tt0081505 shining')).toBeNull();
+        expect(parseImdbIdQuery('tt12345')).toBeNull();
+        expect(parseImdbIdQuery('https://www.imdb.com/name/nm0000040/')).toBeNull();
+    });
+});
+
+describe('validateSearchPage', () => {
+    it('defaults to the first page', () => {
+        expect(validateSearchPage(null)).toBe(1);
+        expect(validateSearchPage('')).toBe(1);
+    });
+
+    it('accepts pages OMDB serves', () => {
+        expect(validateSearchPage('2')).toBe(2);
+        expect(validateSearchPage('100')).toBe(100);
+    });
+
+    it('rejects anything else', () => {
+        expectStatus(() => validateSearchPage('0'), 400);
+        expectStatus(() => validateSearchPage('101'), 400);
+        expectStatus(() => validateSearchPage('1.5'), 400);
+        expectStatus(() => validateSearchPage('-1'), 400);
+        expectStatus(() => validateSearchPage('two'), 400);
     });
 });
 

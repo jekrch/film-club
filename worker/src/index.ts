@@ -65,6 +65,7 @@ import {
     assignCommentId,
     assignListId,
     assignTrophyId,
+    parseImdbIdQuery,
     parseThreadId,
     resolveListOwner,
     resolveOwner,
@@ -76,6 +77,7 @@ import {
     validateProfilePatch,
     validateRatingPatch,
     validateReactionKey,
+    validateSearchPage,
     validateTrophyInput,
     validateWatchedPatch,
     type FilmPatch,
@@ -1470,7 +1472,20 @@ async function route(request: Request, env: Env): Promise<unknown> {
     if (path === '/api/films/search' && method === 'GET') {
         const query = (url.searchParams.get('q') ?? '').trim();
         if (query.length < 2) throw badRequest('Search needs at least two characters.');
-        return { results: await searchFilms(env, query) };
+        // An id or IMDb link is the way out when a title search won't surface
+        // the film: resolved directly, and an unknown id is just no results.
+        const imdbId = parseImdbIdQuery(query);
+        if (imdbId) {
+            try {
+                return { results: [await lookupFilm(env, imdbId)], total: 1 };
+            } catch (error) {
+                if (error instanceof HttpError && error.status === 404) {
+                    return { results: [], total: 0 };
+                }
+                throw error;
+            }
+        }
+        return searchFilms(env, query, validateSearchPage(url.searchParams.get('page')));
     }
 
     const reactionMatch = /^\/api\/responses\/([^/]+)\/reactions\/([^/]+)$/.exec(path);

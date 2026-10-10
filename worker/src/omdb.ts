@@ -16,6 +16,8 @@ interface OmdbSearchResponse {
     Response: string;
     Error?: string;
     Search?: Array<{ imdbID?: string; Title?: string; Year?: string; Poster?: string }>;
+    /** A count as a string, across every page. */
+    totalResults?: string;
 }
 
 /** The by-id response, trimmed to the handful of fields {@link lookupFilm} keeps. */
@@ -35,23 +37,28 @@ function clean(value: string | undefined): string | null {
 }
 
 /**
- * Searches OMDB by title. Returns at most one page (OMDB's own limit is ten per
- * page), which is plenty for a picker the member types into.
+ * Searches OMDB by title, one page (OMDB's ten) at a time. `total` counts hits
+ * across every page, so the picker knows whether another page is worth asking for.
  */
-export async function searchFilms(env: Env, query: string): Promise<FilmSearchResult[]> {
+export async function searchFilms(
+    env: Env,
+    query: string,
+    page = 1
+): Promise<{ results: FilmSearchResult[]; total: number }> {
     const url = new URL(OMDB_URL);
     url.searchParams.set('apikey', env.OMDB_API_KEY);
     url.searchParams.set('s', query);
     url.searchParams.set('type', 'movie');
+    url.searchParams.set('page', String(page));
 
     const resp = await fetch(url.toString());
     if (!resp.ok) throw new HttpError(502, `Film search failed (${resp.status}).`);
 
     const data = (await resp.json()) as OmdbSearchResponse;
     // "Movie not found!" is a normal empty result, not a failure worth a 502.
-    if (data.Response !== 'True') return [];
+    if (data.Response !== 'True') return { results: [], total: 0 };
 
-    return (data.Search ?? [])
+    const results = (data.Search ?? [])
         .filter((hit): hit is { imdbID: string } & typeof hit => typeof hit.imdbID === 'string')
         .map((hit) => ({
             imdbID: hit.imdbID,
@@ -59,6 +66,8 @@ export async function searchFilms(env: Env, query: string): Promise<FilmSearchRe
             year: clean(hit.Year),
             poster: clean(hit.Poster),
         }));
+    const total = Number(data.totalResults);
+    return { results, total: Number.isFinite(total) ? total : results.length };
 }
 
 /**

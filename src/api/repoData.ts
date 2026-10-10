@@ -136,7 +136,24 @@ export async function fetchLists(signal?: AbortSignal): Promise<FilmListDefiniti
 /** `watched.json` — every member's personal log, keyed by display name. */
 export async function fetchWatched(signal?: AbortSignal): Promise<WatchedLog> {
     const file = await fetchAsset<WatchedLog>('watched.json', signal);
-    const log: WatchedLog = { ...(file ?? {}) };
+    const { log, source } = overlayPendingWatched(file ?? {});
+    reconcile('watched', source);
+    return log;
+}
+
+/**
+ * A watch log with this tab's unconfirmed saves laid over it, and what `file`
+ * itself says for each of them — the second half is what {@link reconcile}
+ * needs, and only a fresh fetch should hand it that.
+ *
+ * Exported for the pages that draw from the bundled log, so a film logged a
+ * minute ago shows up there too rather than only after the next deploy.
+ */
+export function overlayPendingWatched(file: WatchedLog): {
+    log: WatchedLog;
+    source: Map<string, unknown>;
+} {
+    const log: WatchedLog = { ...file };
 
     const pending = pendingWrites<WatchedEntry>('watched');
     const source = new Map<string, unknown>();
@@ -155,8 +172,7 @@ export async function fetchWatched(signal?: AbortSignal): Promise<WatchedLog> {
         log[name ?? owner] = next;
     }
 
-    reconcile('watched', source);
-    return log;
+    return { log, source };
 }
 
 /**

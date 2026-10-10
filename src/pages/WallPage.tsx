@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { EyeIcon, FilmIcon, QueueListIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
+import { EyeIcon, FilmIcon, PlusIcon, QueueListIcon } from '@heroicons/react/24/outline';
 
 import PageLayout from '../components/layout/PageLayout';
 import CorinthianPillar from '../components/layout/CorinthianPillar';
@@ -7,15 +8,23 @@ import HeroBanner from '../components/common/HeroBanner';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
 import WallEventRow from '../components/wall/WallEventRow';
+import LogFilmDialog from '../components/wall/LogFilmDialog';
+import EditLogDialog from '../components/wall/EditLogDialog';
 import { KIND_ACCENT } from '../components/wall/wallAccents';
 import type { IconComponent } from '../components/common/trophyIcons';
 import { entryFrameSource, filmFrameSource, type FrameSource } from '../utils/frameSources';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { useClubAuth } from '../auth/GoogleAuth';
+import { overlayPendingWatched } from '../api/repoData';
+import { getTeamMemberByName } from '../types/team';
+import { watchedLog, type WatchedLog } from '../types/watched';
+import { watchedPathFor, watchedRowId } from '../utils/watchedUtils';
 import {
     buildWall,
     groupByMonth,
     mergeTrophyRows,
     wallKinds,
+    type LogEvent,
     type WallEvent,
     type WallEventKind,
 } from '../utils/wallUtils';
@@ -31,7 +40,9 @@ import {
  *
  * Public and identical for everyone. It is built from bundled data alone (see
  * the note atop `utils/wallUtils.ts`), so a signed-out visitor gets the whole
- * wall with no round trip and a signed-in member gets exactly the same one.
+ * wall with no round trip and a signed-in member gets exactly the same one —
+ * plus whatever they logged in this tab that hasn't deployed yet, so a film
+ * logged from the button in the header lands at the top of the wall at once.
  */
 
 /**
@@ -111,10 +122,61 @@ const eventFrameSource = (event: WallEvent): FrameSource | null => {
     }
 };
 
+/**
+ * The bundled watch log with this tab's own unconfirmed saves laid over it.
+ *
+ * The overlay keys a member's first-ever entry by their lowercased name, since
+ * that's all the write cache holds; the wall prints that name on the row, so it
+ * goes back to the roster's spelling here.
+ */
+const wallWatchedLog = (): WatchedLog => {
+    const { log } = overlayPendingWatched(watchedLog);
+    return Object.fromEntries(
+        Object.entries(log).map(([name, entries]) => [
+            getTeamMemberByName(name)?.name ?? name,
+            entries,
+        ])
+    );
+};
+
+/**
+ * The header's one action, in the filter chips' shape so the row stays one
+ * height, and lit in the log's emerald so it doesn't read as a fourth filter.
+ */
+const LOG_BUTTON_CLASS =
+    'inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-emerald-500/50 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-emerald-200 transition-colors duration-200 hover:border-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-100';
+
 const WallPage: React.FC = () => {
-    // Built once for the session: it is a pass over four bundled files, and
-    // nothing on this page changes any of them.
-    const events = useMemo(() => buildWall(), []);
+    const { configured, status, member, canEditAs } = useClubAuth();
+    const canLog = configured && status === 'signed-in' && member !== null;
+
+    // Read once on arrival and again after a save from this page — the only
+    // write the wall makes. Everything else in it is bundled.
+    const [watched, setWatched] = useState<WatchedLog>(wallWatchedLog);
+    const events = useMemo(() => buildWall({ watched }), [watched]);
+
+    const [logOpen, setLogOpen] = useState(false);
+
+    // The row under edit outlives the dialog's `isOpen`, so the form is still
+    // there to fade out with the panel rather than vanishing ahead of it.
+    const [editing, setEditing] = useState<LogEvent | null>(null);
+    const [editOpen, setEditOpen] = useState(false);
+    /** A row's pencil: the reader's own log rows, or every one for an admin. */
+    const editHandler = (event: WallEvent): (() => void) | undefined => {
+        if (!canLog || event.kind !== 'log' || !canEditAs(event.member)) return undefined;
+        return () => {
+            setEditing(event);
+            setEditOpen(true);
+        };
+    };
+    const [justLogged, setJustLogged] = useState<{ imdbID: string; title: string } | null>(null);
+
+    /** The reader's own logged ids, which the search offers as already taken. */
+    const logged = useMemo(() => {
+        const name = member?.toLowerCase();
+        const key = Object.keys(watched).find((owner) => owner.toLowerCase() === name);
+        return new Set((key ? watched[key] : []).map((entry) => entry.imdbID));
+    }, [watched, member]);
 
     const { width: pillarWidth, left: pillarLeft } = usePillarPlacement();
 
@@ -161,6 +223,14 @@ const WallPage: React.FC = () => {
         }
         return [...sources.values()];
     }, [events]);
+
+    const onLogged = (imdbID: string, title: string) => {
+        setWatched(wallWatchedLog());
+        setJustLogged({ imdbID, title });
+        // A wall narrowed to screenings or lists would swallow the new row,
+        // which reads exactly like a save that didn't take.
+        setKinds((current) => (current.size === 0 || current.has('log') ? current : new Set()));
+    };
 
     const toggle = (kind: WallEventKind) => {
         setKinds((current) => {
@@ -233,8 +303,30 @@ const WallPage: React.FC = () => {
                                     </Button>
                                 )
                             )}
+                            {canLog && (
+                                <button
+                                    type="button"
+                                    onClick={() => setLogOpen(true)}
+                                    className={LOG_BUTTON_CLASS}
+                                >
+                                    <PlusIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                                    Log a film
+                                </button>
+                            )}
                         </div>
                     </div>
+
+                    {canLog && justLogged && (
+                        <p className="mb-6 text-sm text-emerald-300" role="status">
+                            Logged {justLogged.title}.{' '}
+                            <Link
+                                to={`${watchedPathFor(member)}#${watchedRowId(justLogged.imdbID)}`}
+                                className="text-emerald-200 underline decoration-emerald-400/40 underline-offset-4 transition-colors hover:text-white"
+                            >
+                                Add a score or review
+                            </Link>
+                        </p>
+                    )}
 
                     {months.length === 0 ? (
                         <p className="py-6 text-center italic text-slate-400">
@@ -271,6 +363,7 @@ const WallPage: React.FC = () => {
                                                     monthIndex < months.length - 1 ||
                                                     index < month.rows.length - 1
                                                 }
+                                                onEdit={editHandler(row.lead)}
                                             />
                                         ))}
                                     </ol>
@@ -295,6 +388,25 @@ const WallPage: React.FC = () => {
                     )}
                 </AccentCard>
             </div>
+
+            {canLog && editing && (
+                <EditLogDialog
+                    event={editing}
+                    isOpen={editOpen}
+                    onClose={() => setEditOpen(false)}
+                    onChanged={() => setWatched(wallWatchedLog())}
+                />
+            )}
+
+            {canLog && (
+                <LogFilmDialog
+                    isOpen={logOpen}
+                    onClose={() => setLogOpen(false)}
+                    member={member}
+                    logged={logged}
+                    onLogged={(entry, title) => onLogged(entry.imdbID, title)}
+                />
+            )}
         </PageLayout>
     );
 };
