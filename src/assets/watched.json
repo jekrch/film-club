@@ -1,6 +1,18 @@
 {
   "Gabe": [
     {
+      "imdbID": "tt4178092",
+      "watchDate": "2026-10-10",
+      "score": null,
+      "scoreQualifier": null,
+      "blurb": null,
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-10-11T03:42:30Z"
+    },
+    {
       "imdbID": "tt1131734",
       "watchDate": "2026-10-02",
       "score": 3.5,
