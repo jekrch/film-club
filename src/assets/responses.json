@@ -2,6 +2,9 @@
   "threads": {
     "log-Jacob-tt0076162": {
       "reactions": {
+        "fire": [
+          "Jacob"
+        ],
         "ghost": [
           "Jacob"
         ]
