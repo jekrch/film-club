@@ -23,14 +23,9 @@ export const EDITOR_API_URL = (import.meta.env.VITE_EDITOR_API_URL ?? '').replac
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
 
 /**
- * Where the live copies of the editable JSON files are read from.
- *
- * These are not editor settings in the sense the two above are: they have
- * working defaults and the reads they configure need no token, because the repo
- * is public. They live here only because this is the module jest can stub for
- * `import.meta.env`.
- *
- * A fork overrides them; unset, the site reads this repo's `main`.
+ * Where the live copies of the editable JSON files are read from: the build
+ * publishes them under `data/` on the site's own origin (`liveData` in
+ * `vite.config.ts`). It lives here only because this is the module jest can stub
+ * for `import.meta.env`.
  */
-export const DATA_REPO = import.meta.env.VITE_DATA_REPO ?? 'jekrch/film-club';
-export const DATA_BRANCH = import.meta.env.VITE_DATA_BRANCH ?? 'main';
+export const DATA_BASE = `${import.meta.env.BASE_URL}data`;

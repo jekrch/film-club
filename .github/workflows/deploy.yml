@@ -30,6 +30,17 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
+            # Step 0: Wait out a burst of reactions.
+            #
+            # Reaction and comment commits carry `[deferred deploy]` (`DEFER_DEPLOY`
+            # in worker/src/github.ts). A member reacting down the wall commits once
+            # per tap, and each of those runs would otherwise build the whole site.
+            # Waiting first lets the next tap's run cancel this one through the
+            # concurrency group above, so only the run after the last tap builds.
+            - name: Wait for a burst of reactions to finish
+              if: github.event_name == 'push' && contains(github.event.head_commit.message, '[deferred deploy]')
+              run: sleep 60
+
             # Step 1: Checkout the repository
             - name: Checkout repository
               uses: actions/checkout@v4

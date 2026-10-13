@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import type { Plugin } from 'vite';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 /**
  * The Content Security Policy, injected into the built `index.html` only.
@@ -39,7 +41,6 @@ function contentSecurityPolicy(): Plugin {
         transformIndexHtml(html) {
             const connect = [
                 "'self'",
-                'https://raw.githubusercontent.com',
                 'https://accounts.google.com',
                 'https://analytics.jacobkrch.com',
                 editorOrigin,
@@ -77,6 +78,54 @@ function contentSecurityPolicy(): Plugin {
     };
 }
 
+/**
+ * The worker-owned data files, which `src/api/repoData.ts` re-reads at runtime.
+ * Every one of them is also imported into the bundle.
+ */
+const LIVE_DATA_FILES = [
+    'overrides.json',
+    'lists.json',
+    'watched.json',
+    'trophies.json',
+    'club.json',
+    'responses.json',
+];
+
+/**
+ * Publishes the files above at `/data/`, next to the app.
+ *
+ * The bundle already holds them, but a visitor's bundle may be one deploy old.
+ * The service worker serves the precached one until its update reloads the page.
+ * A fetch from `/data/` reads whatever the latest deploy published. That is
+ * the freshness the editors and the reaction threads need, from the site's own
+ * origin rather than the repo's.
+ *
+ * In dev the same paths serve the working copies in `src/assets`.
+ */
+function liveData(): Plugin {
+    let assets = '';
+    const read = (file: string) => readFileSync(resolve(assets, file));
+    return {
+        name: 'live-data',
+        configResolved(config) {
+            assets = resolve(config.root, 'src/assets');
+        },
+        configureServer(server) {
+            server.middlewares.use('/data', (req, res, next) => {
+                const file = (req.url ?? '').split('?')[0].replace(/^\//, '');
+                if (!LIVE_DATA_FILES.includes(file)) return next();
+                res.setHeader('Content-Type', 'application/json');
+                res.end(read(file));
+            });
+        },
+        generateBundle() {
+            for (const file of LIVE_DATA_FILES) {
+                this.emitFile({ type: 'asset', fileName: `data/${file}`, source: read(file) });
+            }
+        },
+    };
+}
+
 export default defineConfig({
     plugins: [
         react({
@@ -84,6 +133,7 @@ export default defineConfig({
         }),
         tailwindcss(),
         contentSecurityPolicy(),
+        liveData(),
         VitePWA({
             registerType: 'autoUpdate', // Automatically update the SW when new content is available
             // `null`, not 'auto': src/main.tsx registers via `virtual:pwa-register`,
@@ -93,6 +143,9 @@ export default defineConfig({
             injectRegister: null,
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,json,woff,woff2,ttf,eot,otf}'], // Files to precache
+                // Not the live data files (see `liveData`). A precached copy is
+                // exactly the stale one they are fetched to get past.
+                globIgnores: ['**/node_modules/**/*', 'data/**'],
                 // The bundled data (films.json + persons.json) makes individual chunks
                 // exceed Workbox's 2 MiB default. Raise the ceiling so they still precache
                 // for offline use; headroom left for the dataset growing over time.
@@ -103,15 +156,12 @@ export default defineConfig({
                         // Strategy: StaleWhileRevalidate - serve from cache if available, then update in background.
                         // This ensures users get data fast, and it gets updated when they are online.
                         //
-                        // Not raw.githubusercontent.com. `src/api/repoData.ts` reads the
-                        // live data files from there precisely to get something newer than
-                        // the bundle, and stale-while-revalidate would hand it the copy from
-                        // the previous visit instead. For `responses.json`, whose commits
-                        // skip the deploy, that would put everyone else's reactions a
-                        // whole visit behind.
+                        // Not `/data/`. `src/api/repoData.ts` reads the live data files
+                        // from there precisely to get something newer than the bundle,
+                        // and stale-while-revalidate would hand it the copy from the
+                        // previous visit instead.
                         urlPattern: ({ url }) =>
-                            url.hostname !== 'raw.githubusercontent.com' &&
-                            url.pathname.endsWith('.json'),
+                            !url.pathname.startsWith('/data/') && url.pathname.endsWith('.json'),
                         handler: 'StaleWhileRevalidate',
                         options: {
                             cacheName: 'json-data-cache',

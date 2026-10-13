@@ -1,13 +1,12 @@
 /**
  * A short-lived record of this tab's own saves, used to bridge a stale read.
  *
- * The live copies of the editable files are now fetched from
- * `raw.githubusercontent.com` rather than through the worker (see `repoData.ts`
- * for why). That costs nothing and needs no token, but raw serves
- * `cache-control: max-age=300` — so for up to five minutes after a save the
- * fetched file can still be the version before it. Re-reading would then show a
- * member the value they just replaced, which reads exactly like a save that
- * failed. That regression is what this module exists to prevent.
+ * The live copies of the editable files are fetched from what the latest deploy
+ * published (see `repoData.ts`), not from `main`. A save takes a deploy to show
+ * up there, a minute or two, so until then the fetched file is still the version
+ * before it. Re-reading would then show a member the value they just replaced,
+ * which reads exactly like a save that failed. That regression is what this
+ * module exists to prevent.
  *
  * Every write already returns the stored record, so the authoritative value is
  * in hand the moment a save succeeds. Recording it here lets a *later* read —

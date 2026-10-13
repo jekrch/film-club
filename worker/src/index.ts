@@ -12,8 +12,8 @@
  * on log entries. CI owns `films.json` and `listFilms.json`, which this worker
  * never touches.
  *
- * `responses.json` is the one write that skips the Pages build. The site reads
- * it live, so a deploy would add nothing; see `SKIP_DEPLOY` in `github.ts`.
+ * `responses.json` writes come in bursts, so their deploy waits until the
+ * burst is over; see `DEFER_DEPLOY` in `github.ts`.
  *
  * So adding a film commits an `added` marker to `overrides.json`, and
  * `create_submitted_films.py` builds the full record on the next deploy.
@@ -23,10 +23,10 @@ import { authenticate, memberNames } from './auth';
 import { HttpError, badRequest, forbidden, notFound } from './errors';
 import {
     CLUB_PATH,
+    DEFER_DEPLOY,
     LISTS_PATH,
     OVERRIDES_PATH,
     RESPONSES_PATH,
-    SKIP_DEPLOY,
     TROPHIES_PATH,
     WATCHED_PATH,
     commitBinary,
@@ -1236,7 +1236,7 @@ async function putReaction(
             return {
                 commit: true,
                 next: storeThread(current, threadId, next),
-                message: `React ${key}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                message: `React ${key}: ${threadLabel(member, target)} ${DEFER_DEPLOY}`,
                 result: { threadId, thread: next, changed: true },
             };
         }
@@ -1282,7 +1282,7 @@ async function deleteReaction(
             return {
                 commit: true,
                 next: file,
-                message: `Unreact ${key}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                message: `Unreact ${key}: ${threadLabel(member, target)} ${DEFER_DEPLOY}`,
                 result: { threadId, thread: file.threads[threadId] ?? null, changed: true },
             };
         }
@@ -1365,7 +1365,7 @@ async function putComment(
             return {
                 commit: true,
                 next: storeThread(current, threadId, next),
-                message: `${existing ? 'Edit comment' : 'Comment'}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                message: `${existing ? 'Edit comment' : 'Comment'}: ${threadLabel(member, target)} ${DEFER_DEPLOY}`,
                 result: { threadId, thread: next, comment, created: !existing, changed: true },
             };
         }
@@ -1406,7 +1406,7 @@ async function deleteComment(
             return {
                 commit: true,
                 next: file,
-                message: `Remove comment${by}: ${threadLabel(member, target)} ${SKIP_DEPLOY}`,
+                message: `Remove comment${by}: ${threadLabel(member, target)} ${DEFER_DEPLOY}`,
                 result: {
                     threadId,
                     thread: file.threads[threadId] ?? null,

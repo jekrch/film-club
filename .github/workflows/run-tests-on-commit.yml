@@ -4,6 +4,10 @@ on:
     push:
         branches:
             - main
+        # Reactions and comments, one commit per tap. Data only, and the deploy
+        # validates the JSON anyway.
+        paths-ignore:
+            - src/assets/responses.json
     pull_request:
         branches:
             - main

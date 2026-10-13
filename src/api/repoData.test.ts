@@ -1,12 +1,11 @@
 /**
- * Covers the four reads that moved off the worker and onto
- * `raw.githubusercontent.com`.
+ * Covers the live reads of the files each deploy publishes under `/data/`.
  *
  * Two things are worth pinning down. The URLs, because a wrong one fails as an
  * empty editor rather than an error — the callers all swallow a failed refresh
  * on purpose, since the bundle is already on screen. And the overlay, because
- * it is the entire reason this is safe to do at all: raw serves a file up to
- * five minutes old, and without the overlay a member who saved would be shown
+ * it is the entire reason this is safe to do at all: a save takes a deploy to
+ * reach these files, and without the overlay a member who saved would be shown
  * the value they replaced.
  */
 
@@ -25,7 +24,7 @@ import type { FilmListDefinition } from '../types/list';
 import type { TeamMember } from '../types/team';
 import type { WatchedEntry } from '../types/watched';
 
-const RAW = 'https://raw.githubusercontent.com/jekrch/film-club/main/src/assets';
+const DATA = '/data';
 
 const respond = (status: number, body: unknown): Response =>
     ({
@@ -58,20 +57,20 @@ const entry = (imdbID: string, watchDate: string): WatchedEntry => ({
 });
 
 describe('request shape', () => {
-    it('reads each file from the repo, unauthenticated', async () => {
+    it('reads each file from the site, unauthenticated', async () => {
         mockFetch.mockResolvedValue(respond(200, { films: {} }));
         await fetchOverrides();
 
         const [url, init] = mockFetch.mock.calls[0] as [string, RequestInit];
-        expect(url).toBe(`${RAW}/overrides.json`);
+        expect(url).toBe(`${DATA}/overrides.json`);
         // No Authorization header: the point of the move is that this costs
         // nothing and needs no token.
         expect(init.headers).toBeUndefined();
     });
 
     /**
-     * Raw sets `max-age=300`. Nothing the browser sends bypasses GitHub's edge,
-     * but this at least stops it answering from a copy older than the edge's.
+     * Pages sets `max-age=600`, which would otherwise let the browser answer a
+     * second page view from the copy it read on the first.
      */
     it('revalidates rather than reading the browser cache', async () => {
         mockFetch.mockResolvedValue(respond(200, []));
@@ -341,10 +340,10 @@ describe('fetchResponses', () => {
         editedAt: null,
     });
 
-    it('reads responses.json from the repo', async () => {
+    it('reads responses.json from the site', async () => {
         mockFetch.mockResolvedValue(respond(200, { threads: {} }));
         await fetchResponses();
-        expect(mockFetch.mock.calls[0][0]).toBe(`${RAW}/responses.json`);
+        expect(mockFetch.mock.calls[0][0]).toBe(`${DATA}/responses.json`);
     });
 
     it("adds this tab's reaction the CDN hasn't caught up with", async () => {

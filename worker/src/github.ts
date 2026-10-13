@@ -34,22 +34,20 @@ export const TROPHIES_PATH = 'src/assets/trophies.json';
  */
 export const CLUB_PATH = 'src/assets/club.json';
 /**
- * Reactions and comments on members' log entries. The site fetches this file
- * live from the repo, so its commits skip the Pages build; see {@link SKIP_DEPLOY}.
+ * Reactions and comments on members' log entries. Its commits deploy only after
+ * a quiet spell; see {@link DEFER_DEPLOY}.
  */
 export const RESPONSES_PATH = 'src/assets/responses.json';
 
 /**
- * Appended to a commit message to keep GitHub Actions from running on that
- * push: no Pages build, no test run.
+ * Appended to a commit message to have `deploy.yml` wait before building.
  *
- * Only for files the site reads live from `raw.githubusercontent.com` instead of
- * from the bundle, where a build would add nothing a reader can see. A reaction
- * is a commit, and without this each one would also cost a full deploy. The
- * next deploy for any other reason picks the file up into the bundle anyway, so
- * the bundled copy is never more than one deploy behind.
+ * For writes that come in bursts. A member reacting to several log entries makes
+ * one commit per tap. The deploy waits a minute before it starts, and the next
+ * commit's run cancels the waiting one (the workflow's `cancel-in-progress`
+ * group), so a burst costs one build. The build starts once the member stops.
  */
-export const SKIP_DEPLOY = '[skip ci]';
+export const DEFER_DEPLOY = '[deferred deploy]';
 /** Read-only: used to reject a rating write for a film the sheet doesn't know. */
 export const FILMS_PATH = 'src/assets/films.json';
 /**

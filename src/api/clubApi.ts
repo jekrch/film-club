@@ -544,8 +544,8 @@ const threadPath = (threadId: string) => `/api/responses/${encodeURIComponent(th
  * Leaves the caller's reaction on a log entry. Idempotent, and there is no
  * `owner`: who reacted is the token's business, admin or not.
  *
- * These commits skip the Pages build, so a reaction is live as soon as raw
- * GitHub's cache turns over rather than after a deploy.
+ * These commits deploy only after a quiet spell, so a burst of reactions costs
+ * one Pages build. Until then the caller sees theirs through `writeCache`.
  */
 export const putReaction = (
     token: string,

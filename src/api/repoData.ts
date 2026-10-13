@@ -1,18 +1,19 @@
 /**
- * The live copies of the editable JSON files, read straight from the repo.
+ * The live copies of the editable JSON files, as the latest deploy published them.
  *
- * The repository is public, so `raw.githubusercontent.com` serves these files to
- * an unauthenticated `fetch` with `access-control-allow-origin: *`, without
- * going through the worker.
+ * Every deploy copies these files to `/data/` on the site's own origin
+ * (`liveData` in `vite.config.ts`). The bundle holds them too, but a visitor's
+ * bundle can be a deploy behind while the service worker swaps it out. These
+ * reads are how a page catches up without waiting for that.
  *
- * Raw serves `cache-control: max-age=300`, so a fetched file can be up to five
- * minutes behind `main`. So a member never sees a stale copy of their own save,
- * every write returns the stored record and `writeCache.ts` keeps this tab's
- * results. The reads below overlay those onto the fetched file, so a caller sees
- * `main` or newer.
+ * A deploy lands a minute or two after the commit, longer for a burst of
+ * reactions (see `deploy.yml`). So a member never sees a stale copy of their
+ * own save, every write returns the stored record and `writeCache.ts` keeps this
+ * tab's results. The reads below overlay those onto the fetched file, so a
+ * caller sees the deployed copy or newer.
  */
 
-import { DATA_BRANCH, DATA_REPO } from '../config/editorEnv';
+import { DATA_BASE } from '../config/editorEnv';
 import type { FilmListDefinition } from '../types/list';
 import type { TeamMember } from '../types/team';
 import type { ResponseComment, ResponseThread, ResponsesFile } from '../types/responses';
@@ -23,23 +24,20 @@ import { compareWatched } from '../utils/watchedUtils';
 import type { FilmRecordPatch, OverridesFile, RatingOverride } from './clubApi';
 import { pendingWrites, reconcile, splitKey, splitTupleKey } from './writeCache';
 
-const RAW_BASE = `https://raw.githubusercontent.com/${DATA_REPO}/${DATA_BRANCH}/src/assets`;
-
 /**
  * One file, parsed.
  *
- * `cache: 'no-cache'` does not bypass GitHub's CDN — nothing a browser sends
- * can — but it does stop the *browser* from answering out of a copy older than
- * the edge's, which is otherwise exactly what `max-age=300` invites on a second
- * page view. The revalidation is an ETag round trip and usually a 304.
+ * `cache: 'no-cache'` stops the browser from answering out of its own copy,
+ * which GitHub Pages' `max-age=600` otherwise invites on a second page view.
+ * The revalidation is an ETag round trip and usually a 304.
  */
 async function fetchAsset<T>(file: string, signal?: AbortSignal): Promise<T> {
     let response: Response;
     try {
-        response = await fetch(`${RAW_BASE}/${file}`, { signal, cache: 'no-cache' });
+        response = await fetch(`${DATA_BASE}/${file}`, { signal, cache: 'no-cache' });
     } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') throw error;
-        throw new Error("Couldn't reach GitHub to load the latest saves.");
+        throw new Error("Couldn't load the latest saves.");
     }
 
     if (!response.ok) {
@@ -301,9 +299,9 @@ export function overlayResponses(
  * `responses.json`: reactions and comments on log entries, keyed by thread.
  *
  * Unlike the other files here this one is read for signed-out visitors too.
- * Its commits skip the Pages build (see `SKIP_DEPLOY` in the worker), so the
- * bundled copy can be several reactions behind, and this read is how anyone
- * sees them.
+ * Its commits deploy only after a quiet spell (see `DEFER_DEPLOY` in the
+ * worker), so a page that has been open a while can be several reactions behind
+ * its bundle, and this read is how it catches up.
  */
 export async function fetchResponses(
     signal?: AbortSignal

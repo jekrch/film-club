@@ -6,16 +6,15 @@ on:
         - cron: '0 3 * * *'
     workflow_dispatch:
 
+# `actions: write` lets the last step dispatch deploy.yml. This workflow no
+# longer builds or publishes anything itself, so it needs no Pages permissions.
 permissions:
     contents: write
-    pages: write
-    id-token: write
+    actions: write
 
 jobs:
     sync:
         runs-on: ubuntu-latest
-        outputs: # Outputs from the 'sync' job
-            changed: ${{ steps.check_changes.outputs.changed }} # Exposes the 'changed' output from the 'check_changes' step
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -39,7 +38,7 @@ jobs:
                   TMDB_KEY: ${{ secrets.TMDB_KEY }}
 
             - name: Check for changes
-              id: check_changes # This step produces an output
+              id: check_changes
               run: |
                   git add src/assets/films.json src/assets/persons.json
                   if git diff --staged --quiet; then
@@ -49,73 +48,27 @@ jobs:
                   fi
 
             - name: Commit changes
-              # This 'if' condition is within the 'sync' job and correctly uses 'steps' context
               if: steps.check_changes.outputs.changed == 'true'
               run: |
                   git config --local user.email "github-actions[bot]@users.noreply.github.com"
                   git config --local user.name "github-actions[bot]"
                   git commit -m "Auto-update films.json from Google Sheet and OMDB"
+                  # The sync spends minutes on OMDb and TMDb calls, and the worker
+                  # commits member edits to main the whole time, so rebase onto
+                  # whatever landed rather than failing the push on a stale ref.
+                  git pull --rebase --autostash
                   git push
 
-    deploy:
-        needs: sync # Specifies that 'deploy' job depends on 'sync' job
-        # This 'if' condition is for the 'deploy' job and correctly uses 'needs' context
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && needs.sync.outputs.changed == 'true')
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository with updated content
-              uses: actions/checkout@v4
-              with:
-                  ref: main # Assuming 'main' is your default branch
-
-            - name: Validate JSON files
-              run: |
-                  # Check if club.json is valid
-                  if [ -f "src/assets/club.json" ]; then
-                    echo "Validating club.json..."
-                    if ! jq empty src/assets/club.json; then
-                      echo "ERROR: club.json is not valid JSON"
-                      exit 1
-                    fi
-                    echo "club.json is valid"
-                  fi
-
-                  # Check if films.json is valid
-                  if [ -f "src/assets/films.json" ]; then
-                    echo "Validating films.json..."
-                    if ! jq empty src/assets/films.json; then
-                      echo "ERROR: films.json is not valid JSON"
-                      exit 1
-                    fi
-                    echo "films.json is valid"
-                  fi
-
-            - name: Setup Bun
-              uses: oven-sh/setup-bun@v2
-              with:
-                  bun-version: latest
-
-            - name: Install dependencies
-              run: bun install
-
-            - name: Build the project
-              run: bun run build
-
-            - name: Verify build output
-              run: |
-                  echo "Checking build output directory..."
-                  ls -la
-                  if [ -d "dist" ]; then
-                    echo "dist directory exists"
-                    ls -la dist
-                  else
-                    echo "ERROR: dist directory does not exist"
-                    exit 1
-                  fi
-
-            - name: Deploy to GitHub Pages
-              uses: peaceiris/actions-gh-pages@v4
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./dist
-                  publish_branch: gh-pages
+            # Deploying is deploy.yml's job, not this workflow's. Building here meant
+            # a second, drifting copy of that pipeline: it built without the editing
+            # variables (publishing a site nobody could edit) and sat outside the
+            # `pages-deploy` concurrency group (so it could overwrite a newer deploy
+            # with an older build). The push above can't start deploy.yml, because
+            # commits made with GITHUB_TOKEN don't trigger workflows, but a
+            # workflow_dispatch made with it does.
+            - name: Trigger deploy
+              if: github.event_name == 'workflow_dispatch' || steps.check_changes.outputs.changed == 'true'
+              run: gh workflow run deploy.yml --ref main
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  GH_REPO: ${{ github.repository }}
