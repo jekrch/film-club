@@ -1,5 +1,16 @@
 {
   "threads": {
+    "log-Jacob-tt0076162": {
+      "reactions": {
+        "fire": [
+          "Jacob"
+        ],
+        "ghost": [
+          "Jacob"
+        ]
+      },
+      "comments": []
+    },
     "log-Jacob-tt0081505": {
       "reactions": {
         "ghost": [
