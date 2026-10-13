@@ -20,27 +20,57 @@ concurrency:
     cancel-in-progress: true
 
 # Fix for permission issue - changed to write
+# `actions: read` is for the wait job, which lists this workflow's runs.
 permissions:
     contents: write
     pages: write
     id-token: write
+    actions: read
 
 jobs:
+    # Waits out a burst of reactions.
+    #
+    # Reaction and comment commits carry `[deferred deploy]` (`DEFER_DEPLOY` in
+    # worker/src/github.ts). A member reacting down the wall commits once per
+    # tap, and each of those runs would otherwise build the whole site. So this
+    # waits until a minute after the commit, then stands down if a newer run of
+    # this workflow exists: that run deploys this commit too.
+    #
+    # The concurrency group above would cancel this run eventually anyway, but
+    # GitHub has been seen taking over a minute to deliver that cancel, long
+    # enough for every run in a burst to build. Asking is what makes it reliable.
+    # Measuring from the commit rather than from now means a run that sat queued
+    # behind the one it superseded doesn't wait a second minute.
+    wait:
+        runs-on: ubuntu-latest
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[deferred deploy]')
+        outputs:
+            superseded: ${{ steps.check.outputs.superseded }}
+        steps:
+            - name: Wait for a burst of reactions to finish
+              id: check
+              run: |
+                  remaining=$(( $(date -d "$COMMITTED_AT" +%s) + 60 - $(date +%s) ))
+                  if [ "$remaining" -gt 0 ]; then sleep "$remaining"; fi
+
+                  newer=$(gh api "repos/$GH_REPO/actions/workflows/deploy.yml/runs?branch=main&per_page=20" \
+                    --jq "[.workflow_runs[] | select(.run_number > $RUN_NUMBER and .status != \"completed\")] | length")
+                  echo "Newer runs still to come: $newer"
+                  echo "superseded=$([ "$newer" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+              env:
+                  COMMITTED_AT: ${{ github.event.head_commit.timestamp }}
+                  RUN_NUMBER: ${{ github.run_number }}
+                  GH_TOKEN: ${{ github.token }}
+                  GH_REPO: ${{ github.repository }}
+
     validate-and-deploy:
         runs-on: ubuntu-latest
+        needs: wait
+        # `!cancelled()` so a skipped wait (every commit that isn't a reaction)
+        # doesn't skip the deploy with it, as a plain `needs` would.
+        if: ${{ !cancelled() && needs.wait.result != 'failure' && needs.wait.outputs.superseded != 'true' }}
 
         steps:
-            # Step 0: Wait out a burst of reactions.
-            #
-            # Reaction and comment commits carry `[deferred deploy]` (`DEFER_DEPLOY`
-            # in worker/src/github.ts). A member reacting down the wall commits once
-            # per tap, and each of those runs would otherwise build the whole site.
-            # Waiting first lets the next tap's run cancel this one through the
-            # concurrency group above, so only the run after the last tap builds.
-            - name: Wait for a burst of reactions to finish
-              if: github.event_name == 'push' && contains(github.event.head_commit.message, '[deferred deploy]')
-              run: sleep 60
-
             # Step 1: Checkout the repository
             - name: Checkout repository
               uses: actions/checkout@v4
