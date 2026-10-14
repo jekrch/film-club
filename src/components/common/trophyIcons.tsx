@@ -77,6 +77,16 @@ export const SparklesIcon = ({ className }: IconProps) => (
     </svg>
 );
 
+// "Alarm Clock" — twin bells and a face reading late
+export const AlarmClockIcon = ({ className }: IconProps) => (
+    <svg className={className} {...svgBase}>
+        <circle cx="12" cy="13" r="7" />
+        <path d="M12 9.5V13l2.25 1.75" />
+        <path d="M3.75 7.25a3 3 0 0 1 3.5-3.5M20.25 7.25a3 3 0 0 0-3.5-3.5" />
+        <path d="M7.25 18.5 5.5 20.5M16.75 18.5l1.75 2" />
+    </svg>
+);
+
 export type IconComponent = (props: IconProps) => JSX.Element;
 
 // Keyword → emblem. Earliest-appearing keyword wins so combined awards
@@ -88,6 +98,7 @@ const ICON_MAP: { keywords: string[]; Icon: IconComponent }[] = [
     { keywords: ['sickness', 'health'], Icon: HeartPulseIcon },
     { keywords: ['special connection', 'connection'], Icon: SparklesIcon },
     { keywords: ['togetherness'], Icon: TogethernessIcon },
+    { keywords: ['alarm clock', 'alarm'], Icon: AlarmClockIcon },
 ];
 
 export const resolveTrophyIcon = (text: string): IconComponent => {

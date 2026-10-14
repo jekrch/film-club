@@ -17057,8 +17057,29 @@
     ],
     "movieClubInfo": {
       "selector": "Jacob",
-      "watchDate": null,
-      "clubRatings": [],
+      "watchDate": "10/13/2026",
+      "clubRatings": [
+        {
+          "user": "joey",
+          "score": 2,
+          "blurb": null
+        },
+        {
+          "user": "andy",
+          "score": 3.5,
+          "blurb": null
+        },
+        {
+          "user": "jacob",
+          "score": 5.5,
+          "blurb": "I liked the Hartley-esque stilted, deadpan style (which I admit can be alienating) but I personally HATED the pixelvision here."
+        },
+        {
+          "user": "gabe",
+          "score": 3,
+          "blurb": null
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
