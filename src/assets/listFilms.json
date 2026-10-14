@@ -4009,6 +4009,111 @@
       }
     ]
   },
+  "tt0154683": {
+    "imdbID": "tt0154683",
+    "title": "The Sinners of Hell",
+    "year": "1960",
+    "poster": "https://m.media-amazon.com/images/M/MV5BY2I5Mzk1MzMtNGRhZC00ZDkwLTlhMzQtNzIxNTQ1MjRjYmZiXkEyXkFqcGc@._V1_QL75_UY562_CR9,0,380,562_.jpg",
+    "runtime": "101 min",
+    "genre": "Crime, Drama, Horror",
+    "director": "Nobuo Nakagawa",
+    "writer": "Nobuo Nakagawa, Ichirô Miyagawa",
+    "imdbRating": "6.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.7/10"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "vQ13Z-cXfuI",
+    "plot": "A group of sinners involved in interconnected tales of murder, revenge, deceit and adultery all meet at the Gates of Hell.",
+    "cast": [
+      {
+        "name": "Shigeru Amachi",
+        "character": "Shirô Shimizu",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8iDM0eps69HND0Q5p6j3BSzLRjh.jpg",
+        "tmdbId": 80708
+      },
+      {
+        "name": "Utako Mitsuya",
+        "character": "Yukiko / Sachiko",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4c7hgxvHAurqDKEUyixPIhZlRVB.jpg",
+        "tmdbId": 143348
+      },
+      {
+        "name": "Yōichi Numata",
+        "character": "Tamura",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7MNgdAnmjUto0pe3ftgq1j9THp9.jpg",
+        "tmdbId": 27781
+      },
+      {
+        "name": "Hiroshi Hayashi",
+        "character": "Gôzô Shimizu",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tOUig5r48lQfBjmLbaojtx1FYrV.jpg",
+        "tmdbId": 125016
+      },
+      {
+        "name": "Kanjūrō Arashi",
+        "character": "Enma",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/odVRTsXJNeSxCsUVtE8nyFpf8mS.jpg",
+        "tmdbId": 150321
+      },
+      {
+        "name": "Jun Ōtomo",
+        "character": "Ensai Taniguchi",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t1CMnOZL7O77FHsLUQcy97m15e9.jpg",
+        "tmdbId": 1083306
+      },
+      {
+        "name": "Akiko Yamashita",
+        "character": "Kinuko",
+        "profileUrl": null,
+        "tmdbId": 1594341
+      },
+      {
+        "name": "Kiyoko Tsuji",
+        "character": "Kyôichi's Mother",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7kjmqWHQdo2IHmikhFJg7kXd3Qy.jpg",
+        "tmdbId": 134401
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/4ZVAAGCGDYncbZhjEgnfU1v2iQD.jpg",
+      "https://image.tmdb.org/t/p/w1280/f68Ivz2AlI9hINkY4LpU7rMHFDH.jpg",
+      "https://image.tmdb.org/t/p/w1280/r6hLoMyzvZp3C77E6G0TcoHB4yU.jpg",
+      "https://image.tmdb.org/t/p/w1280/3ETRwMI9g6Uap8oCDcgsIobDoGf.jpg",
+      "https://image.tmdb.org/t/p/w1280/sqZsHHLbIikZ2k2WqDw0CL1zttx.jpg",
+      "https://image.tmdb.org/t/p/w1280/gIrZB5rjpxwk38JFUgEWrEMOqXf.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Nobuo Nakagawa",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rIrLZ8N0nlclzEmY5qNKP6boO2R.jpg",
+        "tmdbId": 239551
+      },
+      {
+        "name": "Ichirō Miyagawa",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 89133
+      },
+      {
+        "name": "Nobuo Nakagawa",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rIrLZ8N0nlclzEmY5qNKP6boO2R.jpg",
+        "tmdbId": 239551
+      },
+      {
+        "name": "Mamoru Morita",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 1180707
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0373450": {
     "imdbID": "tt0373450",
     "title": "Where the Truth Lies",
