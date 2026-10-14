@@ -48,12 +48,35 @@
       }
     },
     "tt0110620": {
-      "ratings": {},
+      "ratings": {
+        "joey": {
+          "score": 2,
+          "updatedBy": "Jacob",
+          "updatedAt": "2026-10-14T04:00:00Z"
+        },
+        "andy": {
+          "score": 3.5,
+          "updatedBy": "Jacob",
+          "updatedAt": "2026-10-14T04:00:00Z"
+        },
+        "jacob": {
+          "score": 5.5,
+          "updatedBy": "Jacob",
+          "updatedAt": "2026-10-14T04:00:00Z",
+          "blurb": "I liked the Hartley-esque stilted, deadpan style (which I admit can be alienating) but I personally HATED the pixelvision here."
+        },
+        "gabe": {
+          "score": 3,
+          "updatedBy": "Jacob",
+          "updatedAt": "2026-10-14T04:00:00Z"
+        }
+      },
       "film": {
         "selector": "Jacob",
         "poster": "https://s3.amazonaws.com/nightjarprod/content/uploads/sites/344/2026/01/23184828/NADJA-Poster.jpeg",
         "updatedBy": "Jacob",
-        "updatedAt": "2026-09-07T18:30:57Z"
+        "updatedAt": "2026-10-14T04:00:00Z",
+        "watchDate": "10/13/2026"
       },
       "added": {
         "addedBy": "Jacob",
