@@ -17083,5 +17083,200 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "Shock Corridor",
+    "year": "1963",
+    "rated": "Approved",
+    "released": "25 Sep 1963",
+    "runtime": "101 min",
+    "genre": "Drama, Mystery, Thriller",
+    "director": "Samuel Fuller",
+    "writer": "Samuel Fuller",
+    "actors": "Peter Breck, Constance Towers, Gene Evans",
+    "plot": "Johnny Barrett, an ambitious journalist, is determined to win a Pulitzer Prize by solving a murder committed in a lunatic asylum and witnessed only by three inmates, from whom the police have been unable to extract the information. With the connivance of a psychiatrist, and the reluctant help of his girlfriend, he succeeds in having himself declared insane and sent to the asylum. There he slowly tracks down and interviews the witnesses - but things are stranger than they seem ...",
+    "language": "English",
+    "country": "United States",
+    "awards": "4 wins & 2 nominations total",
+    "poster": "https://s3.amazonaws.com/criterion-production/films/655fa066ac6fb4c96d560667e9459fd0/8nYRqrpwiqf90Uwvh0SI7wzA0vnfcX_large.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      }
+    ],
+    "metascore": "N/A",
+    "imdbRating": "7.3",
+    "imdbVotes": "14,194",
+    "imdbID": "tt0057495",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "tmdbDataVersion": 4,
+    "cinematographer": "Stanley Cortez",
+    "editor": "Jerome Thoms",
+    "musicComposer": "Paul Dunlap",
+    "costumeDesigner": "Einar Bourman",
+    "cast": [
+      {
+        "name": "Peter Breck",
+        "character": "Johnny Barrett",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/v5AX3WOOzbufez92VfNt3plnFhv.jpg"
+      },
+      {
+        "name": "Constance Towers",
+        "character": "Cathy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7zuktmfwrpZQ9h3Q7wYddZxnOaz.jpg"
+      },
+      {
+        "name": "Gene Evans",
+        "character": "Boden",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/h8G0iqraU7LHwU8DzlBp2ZcgkyY.jpg"
+      },
+      {
+        "name": "James Best",
+        "character": "Stuart",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/HjGVYpDakPcAeUb0ASkO06pNIP.jpg"
+      },
+      {
+        "name": "Hari Rhodes",
+        "character": "Trent",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tYEmkxghF55Bv2GcyIVbyOyn36P.jpg"
+      },
+      {
+        "name": "Larry Tucker",
+        "character": "Pagliacci",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ns3nwb2DcWUjPidTDgbY4Je5b65.jpg"
+      },
+      {
+        "name": "Paul Dubov",
+        "character": "Dr. Menkin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/16gXmonE03PgRmxhOFKsDn4nmqR.jpg"
+      },
+      {
+        "name": "Chuck Roberson",
+        "character": "Wilkes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/d61PgertplWQ4oi5eEFDE4dOX5T.jpg"
+      },
+      {
+        "name": "Neyle Morrow",
+        "character": "Psycho",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3m3bXgy0fG3BPcqCTLCUjMfH8Vs.jpg"
+      },
+      {
+        "name": "John Matthews",
+        "character": "Dr. Cristo",
+        "profileUrl": null
+      },
+      {
+        "name": "Bill Zuckert",
+        "character": "Swanee",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pwWoODxzdhSuqQG63paSPuhPZPd.jpg"
+      },
+      {
+        "name": "John Craig",
+        "character": "Lloyd",
+        "profileUrl": null
+      }
+    ],
+    "personProfiles": {
+      "samuel fuller": {
+        "tmdbId": 26959,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/11kfnmIhc44ea1uFk74FQIEBgDz.jpg"
+      },
+      "stanley cortez": {
+        "tmdbId": 7648,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/akCgFS0DZ44DOXiRuQRpi0QKXm3.jpg"
+      },
+      "jerome thoms": {
+        "tmdbId": 34439,
+        "profileUrl": null
+      },
+      "paul dunlap": {
+        "tmdbId": 19965,
+        "profileUrl": null
+      },
+      "einar bourman": {
+        "tmdbId": 1494606,
+        "profileUrl": null
+      },
+      "peter breck": {
+        "tmdbId": 35189,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/v5AX3WOOzbufez92VfNt3plnFhv.jpg"
+      },
+      "constance towers": {
+        "tmdbId": 20276,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7zuktmfwrpZQ9h3Q7wYddZxnOaz.jpg"
+      },
+      "gene evans": {
+        "tmdbId": 89582,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/h8G0iqraU7LHwU8DzlBp2ZcgkyY.jpg"
+      },
+      "james best": {
+        "tmdbId": 40185,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/HjGVYpDakPcAeUb0ASkO06pNIP.jpg"
+      },
+      "hari rhodes": {
+        "tmdbId": 98797,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tYEmkxghF55Bv2GcyIVbyOyn36P.jpg"
+      },
+      "larry tucker": {
+        "tmdbId": 95605,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ns3nwb2DcWUjPidTDgbY4Je5b65.jpg"
+      },
+      "paul dubov": {
+        "tmdbId": 27035,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/16gXmonE03PgRmxhOFKsDn4nmqR.jpg"
+      },
+      "chuck roberson": {
+        "tmdbId": 50310,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/d61PgertplWQ4oi5eEFDE4dOX5T.jpg"
+      },
+      "neyle morrow": {
+        "tmdbId": 95009,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3m3bXgy0fG3BPcqCTLCUjMfH8Vs.jpg"
+      },
+      "john matthews": {
+        "tmdbId": 14937,
+        "profileUrl": null
+      },
+      "bill zuckert": {
+        "tmdbId": 16070,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pwWoODxzdhSuqQG63paSPuhPZPd.jpg"
+      },
+      "john craig": {
+        "tmdbId": 1838871,
+        "profileUrl": null
+      }
+    },
+    "tagline": "… opens the door to sights you've never seen before!",
+    "keywords": [
+      "journalist",
+      "insane asylum"
+    ],
+    "trailerKey": "5vn4WcUkHoA",
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/5JfXNdjitnpFoWxfARzD9IDYnyA.jpg",
+      "https://image.tmdb.org/t/p/w1280/dPoTVEi3XZA16jpRuJ68IiBX2ja.jpg",
+      "https://image.tmdb.org/t/p/w1280/sQDU57MKOqfL7EjxlbkvmQWTogb.jpg",
+      "https://image.tmdb.org/t/p/w1280/p9MFc5t9ijzmTFHchZAlYFVr12Y.jpg",
+      "https://image.tmdb.org/t/p/w1280/tD08IDpzlUqh02Jcebvqojw1XLF.jpg",
+      "https://image.tmdb.org/t/p/w1280/wy48uDZyfdKXuD0NljBkDwgXVqH.jpg"
+    ],
+    "movieClubInfo": {
+      "selector": "Jacob",
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    }
   }
 ]
