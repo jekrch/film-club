@@ -17293,7 +17293,7 @@
     "language": "English",
     "country": "United States",
     "awards": "Nominated for 3 Oscars. 5 wins & 9 nominations total",
-    "poster": "https://m.media-amazon.com/images/M/MV5BNzY4MGZkYjgtYTQ2YS00YTlhLWEyMjAtMjZhYzczNTRlM2ZmXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "poster": "https://image.tmdb.org/t/p/w780/4eMN3GANH5GG4kXdHkrTZEUuQ9M.jpg",
     "ratings": [
       {
         "source": "Internet Movie Database",
@@ -17490,12 +17490,14 @@
     ],
     "trailerKey": "RtKn4rHAMAg",
     "backdropImages": [
-      "https://image.tmdb.org/t/p/w1280/bvkPno6U02lLyvPWCnmibq4eIaN.jpg",
-      "https://image.tmdb.org/t/p/w1280/IDjiEj9R4VKB8lPVfxODdjhr44.jpg",
-      "https://image.tmdb.org/t/p/w1280/3BFeScweA1ULn9yCrdteb57RBVu.jpg",
-      "https://image.tmdb.org/t/p/w1280/mAs8rH5ZwU9E7Yp6MUmrrWSrE2a.jpg",
-      "https://image.tmdb.org/t/p/w1280/59ghsepchMewBXTGBZ8Y3y7UYqi.jpg",
-      "https://image.tmdb.org/t/p/w1280/bK7H3ZdbPo1i1LntDc4Yzyaz5wM.jpg"
+      "https://image.tmdb.org/t/p/w1280/ly3qbkQ57uMtnW3V5ECCLuDEKNI.jpg",
+      "https://image.tmdb.org/t/p/w1280/cI7O6er74vVQ2BfmjlbDwFJLaHn.jpg",
+      "https://image.tmdb.org/t/p/w1280/qkixrrBhL2jQk8WEC376S9Y7iUW.jpg",
+      "https://image.tmdb.org/t/p/w1280/uWh0g3tlNAFLeYkTWXb8fGTP6sn.jpg",
+      "https://image.tmdb.org/t/p/w1280/rCvAmdoidCgkTYFw0Pt9Q8vTvM0.jpg",
+      "https://image.tmdb.org/t/p/w1280/wE7uy5DwlchO724T0DxwWsoWrzu.jpg",
+      "https://image.tmdb.org/t/p/w1280/ynw3EQN1Es3bzF1IWiUmuEfREug.jpg",
+      "https://image.tmdb.org/t/p/w1280/viC8V8fmhZSnD7qk6HogmFWDKie.jpg"
     ],
     "movieClubInfo": {
       "selector": null,
