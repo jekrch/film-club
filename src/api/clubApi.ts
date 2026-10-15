@@ -78,6 +78,8 @@ export interface FilmOverride {
     poster?: string | null;
     /** An `https` wide still for the hero background. */
     backdropImage?: string | null;
+    /** Which holiday a seasonal screening is for. Set by hand; no editor writes it. */
+    holidayPod?: string;
     updatedBy: string;
     updatedAt: string;
 }

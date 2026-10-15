@@ -4,7 +4,7 @@ import { Film, filmData } from '../types/film';
 import { TeamMember, teamMembers as teamMembersData } from '../types/team';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import SelectionCommitteeHero from '../components/home/SelectionCommitteeHero';
-import { parseWatchDate } from '../utils/filmUtils';
+import { findUpNextFilm, isUpcomingHolidayPod, parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
 import PageLayout from '../components/layout/PageLayout';
 import CorinthianPillar from '../components/layout/CorinthianPillar';
@@ -68,8 +68,9 @@ const HomePage = () => {
 
         let determinedSelectorName: string | null = null;
 
-        // Try to find the film without a watch date (the 'up next' film)
-        const foundUpNextFilm = allFilms.find((film) => !film?.movieClubInfo?.watchDate);
+        // Try to find the film without a watch date (the 'up next' film). An
+        // undated holiday pod is upcoming too, but never the rotation's pick.
+        const foundUpNextFilm = findUpNextFilm(allFilms);
         setUpNextFilm(foundUpNextFilm);
 
         determinedSelectorName = identifyCurrentSelector(
@@ -126,10 +127,14 @@ const HomePage = () => {
                     (parseWatchDate(a.movieClubInfo?.watchDate)?.getTime() ?? 0)
             );
 
-        let recentPicks = watchedFilmsSorted.slice(0, 8);
-        if (foundUpNextFilm) {
-            recentPicks = [foundUpNextFilm, ...recentPicks];
-        }
+        // Newest first, left to right: the up-next pick leads, then any holiday
+        // pod the club meets for before it, then what's been watched.
+        const upcomingHolidayPods = allFilms.filter(isUpcomingHolidayPod);
+        const recentPicks = [
+            ...(foundUpNextFilm ? [foundUpNextFilm] : []),
+            ...upcomingHolidayPods,
+            ...watchedFilmsSorted.slice(0, 8),
+        ];
         setRecentClubPicks(recentPicks);
 
         // Determine Last Meeting Time

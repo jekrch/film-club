@@ -126,6 +126,12 @@ export interface MovieClubDetails {
 }
 
 /**
+ * The holidays a holiday pod can be held for. Each has a theme in
+ * `HOLIDAY_THEMES`; adding one means adding both.
+ */
+export type Holiday = 'halloween';
+
+/**
  * Represents a single Film entry, combining general movie data
  * with specific movie club tracking information.
  * Fields that might have contained "N/A" are now optional as they may be removed.
@@ -164,6 +170,12 @@ export interface Film {
     // Criterion page to link to, and the UI brands it as a "Hollywood Popcorn
     // Pod" presentation so it can't be mistaken for a proper selection.
     popcornPod?: boolean;
+    // Optional: marks a seasonal screening — the club gathering for a holiday
+    // film outside the selection rotation. Like a popcorn pod it has no
+    // selector, and it never takes the "Up Next" slot: until it has a watch date
+    // it is shown as upcoming alongside the real pick. The value names the
+    // holiday, which picks its theme (see `HolidayPod.tsx`).
+    holidayPod?: Holiday;
     editor?: string;
     productionDesigner?: string;
     cinematographer?: string;

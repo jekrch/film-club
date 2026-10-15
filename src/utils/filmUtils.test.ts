@@ -9,8 +9,11 @@ import {
     countValidRatings,
     formatDayGap,
     getAllFilmCreditsForPerson,
+    findUpNextFilm,
+    isPodFilm,
+    isUpcomingHolidayPod,
 } from './filmUtils';
-import { makeFilm, makeRating } from '../test-utils/factories';
+import { makeClubInfo, makeFilm, makeRating } from '../test-utils/factories';
 
 describe('filmUtils', () => {
     describe('parseWatchDate', () => {
@@ -269,6 +272,43 @@ describe('filmUtils', () => {
         it('returns nothing for a blank name or an unknown person', () => {
             expect(getAllFilmCreditsForPerson('   ', films)).toEqual([]);
             expect(getAllFilmCreditsForPerson('Nobody', films)).toEqual([]);
+        });
+    });
+
+    describe('holiday pods', () => {
+        const watched = makeFilm({
+            imdbID: 'tt1',
+            movieClubInfo: makeClubInfo({ selector: 'Andy', watchDate: '10/01/2026' }),
+        });
+        const upcomingPod = makeFilm({
+            imdbID: 'tt2',
+            holidayPod: 'halloween',
+            movieClubInfo: makeClubInfo({ selector: '', watchDate: null }),
+        });
+        const upNext = makeFilm({
+            imdbID: 'tt3',
+            movieClubInfo: makeClubInfo({ selector: 'Gabe', watchDate: null }),
+        });
+
+        it('never picks an undated holiday pod as up next, wherever it sits', () => {
+            expect(findUpNextFilm([watched, upcomingPod, upNext])?.imdbID).toBe('tt3');
+            expect(findUpNextFilm([watched, upcomingPod])).toBeUndefined();
+        });
+
+        it('flags a holiday pod as upcoming only until it has a watch date', () => {
+            expect(isUpcomingHolidayPod(upcomingPod)).toBe(true);
+            expect(isUpcomingHolidayPod(upNext)).toBe(false);
+            const met = makeFilm({
+                holidayPod: 'halloween',
+                movieClubInfo: makeClubInfo({ watchDate: '10/31/2026' }),
+            });
+            expect(isUpcomingHolidayPod(met)).toBe(false);
+        });
+
+        it('counts both kinds of pod as outside the rotation', () => {
+            expect(isPodFilm(upcomingPod)).toBe(true);
+            expect(isPodFilm(makeFilm({ popcornPod: true }))).toBe(true);
+            expect(isPodFilm(watched)).toBe(false);
         });
     });
 });

@@ -8,7 +8,9 @@ Two kinds of edit are applied:
 
 - **Per-member**, under `films.<id>.ratings.<user>` — score, qualifier, review.
 - **Per-film**, under `films.<id>.film` — selector, watch date, poster, and
-  backdrop image.
+  backdrop image, plus `holidayPod` (which holiday a seasonal screening is for).
+  The worker never writes `holidayPod`; it is set by hand in overrides.json,
+  which is how a holiday pod added there arrives in films.json already flagged.
 
 **The override always wins**; there is no timestamp comparison. Once a member
 sets a value on the site, the sheet's cell for that field is ignored.
@@ -39,7 +41,8 @@ OVERRIDABLE_RATING_FIELDS = ("score", "scoreQualifier", "blurb")
 
 # The club-record fields a member may set on the film itself, mapped to where
 # they live in a film entry. `selector` and `watchDate` sit inside
-# `movieClubInfo`; the two images are top-level, beside OMDb's own `poster`.
+# `movieClubInfo`; the two images are top-level, beside OMDb's own `poster`, as
+# is `holidayPod`.
 # A whitelist for the same reason as the tuple above: `updatedBy`/`updatedAt` are
 # provenance for humans reading overrides.json and must never reach films.json.
 OVERRIDABLE_FILM_FIELDS = {
@@ -47,6 +50,7 @@ OVERRIDABLE_FILM_FIELDS = {
     "watchDate": ("movieClubInfo", "watchDate"),
     "poster": (None, "poster"),
     "backdropImage": (None, "backdropImage"),
+    "holidayPod": (None, "holidayPod"),
 }
 
 
@@ -78,8 +82,8 @@ def _apply_film_fields(film, film_fields, imdb_id, divergences):
     null `watchDate` (a film the club has scheduled but not yet watched) and a
     missing key would be a third state nothing expects.
 
-    The two image fields are the exception: they are *optional* on a film entry
-    and most films have neither, so a cleared one is removed rather than left as
+    The top-level fields are the exception: they are *optional* on a film entry
+    and most films have none, so a cleared one is removed rather than left as
     `poster: null`, which the site would render as a broken image.
     """
     for field, (container, key) in OVERRIDABLE_FILM_FIELDS.items():
@@ -92,7 +96,8 @@ def _apply_film_fields(film, film_fields, imdb_id, divergences):
 
         if value is None and container is None:
             # An absent image is how a film without curated art is already
-            # stored; a null one would reach an <img src>.
+            # stored; a null one would reach an <img src>. Likewise a film that
+            # isn't a holiday pod simply has no `holidayPod`.
             target.pop(key, None)
         else:
             target[key] = value

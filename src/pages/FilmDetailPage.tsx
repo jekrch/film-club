@@ -12,6 +12,7 @@ import {
     formatRuntime,
     getFilmBackdrop,
     getFilmBackdrops,
+    isUpcomingHolidayPod,
     parseGenres,
     parseWatchDate,
 } from '../utils/filmUtils';
@@ -27,6 +28,11 @@ import {
     PopcornPodDisclaimer,
     POPCORN_POD_POSTER_FILTER,
 } from '../components/films/PopcornPod';
+import {
+    HolidayPodStamp,
+    HolidayPodDisclaimer,
+    getHolidayTheme,
+} from '../components/films/HolidayPod';
 import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
 import BaseCard from '../components/common/BaseCard';
@@ -195,6 +201,8 @@ const FilmDetailPage = () => {
         (url, i, arr): url is string => !!url && arr.indexOf(url) === i
     );
     const MAX_RATING = 9;
+    const holidayTheme = getHolidayTheme(film.holidayPod);
+    const isUpcomingPod = isUpcomingHolidayPod(film);
     const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
 
     // Time elapsed between this screening and the club's adjacent screenings.
@@ -263,7 +271,7 @@ const FilmDetailPage = () => {
                             <img
                                 src={film.poster}
                                 alt={`${film.title} poster`}
-                                className={`h-full w-full object-cover ${film.popcornPod ? POPCORN_POD_POSTER_FILTER : ''}`}
+                                className={`h-full w-full object-cover ${film.popcornPod ? POPCORN_POD_POSTER_FILTER : ''} ${holidayTheme?.posterFilter ?? ''}`}
                                 onError={(e) => {
                                     const target = e.target as HTMLImageElement;
                                     target.src = '/placeholder-poster.png';
@@ -272,6 +280,7 @@ const FilmDetailPage = () => {
                             />
                             {/* Not a selection: deface the poster instead of offering a Watch link. */}
                             {film.popcornPod && <PopcornPodStamp />}
+                            {film.holidayPod && <HolidayPodStamp holiday={film.holidayPod} />}
                             {canWatch && (
                                 <a
                                     href={watchUrl!}
@@ -347,6 +356,12 @@ const FilmDetailPage = () => {
                                     </p>
                                 )}
                                 {film.popcornPod && <PopcornPodDisclaimer />}
+                                {film.holidayPod && (
+                                    <HolidayPodDisclaimer
+                                        holiday={film.holidayPod}
+                                        upcoming={isUpcomingPod}
+                                    />
+                                )}
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 mb-5">
                                     {clubAverageDisplay && (
                                         <div
@@ -625,6 +640,24 @@ const FilmDetailPage = () => {
                                                     </span>
                                                     <span className="mt-0.5 block font-serif text-base tabular-nums text-slate-100">
                                                         {film.movieClubInfo.watchDate}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {/* An undated holiday pod isn't the up-next
+                                            pick, so nothing else on the page says
+                                            the club is still to meet for it. */}
+                                        {isUpcomingPod && (
+                                            <div className="mb-6 inline-flex items-center gap-3 rounded-lg border border-dashed border-slate-700/60 bg-slate-800/30 px-4 py-2.5">
+                                                <CalendarDaysIcon className="h-5 w-5 flex-shrink-0 text-slate-500" />
+                                                <div className="leading-tight">
+                                                    <span className={`block ${FIELD_LABEL}`}>
+                                                        Watch Date
+                                                    </span>
+                                                    <span
+                                                        className={`mt-0.5 block font-serif text-base ${holidayTheme?.upcomingText ?? 'text-slate-300'}`}
+                                                    >
+                                                        Upcoming
                                                     </span>
                                                 </div>
                                             </div>

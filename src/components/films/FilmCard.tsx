@@ -11,6 +11,8 @@ import {
     RIBBON_FOLD_CLIP_LEFT,
     RIBBON_FOLD_CLIP_RIGHT,
 } from './PopcornPod';
+import { HolidayPodStamp, getHolidayTheme } from './HolidayPod';
+import { isUpcomingHolidayPod } from '../../utils/filmUtils';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
 
@@ -119,9 +121,18 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
           })
         : null;
 
+    // A seasonal screening outside the rotation. It is never the "Up Next" pick,
+    // even undated; until it has a date it is flagged as upcoming instead.
+    const holidayTheme = getHolidayTheme(film.holidayPod);
+    const isUpcomingPod = isUpcomingHolidayPod(film);
+
     // Determine if the "Up Next" elements should be shown
     // True if there's no watch date BUT there is a selector assigned
-    const showUpNext = !watchDateFormatted && selectorName;
+    const showUpNext = !watchDateFormatted && selectorName && !film.holidayPod;
+
+    // Director and country stand in for the score tiles while there are no
+    // scores to show: the up-next pick, or a holiday pod nobody has scored yet.
+    const showFilmInfo = showUpNext || (isUpcomingPod && ratingEntries.length === 0);
 
     // A "Hollywood Popcorn Pod" outing rather than a club selection: the poster
     // gets the cheapened treatment and a sash folded over its corner.
@@ -217,6 +228,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     shadow-sm shadow-black/30
                     transition-colors duration-300
                     ${isPopcornPod ? '!border-amber-400/40' : ''}
+                    ${holidayTheme?.cardBorder ?? ''}
                 `}
                 >
                     {/* Poster Container: Fixed aspect ratio, clips image. The slate
@@ -245,6 +257,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     ${isVisible ? 'scale-100' : 'scale-[0.97]'} /* Entrance scale state for transition */
                                     ${loaded ? 'opacity-100' : 'opacity-0'} /* Fade in from placeholder once decoded */
                                     ${isPopcornPod ? POPCORN_POD_POSTER_FILTER : ''} /* Cheapened treatment for a non-selection */
+                                    ${holidayTheme?.posterFilter ?? ''} /* Seasonal treatment for a holiday pod */
                                 `}
                                 onLoad={() => setLoaded(true)}
                                 onError={(e) => {
@@ -263,6 +276,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             keeps three backdrop-blur layers per card out of iOS's
                             compositing budget during scroll. */}
                         {isPopcornPod && <PopcornPodStamp />}
+                        {film.holidayPod && <HolidayPodStamp holiday={film.holidayPod} />}
                     </div>
 
                     {/* Card Content Section: Below poster, contains text info - NOT shown in poster-only mode */}
@@ -290,7 +304,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             {/* Who picked it, and when the club watched it — one quiet
                                 typographic line in the same micro-label idiom the
                                 detail page uses for its field headings. */}
-                            {(selectorName || watchDateFormatted) && (
+                            {(selectorName || watchDateFormatted || isUpcomingPod) && (
                                 <div
                                     className={`
                                     mt-1 flex items-center gap-1.5 uppercase tracking-widest text-slate-500
@@ -313,13 +327,20 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                             {watchDateFormatted}
                                         </span>
                                     )}
+                                    {isUpcomingPod && (
+                                        <span
+                                            className={`font-semibold ${holidayTheme?.upcomingText ?? ''}`}
+                                        >
+                                            Upcoming
+                                        </span>
+                                    )}
                                 </div>
                             )}
 
                             {/* Conditional Content Area: Ratings OR Film Info */}
                             <div className={`mt-auto ${isCompact ? 'pt-1.5' : 'pt-2'}`}>
-                                {showUpNext ? (
-                                    // --- RENDER IF "UP NEXT" ---
+                                {showFilmInfo ? (
+                                    // --- RENDER IF "UP NEXT" (or an unscored upcoming pod) ---
                                     <div
                                         className={`grid grid-cols-2 gap-x-2 gap-y-0.5 ${isCompact ? 'text-[10px]' : 'text-xs'}`}
                                     >

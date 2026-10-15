@@ -4,8 +4,9 @@ import { TeamMember } from '../types/team';
 import { makeClubInfo, makeFilm } from '../test-utils/factories';
 import { parseWatchDate } from './filmUtils';
 
-// Mock the imported parseWatchDate function
+// Mock the imported parseWatchDate function; everything else stays real.
 jest.mock('./filmUtils', () => ({
+    ...jest.requireActual('./filmUtils'),
     parseWatchDate: jest.fn(),
 }));
 
@@ -112,6 +113,26 @@ describe('teamUtils', () => {
                 return null;
             });
             const selector = identifyCurrentSelector(undefined, activeMembers, null, allFilms);
+            expect(selector).toBe('Charlie');
+        });
+
+        it('should skip a holiday pod watched most recently, since it has no selector', () => {
+            // The pod is newest, but Bob's pick is the last one in the rotation.
+            const holidayPod = makeFilm({
+                title: 'Holiday Pod',
+                imdbID: 'ttH',
+                holidayPod: 'halloween',
+                movieClubInfo: {
+                    selector: null,
+                    watchDate: '2023-01-20',
+                    clubRatings: [],
+                } as unknown as MovieClubDetails,
+            });
+            const selector = identifyCurrentSelector(undefined, activeMembers, null, [
+                film1,
+                film2,
+                holidayPod,
+            ]);
             expect(selector).toBe('Charlie');
         });
 

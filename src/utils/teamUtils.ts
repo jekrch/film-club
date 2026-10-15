@@ -1,6 +1,6 @@
 import { Film } from '../types/film';
 import { TeamMember } from '../types/team';
-import { parseWatchDate } from './filmUtils';
+import { isPodFilm, parseWatchDate } from './filmUtils';
 
 /**
  * Identify the current selector based on the 'up next' film and active members.
@@ -32,9 +32,10 @@ export function identifyCurrentSelector(
 
     // Fallback Logic: If no 'up next' film found OR its selector isn't valid/active
     if (!determinedSelectorName && sortedActiveMembers.length > 0) {
-        // Find all films that *have* been watched
+        // Find all films that *have* been watched. Pods sit outside the
+        // rotation and have no selector, so they say nothing about whose turn it is.
         const watchedFilms = allFilms
-            .filter((film) => film.movieClubInfo?.watchDate)
+            .filter((film) => film.movieClubInfo?.watchDate && !isPodFilm(film))
             .sort(
                 (a, b) =>
                     (parseWatchDate(b.movieClubInfo?.watchDate)?.getTime() ?? 0) -

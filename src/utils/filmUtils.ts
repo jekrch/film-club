@@ -152,6 +152,25 @@ export const parseWatchDate = (dateString: string | null | undefined): Date | nu
     }
 };
 
+/**
+ * True for a film the club saw outside the selection rotation — a popcorn pod
+ * or a holiday pod. Neither has a selector, so neither says anything about
+ * whose turn it is.
+ */
+export const isPodFilm = (film: Film): boolean => !!film.popcornPod || !!film.holidayPod;
+
+/** A holiday pod the club hasn't met for yet: no watch date. */
+export const isUpcomingHolidayPod = (film: Film): boolean =>
+    !!film.holidayPod && !film.movieClubInfo?.watchDate;
+
+/**
+ * The official "Up Next" pick: the first film without a watch date that isn't
+ * a holiday pod. An undated holiday pod is upcoming too, but it is a seasonal
+ * extra rather than the rotation's next selection, so it never takes this slot.
+ */
+export const findUpNextFilm = (films: Film[]): Film | undefined =>
+    films.find((film) => !film.movieClubInfo?.watchDate && !film.holidayPod);
+
 export const getAllFilmCreditsForPerson = (
     personName: string,
     allFilms: Film[]

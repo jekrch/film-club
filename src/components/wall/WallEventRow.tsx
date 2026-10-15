@@ -34,6 +34,7 @@ import {
     NODE_PHOTO_CLASS,
     ROW_HOVER_CLASS,
 } from './wallAccents';
+import { HolidayPodChip } from '../films/HolidayPod';
 
 /**
  * One box on the club's wall.
@@ -866,6 +867,7 @@ const WallSubject: React.FC<{ event: WallEvent }> = ({ event }) => {
                             Popcorn Pod
                         </span>
                     )}
+                    {event.film.holidayPod && <HolidayPodChip holiday={event.film.holidayPod} />}
                 </>
             );
 

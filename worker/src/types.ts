@@ -240,7 +240,13 @@ export interface FilmOverride {
     poster?: string | null;
     /** An `https` wide still for the hero background, or null for TMDb's. */
     backdropImage?: string | null;
-    /** Provenance only — `apply_overrides.py` whitelists the four fields above. */
+    /**
+     * Which holiday a seasonal screening is for (`"halloween"`). Set by hand in
+     * `overrides.json`, never by this worker: no patch accepts it, and an edit
+     * keeps it because `mergeFilm` (index.ts) spreads the stored record.
+     */
+    holidayPod?: string;
+    /** Provenance only — `apply_overrides.py` whitelists the fields above. */
     updatedBy: string;
     updatedAt: string;
 }
