@@ -246,6 +246,11 @@ export interface FilmOverride {
      * keeps it because `mergeFilm` (index.ts) spreads the stored record.
      */
     holidayPod?: string;
+    /**
+     * A curated set of scene stills, replacing the ones the sync takes from
+     * TMDb. Hand-set like `holidayPod`, and kept across edits the same way.
+     */
+    backdropImages?: string[];
     /** Provenance only — `apply_overrides.py` whitelists the fields above. */
     updatedBy: string;
     updatedAt: string;

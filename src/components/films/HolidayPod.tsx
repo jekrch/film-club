@@ -43,6 +43,8 @@ interface HolidayTheme {
     Glyph: React.FC<{ className?: string }>;
     /** An ornament for the poster's top-right corner, opposite the sash. */
     Corner?: React.FC;
+    /** An ornament for the bottom-right corner of the film card's detail bar. */
+    BarCorner?: React.FC<{ className?: string }>;
 }
 
 // --- Halloween ---------------------------------------------------------------
@@ -92,40 +94,60 @@ const COBWEB_PATH = (() => {
  * holds its proportions on a grid card and on the detail page. The spider drops
  * a little further on hover, in step with the sash's swell.
  */
-const Cobweb: React.FC = () => (
-    <svg
-        viewBox="0 0 100 100"
-        aria-hidden="true"
-        className="absolute top-0 right-0 w-[34cqw] h-[34cqw] overflow-visible"
-    >
+/**
+ * The same cobweb without its spider, flipped into the bottom-right corner of
+ * the film card's detail bar. Faint, since it sits behind text; its parent
+ * sizes and positions it.
+ */
+const CobwebBarCorner: React.FC<{ className?: string }> = ({ className = '' }) => (
+    <svg viewBox="0 0 100 100" aria-hidden="true" className={className}>
         <path
             d={COBWEB_PATH}
+            transform="matrix(1 0 0 -1 0 100)"
             fill="none"
-            stroke="rgba(241,245,249,0.42)"
-            strokeWidth="1.1"
+            stroke="rgba(241,245,249,0.22)"
+            strokeWidth="1.5"
             strokeLinecap="round"
-            style={{ filter: 'drop-shadow(0 0 1px rgba(0,0,0,0.8))' }}
         />
-        <g className="transition-transform duration-500 ease-out group-hover:translate-y-[10px]">
-            <line
-                x1="64"
-                y1="18"
-                x2="64"
-                y2="56"
-                stroke="rgba(241,245,249,0.5)"
-                strokeWidth="0.8"
-            />
-            <g stroke="#0f0518" strokeWidth="1.6" strokeLinecap="round" fill="none">
-                <path d="M61.5 58l-5-3.5-1.5-4M61.5 60l-6-.5-2.5 2.5M61.5 62l-5 2.5-1 4M62.5 63.5l-3 4.5" />
-                <path d="M66.5 58l5-3.5 1.5-4M66.5 60l6-.5 2.5 2.5M66.5 62l5 2.5 1 4M65.5 63.5l3 4.5" />
-            </g>
-            <ellipse cx="64" cy="61" rx="3.6" ry="4.4" fill="#0f0518" />
-            <circle cx="64" cy="56.2" r="2.3" fill="#0f0518" />
-            <circle cx="63.1" cy="55.9" r="0.55" fill="#f97316" />
-            <circle cx="64.9" cy="55.9" r="0.55" fill="#f97316" />
-        </g>
     </svg>
 );
+
+// Temporarily off: the poster carries only the sash for now, and a bare web
+// sits in the card's detail bar instead (see `CobwebBarCorner`).
+// const Cobweb: React.FC = () => (
+//     <svg
+//         viewBox="0 0 100 100"
+//         aria-hidden="true"
+//         className="absolute top-0 right-0 w-[34cqw] h-[34cqw] overflow-visible"
+//     >
+//         <path
+//             d={COBWEB_PATH}
+//             fill="none"
+//             stroke="rgba(241,245,249,0.42)"
+//             strokeWidth="1.1"
+//             strokeLinecap="round"
+//             style={{ filter: 'drop-shadow(0 0 1px rgba(0,0,0,0.8))' }}
+//         />
+//         <g className="transition-transform duration-500 ease-out group-hover:translate-y-[10px]">
+//             <line
+//                 x1="64"
+//                 y1="18"
+//                 x2="64"
+//                 y2="56"
+//                 stroke="rgba(241,245,249,0.5)"
+//                 strokeWidth="0.8"
+//             />
+//             <g stroke="#0f0518" strokeWidth="1.6" strokeLinecap="round" fill="none">
+//                 <path d="M61.5 58l-5-3.5-1.5-4M61.5 60l-6-.5-2.5 2.5M61.5 62l-5 2.5-1 4M62.5 63.5l-3 4.5" />
+//                 <path d="M66.5 58l5-3.5 1.5-4M66.5 60l6-.5 2.5 2.5M66.5 62l5 2.5 1 4M65.5 63.5l3 4.5" />
+//             </g>
+//             <ellipse cx="64" cy="61" rx="3.6" ry="4.4" fill="#0f0518" />
+//             <circle cx="64" cy="56.2" r="2.3" fill="#0f0518" />
+//             <circle cx="63.1" cy="55.9" r="0.55" fill="#f97316" />
+//             <circle cx="64.9" cy="55.9" r="0.55" fill="#f97316" />
+//         </g>
+//     </svg>
+// );
 
 export const HOLIDAY_THEMES: Record<Holiday, HolidayTheme> = {
     halloween: {
@@ -147,7 +169,8 @@ export const HOLIDAY_THEMES: Record<Holiday, HolidayTheme> = {
         chip: 'bg-orange-400/[0.07] text-orange-400/80 ring-orange-400/25',
         upcomingText: 'text-orange-400/90',
         Glyph: JackOLantern,
-        Corner: Cobweb,
+        // Corner: Cobweb,
+        BarCorner: CobwebBarCorner,
     },
 };
 

@@ -125,6 +125,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
     // even undated; until it has a date it is flagged as upcoming instead.
     const holidayTheme = getHolidayTheme(film.holidayPod);
     const isUpcomingPod = isUpcomingHolidayPod(film);
+    const HolidayBarCorner = holidayTheme?.BarCorner;
 
     // Determine if the "Up Next" elements should be shown
     // True if there's no watch date BUT there is a selector assigned
@@ -282,8 +283,15 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                     {/* Card Content Section: Below poster, contains text info - NOT shown in poster-only mode */}
                     {!isPosterOnly && (
                         <div
-                            className={`flex flex-col flex-grow ${isCompact ? 'p-1.5' : 'p-2'} bg-slate-800/40 border-t border-white/[0.06]`}
+                            className={`relative isolate flex flex-col flex-grow ${isCompact ? 'p-1.5' : 'p-2'} bg-slate-800/40 border-t border-white/[0.06]`}
                         >
+                            {/* The holiday theme's ornament, tucked behind the text in
+                                the bar's bottom-right corner. */}
+                            {HolidayBarCorner && (
+                                <HolidayBarCorner
+                                    className={`absolute bottom-0 right-0 -z-10 pointer-events-none ${isCompact ? 'w-10 h-10' : 'w-14 h-14'}`}
+                                />
+                            )}
                             {/* Film Title. Hover brightens rather than turning blue:
                                 saturated blue is reserved for data (club average,
                                 genre chips), not for hover feedback — the card's

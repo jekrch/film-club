@@ -8,9 +8,9 @@ Two kinds of edit are applied:
 
 - **Per-member**, under `films.<id>.ratings.<user>` — score, qualifier, review.
 - **Per-film**, under `films.<id>.film` — selector, watch date, poster, and
-  backdrop image, plus `holidayPod` (which holiday a seasonal screening is for).
-  The worker never writes `holidayPod`; it is set by hand in overrides.json,
-  which is how a holiday pod added there arrives in films.json already flagged.
+  backdrop image, plus two fields the worker never writes and that are set by
+  hand in overrides.json: `holidayPod` (which holiday a seasonal screening is
+  for) and `backdropImages` (a curated set of stills, replacing TMDb's pick).
 
 **The override always wins**; there is no timestamp comparison. Once a member
 sets a value on the site, the sheet's cell for that field is ignored.
@@ -41,8 +41,8 @@ OVERRIDABLE_RATING_FIELDS = ("score", "scoreQualifier", "blurb")
 
 # The club-record fields a member may set on the film itself, mapped to where
 # they live in a film entry. `selector` and `watchDate` sit inside
-# `movieClubInfo`; the two images are top-level, beside OMDb's own `poster`, as
-# is `holidayPod`.
+# `movieClubInfo`; the images are top-level, beside OMDb's own `poster`, as is
+# `holidayPod`.
 # A whitelist for the same reason as the tuple above: `updatedBy`/`updatedAt` are
 # provenance for humans reading overrides.json and must never reach films.json.
 OVERRIDABLE_FILM_FIELDS = {
@@ -51,6 +51,7 @@ OVERRIDABLE_FILM_FIELDS = {
     "poster": (None, "poster"),
     "backdropImage": (None, "backdropImage"),
     "holidayPod": (None, "holidayPod"),
+    "backdropImages": (None, "backdropImages"),
 }
 
 
