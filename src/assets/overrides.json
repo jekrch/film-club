@@ -86,6 +86,21 @@
         "title": "Nadja",
         "year": "1994"
       }
+    },
+    "tt0057495": {
+      "ratings": {},
+      "film": {
+        "selector": "Jacob",
+        "poster": "https://s3.amazonaws.com/criterion-production/films/655fa066ac6fb4c96d560667e9459fd0/8nYRqrpwiqf90Uwvh0SI7wzA0vnfcX_large.jpg",
+        "updatedBy": "Jacob",
+        "updatedAt": "2026-10-15T03:02:17Z"
+      },
+      "added": {
+        "addedBy": "Jacob",
+        "addedAt": "2026-10-15T03:02:17Z",
+        "title": "Shock Corridor",
+        "year": "1963"
+      }
     }
   }
 }
