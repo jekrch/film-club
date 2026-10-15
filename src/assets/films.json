@@ -17278,5 +17278,232 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "Poltergeist",
+    "year": "1982",
+    "rated": "PG",
+    "released": "04 Jun 1982",
+    "runtime": "114 min",
+    "genre": "Horror, Thriller",
+    "director": "Tobe Hooper",
+    "writer": "Steven Spielberg, Michael Grais, Mark Victor",
+    "actors": "JoBeth Williams, Heather O&apos;Rourke, Craig T. Nelson",
+    "plot": "Life is very pleasant for the close-knit Freeling family until a host of otherworldly forces invades their peaceful suburban home. It starts with just an odd occurrence or two to the amusement of everyone, but soon their house is turned into a swirling supernatural sideshow. The forces at work are anything but friendly, and if the luckless Freelings don't clear out soon, they'll all be swept off into nightmarish chaos.",
+    "language": "English",
+    "country": "United States",
+    "awards": "Nominated for 3 Oscars. 5 wins & 9 nominations total",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNzY4MGZkYjgtYTQ2YS00YTlhLWEyMjAtMjZhYzczNTRlM2ZmXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "89%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "79/100"
+      }
+    ],
+    "metascore": "79",
+    "imdbRating": "7.3",
+    "imdbVotes": "197,521",
+    "imdbID": "tt0084516",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "$77,177,301",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "tmdbDataVersion": 4,
+    "productionDesigner": "James H. Spencer",
+    "editor": "Michael Kahn",
+    "cinematographer": "Matthew F. Leonetti",
+    "musicComposer": "Jerry Goldsmith",
+    "cast": [
+      {
+        "name": "JoBeth Williams",
+        "character": "Diane Freeling",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nL9ZdnI50y1yRVvmz0P61TxjZsF.jpg"
+      },
+      {
+        "name": "Craig T. Nelson",
+        "character": "Steve Freeling",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rMh8qdexFKmc7mq7oLzsLLvCCjs.jpg"
+      },
+      {
+        "name": "Beatrice Straight",
+        "character": "Dr. Lesh",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iCNm0pSNFStUBKpvY6Ou5F7Nap6.jpg"
+      },
+      {
+        "name": "Dominique Dunne",
+        "character": "Dana Freeling",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fGPpYzg6lp6pIV439C5Luskk7VX.jpg"
+      },
+      {
+        "name": "Heather O'Rourke",
+        "character": "Carol Anne Freeling",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ksRZu1R7NMmhCol43GZytJcYPo.jpg"
+      },
+      {
+        "name": "Oliver Robins",
+        "character": "Robbie Freeling",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/12TMJff2kxPYQ0UBf4RPR3mt0DK.jpg"
+      },
+      {
+        "name": "Zelda Rubinstein",
+        "character": "Tangina Barrons",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8M5HxpTZfs9hzeWYRfUcNyPiUAo.jpg"
+      },
+      {
+        "name": "Richard Lawson",
+        "character": "Ryan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zP1iQOP5aimsRlRENl2mPtXyRGH.jpg"
+      },
+      {
+        "name": "Martin Casella",
+        "character": "Dr. Marty Casey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6ce6J9JaJcwZLYJT1zjlcmO9XnP.jpg"
+      },
+      {
+        "name": "Michael McManus",
+        "character": "Ben Tuthill",
+        "profileUrl": null
+      },
+      {
+        "name": "Virginia Kiser",
+        "character": "Mrs. Tuthill",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cTNAm8s0mvLErWvSuBNMGzpwppP.jpg"
+      },
+      {
+        "name": "James Karen",
+        "character": "Mr. Teague",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kW947hrR36DTHcm9mxes5nWkgVX.jpg"
+      }
+    ],
+    "personProfiles": {
+      "tobe hooper": {
+        "tmdbId": 10051,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rE5TqnAvgaKjWwWZ9AsoU9KcUGU.jpg"
+      },
+      "james h. spencer": {
+        "tmdbId": 10064,
+        "profileUrl": null
+      },
+      "michael grais": {
+        "tmdbId": 10056,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uz0jX8C1ViA19tZiQG1xXs27IIJ.jpg"
+      },
+      "michael kahn": {
+        "tmdbId": 493,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jb4Y9q1q91VRQJue0VXhU7VcXce.jpg"
+      },
+      "matthew f. leonetti": {
+        "tmdbId": 2507,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/v9kwWIkNkanReGoFfJA1vrLBUDP.jpg"
+      },
+      "steven spielberg": {
+        "tmdbId": 488,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg"
+      },
+      "jerry goldsmith": {
+        "tmdbId": 1760,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uf7jSAculrBbEwdWWAPu6Rs9bXz.jpg"
+      },
+      "mark victor": {
+        "tmdbId": 10058,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tPA9cmmnM9BEyHPQaKHrrvNZSck.jpg"
+      },
+      "jobeth williams": {
+        "tmdbId": 10080,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nL9ZdnI50y1yRVvmz0P61TxjZsF.jpg"
+      },
+      "craig t. nelson": {
+        "tmdbId": 8977,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rMh8qdexFKmc7mq7oLzsLLvCCjs.jpg"
+      },
+      "beatrice straight": {
+        "tmdbId": 10083,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iCNm0pSNFStUBKpvY6Ou5F7Nap6.jpg"
+      },
+      "dominique dunne": {
+        "tmdbId": 10084,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fGPpYzg6lp6pIV439C5Luskk7VX.jpg"
+      },
+      "heather o'rourke": {
+        "tmdbId": 10086,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ksRZu1R7NMmhCol43GZytJcYPo.jpg"
+      },
+      "oliver robins": {
+        "tmdbId": 10085,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/12TMJff2kxPYQ0UBf4RPR3mt0DK.jpg"
+      },
+      "zelda rubinstein": {
+        "tmdbId": 10091,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8M5HxpTZfs9hzeWYRfUcNyPiUAo.jpg"
+      },
+      "richard lawson": {
+        "tmdbId": 10090,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zP1iQOP5aimsRlRENl2mPtXyRGH.jpg"
+      },
+      "martin casella": {
+        "tmdbId": 10089,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6ce6J9JaJcwZLYJT1zjlcmO9XnP.jpg"
+      },
+      "michael mcmanus": {
+        "tmdbId": 10087,
+        "profileUrl": null
+      },
+      "virginia kiser": {
+        "tmdbId": 10088,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cTNAm8s0mvLErWvSuBNMGzpwppP.jpg"
+      },
+      "james karen": {
+        "tmdbId": 14852,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kW947hrR36DTHcm9mxes5nWkgVX.jpg"
+      }
+    },
+    "tagline": "\"They're here.\"",
+    "budget": 10700000,
+    "revenue": 121733131,
+    "keywords": [
+      "dying and death",
+      "parent child relationship",
+      "medium",
+      "poltergeist",
+      "halloween",
+      "ghostbuster",
+      "haunted house",
+      "paranormal phenomena",
+      "family relationships",
+      "suburbia",
+      "power of goodness",
+      "haunted",
+      "anxious",
+      "dramatic",
+      "awestruck"
+    ],
+    "trailerKey": "RtKn4rHAMAg",
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/bvkPno6U02lLyvPWCnmibq4eIaN.jpg",
+      "https://image.tmdb.org/t/p/w1280/IDjiEj9R4VKB8lPVfxODdjhr44.jpg",
+      "https://image.tmdb.org/t/p/w1280/3BFeScweA1ULn9yCrdteb57RBVu.jpg",
+      "https://image.tmdb.org/t/p/w1280/mAs8rH5ZwU9E7Yp6MUmrrWSrE2a.jpg",
+      "https://image.tmdb.org/t/p/w1280/59ghsepchMewBXTGBZ8Y3y7UYqi.jpg",
+      "https://image.tmdb.org/t/p/w1280/bK7H3ZdbPo1i1LntDc4Yzyaz5wM.jpg"
+    ],
+    "movieClubInfo": {
+      "selector": null,
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    },
+    "holidayPod": "halloween"
   }
 ]
