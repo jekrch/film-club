@@ -106,16 +106,20 @@
       "ratings": {},
       "film": {
         "holidayPod": "halloween",
-        "poster": "https://image.tmdb.org/t/p/w780/4eMN3GANH5GG4kXdHkrTZEUuQ9M.jpg",
+        "poster": "/images/films/tt0084516-poster.jpg",
         "backdropImages": [
-          "https://image.tmdb.org/t/p/w1280/ly3qbkQ57uMtnW3V5ECCLuDEKNI.jpg",
-          "https://image.tmdb.org/t/p/w1280/cI7O6er74vVQ2BfmjlbDwFJLaHn.jpg",
-          "https://image.tmdb.org/t/p/w1280/qkixrrBhL2jQk8WEC376S9Y7iUW.jpg",
-          "https://image.tmdb.org/t/p/w1280/uWh0g3tlNAFLeYkTWXb8fGTP6sn.jpg",
-          "https://image.tmdb.org/t/p/w1280/rCvAmdoidCgkTYFw0Pt9Q8vTvM0.jpg",
-          "https://image.tmdb.org/t/p/w1280/wE7uy5DwlchO724T0DxwWsoWrzu.jpg",
-          "https://image.tmdb.org/t/p/w1280/ynw3EQN1Es3bzF1IWiUmuEfREug.jpg",
-          "https://image.tmdb.org/t/p/w1280/viC8V8fmhZSnD7qk6HogmFWDKie.jpg"
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-420.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-2718.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-4300.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-2748.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-400.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-3916.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-7355.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-7773.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-11825.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-12550.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-9700.jpg",
+          "https://imgs.screencaps.us/198/2-poltergeist/full/poltergeist-movie-screencaps.com-12600.jpg"
         ],
         "updatedBy": "Jacob",
         "updatedAt": "2026-10-15T12:00:00Z"
