@@ -256,9 +256,8 @@ export const HolidayPodDisclaimer: React.FC<{ holiday: Holiday; upcoming: boolea
                     <Glyph className="mr-1.5 -mt-0.5 align-middle" />
                     Holiday Pod:
                 </span>{' '}
-                this film is <em>not</em> criterion and nobody <em>selected</em> it. It's our{' '}
-                {theme.name} screening, held outside the usual rotation and scored out of 9 like any
-                other.
+                this film is <em>not</em> criterion and nobody <em>selected</em> it. It's a{' '}
+                {theme.name} flick, viewed outside our usual business, but still scored out of 9.
                 {upcoming && <> We haven't met for it yet.</>}
             </p>
         </div>
