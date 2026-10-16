@@ -23,8 +23,8 @@ interface HolidayTheme {
     name: string;
     /** Poster filter, applied alongside the stamp. */
     posterFilter: string;
-    /** A wash laid over the poster under the stamp. */
-    posterWash: string;
+    /** An optional wash laid over the poster under the stamp. */
+    posterWash?: string;
     /** The sash's band: gradient, hover gradient, border, lettering shadow. */
     band: string;
     /** The tucked-under tails at each end of the band. */
@@ -154,7 +154,6 @@ export const HOLIDAY_THEMES: Record<Holiday, HolidayTheme> = {
         name: 'Halloween',
         // Drained and darkened rather than cheapened: dusk, not a stale lobby.
         posterFilter: 'saturate-[0.7] contrast-[1.1] brightness-[0.82] hue-rotate-[-8deg]',
-        posterWash: 'bg-gradient-to-t from-purple-950/55 via-purple-950/10 to-transparent',
         band: `
             bg-gradient-to-r from-orange-600/85 via-orange-500/85 to-orange-600/85
             group-hover:from-orange-500/90 group-hover:via-orange-400/90 group-hover:to-orange-500/90
@@ -202,7 +201,7 @@ export const HolidayPodStamp: React.FC<{ holiday: Holiday }> = ({ holiday }) => 
             className="@container absolute inset-0 z-20 overflow-hidden pointer-events-none"
             title={`A ${theme.name} Holiday Pod — a seasonal screening, not a club selection`}
         >
-            <div className={`absolute inset-0 ${theme.posterWash}`} />
+            {theme.posterWash && <div className={`absolute inset-0 ${theme.posterWash}`} />}
             {Corner && <Corner />}
 
             <div
