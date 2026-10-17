@@ -2665,6 +2665,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0070047": {
+    "imdbID": "tt0070047",
+    "title": "The Exorcist",
+    "year": "1973",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZjg3YjE4ZjAtYTdmYS00ZTBkLWE1ZjgtNzAzODUwNzRiYjlmXkEyXkFqcGc@._V1_QL75_UX380_CR0,8,380,562_.jpg",
+    "runtime": "122 min",
+    "genre": "Horror",
+    "director": "William Friedkin",
+    "writer": "William Peter Blatty",
+    "imdbRating": "8.1",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "8.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "78%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "83/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "BU2eYAO31Cc",
+    "tagline": "Something almost beyond comprehension is happening to a girl on this street, in this house…And a man has been sent for as a last resort. This man is The Exorcist.",
+    "plot": "When a mysterious entity possesses a young girl, her mother seeks the help of two Catholic priests to save her life.",
+    "cast": [
+      {
+        "name": "Ellen Burstyn",
+        "character": "Chris MacNeil",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zGihSIVRzwmCqilnA4PmNM4C2RT.jpg",
+        "tmdbId": 9560
+      },
+      {
+        "name": "Linda Blair",
+        "character": "Regan MacNeil",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/diMBw4RF5HIFnBak6C2Obq3n2Dt.jpg",
+        "tmdbId": 37366
+      },
+      {
+        "name": "Jason Miller",
+        "character": "Father Damien Karras",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hYC0SWjPQy4BGJo7fPleifPpcuC.jpg",
+        "tmdbId": 21736
+      },
+      {
+        "name": "Max von Sydow",
+        "character": "Father Lankester Merrin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/u16BsGyT6v9yuO7wWAF62NayDth.jpg",
+        "tmdbId": 2201
+      },
+      {
+        "name": "Lee J. Cobb",
+        "character": "Lt. Bill Kinderman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yxMxBvM0PZwu7YXQamG0kFwt9DZ.jpg",
+        "tmdbId": 5248
+      },
+      {
+        "name": "William O'Malley",
+        "character": "Father Joseph Kevin Dyer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ukGO7hUgIzCZn29ORLKoicyfuM7.jpg",
+        "tmdbId": 65433
+      },
+      {
+        "name": "Kitty Winn",
+        "character": "Sharon Spencer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9qO3EfnwYkiuol2z8jzetCIR92f.jpg",
+        "tmdbId": 57921
+      },
+      {
+        "name": "Barton Heyman",
+        "character": "Dr. Klein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6oyn9WMxi8GjzHAFm3weJBUejkI.jpg",
+        "tmdbId": 79732
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/xcjJ5khg2yzOa282mza39Lbrm7j.jpg",
+      "https://image.tmdb.org/t/p/w1280/w7T0BbyRWrVhJY6W6fDx8X6ektP.jpg",
+      "https://image.tmdb.org/t/p/w1280/lNlWuDxf3EvnbpNCMc7zVtpEQAC.jpg",
+      "https://image.tmdb.org/t/p/w1280/hiUSri3xqUtdLc5DLdqWORNH1vf.jpg",
+      "https://image.tmdb.org/t/p/w1280/7eDZVthhQipy4vRuddfvjWKFoIJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/hTXWph47f9jda790XeoISVO0OMA.jpg"
+    ],
+    "crew": [
+      {
+        "name": "William Friedkin",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r9JJ3VDB7VeDol7cEGsS4NyM6d5.jpg",
+        "tmdbId": 15175
+      },
+      {
+        "name": "William Peter Blatty",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s39l8UCOT0EJYRXhblWTdzjQaoC.jpg",
+        "tmdbId": 57922
+      },
+      {
+        "name": "Owen Roizman",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lOEUYckmdKSB5WS487E2hgYkTdS.jpg",
+        "tmdbId": 16331
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0073540": {
     "imdbID": "tt0073540",
     "title": "Picnic at Hanging Rock",
