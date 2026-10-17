@@ -4123,6 +4123,126 @@
       }
     ]
   },
+  "tt0133751": {
+    "imdbID": "tt0133751",
+    "title": "The Faculty",
+    "year": "1998",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYWQ5Njk0MzUtZTliZC00ODgzLTlmZTEtZGY0NDgyMTM0NGJmXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "runtime": "104 min",
+    "genre": "Horror, Mystery, Sci-Fi",
+    "director": "Robert Rodriguez",
+    "writer": "David Wechter, Bruce Kimmel, Kevin Williamson",
+    "imdbRating": "6.6",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.6/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "57%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "61/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "praQkvivkUE",
+    "tagline": "These six students are about to discover their teachers really are from another planet.",
+    "plot": "When creepy things start happening at Herrington High, the students begin to suspect that their faculty is being controlled by body-snatching aliens.",
+    "cast": [
+      {
+        "name": "Josh Hartnett",
+        "character": "Zeke",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5eMo8D7h1XrSu6ZN4UXhPcS6YNG.jpg",
+        "tmdbId": 2299
+      },
+      {
+        "name": "Elijah Wood",
+        "character": "Casey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7UKRbJBNG7mxBl2QQc5XsAh6F8B.jpg",
+        "tmdbId": 109
+      },
+      {
+        "name": "Jordana Brewster",
+        "character": "Delilah",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ceL0zxeVbWfCfhoIDZIE1NYqBWb.jpg",
+        "tmdbId": 22123
+      },
+      {
+        "name": "Clea DuVall",
+        "character": "Stokely",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yueygn1Lmmni7EaMQD9LslexDlu.jpg",
+        "tmdbId": 20387
+      },
+      {
+        "name": "Shawn Hatosy",
+        "character": "Stan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hm3KRxmotbJ93fJQJvE0G0EGONw.jpg",
+        "tmdbId": 52647
+      },
+      {
+        "name": "Laura Harris",
+        "character": "Marybeth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7TpS7olwYEIJAjo0raFu1sadYFR.jpg",
+        "tmdbId": 25872
+      },
+      {
+        "name": "Robert Patrick",
+        "character": "Coach Willis",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qRv2Es9rZoloullTbzss3I5j1Mp.jpg",
+        "tmdbId": 418
+      },
+      {
+        "name": "Bebe Neuwirth",
+        "character": "Principal Drake",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yFOdER8Fc07DU6U3kq2PRcbvDR.jpg",
+        "tmdbId": 10739
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/oJRlYxfG10h4sxk2A7fpeOZnaFi.jpg",
+      "https://image.tmdb.org/t/p/w1280/rD5t1jleahAZbRNNCYfH6EeswLz.jpg",
+      "https://image.tmdb.org/t/p/w1280/dzFPs6fXRrWIhUhE671lOSCuTnT.jpg",
+      "https://image.tmdb.org/t/p/w1280/oMrysC3yczGNbhwzMKHz8nxJz67.jpg",
+      "https://image.tmdb.org/t/p/w1280/kswfKIkD0urnHhZK991aRdZ3Z8T.jpg",
+      "https://image.tmdb.org/t/p/w1280/746hh5ZB62SwrvVgScmNexaVi2b.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Robert Rodriguez",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4Cwsa3PqeGRGtsgKoYOyxql0uUy.jpg",
+        "tmdbId": 2294
+      },
+      {
+        "name": "Kevin Williamson",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/COwE9mGlyMHy2OWkidCffoyap2.jpg",
+        "tmdbId": 26458
+      },
+      {
+        "name": "David Wechter",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6EQbn9ZfCuOK3V8PAFkJtauQ0fG.jpg",
+        "tmdbId": 57109
+      },
+      {
+        "name": "Bruce Kimmel",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lPmW8xzy8vcO9q1HOeSqVbE9acn.jpg",
+        "tmdbId": 57110
+      },
+      {
+        "name": "Enrique Chediak",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9JS8TLlDO8Kn5il8Lv0tq8cOO18.jpg",
+        "tmdbId": 17598
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0154683": {
     "imdbID": "tt0154683",
     "title": "The Sinners of Hell",
