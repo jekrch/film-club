@@ -3901,6 +3901,120 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0089218": {
+    "imdbID": "tt0089218",
+    "title": "The Goonies",
+    "year": "1985",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjE1OWU4ODEtZmEzMC00NTcwLWFlMWUtYjhlNzExOTIxYzVlXkEyXkFqcGc@._V1_QL75_UX380_CR0,8,380,562_.jpg",
+    "runtime": "114 min",
+    "genre": "Adventure, Comedy, Family",
+    "director": "Richard Donner",
+    "writer": "Chris Columbus, Steven Spielberg",
+    "imdbRating": "7.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "77%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "62/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "lYLAGAwcpSQ",
+    "tagline": "They call themselves \"The Goonies.\" The secret caves. The old lighthouse. The lost map. The treacherous traps. The hidden adventure. And Sloth… Join the adventure.",
+    "plot": "Young teen Mikey Walsh and his friends set off on a quest to find Pirate One-Eyed Willie's treasure in hopes of saving their homes from demolition. However, on their quest to find the treasure, they run into a family of recently escaped criminals, determined to capture the kids and reach the treasure first.",
+    "cast": [
+      {
+        "name": "Sean Astin",
+        "character": "Mikey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/As3ctGUtBYmG4zj4Ifyrcqd71HP.jpg",
+        "tmdbId": 1328
+      },
+      {
+        "name": "Josh Brolin",
+        "character": "Brand",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sX2etBbIkxRaCsATyw5ZpOVMPTD.jpg",
+        "tmdbId": 16851
+      },
+      {
+        "name": "Jeff Cohen",
+        "character": "Chunk",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iuD0UN3cdRc9ZSnmebeJUy14lde.jpg",
+        "tmdbId": 57371
+      },
+      {
+        "name": "Corey Feldman",
+        "character": "Mouth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9n5xDsrBFY0AFESmXOJEzEj4ezx.jpg",
+        "tmdbId": 3034
+      },
+      {
+        "name": "Kerri Green",
+        "character": "Andy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/esQkvg9Qiuj38TAa6IOM7mUtt1v.jpg",
+        "tmdbId": 57372
+      },
+      {
+        "name": "Martha Plimpton",
+        "character": "Stef",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bCfhOm4WRb2X5RQdfz5TpMvMZ1.jpg",
+        "tmdbId": 17495
+      },
+      {
+        "name": "Ke Huy Quan",
+        "character": "Data",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/iestHyn7PLuVowj5Jaa1SGPboQ4.jpg",
+        "tmdbId": 690
+      },
+      {
+        "name": "John Matuszak",
+        "character": "Sloth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ttWRTzTmOsl74igfDQVKsJGW96t.jpg",
+        "tmdbId": 64120
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/5qsyqA7FeYRymBmNbPBqBgqWPO4.jpg",
+      "https://image.tmdb.org/t/p/w1280/r0p9IeVzVP4OULWWw0UsDSCWtKb.jpg",
+      "https://image.tmdb.org/t/p/w1280/imtHhH4NuKMMaSityrxhuSmtyd3.jpg",
+      "https://image.tmdb.org/t/p/w1280/znSIgcQHSBoU46xb0w3EVTZy4kq.jpg",
+      "https://image.tmdb.org/t/p/w1280/s4jIrvpuwd7tKbMo1EhPgILCCAk.jpg",
+      "https://image.tmdb.org/t/p/w1280/rhnWGa5h7uR9V8jltsuovhvN14x.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Richard Donner",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wjRecQiVLUAm6jwyT5craxhg3lD.jpg",
+        "tmdbId": 7187
+      },
+      {
+        "name": "Chris Columbus",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yCyEz90NqjEXKZ7HYcEhDXlLlPc.jpg",
+        "tmdbId": 10965
+      },
+      {
+        "name": "Steven Spielberg",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg",
+        "tmdbId": 488
+      },
+      {
+        "name": "Nick McLean",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 14642
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0090756": {
     "imdbID": "tt0090756",
     "title": "Blue Velvet",
