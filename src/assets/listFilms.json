@@ -4889,6 +4889,120 @@
       }
     ]
   },
+  "tt31170389": {
+    "imdbID": "tt31170389",
+    "title": "Evil Dead Burn",
+    "year": "2026",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZTljMTZjZTItZjMzZi00NDBhLWFmMzAtOGNiNTlhY2MxMzg5XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "runtime": "110 min",
+    "genre": "Horror",
+    "director": "Sébastien Vanicek",
+    "writer": "Sébastien Vanicek, Florent Bernard",
+    "imdbRating": "6.3",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "70%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "54/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "RddZObTlmA8",
+    "tagline": "Every family has its demons.",
+    "plot": "After her husband's abrupt death, Alice seeks solace with his remaining family — descendants of a leading researcher on demonic possession. As her in-laws transform one by one into creatures that feed on fear, she comes to discover that the vows she took in life survive even in death.",
+    "cast": [
+      {
+        "name": "Souheila Yacoub",
+        "character": "Alice",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/A233BHgXw0dzbeOpvHfJwL9gLy1.jpg",
+        "tmdbId": 2037046
+      },
+      {
+        "name": "Tandi Wright",
+        "character": "Susan",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xLQ9j4pJ46HZhs5jMJ87w9zjv82.jpg",
+        "tmdbId": 33310
+      },
+      {
+        "name": "Hunter Doohan",
+        "character": "Joseph",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ihno5ut6ha8TaubQFgl5Ozco2K1.jpg",
+        "tmdbId": 1911865
+      },
+      {
+        "name": "Luciane Buchanan",
+        "character": "Thya",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9fTzSU4310StDoO9T0nQyGOLurn.jpg",
+        "tmdbId": 1399806
+      },
+      {
+        "name": "Erroll Shand",
+        "character": "Edgar",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/75nc5lUcp1So9RTNNr08NZ0oQDG.jpg",
+        "tmdbId": 150396
+      },
+      {
+        "name": "Maude Davey",
+        "character": "Polly",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gJsnWVfgcyFrTYPVvcJrvIjIH1k.jpg",
+        "tmdbId": 1695501
+      },
+      {
+        "name": "George Pullar",
+        "character": "Will",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lF86e5h2iMS8IaIuExv1p81mi7R.jpg",
+        "tmdbId": 2242834
+      },
+      {
+        "name": "Greta van den Brink",
+        "character": "Jessica",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zNbO8MewghJ6NHB1crFDlHPwMju.jpg",
+        "tmdbId": 4147250
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/o0jkkpcN81QqSl8DMLScBCXyUH9.jpg",
+      "https://image.tmdb.org/t/p/w1280/A5Tz6ogGt4VV8NESG9oWVct5bo1.jpg",
+      "https://image.tmdb.org/t/p/w1280/biwEwIkjZhMUfXzz59bpeDzwYB6.jpg",
+      "https://image.tmdb.org/t/p/w1280/hkRv7WQYMbccuay0tBZPS8axvjd.jpg",
+      "https://image.tmdb.org/t/p/w1280/fCKznwrPs3OE6VMqYxWmqbSrI28.jpg",
+      "https://image.tmdb.org/t/p/w1280/2Q4t2mGRXWBYZmylEqEBZyUXpwP.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Sébastien Vaniček",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kGGvOgUDtcRn7rkpE2dyNhx1Q8a.jpg",
+        "tmdbId": 3662751
+      },
+      {
+        "name": "Sébastien Vaniček",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kGGvOgUDtcRn7rkpE2dyNhx1Q8a.jpg",
+        "tmdbId": 3662751
+      },
+      {
+        "name": "Florent Bernard",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xBwpXgdRJOQvuhcA1Dqksxt3XoN.jpg",
+        "tmdbId": 1715736
+      },
+      {
+        "name": "Philip Lozano",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/x87dIIZssVH6YF7Kz3jIaUVYUCo.jpg",
+        "tmdbId": 1607022
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt32916440": {
     "imdbID": "tt32916440",
     "title": "Marty Supreme",
