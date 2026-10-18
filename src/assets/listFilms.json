@@ -2095,6 +2095,114 @@
       }
     ]
   },
+  "tt0055505": {
+    "imdbID": "tt0055505",
+    "title": "Scream of Fear",
+    "year": "1961",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZjg4MWI5YzMtNGQ4Yy00YjU3LWI4MzgtNTc0MzcxM2UwODk0XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "81 min",
+    "genre": "Horror, Thriller",
+    "director": "Seth Holt",
+    "writer": "Jimmy Sangster",
+    "imdbRating": "7.4",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.4/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "65/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "U3yj3vXzi54",
+    "tagline": "For maximum thrill…We earnestly urge you to see this motion picture from the start!",
+    "plot": "A wheelchair-bound young girl returns to her father's estate after ten years, and although she's told he's away, she keeps seeing his dead body on the estate.",
+    "cast": [
+      {
+        "name": "Susan Strasberg",
+        "character": "Penny Appleby",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wrU3UqQtSVGvXzD6k0611kEcbqL.jpg",
+        "tmdbId": 30043
+      },
+      {
+        "name": "Ronald Lewis",
+        "character": "Robert",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kThL4yDNcUkUTGHfSUrjFJFRxfe.jpg",
+        "tmdbId": 35064
+      },
+      {
+        "name": "Ann Todd",
+        "character": "Jane Appleby",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dljzNAQi385qDQ8aVH2FEWtBjJv.jpg",
+        "tmdbId": 100784
+      },
+      {
+        "name": "Christopher Lee",
+        "character": "Doctor Pierre Gerrard",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dA26fBr3t7mKqjn3OYW6kbD1LXM.jpg",
+        "tmdbId": 113
+      },
+      {
+        "name": "John Serret",
+        "character": "Inspector Legrand",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k4IzRJNWfnPYbpmuhxw5Utl1xJP.jpg",
+        "tmdbId": 93951
+      },
+      {
+        "name": "Leonard Sachs",
+        "character": "Mr. Spratt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gscETuAvzmpwHQpp5eQHrL5wxux.jpg",
+        "tmdbId": 153093
+      },
+      {
+        "name": "Anne Blake",
+        "character": "Marie the Maid",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cAA9ELpHhAF9ygGgq8DRqmF8NLu.jpg",
+        "tmdbId": 140147
+      },
+      {
+        "name": "Fred Johnson",
+        "character": "Mr. Appleby",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lfVovQ639USNbiLEqLYNPuIKbOU.jpg",
+        "tmdbId": 89898
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/jI2r5DoPdZHlRdIdYC8SbDh73At.jpg",
+      "https://image.tmdb.org/t/p/w1280/qgzNkm5W11ocek6GJJamUvXRcmr.jpg",
+      "https://image.tmdb.org/t/p/w1280/zqjEhBLRU2rbNp95fX8nnBg2AHQ.jpg",
+      "https://image.tmdb.org/t/p/w1280/2MLbEhBWZBZ92UQRXueFQ6fbZzE.jpg",
+      "https://image.tmdb.org/t/p/w1280/iemayIfI8I60ZIc9xOK3TrxTfkV.jpg",
+      "https://image.tmdb.org/t/p/w1280/mwZTrrWfWcz4YLvfCQW7YNGz4rZ.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Seth Holt",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fVVSvB6QDq9jSIGvV3yzh1S5RvM.jpg",
+        "tmdbId": 43789
+      },
+      {
+        "name": "Jimmy Sangster",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oDLQFovGVoTMyVjjTDKOAdvJYFr.jpg",
+        "tmdbId": 30700
+      },
+      {
+        "name": "Douglas Slocombe",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/3MLaxck3irbvVyNBJXAAASoU1C6.jpg",
+        "tmdbId": 666
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0057603": {
     "imdbID": "tt0057603",
     "title": "Black Sabbath",
