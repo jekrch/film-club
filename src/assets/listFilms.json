@@ -451,6 +451,128 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0034881": {
+    "imdbID": "tt0034881",
+    "title": "I Married a Witch",
+    "year": "1942",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZjE4ZWI4OWYtMTA0Yy00ZWU4LTk3NDktZTE4MzAxOTA2MWEzXkEyXkFqcGc@._V1_QL75_UX380_CR0,4,380,562_.jpg",
+    "runtime": "77 min",
+    "genre": "Comedy, Fantasy, Romance",
+    "director": "René Clair",
+    "writer": "Robert Pirosh, Marc Connelly, Thorne Smith",
+    "imdbRating": "7.1",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "95%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "hxWFekcmzmk",
+    "tagline": "No man can resist her!",
+    "plot": "A 17th-century witch returns to wreak havoc in the life of a descendant of the Puritan witch hunter who burned her, but runs afoul of her father when she discovers that her mischief might have found her true love.",
+    "cast": [
+      {
+        "name": "Fredric March",
+        "character": "Jonathan / Nathaniel / Samuel / Wallace Wooley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/285cjPToJMXn0ALimtQoqofgM2G.jpg",
+        "tmdbId": 13576
+      },
+      {
+        "name": "Veronica Lake",
+        "character": "Jennifer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/13EMqqbxpTSjXs0HWaOFiWUvNT0.jpg",
+        "tmdbId": 79245
+      },
+      {
+        "name": "Robert Benchley",
+        "character": "Dr. Dudley White",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qXJtEUZW459w8hKEcvo4FauhOBy.jpg",
+        "tmdbId": 94433
+      },
+      {
+        "name": "Susan Hayward",
+        "character": "Estelle Masterson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ycgStET6VSECnnk0JV6hJOs57kY.jpg",
+        "tmdbId": 30124
+      },
+      {
+        "name": "Cecil Kellaway",
+        "character": "Daniel",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rGVj5ODGkAxEllJt2JZTtO7doIj.jpg",
+        "tmdbId": 30228
+      },
+      {
+        "name": "Elizabeth Patterson",
+        "character": "Margaret",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rSLcM8DsZi1ydRn8Dk3vXE89nCG.jpg",
+        "tmdbId": 83237
+      },
+      {
+        "name": "Robert Warwick",
+        "character": "J. B. Masterson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dEOopjfb85VTKf0vRqBQtod550B.jpg",
+        "tmdbId": 33007
+      },
+      {
+        "name": "Georgia Backus",
+        "character": "Older Woman (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hqfp6LgMcUM0PMy4AmSrDMLlTBe.jpg",
+        "tmdbId": 105021
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/xrb2llOfcqX5dL5JLca4ZiTdwyu.jpg",
+      "https://image.tmdb.org/t/p/w1280/un0G6KqGhtd7eUAghrnofnJQr4h.jpg",
+      "https://image.tmdb.org/t/p/w1280/wk1yVgTOXGMGFt4QOYSz6ebR6az.jpg",
+      "https://image.tmdb.org/t/p/w1280/9iG3F1bnudtncComKl7kMiz18L5.jpg",
+      "https://image.tmdb.org/t/p/w1280/5pJO5zmf3rSpjVuNBAJcaSHDc7n.jpg",
+      "https://image.tmdb.org/t/p/w1280/8TWxfZPdN04Vjs2JXGRFlzacm5V.jpg"
+    ],
+    "crew": [
+      {
+        "name": "René Clair",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m6pYOo5Yp2N4i6egvVFXYOnmS82.jpg",
+        "tmdbId": 33166
+      },
+      {
+        "name": "Marc Connelly",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yU0eYE2ceiyXxc7XLoL2jnwuRj5.jpg",
+        "tmdbId": 40192
+      },
+      {
+        "name": "Robert Pirosh",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 70980
+      },
+      {
+        "name": "Thorne Smith",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 150627
+      },
+      {
+        "name": "Norman Matson",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 1189946
+      },
+      {
+        "name": "Ted Tetzlaff",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kJgsIGDUI2QlrOpeaYoxjxCtHgU.jpg",
+        "tmdbId": 4346
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0035567": {
     "imdbID": "tt0035567",
     "title": "Woman of the Year",
