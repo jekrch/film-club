@@ -1995,6 +1995,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0050280": {
+    "imdbID": "tt0050280",
+    "title": "The Curse of Frankenstein",
+    "year": "1957",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYWU4ODc3ZmYtMDgxYi00NzQ5LWE4MzAtZTZkZjkyZThkNjljXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "82 min",
+    "genre": "Horror, Sci-Fi, Thriller",
+    "director": "Terence Fisher",
+    "writer": "Jimmy Sangster, Mary Shelley",
+    "imdbRating": "7.0",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.0/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "85%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "59/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "3dShEw3PAuQ",
+    "tagline": "The creature created by man and forgotten by nature!",
+    "plot": "Baron Victor Frankenstein has discovered life's secret and unleashed a blood-curdling chain of events resulting from his creation: a cursed creature with a horrid face — and a tendency to kill.",
+    "cast": [
+      {
+        "name": "Peter Cushing",
+        "character": "Baron Victor Frankenstein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/if5g03wn6uvHx7F6FxXHLebKc0q.jpg",
+        "tmdbId": 5
+      },
+      {
+        "name": "Hazel Court",
+        "character": "Elizabeth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qj36ImC6tuukuSqymwNWFruU65H.jpg",
+        "tmdbId": 101499
+      },
+      {
+        "name": "Robert Urquhart",
+        "character": "Paul Krempe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8oBMWv2on2EiTq0JCGUJfOCzVfH.jpg",
+        "tmdbId": 30187
+      },
+      {
+        "name": "Christopher Lee",
+        "character": "The Creature",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dA26fBr3t7mKqjn3OYW6kbD1LXM.jpg",
+        "tmdbId": 113
+      },
+      {
+        "name": "Melvyn Hayes",
+        "character": "Young Victor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6crjZTxQ93TjqVmiNTXHCkkuKyU.jpg",
+        "tmdbId": 30188
+      },
+      {
+        "name": "Valerie Gaunt",
+        "character": "Justine",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gWSyT7FODx1NoXQBmKEOKm6KC4i.jpg",
+        "tmdbId": 30189
+      },
+      {
+        "name": "Paul Hardtmuth",
+        "character": "Prof. Bernstein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9X0vtfbrXGcXsdgJxReH2AhYxEk.jpg",
+        "tmdbId": 30190
+      },
+      {
+        "name": "Noel Hood",
+        "character": "Aunt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/t68fExXVkpHk2RBQNtIfrgZP2Ik.jpg",
+        "tmdbId": 30191
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/5Hw9NUjWoEo9vJus3ECiwRWl8HH.jpg",
+      "https://image.tmdb.org/t/p/w1280/80rSvzQF3bie1WBFTbGgjXahxFR.jpg",
+      "https://image.tmdb.org/t/p/w1280/5UfnkAPHGWjbWh71CfOJ660HCMx.jpg",
+      "https://image.tmdb.org/t/p/w1280/izNFPz3XYABlW2Wt4en8xoTDDxc.jpg",
+      "https://image.tmdb.org/t/p/w1280/78HxF4w1YuDDIM8cVOfDphyyKoZ.jpg",
+      "https://image.tmdb.org/t/p/w1280/spQnLi5Adf3iQkk2KBH5lzpg7ZJ.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Terence Fisher",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cigdIPxmq839x0tID9BwK5CREBc.jpg",
+        "tmdbId": 29662
+      },
+      {
+        "name": "Jimmy Sangster",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oDLQFovGVoTMyVjjTDKOAdvJYFr.jpg",
+        "tmdbId": 30700
+      },
+      {
+        "name": "Jack Asher",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 29667
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0053925": {
     "imdbID": "tt0053925",
     "title": "House of Usher",
