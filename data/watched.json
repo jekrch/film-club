@@ -353,14 +353,14 @@
     {
       "imdbID": "tt0100506",
       "watchDate": "2026-10-24",
-      "score": null,
+      "score": 2,
       "scoreQualifier": null,
-      "blurb": null,
+      "blurb": "This is really really bad. But also kind of ok for riffing on.",
       "image": null,
       "posterImage": null,
       "trailerKey": null,
       "hideTrailer": false,
-      "updatedAt": "2026-10-25T00:45:26Z"
+      "updatedAt": "2026-10-25T00:46:42Z"
     },
     {
       "imdbID": "tt0050280",
