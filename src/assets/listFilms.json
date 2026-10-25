@@ -4575,6 +4575,118 @@
       }
     ]
   },
+  "tt0100506": {
+    "imdbID": "tt0100506",
+    "title": "Rockula",
+    "year": "1990",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTMwMjg5Mjg4NF5BMl5BanBnXkFtZTcwMTM0NzI5NA@@._V1_SX300.jpg",
+    "runtime": "91 min",
+    "genre": "Comedy, Horror, Musical",
+    "director": "Luca Bercovici",
+    "writer": "Luca Bercovici, Jefery Levy, Chris Ver Wiel",
+    "imdbRating": "5.2",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "5.2/10"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "ABG-nHoJ7pQ",
+    "tagline": "He's a vampire who hasn't scored in 400 years. Tonight's the night!",
+    "plot": "Ralph is a sexually frustrated vampire who suffers from a peculiar curse. He's condemned for eternity to watch his one true love, Mona, be murdered by a pirate wielding a ham bone. But now? Now it's 1990, and Ralph is determined to break Mona's cycle of reincarnation. His first order of business is winning her affections, which he does by starting Rockula: a rock band that's sure to stake a claim on her heart.",
+    "cast": [
+      {
+        "name": "Dean Cameron",
+        "character": "Ralph",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/l5KJNacxI4qOHZwtUev9mRInmXb.jpg",
+        "tmdbId": 64057
+      },
+      {
+        "name": "Toni Basil",
+        "character": "Phoebe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gKXRSWexAbL9g10IkcLrw6NhTsu.jpg",
+        "tmdbId": 8964
+      },
+      {
+        "name": "Thomas Dolby",
+        "character": "Stanley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nfvJX96gEa9FMY5EmKxVHiooZwI.jpg",
+        "tmdbId": 228814
+      },
+      {
+        "name": "Tawny Fere",
+        "character": "Mona",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xRmweWcl6fAgLRqd5YuGVoRD8Y8.jpg",
+        "tmdbId": 548656
+      },
+      {
+        "name": "Susan Tyrrell",
+        "character": "Chuck the Bartender",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9fpVbAHId4DSvUbB7BzzBuBpDpN.jpg",
+        "tmdbId": 59369
+      },
+      {
+        "name": "Bo Diddley",
+        "character": "Axman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wEvWkvFJU7DAl74d6mvZJDv6ceq.jpg",
+        "tmdbId": 22863
+      },
+      {
+        "name": "Tony Cox",
+        "character": "Big Al",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sbZS0gxvRsAIgHxIEL8STINpn7u.jpg",
+        "tmdbId": 19754
+      },
+      {
+        "name": "Karen Berger",
+        "character": "Cloris",
+        "profileUrl": null,
+        "tmdbId": 1435021
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/fz7wBqkKJ7BPx2yTI4ufArwxNYB.jpg",
+      "https://image.tmdb.org/t/p/w1280/kGqsSdPYKfVghiz0ADtK0lKbo7I.jpg",
+      "https://image.tmdb.org/t/p/w1280/gKOGFJnDYjn36vIalvvrxnNbnde.jpg",
+      "https://image.tmdb.org/t/p/w1280/xx2C3JIRAEThtkO1QxJAIFwClRC.jpg",
+      "https://image.tmdb.org/t/p/w1280/f5CYHR1TeYBserfjSdp2pKCAGW.jpg",
+      "https://image.tmdb.org/t/p/w1280/stZPEQMbSlzdptVbmihkxEyoXc9.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Luca Bercovici",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6iEWQqsNTarMHLYbM1HPXSYoBk3.jpg",
+        "tmdbId": 29383
+      },
+      {
+        "name": "Jefery Levy",
+        "job": "Writer",
+        "profileUrl": null,
+        "tmdbId": 72125
+      },
+      {
+        "name": "Luca Bercovici",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6iEWQqsNTarMHLYbM1HPXSYoBk3.jpg",
+        "tmdbId": 29383
+      },
+      {
+        "name": "Chris Ver Wiel",
+        "job": "Writer",
+        "profileUrl": null,
+        "tmdbId": 110174
+      },
+      {
+        "name": "John Schwartzman",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zzlqMvfN8WnAahPsBBIx0QW54jM.jpg",
+        "tmdbId": 892
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0133751": {
     "imdbID": "tt0133751",
     "title": "The Faculty",
