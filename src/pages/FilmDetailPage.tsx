@@ -794,7 +794,9 @@ const FilmDetailPage = () => {
                                                                         <AccentCard
                                                                             accent="emerald"
                                                                             surface="inset"
-                                                                            watermarkSrc={getMemberImage(rating.user)}
+                                                                            watermarkSrc={getMemberImage(
+                                                                                rating.user
+                                                                            )}
                                                                             className="ml-2 mt-4 px-4 pb-3 pt-3.5"
                                                                         >
                                                                             <QuoteMarkIcon className="mb-1.5 h-5 w-5 text-emerald-400/50" />
