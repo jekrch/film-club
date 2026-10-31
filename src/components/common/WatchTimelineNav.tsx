@@ -6,6 +6,7 @@ import {
     QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
 import { Film } from '../../types/film';
+import { getMemberImage } from '../../types/team';
 
 interface WatchTimelineNavProps {
     previousFilm: Film | null;
@@ -35,8 +36,7 @@ const NavCard = ({ film, direction }: NavCardProps) => {
     const label = isPrev ? 'Previous Film' : 'Next Film';
     const watchDate = formatWatchDate(film.movieClubInfo?.watchDate);
     const selector = film.movieClubInfo?.selector;
-    // Selector portraits live at /images/{name}.jpg (see CircularImage).
-    const selectorImage = selector ? `/images/${selector.toLowerCase()}.jpg` : null;
+    const selectorImage = selector ? getMemberImage(selector) : null;
     // The poster + text sit on the "near" side of the card; the selector portrait
     // washes in on the opposite, less-occupied side and fades out toward the content.
     const fadeDirection = isPrev ? 'left' : 'right';
@@ -98,7 +98,7 @@ const NavCard = ({ film, direction }: NavCardProps) => {
 // The next film after the "up next" pick hasn't been selected yet, so we render a
 // muted placeholder that still surfaces who selects next.
 const NextPlaceholderCard = ({ selector }: { selector: string }) => {
-    const selectorImage = `/images/${selector.toLowerCase()}.jpg`;
+    const selectorImage = getMemberImage(selector);
 
     return (
         <div

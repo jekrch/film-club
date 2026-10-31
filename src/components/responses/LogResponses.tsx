@@ -11,7 +11,7 @@ import { AddReactionGlyph, ReactionEmoji } from './reactionGlyphs';
 import { QUICK_REACTIONS, REACTIONS } from './reactions';
 import { useClubAuth } from '../../auth/GoogleAuth';
 import { useResponses } from '../../contexts/ResponsesContext';
-import { getTeamMemberByName } from '../../types/team';
+import { getMemberImage } from '../../types/team';
 import {
     REACTION_KEYS,
     type ReactionKey,
@@ -317,7 +317,7 @@ const ReactorFace: React.FC<{ name: string; className?: string }> = ({
     className = 'h-4 w-4 text-[9px]',
 }) => {
     const [failed, setFailed] = useState(false);
-    const src = getTeamMemberByName(name)?.image ?? `/images/${name.toLowerCase()}.jpg`;
+    const src = getMemberImage(name);
 
     return (
         <span

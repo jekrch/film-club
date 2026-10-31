@@ -53,5 +53,11 @@
     "title": "Intern",
     "bio": "You gotta start somewhere",
     "image": "/images/greg.jpg"
+  },
+  {
+    "name": "Dustin",
+    "title": "Friend of the Club",
+    "bio": "",
+    "image": "/images/default-avatar.png"
   }
 ]

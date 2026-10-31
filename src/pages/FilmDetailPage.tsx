@@ -18,6 +18,7 @@ import {
 } from '../utils/filmUtils';
 import { getPersonProfileByName } from '../utils/personUtils';
 import { Film } from '../types/film';
+import { getMemberImage } from '../types/team';
 import FilmCastStrip from '../components/films/FilmCastStrip';
 import FilmStills from '../components/films/FilmStills';
 import PlotParagraphs from '../components/films/PlotParagraphs';
@@ -793,7 +794,7 @@ const FilmDetailPage = () => {
                                                                         <AccentCard
                                                                             accent="emerald"
                                                                             surface="inset"
-                                                                            watermarkSrc={`/images/${rating.user.toLowerCase()}.jpg`}
+                                                                            watermarkSrc={getMemberImage(rating.user)}
                                                                             className="ml-2 mt-4 px-4 pb-3 pt-3.5"
                                                                         >
                                                                             <QuoteMarkIcon className="mb-1.5 h-5 w-5 text-emerald-400/50" />

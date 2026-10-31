@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DEFAULT_MEMBER_IMAGE, getMemberImage } from '../../types/team';
 
 interface CircularImageProps {
     src?: string;
@@ -15,36 +16,24 @@ const CircularImage: React.FC<CircularImageProps> = ({
 }) => {
     const [hasError, setHasError] = useState(false);
 
-    if (!src) {
-        src = `/images/${alt?.toLowerCase()}.jpg`; // Default image path
-    }
+    // Without a src the alt is the member's name, which is how most callers use this.
+    const imageSrc = hasError ? DEFAULT_MEMBER_IMAGE : src || getMemberImage(alt);
 
     return (
         // Outer container clips the zooming image
         <div
             className={`${size} mx-auto bg-slate-700 rounded-full overflow-hidden border-2 border-slate-600 relative ${className}`}
         >
-            {hasError ? (
-                // Person icon fallback
-                <svg
-                    className="w-full h-full text-slate-400"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                >
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-            ) : (
-                <img
-                    src={src}
-                    alt={alt}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
-                    style={{ objectPosition: 'center center' }}
-                    onError={() => {
-                        console.error(`Failed to load image: ${src}`);
-                        setHasError(true);
-                    }}
-                />
-            )}
+            <img
+                src={imageSrc}
+                alt={alt}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-110"
+                style={{ objectPosition: 'center center' }}
+                onError={() => {
+                    console.error(`Failed to load image: ${imageSrc}`);
+                    setHasError(true);
+                }}
+            />
         </div>
     );
 };

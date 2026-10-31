@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 import Modal from '../common/Modal';
+import { getMemberImage } from '../../types/team';
 
 /**
  * Known meanings for a score qualifier letter. A qualifier marks a score that a
@@ -76,7 +77,7 @@ const ScoreQualifierNote: React.FC<ScoreQualifierNoteProps> = ({ user, qualifier
                         {/* Faded portrait of the member whose score this is, washing in
                             from the right and fading out toward the text. */}
                         <img
-                            src={`/images/${user.toLowerCase()}.jpg`}
+                            src={getMemberImage(user)}
                             alt=""
                             aria-hidden="true"
                             className="absolute right-0 top-0 h-full w-2/3 object-cover object-top opacity-[0.14]"

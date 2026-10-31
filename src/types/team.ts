@@ -41,6 +41,12 @@ export const getTeamMemberByName = (name: string): TeamMember | undefined => {
     return teamMembers.find((member) => member.name.toLowerCase() === name.toLowerCase());
 };
 
+/** What a member without a profile picture shows. */
+export const DEFAULT_MEMBER_IMAGE = '/images/default-avatar.png';
+
+export const getMemberImage = (name: string): string =>
+    getTeamMemberByName(name)?.image?.trim() || DEFAULT_MEMBER_IMAGE;
+
 export const getTeamMemberColorByName = (name: string): string | undefined => {
     const member = getTeamMemberByName(name);
     return member?.color;

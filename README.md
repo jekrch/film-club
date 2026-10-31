@@ -48,7 +48,7 @@ Film and club data lives in JSON files under `src/assets/`. Some of it is writte
 - `src/assets/trophies.json`: Club awards, recording who won what on which film. These are added by members on the film page rather than in the sheet, so the recipient is a structured field rather than free text. See [Awarding a trophy](#awarding-a-trophy).
 - `src/assets/overrides.json`: Edits made by members on the site. This covers their own ratings and reviews, along with the film's shared fields (selector, watch date, alternate cover, hero background). CI merges it into `films.json` at build time. A film added on the site starts out as an entry here.
 - [Film Club Google Sheet](https://docs.google.com/spreadsheets/d/1wGrX2xWrJlS6WFpNxzD73VrHW4ZnrfedjtK5C9EYeuw/edit?usp=sharing): The club's historical data, still read by the sync. New content doesn't need to be added here (see [Adding a new film](#adding-a-new-film)), but existing rows still work, and any field that hasn't been set on the site is still taken from the sheet.
-- Profile pictures live in `public/images/` and follow the `[firstname].jpg` convention (e.g., `jacob.jpg`).
+- Profile pictures live in `public/images/` and follow the `[firstname].jpg` convention (e.g., `jacob.jpg`). A member's `image` in `club.json` says which one to show; anyone without one gets `default-avatar.png`.
 
 Two repository secrets support the automated sync: `OMDB_API_KEY` for film details and `TMDB_KEY` (a bearer token) for extended crew data.
 

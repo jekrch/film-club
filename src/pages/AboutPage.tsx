@@ -1,16 +1,59 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import CircularImage from '../components/common/CircularImage';
-import { teamMembers } from '../types/team';
+import { TeamMember, teamMembers } from '../types/team';
 import { Film, filmData } from '../types/film';
 import { parseWatchDate } from '../utils/filmUtils';
 import PageLayout from '../components/layout/PageLayout';
-//import SectionHeader from '../components/common/SectionHeader';
+import SectionHeader from '../components/common/SectionHeader';
 import AccentCard from '../components/common/AccentCard';
 //import StatCard from '../components/almanac/StatCard';
 import HeroBanner from '../components/common/HeroBanner';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+// A queue position is what puts a member in the selection rotation.
+const isCommittee = (member: TeamMember) => typeof member.queue === 'number' && member.queue > 0;
+const committee = teamMembers.filter(isCommittee);
+const friends = teamMembers.filter((member) => !isCommittee(member));
+
+const MemberSection: React.FC<{ title: string; members: TeamMember[] }> = ({ title, members }) => (
+    <section aria-label={title} className="mb-8 sm:mb-10">
+        <SectionHeader title={title} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {members.map((member) => (
+                <Link
+                    key={member.name}
+                    // Use encodeURIComponent for names with spaces/special chars
+                    to={`/profile/${encodeURIComponent(member.name)}`}
+                    className="group block h-full"
+                >
+                    {/* No edge: one card per member, repeating in a grid */}
+                    <AccentCard
+                        edge={false}
+                        className="h-full"
+                        contentClassName="flex h-full flex-col items-center p-5 text-center"
+                    >
+                        <CircularImage
+                            alt={member.name}
+                            size="w-24 h-24 sm:w-28 sm:h-28"
+                            className="border-2 border-slate-600"
+                        />
+                        <h3 className="mt-4 text-lg font-semibold text-slate-200 transition-colors group-hover:text-blue-400">
+                            {member.name}
+                        </h3>
+                        <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-blue-300/70 font-medium">
+                            {member.title}
+                        </p>
+                        <p className="mt-3 text-sm text-slate-400 leading-relaxed line-clamp-3">
+                            {member.bio}
+                        </p>
+                    </AccentCard>
+                </Link>
+            ))}
+        </div>
+    </section>
+);
 
 const AboutPage: React.FC = () => {
     const { heroFilms } = useMemo(() => {
@@ -71,43 +114,8 @@ const AboutPage: React.FC = () => {
         />
       </div> */}
 
-            <div className="mb-8 sm:mb-10">
-                <h2 className="text-xl sm:text-2xl font-semibold text-center mb-6 text-slate-100">
-                    Committee
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    {teamMembers.map((member) => (
-                        <Link
-                            key={member.name}
-                            // Use encodeURIComponent for names with spaces/special chars
-                            to={`/profile/${encodeURIComponent(member.name)}`}
-                            className="group block h-full"
-                        >
-                            {/* No edge: one card per member, repeating in a grid */}
-                            <AccentCard
-                                edge={false}
-                                className="h-full"
-                                contentClassName="flex h-full flex-col items-center p-5 text-center"
-                            >
-                                <CircularImage
-                                    alt={member.name}
-                                    size="w-24 h-24 sm:w-28 sm:h-28"
-                                    className="border-2 border-slate-600"
-                                />
-                                <h3 className="mt-4 text-lg font-semibold text-slate-200 transition-colors group-hover:text-blue-400">
-                                    {member.name}
-                                </h3>
-                                <p className="mt-1.5 text-[11px] uppercase tracking-[0.15em] text-blue-300/70 font-medium">
-                                    {member.title}
-                                </p>
-                                <p className="mt-3 text-sm text-slate-400 leading-relaxed line-clamp-3">
-                                    {member.bio}
-                                </p>
-                            </AccentCard>
-                        </Link>
-                    ))}
-                </div>
-            </div>
+            <MemberSection title="Committee" members={committee} />
+            <MemberSection title="Friends of the Club" members={friends} />
 
             {/* Attribution is a qualifier on the data, so it takes the amber accent. */}
             <AccentCard accent="amber" className="p-6 md:p-8">
