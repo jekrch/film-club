@@ -212,7 +212,15 @@ export interface RatingOverride {
     score?: number | null;
     scoreQualifier?: string | null;
     blurb?: string | null;
-    /** Provenance only — `apply_overrides.py` whitelists the three fields above. */
+    /**
+     * When the member's score and review first appeared, stamped only if the
+     * sheet had nothing there either, and never moved after that. This is how
+     * the wall tells a member catching up on an old club film from one fixing a
+     * typo. `apply_overrides.py` copies both into `films.json`.
+     */
+    scoreAddedAt?: string;
+    blurbAddedAt?: string;
+    /** Provenance only — `apply_overrides.py` never copies these. */
     updatedBy: string;
     updatedAt: string;
 }

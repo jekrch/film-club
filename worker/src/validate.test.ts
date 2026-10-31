@@ -39,6 +39,7 @@ import {
     assertMayDeleteComment,
     assertMayEditComment,
     assignCommentId,
+    firstAddedStamps,
     parseThreadId,
     validateCommentInput,
     validateReactionKey,
@@ -1205,6 +1206,56 @@ describe('validateReactionKey', () => {
     });
 });
 
+describe('firstAddedStamps', () => {
+    const now = '2026-10-27T12:22:35Z';
+    const stored = { updatedBy: 'Gabe', updatedAt: '2026-09-06T18:20:59Z' };
+
+    it('stamps a score and review that appear from nothing', () => {
+        expect(
+            firstAddedStamps(undefined, { score: 8, blurb: 'Haunting.' }, undefined, now)
+        ).toEqual({ scoreAddedAt: now, blurbAddedAt: now });
+    });
+
+    it('treats an empty sheet row as nothing', () => {
+        const sheet = { score: null, blurb: null };
+        expect(firstAddedStamps(undefined, { score: 8 }, sheet, now)).toEqual({
+            scoreAddedAt: now,
+        });
+    });
+
+    it('stamps only the field that is new', () => {
+        const sheet = { score: 5, blurb: null };
+        expect(firstAddedStamps(undefined, { score: 5, blurb: 'Thanks!' }, sheet, now)).toEqual({
+            blurbAddedAt: now,
+        });
+    });
+
+    it('stamps nothing when the patch overwrites what the sheet has', () => {
+        expect(firstAddedStamps(undefined, { score: 6 }, { score: 5 }, now)).toEqual({});
+    });
+
+    it('stamps nothing when the patch corrects an earlier override', () => {
+        expect(firstAddedStamps({ ...stored, score: 8 }, { score: 7 }, undefined, now)).toEqual({});
+    });
+
+    it('stamps nothing for a field the patch leaves blank', () => {
+        expect(firstAddedStamps(undefined, { score: null, blurb: null }, undefined, now)).toEqual(
+            {}
+        );
+    });
+
+    it('counts a score of zero as a score', () => {
+        expect(firstAddedStamps(undefined, { score: 0 }, undefined, now)).toEqual({
+            scoreAddedAt: now,
+        });
+    });
+
+    it('keeps the first stamp when a cleared field is filled in again', () => {
+        const existing = { ...stored, blurb: null, blurbAddedAt: '2026-09-06T18:20:59Z' };
+        expect(firstAddedStamps(existing, { blurb: 'Again.' }, undefined, now)).toEqual({});
+    });
+});
+
 describe('parseThreadId', () => {
     const members = ['Andy', 'Jacob', 'Mary-Kate'];
 
@@ -1223,6 +1274,19 @@ describe('parseThreadId', () => {
 
     it('refuses a member who is not in the club', () => {
         expectStatus(() => parseThreadId('log-Werner-tt0046478', members), 400);
+    });
+
+    it('resolves a late review and canonicalizes the member', () => {
+        expect(parseThreadId('review-mary-kate-tt0046478', members)).toEqual({
+            kind: 'review',
+            threadId: 'review-Mary-Kate-tt0046478',
+            owner: 'Mary-Kate',
+            imdbId: 'tt0046478',
+        });
+    });
+
+    it('refuses a late review by someone who is not in the club', () => {
+        expectStatus(() => parseThreadId('review-Werner-tt0046478', members), 400);
     });
 
     it('resolves a screening', () => {

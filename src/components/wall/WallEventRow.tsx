@@ -76,6 +76,7 @@ const nodeIcon = (event: WallEvent): IconComponent => {
         case 'club-watch':
             return FilmIcon as IconComponent;
         case 'log':
+        case 'late-review':
             return EyeIcon as IconComponent;
         case 'list':
             return QueueListIcon as IconComponent;
@@ -92,8 +93,8 @@ const nodeIcon = (event: WallEvent): IconComponent => {
  *
  * The wall records nothing of its own — every box is a view onto a row that is
  * already written somewhere with more room around it — so every box needs a way
- * back to that place. A screening and a trophy belong to a film, so both go to
- * the film's page. A log belongs to its member's own log rather than to the
+ * back to that place. A screening, a late review and a trophy belong to a film,
+ * so all three go to the film's page. A log belongs to its member's own log rather than to the
  * film, and names the row it came from, so the log opens with that film in view
  * instead of at the top with no sign of where the click went — the same link the
  * profile's watch preview builds.
@@ -101,6 +102,7 @@ const nodeIcon = (event: WallEvent): IconComponent => {
 const eventHome = (event: WallEvent): string => {
     switch (event.kind) {
         case 'club-watch':
+        case 'late-review':
         case 'trophy':
             return `/films/${event.film.imdbID}`;
         case 'log':
@@ -114,6 +116,7 @@ const eventHome = (event: WallEvent): string => {
 const eventHomeLabel = (event: WallEvent): string => {
     switch (event.kind) {
         case 'club-watch':
+        case 'late-review':
         case 'trophy':
             return `${event.film.title} on the site`;
         case 'log':
@@ -142,6 +145,7 @@ const rowFilm = (
                 poster: event.entry.poster,
             };
         case 'club-watch':
+        case 'late-review':
         case 'trophy':
             return {
                 imdbID: event.film.imdbID,
@@ -172,6 +176,7 @@ const rowDetails = (event: WallEvent): EntryDetails | null => {
         case 'log':
             return event.entry.details;
         case 'club-watch':
+        case 'late-review':
         case 'trophy':
             return clubFilmDetails(event.film);
         case 'list':
@@ -193,6 +198,7 @@ const rowTrailerKey = (event: WallEvent): string | null => {
         case 'log':
             return event.entry.resolvedTrailerKey;
         case 'club-watch':
+        case 'late-review':
         case 'trophy':
             return event.film.trailerKey ?? null;
         case 'list':
@@ -201,12 +207,13 @@ const rowTrailerKey = (event: WallEvent): string | null => {
 };
 
 /**
- * Who may remove any comment on this row's thread: the log's or the list's
- * owner. A screening is the club's, not its selector's, so it has none.
+ * Who may remove any comment on this row's thread: the log's, the review's or
+ * the list's owner. A screening is the club's, not its selector's, so it has none.
  */
 const threadOwner = (event: WallEvent): string | null => {
     switch (event.kind) {
         case 'log':
+        case 'late-review':
             return event.member;
         case 'list':
             return event.list.owner;
@@ -226,6 +233,7 @@ const threadOwner = (event: WallEvent): string | null => {
 const hasFigure = (event: WallEvent): boolean =>
     (event.kind === 'club-watch' && event.average !== null) ||
     (event.kind === 'log' && event.entry.score !== null) ||
+    (event.kind === 'late-review' && event.rating.score !== null) ||
     event.kind === 'list';
 
 /**
@@ -287,7 +295,8 @@ const TimelineNode: React.FC<{ event: WallEvent; accent: CardAccent }> = ({ even
      */
     const position = 'absolute left-0 top-0 h-8 w-8 sm:h-9 sm:w-9';
 
-    if (event.kind === 'log') {
+    // A late review is one member's act as much as a log is, so it gets a face too.
+    if (event.kind === 'log' || event.kind === 'late-review') {
         return (
             // `group` of its own: the node sits outside the row's article, so
             // CircularImage's hover zoom has nothing to key off otherwise.
@@ -826,6 +835,16 @@ const WallActor: React.FC<{ event: WallEvent }> = ({ event }) => {
                 </>
             );
 
+        case 'late-review':
+            return (
+                <>
+                    <MemberChip name={event.member} photo={false} />
+                    {/* A bare number isn't a review, and the row shouldn't promise
+                        words that aren't under it. */}
+                    <span>{event.rating.blurb ? 'reviewed' : 'scored'}</span>
+                </>
+            );
+
         case 'list':
             return (
                 <>
@@ -888,6 +907,21 @@ const WallSubject: React.FC<{ event: WallEvent }> = ({ event }) => {
                             Club film
                         </span>
                     )}
+                </>
+            );
+
+        case 'late-review':
+            return (
+                <>
+                    <FilmTitle
+                        imdbID={event.film.imdbID}
+                        title={event.film.title}
+                        year={event.film.year}
+                        onSite
+                    />
+                    <span className="rounded-md bg-amber-400/[0.07] px-2 py-0.5 text-[10px] uppercase tracking-wider text-amber-400/70 ring-1 ring-inset ring-amber-400/20">
+                        Club film
+                    </span>
                 </>
             );
 
@@ -958,6 +992,19 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
             // breaks survive the trip; `Detail` says how.
             return event.entry.blurb ? <Detail>{event.entry.blurb}</Detail> : null;
 
+        case 'late-review':
+            return (
+                <>
+                    {/* Not a Detail, for the reason the screening's selector line
+                        isn't. This date is what makes the row make sense: the one
+                        in the band is when the review was added. */}
+                    <p className="relative mt-1 text-sm text-slate-500">
+                        The club watched this {formatWatchDate(event.watchDay)}
+                    </p>
+                    {event.rating.blurb && <Detail>{event.rating.blurb}</Detail>}
+                </>
+            );
+
         case 'list':
             return (
                 <>
@@ -1019,6 +1066,20 @@ const WallFigure: React.FC<{ event: WallEvent }> = ({ event }) => {
                         score={event.entry.score}
                         qualifier={event.entry.scoreQualifier}
                         title={`${event.member}'s own rating: ${event.entry.score}/${MAX_SCORE}`}
+                    />
+                </span>
+            );
+
+        case 'late-review':
+            return event.rating.score === null ? null : (
+                <span className="flex flex-shrink-0 items-baseline gap-1.5">
+                    <span className="hidden text-[10px] uppercase tracking-widest text-slate-400 sm:inline">
+                        {event.member}'s
+                    </span>
+                    <ScoreBadge
+                        score={event.rating.score}
+                        qualifier={event.rating.scoreQualifier}
+                        title={`${event.member}'s score, counted in the club's average: ${event.rating.score}/${MAX_SCORE}`}
                     />
                 </span>
             );

@@ -1,8 +1,8 @@
 import responsesData from '../assets/responses.json';
 
 /**
- * What the club says back to a log entry, a screening, or a list: reactions and
- * comments.
+ * What the club says back to a log entry, a screening, a late review, or a list:
+ * reactions and comments.
  *
  * Written by the editor worker into `responses.json`, one commit per reaction,
  * and those commits skip the Pages build. So unlike `trophies.json` this
@@ -98,7 +98,7 @@ export interface ResponseComment {
     editedAt: string | null;
 }
 
-/** Everything said about one log entry, screening, or list. */
+/** Everything said about one log entry, screening, late review, or list. */
 export interface ResponseThread {
     /** Reaction key → the members who left it, in the order they did. */
     reactions: Partial<Record<ReactionKey, string[]>>;
@@ -120,6 +120,10 @@ export const logThreadId = (member: string, imdbID: string): string => `log-${me
 
 /** The thread id for a club screening. */
 export const clubThreadId = (imdbID: string): string => `club-${imdbID}`;
+
+/** The thread id for a member's late review of a club film. */
+export const reviewThreadId = (member: string, imdbID: string): string =>
+    `review-${member}-${imdbID}`;
 
 /** The thread id for a member's list. */
 export const listThreadId = (listId: string): string => `list-${listId}`;

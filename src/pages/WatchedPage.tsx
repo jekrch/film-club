@@ -6,6 +6,7 @@ import PageLayout from '../components/layout/PageLayout';
 import HeroBanner from '../components/common/HeroBanner';
 import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
+import CircularImage from '../components/common/CircularImage';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import FilmSearchPicker from '../components/films/FilmSearchPicker';
 import WatchedFilmItem from '../components/films/WatchedFilmItem';
@@ -196,7 +197,7 @@ const WatchedPage: React.FC = () => {
         );
     }
 
-    const isOwnLog = signedInAs !== null && signedInAs.toLowerCase() === owner.toLowerCase();
+    const profilePath = `/profile/${encodeURIComponent(owner)}`;
 
     return (
         <PageLayout>
@@ -209,19 +210,28 @@ const WatchedPage: React.FC = () => {
             </Button>
 
             <HeroBanner sources={collage} className="mb-8">
-                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-blue-400/80">Watched</p>
-                <h1 className="mb-3 break-words text-3xl font-thin text-slate-100 sm:text-4xl">
-                    {owner}'s log
+                {/* `group` of its own: CircularImage's hover zoom keys off it. */}
+                <Link
+                    to={profilePath}
+                    title={`View ${owner}'s profile`}
+                    className="group mx-auto mb-4 block w-fit rounded-full"
+                >
+                    <CircularImage
+                        src={teamMember.image}
+                        alt={owner}
+                        size="w-20 h-20 sm:w-24 sm:h-24"
+                        className="shadow-lg"
+                    />
+                </Link>
+                <h1 className="break-words text-xl font-thin text-slate-100 sm:text-2xl">
+                    {owner}'s film log
                 </h1>
-                <p className="text-slate-400">
-                    Films {isOwnLog ? 'you' : owner} watched outside the club, newest first.{' '}
-                    <Link
-                        to={`/profile/${encodeURIComponent(owner)}`}
-                        className="text-blue-400 transition-colors hover:text-blue-300"
-                    >
-                        Back to {isOwnLog ? 'your' : 'their'} profile
-                    </Link>
-                </p>
+                <Link
+                    to={profilePath}
+                    className="mt-4 inline-block text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 transition-colors hover:text-blue-300"
+                >
+                    View profile
+                </Link>
             </HeroBanner>
 
             <AccentCard accent="blue" className="mb-12 p-3 sm:p-6 md:p-8">

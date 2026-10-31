@@ -47,7 +47,9 @@
         {
           "user": "gabe",
           "score": 8,
-          "blurb": "So many haunting scenes in this film. Many times the story tips into horror and many times it could but doesn't. Both scenarios are chilling.\n\nDidn't get to watch with the Club, but I bet the conversation was great!"
+          "blurb": "So many haunting scenes in this film. Many times the story tips into horror and many times it could but doesn't. Both scenarios are chilling.\n\nDidn't get to watch with the Club, but I bet the conversation was great!",
+          "scoreAddedAt": "2026-10-27T12:22:35Z",
+          "blurbAddedAt": "2026-10-27T12:22:35Z"
         },
         {
           "user": "jacob",
@@ -285,7 +287,9 @@
         {
           "user": "gabe",
           "score": 8,
-          "blurb": "This film makes me grateful for Criterion Club! What a remarkable work of harsh art."
+          "blurb": "This film makes me grateful for Criterion Club! What a remarkable work of harsh art.",
+          "scoreAddedAt": "2026-10-30T02:27:31Z",
+          "blurbAddedAt": "2026-10-30T02:27:31Z"
         },
         {
           "user": "jacob",
@@ -7232,7 +7236,9 @@
         {
           "user": "gabe",
           "score": 4.5,
-          "blurb": "Wild that one point in history it was considered anti-authoritarian to make a 75 minute mukbang film."
+          "blurb": "Wild that one point in history it was considered anti-authoritarian to make a 75 minute mukbang film.",
+          "scoreAddedAt": "2026-10-31T02:50:46Z",
+          "blurbAddedAt": "2026-10-31T02:50:46Z"
         },
         {
           "user": "jacob",
@@ -15794,7 +15800,8 @@
         {
           "user": "gabe",
           "score": 4,
-          "blurb": "Thanks Agnes!"
+          "blurb": "Thanks Agnes!",
+          "blurbAddedAt": "2026-09-06T18:27:05Z"
         },
         {
           "user": "jacob",
@@ -16273,7 +16280,8 @@
         {
           "user": "gabe",
           "score": 5.5,
-          "blurb": "Feels very familiar after seeing the other space movies!"
+          "blurb": "Feels very familiar after seeing the other space movies!",
+          "blurbAddedAt": "2026-09-06T18:20:59Z"
         },
         {
           "user": "jacob",
@@ -16596,22 +16604,27 @@
         {
           "user": "andy",
           "score": 5,
-          "blurb": null
+          "blurb": null,
+          "scoreAddedAt": "2026-09-02T03:51:27Z"
         },
         {
           "user": "jacob",
           "score": 7,
-          "blurb": null
+          "blurb": null,
+          "scoreAddedAt": "2026-09-02T03:59:58Z"
         },
         {
           "user": "gabe",
           "score": 5,
-          "blurb": "Parts are phenomenal, parts are unbearable. Desperately needed an editor."
+          "blurb": "Parts are phenomenal, parts are unbearable. Desperately needed an editor.",
+          "scoreAddedAt": "2026-09-02T04:20:26Z",
+          "blurbAddedAt": "2026-10-14T12:00:01Z"
         },
         {
           "user": "joey",
           "score": 6,
-          "blurb": null
+          "blurb": null,
+          "scoreAddedAt": "2026-09-02T04:20:36Z"
         }
       ],
       "trophyInfo": null,
@@ -17062,22 +17075,28 @@
         {
           "user": "joey",
           "score": 2,
-          "blurb": null
+          "blurb": null,
+          "scoreAddedAt": "2026-10-14T04:00:00Z"
         },
         {
           "user": "andy",
           "score": 3.5,
-          "blurb": null
+          "blurb": null,
+          "scoreAddedAt": "2026-10-14T04:00:00Z"
         },
         {
           "user": "jacob",
           "score": 5.5,
-          "blurb": "I liked the Hartley-esque stilted, deadpan style (which I admit can be alienating) but I personally HATED the pixelvision here."
+          "blurb": "I liked the Hartley-esque stilted, deadpan style (which I admit can be alienating) but I personally HATED the pixelvision here.",
+          "scoreAddedAt": "2026-10-14T04:00:00Z",
+          "blurbAddedAt": "2026-10-14T04:00:00Z"
         },
         {
           "user": "gabe",
           "score": 3,
-          "blurb": "Vampire movies - like most movies - suffer when they don't have a sense of humor or self-awareness. This one is profoundly lacking."
+          "blurb": "Vampire movies - like most movies - suffer when they don't have a sense of humor or self-awareness. This one is profoundly lacking.",
+          "scoreAddedAt": "2026-10-14T04:00:00Z",
+          "blurbAddedAt": "2026-10-14T11:58:20Z"
         }
       ],
       "trophyInfo": null,

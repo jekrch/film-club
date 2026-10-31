@@ -4,22 +4,27 @@
       "ratings": {
         "andy": {
           "score": 5,
+          "scoreAddedAt": "2026-09-02T03:51:27Z",
           "updatedBy": "Andy",
           "updatedAt": "2026-09-02T03:51:27Z"
         },
         "jacob": {
           "score": 7,
+          "scoreAddedAt": "2026-09-02T03:59:58Z",
           "updatedBy": "Jacob",
           "updatedAt": "2026-09-02T03:59:58Z"
         },
         "gabe": {
           "score": 5,
+          "blurb": "Parts are phenomenal, parts are unbearable. Desperately needed an editor.",
+          "scoreAddedAt": "2026-09-02T04:20:26Z",
+          "blurbAddedAt": "2026-10-14T12:00:01Z",
           "updatedBy": "Gabe",
-          "updatedAt": "2026-10-14T12:00:01Z",
-          "blurb": "Parts are phenomenal, parts are unbearable. Desperately needed an editor."
+          "updatedAt": "2026-10-14T12:00:01Z"
         },
         "joey": {
           "score": 6,
+          "scoreAddedAt": "2026-09-02T04:20:36Z",
           "updatedBy": "Jacob",
           "updatedAt": "2026-09-02T04:20:36Z"
         }
@@ -34,6 +39,7 @@
       "ratings": {
         "gabe": {
           "blurb": "Feels very familiar after seeing the other space movies!",
+          "blurbAddedAt": "2026-09-06T18:20:59Z",
           "updatedBy": "Gabe",
           "updatedAt": "2026-09-06T18:20:59Z"
         }
@@ -43,6 +49,7 @@
       "ratings": {
         "gabe": {
           "blurb": "Thanks Agnes!",
+          "blurbAddedAt": "2026-09-06T18:27:05Z",
           "updatedBy": "Gabe",
           "updatedAt": "2026-09-06T18:27:05Z"
         }
@@ -52,25 +59,31 @@
       "ratings": {
         "joey": {
           "score": 2,
+          "scoreAddedAt": "2026-10-14T04:00:00Z",
           "updatedBy": "Jacob",
           "updatedAt": "2026-10-14T04:00:00Z"
         },
         "andy": {
           "score": 3.5,
+          "scoreAddedAt": "2026-10-14T04:00:00Z",
           "updatedBy": "Jacob",
           "updatedAt": "2026-10-14T04:00:00Z"
         },
         "jacob": {
           "score": 5.5,
+          "blurb": "I liked the Hartley-esque stilted, deadpan style (which I admit can be alienating) but I personally HATED the pixelvision here.",
+          "scoreAddedAt": "2026-10-14T04:00:00Z",
+          "blurbAddedAt": "2026-10-14T04:00:00Z",
           "updatedBy": "Jacob",
-          "updatedAt": "2026-10-14T04:00:00Z",
-          "blurb": "I liked the Hartley-esque stilted, deadpan style (which I admit can be alienating) but I personally HATED the pixelvision here."
+          "updatedAt": "2026-10-14T04:00:00Z"
         },
         "gabe": {
           "score": 3,
+          "blurb": "Vampire movies - like most movies - suffer when they don't have a sense of humor or self-awareness. This one is profoundly lacking.",
+          "scoreAddedAt": "2026-10-14T04:00:00Z",
+          "blurbAddedAt": "2026-10-14T11:58:20Z",
           "updatedBy": "Gabe",
-          "updatedAt": "2026-10-14T11:58:20Z",
-          "blurb": "Vampire movies - like most movies - suffer when they don't have a sense of humor or self-awareness. This one is profoundly lacking."
+          "updatedAt": "2026-10-14T11:58:20Z"
         }
       },
       "film": {
@@ -136,6 +149,8 @@
         "gabe": {
           "score": 8,
           "blurb": "So many haunting scenes in this film. Many times the story tips into horror and many times it could but doesn't. Both scenarios are chilling.\n\nDidn't get to watch with the Club, but I bet the conversation was great!",
+          "scoreAddedAt": "2026-10-27T12:22:35Z",
+          "blurbAddedAt": "2026-10-27T12:22:35Z",
           "updatedBy": "Gabe",
           "updatedAt": "2026-10-27T12:22:35Z"
         }
@@ -146,6 +161,8 @@
         "gabe": {
           "score": 8,
           "blurb": "This film makes me grateful for Criterion Club! What a remarkable work of harsh art.",
+          "scoreAddedAt": "2026-10-30T02:27:31Z",
+          "blurbAddedAt": "2026-10-30T02:27:31Z",
           "updatedBy": "Gabe",
           "updatedAt": "2026-10-30T02:27:31Z"
         }
@@ -156,6 +173,8 @@
         "gabe": {
           "score": 4.5,
           "blurb": "Wild that one point in history it was considered anti-authoritarian to make a 75 minute mukbang film.",
+          "scoreAddedAt": "2026-10-31T02:50:46Z",
+          "blurbAddedAt": "2026-10-31T02:50:46Z",
           "updatedBy": "Gabe",
           "updatedAt": "2026-10-31T02:50:46Z"
         }

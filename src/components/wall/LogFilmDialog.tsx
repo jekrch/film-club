@@ -76,8 +76,11 @@ const LogFilmDialog: React.FC<LogFilmDialogProps> = ({
         >
             <div className="p-4 md:p-5">
                 {/* Disabled rather than hidden while a save is in flight, so a
-                    second tap can't log a second film over the first. */}
-                <fieldset disabled={saving !== null}>
+                    second tap can't log a second film over the first. `min-w-0`
+                    because a fieldset defaults to its content's min-content
+                    width, which a long title's no-wrap row would stretch past
+                    the panel, and the row would never truncate. */}
+                <fieldset disabled={saving !== null} className="min-w-0">
                     <FilmSearchPicker
                         onPick={(hit) => void log(hit)}
                         chosen={logged}

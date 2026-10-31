@@ -4,12 +4,15 @@ import {
     formatMonth,
     groupByMonth,
     mergeTrophyRows,
+    narrowWall,
     type ClubWatchEvent,
+    type LateReviewEvent,
     type ListEvent,
     type LogEvent,
     type TrophyEvent,
     type WallEvent,
 } from './wallUtils';
+import type { ClubRating, Film } from '../types/film';
 import type { FilmListDefinition, ListFilmSummary } from '../types/list';
 import type { WatchedEntry, WatchedLog } from '../types/watched';
 import { makeClubInfo, makeFilm, makeRating, makeTrophy } from '../test-utils/factories';
@@ -418,6 +421,138 @@ describe('mergeTrophyRows', () => {
 
     it('returns nothing for an empty wall', () => {
         expect(mergeTrophyRows([])).toEqual([]);
+    });
+});
+
+describe('late reviews', () => {
+    /** Screened 08/12/2020, so anything past 08/19/2020 UTC is late. */
+    const filmWith = (rating: Partial<ClubRating>) =>
+        makeFilm({
+            imdbID: 'tt0000001',
+            title: 'A Club Film',
+            movieClubInfo: makeClubInfo({
+                selector: 'Mark',
+                watchDate: '08/12/2020',
+                clubRatings: [makeRating({ user: 'gabe', score: null, blurb: null, ...rating })],
+            }),
+        });
+
+    const lateReviews = (film: Film) =>
+        buildWall({ films: [film], watched: {}, lists: [], trophies: {}, summaries }).filter(
+            (event): event is LateReviewEvent => event.kind === 'late-review'
+        );
+
+    it('files a net new score and review on the day they were added', () => {
+        const [event, ...rest] = lateReviews(
+            filmWith({
+                score: 8,
+                blurb: 'So many haunting scenes.',
+                scoreAddedAt: '2026-10-27T12:22:35Z',
+                blurbAddedAt: '2026-10-27T12:22:35Z',
+            })
+        );
+
+        expect(rest).toEqual([]);
+        expect(event).toMatchObject({
+            id: 'review-Gabe-tt0000001',
+            member: 'Gabe',
+            date: '2026-10-27',
+            at: '2026-10-27T12:22:35Z',
+            watchDay: '2020-08-12',
+        });
+    });
+
+    it('uses the day the addition fell on for the reader, not in UTC', () => {
+        // 9:50pm on the 30th in Central, though already the 31st in UTC.
+        const [event] = lateReviews(filmWith({ score: 4, scoreAddedAt: '2026-10-31T02:50:46Z' }));
+        expect(event.date).toBe('2026-10-30');
+    });
+
+    it('stays on the first addition when a review follows a late score', () => {
+        const events = lateReviews(
+            filmWith({
+                score: 8,
+                blurb: 'Came back to this.',
+                scoreAddedAt: '2026-10-01T12:00:00Z',
+                blurbAddedAt: '2026-10-20T12:00:00Z',
+            })
+        );
+
+        expect(events.map((event) => event.date)).toEqual(['2026-10-01']);
+    });
+
+    it('dates a late review by the review when the score came on the night', () => {
+        const [event] = lateReviews(
+            filmWith({
+                score: 8,
+                blurb: 'Came back to this.',
+                scoreAddedAt: '2020-08-13T04:00:00Z',
+                blurbAddedAt: '2026-10-14T12:00:00Z',
+            })
+        );
+
+        expect(event.date).toBe('2026-10-14');
+    });
+
+    it('leaves additions from around the screening to the screening row', () => {
+        expect(
+            lateReviews(
+                filmWith({
+                    score: 8,
+                    blurb: 'Great night.',
+                    scoreAddedAt: '2020-08-13T04:00:00Z',
+                    blurbAddedAt: '2020-08-18T23:00:00Z',
+                })
+            )
+        ).toEqual([]);
+    });
+
+    it('ignores a row with no stamps, which is everything from the sheet', () => {
+        expect(lateReviews(filmWith({ score: 8, blurb: 'From the sheet.' }))).toEqual([]);
+    });
+
+    it('ignores a stamp whose field has since been cleared', () => {
+        expect(
+            lateReviews(
+                filmWith({ score: null, blurb: null, scoreAddedAt: '2026-10-27T12:22:35Z' })
+            )
+        ).toEqual([]);
+    });
+
+    it('needs a screening to be late for', () => {
+        const unwatched = makeFilm({
+            imdbID: 'tt0000003',
+            movieClubInfo: makeClubInfo({
+                watchDate: null,
+                clubRatings: [makeRating({ user: 'gabe', scoreAddedAt: '2026-10-27T12:22:35Z' })],
+            }),
+        });
+
+        expect(lateReviews(unwatched)).toEqual([]);
+    });
+
+    it('never folds into a trophy or a screening', () => {
+        const events = lateReviews(filmWith({ score: 8, scoreAddedAt: '2026-10-27T12:22:35Z' }));
+        const [row] = mergeTrophyRows(events);
+
+        expect(row.lead.kind).toBe('late-review');
+        expect(row.trophies).toEqual([]);
+    });
+
+    it('goes with the screenings when the wall is narrowed', () => {
+        const events = buildWall({
+            films: [filmWith({ score: 8, scoreAddedAt: '2026-10-27T12:22:35Z' })],
+            watched,
+            lists: [],
+            trophies: {},
+            summaries,
+        });
+        const kindsUnder = (kind: WallEvent['kind']) =>
+            narrowWall(events, new Set([kind])).map((event) => event.kind);
+
+        expect(kindsUnder('club-watch')).toEqual(['late-review', 'club-watch']);
+        expect(kindsUnder('log')).toEqual(['log']);
+        expect(narrowWall(events, new Set())).toEqual(events);
     });
 });
 

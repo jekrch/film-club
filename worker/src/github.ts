@@ -292,22 +292,36 @@ export async function commitJson<T, R>(
     );
 }
 
+/** One member's row on a club film, as `films.json` holds it. */
+export interface ClubRatingRow {
+    user: string;
+    score?: number | null;
+    blurb?: string | null;
+}
+
 /**
- * The set of IMDb ids the club has actually watched.
+ * What the worker needs from `films.json`: which films the club has, and each
+ * one's rating rows.
  *
- * Checked when a write names a club film. Fetched with the raw media type
- * because `films.json` is over half a megabyte and the base64 `content` field
- * caps out at 1 MB.
+ * Fetched with the raw media type because `films.json` is over half a megabyte
+ * and the base64 `content` field caps out at 1 MB.
  *
  * Cached per isolate for a minute, so a newly synced film may be unknown for up
  * to a minute, instead of re-downloading 500 KB on every save.
  */
-const FILM_ID_TTL_MS = 60_000;
-let filmIdCache: { ids: Set<string>; fetchedAt: number } | null = null;
+const FILM_INDEX_TTL_MS = 60_000;
 
-export async function fetchClubFilmIds(env: Env): Promise<Set<string>> {
-    if (filmIdCache && Date.now() - filmIdCache.fetchedAt < FILM_ID_TTL_MS) {
-        return filmIdCache.ids;
+interface FilmIndex {
+    ids: Set<string>;
+    ratings: Map<string, ClubRatingRow[]>;
+    fetchedAt: number;
+}
+
+let filmIndexCache: FilmIndex | null = null;
+
+async function fetchFilmIndex(env: Env): Promise<FilmIndex> {
+    if (filmIndexCache && Date.now() - filmIndexCache.fetchedAt < FILM_INDEX_TTL_MS) {
+        return filmIndexCache;
     }
 
     const resp = await fetch(contentsUrl(env, FILMS_PATH), {
@@ -315,12 +329,33 @@ export async function fetchClubFilmIds(env: Env): Promise<Set<string>> {
     });
     if (!resp.ok) throw githubError(FILMS_PATH, resp.status, await resp.text());
 
-    const films = (await resp.json()) as Array<{ imdbID?: string }>;
+    const films = (await resp.json()) as Array<{
+        imdbID?: string;
+        movieClubInfo?: { clubRatings?: ClubRatingRow[] } | null;
+    }>;
     const ids = new Set<string>();
+    const ratings = new Map<string, ClubRatingRow[]>();
     for (const film of films) {
-        if (typeof film?.imdbID === 'string') ids.add(film.imdbID);
+        if (typeof film?.imdbID !== 'string') continue;
+        ids.add(film.imdbID);
+        ratings.set(film.imdbID, film.movieClubInfo?.clubRatings ?? []);
     }
 
-    filmIdCache = { ids, fetchedAt: Date.now() };
-    return ids;
+    filmIndexCache = { ids, ratings, fetchedAt: Date.now() };
+    return filmIndexCache;
+}
+
+/** The set of IMDb ids the club has actually watched. Checked when a write names a club film. */
+export async function fetchClubFilmIds(env: Env): Promise<Set<string>> {
+    return (await fetchFilmIndex(env)).ids;
+}
+
+/** A member's row on a club film, or undefined when `films.json` has none. */
+export async function fetchClubRating(
+    env: Env,
+    imdbId: string,
+    user: string
+): Promise<ClubRatingRow | undefined> {
+    const rows = (await fetchFilmIndex(env)).ratings.get(imdbId) ?? [];
+    return rows.find((row) => row.user?.toLowerCase() === user.toLowerCase());
 }

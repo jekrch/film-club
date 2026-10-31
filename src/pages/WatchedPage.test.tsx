@@ -79,8 +79,18 @@ const renderFor = (memberName: string, hash = '') =>
 describe('WatchedPage', () => {
     it('renders the log under its owner, with a count', () => {
         renderFor('Andy');
-        expect(screen.getByRole('heading', { name: /Andy's log/i })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: "Andy's film log" })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: '2 Films' })).toBeInTheDocument();
+    });
+
+    it('puts its owner’s photo in the banner, linking to their profile', () => {
+        renderFor('Andy');
+        expect(screen.getByAltText('Andy')).toHaveAttribute('src', '/images/andy.jpg');
+        expect(screen.getByAltText('Andy').closest('a')).toHaveAttribute('href', '/profile/Andy');
+        expect(screen.getByRole('link', { name: 'View profile' })).toHaveAttribute(
+            'href',
+            '/profile/Andy'
+        );
     });
 
     it('orders by most recent viewing regardless of stored order', () => {

@@ -1,7 +1,8 @@
-import { Film, filmData } from '../types/film';
+import { ClubRating, Film, filmData } from '../types/film';
 import { FilmListDefinition, filmLists } from '../types/list';
 import { trophyIndex, type Trophy } from '../types/trophy';
-import { clubThreadId, listThreadId, logThreadId } from '../types/responses';
+import { clubThreadId, listThreadId, logThreadId, reviewThreadId } from '../types/responses';
+import { capitalizeUserName, getTeamMemberByName } from '../types/team';
 import { watchedLog, type WatchedLog } from '../types/watched';
 import { parseWatchDate } from './filmUtils';
 import {
@@ -31,15 +32,17 @@ import type { ListFilmSummary } from '../types/list';
  * survives intact — a `log` event carries a member's private score and a
  * `club-watch` event carries the club's average, and neither can become the
  * other, because they are different members of the union and no code path
- * converts between them.
+ * converts between them. A `late-review` event is a third thing again: a member's
+ * own score or words, but on the club's record, where they do count.
  *
  * **Everything is dated by when it happened, not by when it was typed.** A club
  * watch and a member's log both take the *watch* date, which is the date those
  * two surfaces already sort on; if they didn't agree, a wall mixing them would
  * be telling two different stories in one column. A list and a trophy have no
  * date but the one they were recorded at, so for those the two are the same
- * thing. {@link WallEvent.at} carries the recorded instant where there is one,
- * and is only ever a tie-breaker.
+ * thing, and so it is for a late review: nobody knows when the member saw the
+ * film, and the adding is the event. {@link WallEvent.at} carries the recorded
+ * instant where there is one, and is only ever a tie-breaker.
  *
  * Everything read here is bundled, so the wall renders for a signed-out visitor
  * with no network round trip — the same reason `lists.json` and `trophies.json`
@@ -49,7 +52,7 @@ import type { ListFilmSummary } from '../types/list';
  */
 
 /** What kind of thing happened. */
-export type WallEventKind = 'club-watch' | 'log' | 'list' | 'trophy';
+export type WallEventKind = 'club-watch' | 'log' | 'late-review' | 'list' | 'trophy';
 
 interface WallEventBase {
     /** Unique across the whole wall, and stable between builds. */
@@ -92,6 +95,24 @@ export interface LogEvent extends WallEventBase {
     entry: ResolvedWatchedEntry;
 }
 
+/**
+ * A member added their own score or review to a film the club watched earlier.
+ *
+ * Its own kind rather than a `log`, because this is the club's record: the score
+ * counts toward the film's average, and the row has to say so rather than wear
+ * the log's "counts toward nothing".
+ */
+export interface LateReviewEvent extends WallEventBase {
+    kind: 'late-review';
+    /** The reviewer, in `club.json` casing. */
+    member: string;
+    film: Film;
+    /** Their row on the film, as it stands now rather than as it was first added. */
+    rating: ClubRating;
+    /** The day the club watched it, `YYYY-MM-DD`. */
+    watchDay: string;
+}
+
 /** A member started a list. */
 export interface ListEvent extends WallEventBase {
     kind: 'list';
@@ -123,7 +144,7 @@ export interface TrophyEvent extends WallEventBase {
     film: Film;
 }
 
-export type WallEvent = ClubWatchEvent | LogEvent | ListEvent | TrophyEvent;
+export type WallEvent = ClubWatchEvent | LogEvent | LateReviewEvent | ListEvent | TrophyEvent;
 
 /**
  * Optional data overrides. Production callers pass nothing and get the bundled
@@ -187,7 +208,8 @@ const KIND_ORDER: Record<WallEventKind, number> = {
     'club-watch': 0,
     trophy: 1,
     log: 2,
-    list: 3,
+    'late-review': 3,
+    list: 4,
 };
 
 /**
@@ -253,6 +275,71 @@ const logEvents = (log: WatchedLog, sources: WallDataSources): LogEvent[] =>
             };
         })
     );
+
+/**
+ * How long after a screening an addition still belongs to that screening.
+ *
+ * Scores routinely go in the next morning, and that isn't news: the screening's
+ * own row already shows them. A week is the shortest gap that clears those while
+ * staying under the club's usual gap between films.
+ */
+const LATE_REVIEW_GRACE_DAYS = 7;
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * The instant a member first added something to this film after the grace period,
+ * or null if they never did.
+ *
+ * A score from the night and a review from a month later is one late addition, on
+ * the review's date. A stamp whose field has since been cleared doesn't count,
+ * because the row would have nothing to show for it.
+ */
+const firstLateAddition = (rating: ClubRating, watchDay: string): string | null => {
+    const cutoff = Date.parse(`${watchDay}T00:00:00Z`) + LATE_REVIEW_GRACE_DAYS * DAY_MS;
+    const [first] = [
+        rating.score !== null ? rating.scoreAddedAt : undefined,
+        rating.blurb !== null ? rating.blurbAddedAt : undefined,
+    ]
+        .filter((stamp): stamp is string => !!stamp && Date.parse(stamp) > cutoff)
+        .sort();
+    return first ?? null;
+};
+
+/**
+ * Every score or review a member added to a club film well after the screening.
+ *
+ * One event per member per film, so a later edit or a review following a late
+ * score never adds a second row or moves the first.
+ */
+const lateReviewEvents = (films: Film[]): LateReviewEvent[] =>
+    films.flatMap((film) => {
+        const watchDay = clubDayKey(film.movieClubInfo?.watchDate);
+        if (!watchDay) return [];
+
+        return (film.movieClubInfo?.clubRatings ?? []).flatMap((rating) => {
+            const at = firstLateAddition(rating, watchDay);
+            const date = at ? instantDayKey(at) : null;
+            if (!at || !date) return [];
+
+            const member =
+                getTeamMemberByName(rating.user)?.name ?? capitalizeUserName(rating.user);
+            return [
+                {
+                    // Also the thread id reactions and comments hang from.
+                    id: reviewThreadId(member, film.imdbID),
+                    kind: 'late-review' as const,
+                    date,
+                    at,
+                    wash: filmFrameSource(film).images[0] ?? null,
+                    member,
+                    film,
+                    rating,
+                    watchDay,
+                },
+            ];
+        });
+    });
 
 /** How many posters a list event stacks before it stops. Matches the profile's. */
 const LIST_PREVIEW_COUNT = 5;
@@ -373,6 +460,7 @@ export const buildWall = (sources: WallDataSources = {}): WallEvent[] => {
     return [
         ...clubWatchEvents(films),
         ...logEvents(sources.watched ?? watchedLog, sources),
+        ...lateReviewEvents(films),
         ...listEvents(sources.lists ?? filmLists, sources),
         ...trophyEvents(films, sources),
     ].sort(compareWallEvents);
@@ -434,6 +522,23 @@ export const wallKinds = (events: WallEvent[]): Set<WallEventKind> =>
     new Set(events.map((event) => event.kind));
 
 /**
+ * The events a selection of filter chips leaves on the wall.
+ *
+ * An empty selection means everything rather than nothing: the chips are a way
+ * to narrow the wall, and a wall you have narrowed to nothing is never what
+ * anyone was reaching for.
+ *
+ * A late review has no chip and goes with the screenings, since a past club pick
+ * is what it's about.
+ */
+export const narrowWall = (events: WallEvent[], kinds: Set<WallEventKind>): WallEvent[] =>
+    kinds.size === 0
+        ? events
+        : events.filter((event) =>
+              kinds.has(event.kind === 'late-review' ? 'club-watch' : event.kind)
+          );
+
+/**
  * One box on the wall.
  *
  * Usually an event on its own. But the club hands out its trophies at the
@@ -459,6 +564,9 @@ const eventFilmId = (event: WallEvent): string | null => {
         case 'club-watch':
         case 'trophy':
             return event.film.imdbID;
+        // A late review is dated apart from its screening by at least a week, and
+        // it is one member's row rather than part of the evening.
+        case 'late-review':
         case 'log':
         case 'list':
             return null;

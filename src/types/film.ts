@@ -112,6 +112,11 @@ export interface ClubRating {
     // Joey's "d" on a documentary score in "7.5d"). Extracted by the sync script
     // so `score` stays numeric; the UI restores it with an explanatory note.
     scoreQualifier?: string | null;
+    // When the member first added this score or review on the site, if the sheet
+    // had nothing there. Absent for anything that came from the sheet. Folded in
+    // by `apply_overrides.py`; the wall uses them to surface late reviews.
+    scoreAddedAt?: string;
+    blurbAddedAt?: string;
 }
 
 /**

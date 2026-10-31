@@ -23,6 +23,7 @@ import {
     buildWall,
     groupByMonth,
     mergeTrophyRows,
+    narrowWall,
     wallKinds,
     type LogEvent,
     type WallEvent,
@@ -95,7 +96,8 @@ const COLLAGE_SIZE = 12;
  *
  * Trophies get no chip of their own: they are handed out at a screening and
  * fold into its row, so narrowing to them would ask for a slice of the wall
- * that mostly isn't drawn on its own.
+ * that mostly isn't drawn on its own. Late reviews have none either: they are
+ * about a screening, so the Screenings chip brings them along (see `narrowWall`).
  */
 const FILTERS: { kind: WallEventKind; label: string; Icon: IconComponent }[] = [
     { kind: 'club-watch', label: 'Screenings', Icon: FilmIcon as IconComponent },
@@ -113,6 +115,7 @@ const FILTERS: { kind: WallEventKind; label: string; Icon: IconComponent }[] = [
 const eventFrameSource = (event: WallEvent): FrameSource | null => {
     switch (event.kind) {
         case 'club-watch':
+        case 'late-review':
         case 'trophy':
             return filmFrameSource(event.film);
         case 'log':
@@ -186,13 +189,7 @@ const WallPage: React.FC = () => {
     /** The kinds this club has actually recorded — no chip for an empty filter. */
     const present = useMemo(() => wallKinds(events), [events]);
 
-    const filtered = useMemo(
-        // An empty selection means everything rather than nothing: the chips are
-        // a way to narrow the wall, and a wall you have narrowed to nothing is
-        // never what anyone was reaching for.
-        () => (kinds.size === 0 ? events : events.filter((event) => kinds.has(event.kind))),
-        [events, kinds]
-    );
+    const filtered = useMemo(() => narrowWall(events, kinds), [events, kinds]);
 
     // Paged in events rather than in boxes, so "40 of 112" counts the same
     // things the heading does. The fold happens inside each month, after the

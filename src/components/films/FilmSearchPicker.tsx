@@ -191,7 +191,7 @@ const FilmSearchPicker: React.FC<FilmSearchPickerProps> = ({
             {error && <p className="mt-2 text-sm text-rose-300">{error}</p>}
 
             {results.length > 0 && (
-                <ul className="mt-2 max-h-72 space-y-1 overflow-y-auto rounded-lg border border-slate-700/60 p-1">
+                <ul className="mt-2 max-h-72 space-y-1 overflow-y-auto overflow-x-hidden overscroll-contain rounded-lg border border-slate-700/60 p-1">
                     {results.map((hit) => (
                         <li key={hit.imdbID}>
                             <button

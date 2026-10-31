@@ -19,8 +19,13 @@ import type { WatchedEntry } from '../../types/watched';
 /** The scale the club scores on, which members use for their own watches too. */
 const MAX_RATING = MAX_SCORE;
 
+/**
+ * `min-w-0` because an input's intrinsic width is a floor in a flex row, which
+ * on a phone pushes the image fields past the edge once a preview sits beside
+ * them.
+ */
 const FIELD_CLASS =
-    'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
+    'w-full min-w-0 rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-slate-100 ' +
     'placeholder:text-slate-500 focus:border-blue-400/60 focus:outline-none';
 
 /**
@@ -113,13 +118,15 @@ const WatchedEntryEditor: React.FC<WatchedEntryEditorProps> = ({
                     <span className="mb-1 block text-xs uppercase tracking-wider text-slate-500">
                         Watched
                     </span>
+                    {/* iOS draws its native date control at its own width,
+                        past `w-full`, unless the appearance is dropped. */}
                     <input
                         type="date"
                         value={form.watchDate}
                         max={todayLocal()}
                         onChange={(e) => setForm({ ...form, watchDate: e.target.value })}
                         disabled={busy}
-                        className={FIELD_CLASS}
+                        className={`${FIELD_CLASS} appearance-none`}
                     />
                 </label>
                 <label className="block w-24">

@@ -32,8 +32,10 @@ import {
     commitBinary,
     commitJson,
     fetchClubFilmIds,
+    fetchClubRating,
     memberImagePath,
     readJson,
+    type ClubRatingRow,
     type CommitPlan,
 } from './github';
 import { lookupFilm, searchFilms } from './omdb';
@@ -57,6 +59,7 @@ import type {
 } from './types';
 import {
     FILM_PATCH_FIELDS,
+    firstAddedStamps,
     LIMITS,
     REACTION_KEYS,
     assertMayDeleteComment,
@@ -176,14 +179,24 @@ async function readBody(request: Request, limit: number = LIMITS.body): Promise<
  * Field-level merge, not replace: only the keys the body carried are touched,
  * so saving a blurb leaves the score alone. `updatedBy`/`updatedAt` are
  * provenance for humans reading the file — `apply_overrides.py` whitelists the
- * three real fields and never copies these into `films.json`.
+ * fields it copies into `films.json` and these aren't among them. The stamps from
+ * {@link firstAddedStamps} are, and they keep their first value through every
+ * later save, because `existing` carries them.
  */
 function mergeRating(
     existing: RatingOverride | undefined,
     patch: RatingPatch,
+    sheet: ClubRatingRow | undefined,
     member: Member
 ): RatingOverride {
-    return { ...existing, ...patch, updatedBy: member.name, updatedAt: timestamp() };
+    const now = timestamp();
+    return {
+        ...existing,
+        ...patch,
+        ...firstAddedStamps(existing, patch, sheet, now),
+        updatedBy: member.name,
+        updatedAt: now,
+    };
 }
 
 /** True when the patch would leave the stored override's real fields unchanged. */
@@ -214,6 +227,9 @@ async function putRating(
     await assertClubFilm(env, imdbId);
 
     const user = owner.toLowerCase();
+    // Read before the commit rather than inside it: the mutation has to stay
+    // synchronous, and a retry doesn't need a newer copy of the sheet's row.
+    const sheet = await fetchClubRating(env, imdbId, user);
 
     return commitJson<OverridesFile, unknown>(
         env,
@@ -231,7 +247,7 @@ async function putRating(
                 };
             }
 
-            const rating = mergeRating(existing, patch, member);
+            const rating = mergeRating(existing, patch, sheet, member);
             films[imdbId] = { ...film, ratings: { ...film.ratings, [user]: rating } };
 
             return {
@@ -1102,8 +1118,8 @@ interface ThreadResult {
 }
 
 /**
- * Refuses a write that adds to a thread whose log entry, screening, or list
- * doesn't exist.
+ * Refuses a write that adds to a thread whose log entry, screening, review, or
+ * list doesn't exist.
  *
  * Only adding is checked. Taking a reaction or comment back still works after
  * the subject is gone, so nobody is stuck with words on a thread they can no
@@ -1124,6 +1140,11 @@ async function assertThreadSubject(env: Env, target: ThreadTarget): Promise<void
         }
         case 'club':
             return assertClubFilm(env, target.imdbId);
+        case 'review': {
+            const row = await fetchClubRating(env, target.imdbId, target.owner);
+            if (row?.score != null || row?.blurb != null) return;
+            throw notFound(`${target.owner} hasn't reviewed ${target.imdbId}.`);
+        }
         case 'list':
             if (await findList(env, target.listId)) return;
             throw notFound(`No list "${target.listId}".`);
@@ -1136,12 +1157,14 @@ const findList = async (env: Env, listId: string): Promise<FilmListDefinition | 
 };
 
 /**
- * The member who may remove anyone's comment on a thread: whose log or list it
- * is. Null for a screening, which is the club's, and for a list since deleted.
+ * The member who may remove anyone's comment on a thread: whose log, review, or
+ * list it is. Null for a screening, which is the club's, and for a list since
+ * deleted.
  */
 async function threadOwner(env: Env, target: ThreadTarget): Promise<string | null> {
     switch (target.kind) {
         case 'log':
+        case 'review':
             return target.owner;
         case 'club':
             return null;
@@ -1193,6 +1216,8 @@ const threadLabel = (member: Member, target: ThreadTarget): string => {
     switch (target.kind) {
         case 'log':
             return `${member.name} on ${target.owner}'s ${target.imdbId}`;
+        case 'review':
+            return `${member.name} on ${target.owner}'s review of ${target.imdbId}`;
         case 'club':
             return `${member.name} on screening ${target.imdbId}`;
         case 'list':

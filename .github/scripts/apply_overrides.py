@@ -39,6 +39,12 @@ DEFAULT_OVERRIDES_PATH = "src/assets/overrides.json"
 # never reach films.json, so this list is a whitelist rather than a skip-list.
 OVERRIDABLE_RATING_FIELDS = ("score", "scoreQualifier", "blurb")
 
+# The one piece of provenance that does reach films.json. The worker stamps these
+# when a score or review first appears from nothing, and the wall needs them to
+# place a late review on the day it was added. films.json is what signed-out
+# visitors get, and they never fetch overrides.json.
+FIRST_ADDED_RATING_FIELDS = ("scoreAddedAt", "blurbAddedAt")
+
 # The club-record fields a member may set on the film itself, mapped to where
 # they live in a film entry. `selector` and `watchDate` sit inside
 # `movieClubInfo`; the images are top-level, beside OMDb's own `poster`, as is
@@ -125,6 +131,14 @@ def apply_overrides(films_data, overrides):
     films_by_id = {f["imdbID"]: f for f in films_data if isinstance(f, dict) and "imdbID" in f}
     divergences = []
 
+    # Cleared first, because only an override can justify one. The sync updates a
+    # rating row in place, so a stamp from a reverted override would otherwise
+    # survive on the row and date whatever the sheet says as a late review.
+    for film in films_by_id.values():
+        for rating in (film.get("movieClubInfo") or {}).get("clubRatings") or []:
+            for field in FIRST_ADDED_RATING_FIELDS:
+                rating.pop(field, None)
+
     for imdb_id, film_override in (overrides.get("films") or {}).items():
         film = films_by_id.get(imdb_id)
         if film is None:
@@ -168,6 +182,10 @@ def apply_overrides(films_data, overrides):
                     divergences.append(
                         f"{imdb_id} {user}.{field}: sheet={sheet_value!r} override={value!r}"
                     )
+
+            for field in FIRST_ADDED_RATING_FIELDS:
+                if field in fields:
+                    rating[field] = fields[field]
 
     return divergences
 

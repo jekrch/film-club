@@ -63,7 +63,10 @@ const EditLogDialog: React.FC<EditLogDialogProps> = ({ event, isOpen, onClose, o
             subtitle={entry.year ?? undefined}
             className="max-h-[88vh] max-w-xl md:max-w-2xl"
         >
-            <div className="themed-scrollbar min-h-0 overflow-y-auto p-4 md:p-5">
+            {/* `overflow-x-hidden` stated outright: `overflow-y-auto` alone
+                computes the other axis to `auto`, so a field a pixel too wide
+                lets the whole form slide sideways under a thumb. */}
+            <div className="themed-scrollbar min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain p-4 md:p-5">
                 {/* Keyed by the entry so reopening on another row seeds afresh
                     rather than keeping the last row's draft. */}
                 <WatchedEntryEditor

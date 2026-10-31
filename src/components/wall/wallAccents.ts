@@ -7,7 +7,8 @@ import type { WallEventKind } from '../../utils/wallUtils';
  * These are the site's existing semantics, applied rather than invented (see
  * `common/accents.ts`): blue is club fact, so a screening is blue; emerald is a
  * member's own voice, so a film they logged — which carries their score and
- * their review and nobody else's — is emerald; amber is awards and curation, so
+ * their review and nobody else's — is emerald, and so is a late review of a club
+ * film, which is that same voice; amber is awards and curation, so
  * a trophy and a list are both amber. That last pair sharing a color is
  * deliberate. A fifth tint would say the two are as different from each other as
  * either is from a screening, and they aren't; their icons and their verbs are
@@ -20,6 +21,7 @@ import type { WallEventKind } from '../../utils/wallUtils';
 export const KIND_ACCENT: Record<WallEventKind, CardAccent> = {
     'club-watch': 'blue',
     log: 'emerald',
+    'late-review': 'emerald',
     list: 'amber',
     trophy: 'amber',
 };

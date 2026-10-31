@@ -56,6 +56,8 @@ export interface RatingOverride {
     score?: number | null;
     scoreQualifier?: string | null;
     blurb?: string | null;
+    scoreAddedAt?: string;
+    blurbAddedAt?: string;
     updatedBy: string;
     updatedAt: string;
 }

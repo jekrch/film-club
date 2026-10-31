@@ -20,6 +20,7 @@ import type {
     BackdropMode,
     FilmListEntry,
     InterviewItem,
+    RatingOverride,
     ReactionKey,
     ResponseComment,
 } from './types';
@@ -609,6 +610,33 @@ export function validateRatingPatch(body: unknown): RatingPatch {
     return patch;
 }
 
+/**
+ * Stamps a score or review the first time it appears from nothing.
+ *
+ * Per field, because they can arrive apart: a score entered on the night and a
+ * review weeks later are two additions, and only the second is a late one. Net
+ * new means neither the override nor the sheet had a value, so correcting a score
+ * or writing over the sheet's review stamps nothing. A stamp is never moved, so
+ * clearing a review and rewriting it keeps its original date.
+ *
+ * Whether an addition counts as *late* isn't decided here. That depends on the
+ * screening's date, and the wall works it out from these stamps.
+ */
+export function firstAddedStamps(
+    existing: RatingOverride | undefined,
+    patch: RatingPatch,
+    sheet: { score?: number | null; blurb?: string | null } | undefined,
+    now: string
+): Pick<RatingOverride, 'scoreAddedAt' | 'blurbAddedAt'> {
+    const isNew = (field: 'score' | 'blurb'): boolean =>
+        patch[field] != null && (existing?.[field] ?? sheet?.[field] ?? null) === null;
+
+    return {
+        ...(!existing?.scoreAddedAt && isNew('score') ? { scoreAddedAt: now } : {}),
+        ...(!existing?.blurbAddedAt && isNew('blurb') ? { blurbAddedAt: now } : {}),
+    };
+}
+
 // --- Club films ---------------------------------------------------------
 
 /**
@@ -1168,6 +1196,16 @@ export interface ClubThreadTarget {
     imdbId: string;
 }
 
+/** A member's late review of a club film. It sits on the film's rating row. */
+export interface ReviewThreadTarget {
+    kind: 'review';
+    /** Canonical: rebuilt from the resolved member, whatever casing the path used. */
+    threadId: string;
+    /** The `club.json` name whose review this is. */
+    owner: string;
+    imdbId: string;
+}
+
 /** A member's list. Its owner comes from `lists.json`, which the router reads. */
 export interface ListThreadTarget {
     kind: 'list';
@@ -1176,14 +1214,20 @@ export interface ListThreadTarget {
 }
 
 /** What a thread is about. */
-export type ThreadTarget = LogThreadTarget | ClubThreadTarget | ListThreadTarget;
+export type ThreadTarget =
+    | LogThreadTarget
+    | ClubThreadTarget
+    | ReviewThreadTarget
+    | ListThreadTarget;
 
 /**
  * Each kind's thread id is the wall's event id for that thing:
- * `log-<member>-<imdbID>`, `club-<imdbID>`, `list-<listId>`. A member name may
- * itself contain hyphens, which is why a log's IMDb id is matched from the end.
+ * `log-<member>-<imdbID>`, `review-<member>-<imdbID>`, `club-<imdbID>`,
+ * `list-<listId>`. A member name may itself contain hyphens, which is why the
+ * IMDb id on a log or a review is matched from the end.
  */
 const LOG_THREAD_PATTERN = /^log-(.+)-(tt\d{7,9})$/;
+const REVIEW_THREAD_PATTERN = /^review-(.+)-(tt\d{7,9})$/;
 const CLUB_THREAD_PATTERN = /^club-(tt\d{7,9})$/;
 /** A list id is a `slugify` slug, so this is the only shape one can take. */
 const LIST_THREAD_PATTERN = /^list-([a-z0-9]+(?:-[a-z0-9]+)*)$/;
@@ -1204,14 +1248,18 @@ export function parseThreadId(value: string, memberNames: readonly string[]): Th
     if (list) return { kind: 'list', threadId: value, listId: list[1] };
 
     const log = LOG_THREAD_PATTERN.exec(value);
-    if (!log) throw badRequest(`thread: "${value}" is not a log entry, screening, or list`);
+    const review = REVIEW_THREAD_PATTERN.exec(value);
+    const match = log ?? review;
+    if (!match) throw badRequest(`thread: "${value}" is not a log entry, screening, or list`);
 
-    const wanted = log[1].toLowerCase();
+    const wanted = match[1].toLowerCase();
     const owner = memberNames.find((name) => name.toLowerCase() === wanted);
-    if (!owner) throw badRequest(`thread: "${log[1]}" is not a club member`);
+    if (!owner) throw badRequest(`thread: "${match[1]}" is not a club member`);
 
-    const imdbId = log[2];
-    return { kind: 'log', threadId: `log-${owner}-${imdbId}`, owner, imdbId };
+    const imdbId = match[2];
+    return log
+        ? { kind: 'log', threadId: `log-${owner}-${imdbId}`, owner, imdbId }
+        : { kind: 'review', threadId: `review-${owner}-${imdbId}`, owner, imdbId };
 }
 
 /** What a client sends for a comment. `id`, `author`, and the stamps are the worker's. */
@@ -1260,7 +1308,7 @@ export function assertMayEditComment(
 
 /**
  * The author may remove their comment, and so may an admin and the member
- * whose log or list it's on. That's the opposite of the trophy rule, where the
+ * whose log, review, or list it's on. That's the opposite of the trophy rule, where the
  * recipient may not withdraw one, and the difference is deliberate. A trophy
  * is the club's verdict on you. A comment is a guest on your post.
  *
