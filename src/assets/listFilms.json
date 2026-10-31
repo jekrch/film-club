@@ -1,4 +1,118 @@
 {
+  "tt0021884": {
+    "imdbID": "tt0021884",
+    "title": "Frankenstein",
+    "year": "1931",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTQ0Njc1MjM0OF5BMl5BanBnXkFtZTgwNTY2NTUyMjE@._V1_QL75_UX380_CR0,3,380,562_.jpg",
+    "runtime": "70 min",
+    "genre": "Drama, Horror, Sci-Fi",
+    "director": "James Whale",
+    "writer": "John L. Balderston, Mary Shelley, Peggy Webling",
+    "imdbRating": "7.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "94%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "91/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "EEH5MZCewPQ",
+    "tagline": "The man who made a monster.",
+    "plot": "Obsessed scientist Dr. Henry Frankenstein attempts to create life by assembling a creature from deceased body parts. Aided by his loyal misshapen assistant, Fritz, Frankenstein succeeds in animating his monster, but it flees into the countryside and begins to wreak havoc.",
+    "cast": [
+      {
+        "name": "Colin Clive",
+        "character": "Henry Frankenstein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/Art7y90nUxO1EaalywuJ7xCex9l.jpg",
+        "tmdbId": 2923
+      },
+      {
+        "name": "Mae Clarke",
+        "character": "Elizabeth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9eKCjCHX920LGK0DhAmWExZ6mib.jpg",
+        "tmdbId": 29814
+      },
+      {
+        "name": "John Boles",
+        "character": "Victor Moritz",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eVu8Tzdi3UYrCApUW221CSXoAHt.jpg",
+        "tmdbId": 29815
+      },
+      {
+        "name": "Boris Karloff",
+        "character": "The Monster",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fVi0QkiziavXB8HnWk5NzRcnCO1.jpg",
+        "tmdbId": 2922
+      },
+      {
+        "name": "Edward Van Sloan",
+        "character": "Doctor Waldman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/qZ9zAlgNlJ1vefUXb4KDVbC3kVh.jpg",
+        "tmdbId": 1550
+      },
+      {
+        "name": "Frederick Kerr",
+        "character": "Baron Frankenstein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pPEDS8XDizkdh4iS0PoRdbnVJaO.jpg",
+        "tmdbId": 29816
+      },
+      {
+        "name": "Dwight Frye",
+        "character": "Fritz",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7tTCehS5FN9YuRKSWmlL5rygabD.jpg",
+        "tmdbId": 1549
+      },
+      {
+        "name": "Lionel Belmore",
+        "character": "The Burgomaster",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1CVW0bmfp5flHBsLPnPhkJo8fZJ.jpg",
+        "tmdbId": 29817
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/wFbPbJ9uRDpjY7micBTeolgkOA4.jpg",
+      "https://image.tmdb.org/t/p/w1280/f8dR7lqN0U4USDjqu8LnxMWyWPB.jpg",
+      "https://image.tmdb.org/t/p/w1280/hZ9f2corJKDz0mp1RD6E7zBOsa0.jpg",
+      "https://image.tmdb.org/t/p/w1280/pKmyrvUryMgtVckGX4dYPKHjpMr.jpg",
+      "https://image.tmdb.org/t/p/w1280/5gcgkq5oQkrXqUJt6vrmTkUWG4a.jpg",
+      "https://image.tmdb.org/t/p/w1280/tyGLg0Tw7xZPgnuR2ctjCNgbjlF.jpg"
+    ],
+    "crew": [
+      {
+        "name": "James Whale",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cXE0gUlXfx7qqZMdnUb5AeQMKHr.jpg",
+        "tmdbId": 2917
+      },
+      {
+        "name": "Francis Edward Faragoh",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 29806
+      },
+      {
+        "name": "Garrett Fort",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 29807
+      },
+      {
+        "name": "Arthur Edeson",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 2005
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0023622": {
     "imdbID": "tt0023622",
     "title": "Trouble in Paradise",
@@ -213,6 +327,126 @@
         "job": "Director of Photography",
         "profileUrl": "https://image.tmdb.org/t/p/w185/7i7dsr3DjFuUXWjDG0Kp467Sovo.jpg",
         "tmdbId": 14569
+      }
+    ],
+    "tmdbVersion": 4
+  },
+  "tt0026138": {
+    "imdbID": "tt0026138",
+    "title": "Bride of Frankenstein",
+    "year": "1935",
+    "poster": "https://m.media-amazon.com/images/M/MV5BOTUzMzAzMzEzNV5BMl5BanBnXkFtZTgwOTg1NTAwMjE@._V1_QL75_UX380_CR0,2,380,562_.jpg",
+    "runtime": "75 min",
+    "genre": "Drama, Horror, Sci-Fi",
+    "director": "James Whale",
+    "writer": "Mary Shelley, William Hurlbut, John L. Balderston",
+    "imdbRating": "7.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "97%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "95/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "gJoE3AIHTjU",
+    "tagline": "More fearful than the monster himself!",
+    "plot": "After recovering from injuries sustained in the mob attack upon himself and his creation, Dr. Henry Frankenstein falls under control of his former mentor, Dr. Pretorius, who insists the now-chastened doctor resume his experiments in creating new life. Meanwhile, the Monster remains on the run from those who wish to destroy him.",
+    "cast": [
+      {
+        "name": "Boris Karloff",
+        "character": "The Monster",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fVi0QkiziavXB8HnWk5NzRcnCO1.jpg",
+        "tmdbId": 2922
+      },
+      {
+        "name": "Colin Clive",
+        "character": "Henry Frankenstein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/Art7y90nUxO1EaalywuJ7xCex9l.jpg",
+        "tmdbId": 2923
+      },
+      {
+        "name": "Valerie Hobson",
+        "character": "Elizabeth",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1sfD32ahPZwDIcWUIlx4tFG8fnr.jpg",
+        "tmdbId": 2924
+      },
+      {
+        "name": "Ernest Thesiger",
+        "character": "Doctor Pretorius",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zvtpYFtWZsYTJEpGmJagb2uxtC2.jpg",
+        "tmdbId": 2925
+      },
+      {
+        "name": "Elsa Lanchester",
+        "character": "Mary Wollstonecraft Shelley / The Monster's Mate",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jek9jcqODZGWnmcMm7ynkSaLSWb.jpg",
+        "tmdbId": 2926
+      },
+      {
+        "name": "Gavin Gordon",
+        "character": "Lord Byron",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tYvd7597PsD86VyLXzLGhdHLm9F.jpg",
+        "tmdbId": 2927
+      },
+      {
+        "name": "Douglas Walton",
+        "character": "Percy Bysshe Shelley",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lrmlsA5aMk7xB2prBcR0m9CuklY.jpg",
+        "tmdbId": 2928
+      },
+      {
+        "name": "Una O'Connor",
+        "character": "Minnie",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8XqwWhajcr80B4rqZD58ZnPCO52.jpg",
+        "tmdbId": 2929
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/hrED8MSOn4xJP9Cpk7WomUcFKGI.jpg",
+      "https://image.tmdb.org/t/p/w1280/haPU3dCyYUTRN34ceyJrX4DAjZq.jpg",
+      "https://image.tmdb.org/t/p/w1280/5QecQhkpfBbamsw9rpZfb64ALxg.jpg",
+      "https://image.tmdb.org/t/p/w1280/94klpwWYPU6h92WcnhGTi8DLchg.jpg",
+      "https://image.tmdb.org/t/p/w1280/b3NKknzz9O7vlhcUCyTDEtv6HYJ.jpg",
+      "https://image.tmdb.org/t/p/w1280/fcOGXI06znGBGlOEwpLvg9jQk0A.jpg"
+    ],
+    "crew": [
+      {
+        "name": "James Whale",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cXE0gUlXfx7qqZMdnUb5AeQMKHr.jpg",
+        "tmdbId": 2917
+      },
+      {
+        "name": "Edmund Pearson",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 3968975
+      },
+      {
+        "name": "William Hurlbut",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 2921
+      },
+      {
+        "name": "Robert Florey",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cRX6qkTniwyr1Kt0yTWIlqHO25F.jpg",
+        "tmdbId": 29808
+      },
+      {
+        "name": "John J. Mescall",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 2940
       }
     ],
     "tmdbVersion": 4
