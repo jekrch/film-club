@@ -365,14 +365,14 @@
     {
       "imdbID": "tt0026138",
       "watchDate": "2026-10-30",
-      "score": null,
+      "score": 6,
       "scoreQualifier": null,
       "blurb": null,
       "image": null,
       "posterImage": null,
       "trailerKey": null,
       "hideTrailer": false,
-      "updatedAt": "2026-10-31T03:05:04Z"
+      "updatedAt": "2026-10-31T03:05:15Z"
     },
     {
       "imdbID": "tt0100506",
