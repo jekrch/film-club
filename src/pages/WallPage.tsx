@@ -13,6 +13,7 @@ import EditLogDialog from '../components/wall/EditLogDialog';
 import { KIND_ACCENT } from '../components/wall/wallAccents';
 import type { IconComponent } from '../components/common/trophyIcons';
 import { entryFrameSource, filmFrameSource, type FrameSource } from '../utils/frameSources';
+import { useListEntrance } from '../hooks/useListEntrance';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useClubAuth } from '../auth/GoogleAuth';
 import { overlayPendingWatched } from '../api/repoData';
@@ -204,6 +205,7 @@ const WallPage: React.FC = () => {
         [filtered, visible]
     );
     const shown = Math.min(visible, filtered.length);
+    const { containerRef: timelineRef, prepareReplay } = useListEntrance(months);
 
     // Drawn from the newest events rather than the whole history, so the banner
     // shows what the club has been watching lately instead of a decade's
@@ -230,6 +232,7 @@ const WallPage: React.FC = () => {
     };
 
     const toggle = (kind: WallEventKind) => {
+        prepareReplay();
         setKinds((current) => {
             const next = new Set(current);
             if (!next.delete(kind)) next.add(kind);
@@ -325,64 +328,72 @@ const WallPage: React.FC = () => {
                         </p>
                     )}
 
-                    {months.length === 0 ? (
-                        <p className="py-6 text-center italic text-slate-400">
-                            Nothing here yet. Watch something.
-                        </p>
-                    ) : (
-                        <div className="space-y-8">
-                            {months.map((month, monthIndex) => (
-                                <section key={month.key}>
-                                    <div className="mb-4 flex items-center gap-3">
-                                        <h5 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                                            {month.label}
-                                        </h5>
-                                        <span className="h-px flex-grow bg-gradient-to-r from-slate-700/70 to-transparent" />
-                                        <span className="text-xs tabular-nums text-slate-600">
-                                            {month.events.length}
-                                        </span>
-                                    </div>
+                    <div ref={timelineRef}>
+                        {months.length === 0 ? (
+                            <p className="py-6 text-center italic text-slate-400">
+                                Nothing here yet. Watch something.
+                            </p>
+                        ) : (
+                            <div className="space-y-8">
+                                {months.map((month, monthIndex) => (
+                                    <section key={month.key}>
+                                        <div
+                                            data-entrance={`month-${month.key}`}
+                                            className="mb-4 flex items-center gap-3"
+                                        >
+                                            <h5 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                                                {month.label}
+                                            </h5>
+                                            <span className="h-px flex-grow bg-gradient-to-r from-slate-700/70 to-transparent" />
+                                            <span className="text-xs tabular-nums text-slate-600">
+                                                {month.events.length}
+                                            </span>
+                                        </div>
 
-                                    {/* Wider than the gap between a row's own
-                                        caption and its box, so a date reads as
-                                        belonging to the box under it rather
-                                        than to the one above. */}
-                                    <ol className="space-y-4">
-                                        {month.rows.map((row, index) => (
-                                            <WallEventRow
-                                                key={row.id}
-                                                row={row}
-                                                // The rail stops at the wall's last
-                                                // visible row, but crosses a month
-                                                // boundary — the months are headings
-                                                // over one timeline, not four.
-                                                connected={
-                                                    monthIndex < months.length - 1 ||
-                                                    index < month.rows.length - 1
-                                                }
-                                                onEdit={editHandler(row.lead)}
-                                            />
-                                        ))}
-                                    </ol>
-                                </section>
-                            ))}
-                        </div>
-                    )}
+                                        {/* Wider than the gap between a row's own
+                                            caption and its box, so a date reads as
+                                            belonging to the box under it rather
+                                            than to the one above. */}
+                                        <ol className="space-y-4">
+                                            {month.rows.map((row, index) => (
+                                                <WallEventRow
+                                                    key={row.id}
+                                                    row={row}
+                                                    // The rail stops at the wall's last
+                                                    // visible row, but crosses a month
+                                                    // boundary — the months are headings
+                                                    // over one timeline, not four.
+                                                    connected={
+                                                        monthIndex < months.length - 1 ||
+                                                        index < month.rows.length - 1
+                                                    }
+                                                    onEdit={editHandler(row.lead)}
+                                                />
+                                            ))}
+                                        </ol>
+                                    </section>
+                                ))}
+                            </div>
+                        )}
 
-                    {shown < filtered.length && (
-                        <div className="mt-8 flex flex-col items-center gap-2">
-                            <Button
-                                variant="solid"
-                                size="sm"
-                                onClick={() => setVisible((count) => count + PAGE_SIZE)}
+                        {shown < filtered.length && (
+                            <div
+                                data-entrance="show-more"
+                                className="mt-8 flex flex-col items-center gap-2"
                             >
-                                Show more
-                            </Button>
-                            <span className="text-xs uppercase tracking-widest text-slate-600">
-                                {shown} of {filtered.length}
-                            </span>
-                        </div>
-                    )}
+                                <Button
+                                    variant="solid"
+                                    size="sm"
+                                    onClick={() => setVisible((count) => count + PAGE_SIZE)}
+                                >
+                                    Show more
+                                </Button>
+                                <span className="text-xs uppercase tracking-widest text-slate-600">
+                                    {shown} of {filtered.length}
+                                </span>
+                            </div>
+                        )}
+                    </div>
                 </AccentCard>
             </div>
 

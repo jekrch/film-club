@@ -507,7 +507,7 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected, onEdit }) =
         // now stand outside the box, and a row that lit only the part the cursor
         // happened to be over would read as three things stacked rather than as
         // one event.
-        <li className="group relative sm:pl-14">
+        <li data-entrance={row.id} className="group relative sm:pl-14">
             {/* The rail runs from under this node to the next one rather than
                 behind them all, so a node needs no fill of its own to punch
                 through it — which matters on a page whose background is a

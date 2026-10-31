@@ -4,8 +4,10 @@ import { Film, filmData } from '../types/film';
 import { TeamMember, teamMembers as teamMembersData } from '../types/team';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import SelectionCommitteeHero from '../components/home/SelectionCommitteeHero';
+import OffDocketStrip from '../components/home/OffDocketStrip';
 import { findUpNextFilm, isUpcomingHolidayPod, parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
+import { buildWall, offDocketNotes, type OffDocketNote } from '../utils/wallUtils';
 import PageLayout from '../components/layout/PageLayout';
 import CorinthianPillar from '../components/layout/CorinthianPillar';
 import { useMediaQuery } from '../hooks/useMediaQuery';
@@ -53,6 +55,7 @@ const HomePage = () => {
     const [currentSelectorName, setCurrentSelectorName] = useState<string | null>(null);
     const [activeCycleMembersList, setActiveCycleMembersList] = useState<TeamMember[]>([]);
     const [upNextFilm, setUpNextFilm] = useState<Film | undefined>(undefined);
+    const [offDocket, setOffDocket] = useState<OffDocketNote[]>([]);
     const pillarWidth = usePillarWidth();
 
     // --- Data Fetching and Processing Effect ---
@@ -136,6 +139,8 @@ const HomePage = () => {
             ...watchedFilmsSorted.slice(0, 8),
         ];
         setRecentClubPicks(recentPicks);
+
+        setOffDocket(offDocketNotes(buildWall()));
 
         // Determine Last Meeting Time
         if (watchedFilmsSorted.length > 0 && watchedFilmsSorted[0].movieClubInfo?.watchDate) {
@@ -223,6 +228,7 @@ const HomePage = () => {
                     timeSinceLastMeeting={timeSinceLastMeeting}
                     totalRuntime={totalRuntimeString}
                 />
+                <OffDocketStrip notes={offDocket} />
                 {/* Film Lists Section */}
                 {recentClubPicks.length > 0 && (
                     <FilmList

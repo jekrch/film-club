@@ -27,9 +27,13 @@ import {
     resolveWatchedEntries,
     watchedRowId,
 } from '../utils/watchedUtils';
+import { useListEntrance } from '../hooks/useListEntrance';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { todayLocal } from '../utils/watchedEditUtils';
 import { entryFrameSource } from '../utils/frameSources';
+
+/** How many rows a page of the log shows, and how many more "Show more" adds. */
+const PAGE_SIZE = 40;
 
 /**
  * One member's watch log: everything they watched on their own, most recent
@@ -58,6 +62,7 @@ const WatchedPage: React.FC = () => {
     const [entries, setEntries] = useState<WatchedEntry[]>(() => getWatchedForMember(memberName));
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const [visible, setVisible] = useState(PAGE_SIZE);
 
     // A late live read must not overwrite a save made in the meantime, so
     // seeding checks this rather than the state it is about to replace.
@@ -101,6 +106,21 @@ const WatchedPage: React.FC = () => {
     const reduceMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
     /** The row already scrolled to, so a later live refresh doesn't re-scroll. */
     const scrolledTo = useRef<string | null>(null);
+
+    // A link can name a row past the first page, as every log row on the wall
+    // does, so the page reaches that row in whole pages. Derived rather than set
+    // on arrival because the row may not exist until the live log lands, and the
+    // scroll below needs it rendered by then. No match adds nothing: the -1 comes
+    // out to zero pages.
+    const requestedIndex = resolved.findIndex(
+        (entry) => watchedRowId(entry.imdbID) === requestedRow
+    );
+    const shown = Math.min(
+        Math.max(visible, Math.ceil((requestedIndex + 1) / PAGE_SIZE) * PAGE_SIZE),
+        resolved.length
+    );
+    const page = useMemo(() => resolved.slice(0, shown), [resolved, shown]);
+    const { containerRef: logRef } = useListEntrance(page);
 
     // A passive effect on purpose: ScrollToTop resets the window in a *layout*
     // effect on the same navigation, so scrolling here before paint would only
@@ -257,28 +277,55 @@ const WatchedPage: React.FC = () => {
                 {notice && <p className="mb-4 text-sm text-emerald-300">{notice}</p>}
                 {error && <p className="mb-4 text-sm text-rose-300">{error}</p>}
 
-                {resolved.length > 0 ? (
-                    <ol className="space-y-2">
-                        {resolved.map((entry) => (
-                            <li key={entry.imdbID} id={watchedRowId(entry.imdbID)}>
-                                <WatchedFilmItem
-                                    entry={entry}
-                                    owner={owner}
-                                    canEdit={canEdit}
-                                    onSave={save}
-                                    onRemove={remove}
-                                    highlighted={watchedRowId(entry.imdbID) === requestedRow}
-                                />
-                            </li>
-                        ))}
-                    </ol>
-                ) : (
-                    <p className="py-6 text-center italic text-slate-400">
-                        {canEdit
-                            ? "Nothing logged yet. Search above to add the first film you've watched."
-                            : `${owner} hasn't logged anything watched outside the club.`}
-                    </p>
-                )}
+                <div ref={logRef}>
+                    {resolved.length > 0 ? (
+                        <ol className="space-y-2">
+                            {page.map((entry) => (
+                                <li
+                                    key={entry.imdbID}
+                                    id={watchedRowId(entry.imdbID)}
+                                    data-entrance={entry.imdbID}
+                                >
+                                    <WatchedFilmItem
+                                        entry={entry}
+                                        owner={owner}
+                                        canEdit={canEdit}
+                                        onSave={save}
+                                        onRemove={remove}
+                                        highlighted={watchedRowId(entry.imdbID) === requestedRow}
+                                    />
+                                </li>
+                            ))}
+                        </ol>
+                    ) : (
+                        <p className="py-6 text-center italic text-slate-400">
+                            {canEdit
+                                ? "Nothing logged yet. Search above to add the first film you've watched."
+                                : `${owner} hasn't logged anything watched outside the club.`}
+                        </p>
+                    )}
+
+                    {shown < resolved.length && (
+                        <div
+                            data-entrance="show-more"
+                            className="mt-8 flex flex-col items-center gap-2"
+                        >
+                            {/* From `shown`, not `visible`: a link may already have
+                                taken the page past `visible`, and a click that only
+                                caught up to it would add nothing. */}
+                            <Button
+                                variant="solid"
+                                size="sm"
+                                onClick={() => setVisible(shown + PAGE_SIZE)}
+                            >
+                                Show more
+                            </Button>
+                            <span className="text-xs uppercase tracking-widest text-slate-600">
+                                {shown} of {resolved.length}
+                            </span>
+                        </div>
+                    )}
+                </div>
             </AccentCard>
         </PageLayout>
     );

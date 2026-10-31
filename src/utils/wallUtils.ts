@@ -466,6 +466,68 @@ export const buildWall = (sources: WallDataSources = {}): WallEvent[] => {
     ].sort(compareWallEvents);
 };
 
+/** How far back the home page's teaser reaches, in days. */
+const OFF_DOCKET_DAYS = 30;
+
+/** How many members the teaser names at most. */
+const OFF_DOCKET_MEMBERS = 3;
+
+/** How many members the teaser reaches past its window to name, when it can. */
+const OFF_DOCKET_MIN_MEMBERS = 2;
+
+/** One member's entry in the home page's teaser. */
+export interface OffDocketNote {
+    member: string;
+    /** The name of their newest film or list. */
+    subject: string;
+    /** How many other logs and lists they have inside the window. */
+    more: number;
+}
+
+/**
+ * What members have been doing outside the club's own selections, for the small
+ * piece of the wall the home page shows.
+ *
+ * Only logs and lists. Screenings already sit right below it as Recent Club
+ * Picks, and trophies and late reviews are the club's record, which is exactly
+ * what the teaser is labelled as not being.
+ *
+ * One note per member, newest first, because the log is lopsided: whoever logs
+ * most would otherwise fill the line alone. For the same reason, a lone active
+ * member gets company: the search carries on past the window until it finds a
+ * second name. The window still decides whether there is a teaser at all, so it
+ * disappears in a quiet month rather than advertise old news.
+ *
+ * Expects the wall's own order, newest first, which {@link buildWall} returns.
+ */
+export const offDocketNotes = (events: WallEvent[], now: Date = new Date()): OffDocketNote[] => {
+    const cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - OFF_DOCKET_DAYS);
+    const since = instantDayKey(cutoff.toISOString()) ?? '';
+
+    const notes = new Map<string, OffDocketNote>();
+    for (const event of events) {
+        const pastWindow = event.date < since;
+        if (pastWindow && (notes.size === 0 || notes.size >= OFF_DOCKET_MIN_MEMBERS)) break;
+
+        const note: OffDocketNote | null =
+            event.kind === 'log'
+                ? // A film logged moments ago may not be in the caches yet.
+                  { member: event.member, subject: event.entry.title ?? 'a film', more: 0 }
+                : event.kind === 'list'
+                  ? { member: event.list.owner, subject: event.list.name, more: 0 }
+                  : null;
+        if (!note) continue;
+
+        const key = note.member.toLowerCase();
+        const newest = notes.get(key);
+        if (!newest) notes.set(key, note);
+        else if (!pastWindow) newest.more += 1;
+    }
+
+    return [...notes.values()].slice(0, OFF_DOCKET_MEMBERS);
+};
+
 /** A run of events that fell in one month, in wall order. */
 export interface WallMonth {
     /** `YYYY-MM`, which is what the run is keyed and sorted by. */

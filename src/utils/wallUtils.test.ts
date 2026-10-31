@@ -5,6 +5,7 @@ import {
     groupByMonth,
     mergeTrophyRows,
     narrowWall,
+    offDocketNotes,
     type ClubWatchEvent,
     type LateReviewEvent,
     type ListEvent,
@@ -103,6 +104,102 @@ const sources = {
 };
 
 const byId = (events: WallEvent[], id: string) => events.find((event) => event.id === id);
+
+describe('offDocketNotes', () => {
+    const now = new Date('2026-09-20T12:00:00Z');
+    const notesFor = (log: WatchedLog, lists: FilmListDefinition[] = [], at: Date = now) =>
+        offDocketNotes(buildWall({ ...sources, watched: log, lists }), at);
+
+    it('names a member once, by their newest film, and counts the rest', () => {
+        const notes = notesFor({
+            Jacob: [
+                logEntry({ imdbID: 'tt0000010', watchDate: '2026-09-10' }),
+                logEntry({ imdbID: 'tt0000009', watchDate: '2026-09-15' }),
+                logEntry({ imdbID: 'tt0000011', watchDate: '2026-09-05' }),
+            ],
+        });
+
+        expect(notes).toEqual([{ member: 'Jacob', subject: 'A Cached Film', more: 2 }]);
+    });
+
+    it('leaves anything outside the window out of the count', () => {
+        const notes = notesFor({
+            Gabe: [
+                logEntry({ imdbID: 'tt0000009', watchDate: '2026-06-01' }),
+                logEntry({ imdbID: 'tt0000010', watchDate: '2026-05-01' }),
+            ],
+            Jacob: [
+                logEntry({ imdbID: 'tt0000009', watchDate: '2026-09-15' }),
+                logEntry({ imdbID: 'tt0000010', watchDate: '2026-07-01' }),
+            ],
+        });
+
+        expect(notes.map((note) => [note.member, note.more])).toEqual([
+            ['Jacob', 0],
+            ['Gabe', 0],
+        ]);
+    });
+
+    it('orders members by their newest event and names at most three', () => {
+        const notes = notesFor({
+            Andy: [logEntry({ watchDate: '2026-09-01' })],
+            Gabe: [logEntry({ watchDate: '2026-09-15' })],
+            Jacob: [logEntry({ watchDate: '2026-09-10' })],
+            Mark: [logEntry({ watchDate: '2026-09-05' })],
+        });
+
+        expect(notes.map((note) => note.member)).toEqual(['Gabe', 'Jacob', 'Mark']);
+    });
+
+    it('leaves out screenings, trophies and late reviews', () => {
+        expect(notesFor({})).toEqual([]);
+    });
+
+    it('stops at thirty days once two members are named, and keeps the day itself', () => {
+        const notes = notesFor({
+            Andy: [logEntry({ watchDate: '2026-08-20' })],
+            Gabe: [logEntry({ watchDate: '2026-08-21' })],
+            Jacob: [logEntry({ watchDate: '2026-09-15' })],
+        });
+
+        expect(notes.map((note) => note.member)).toEqual(['Jacob', 'Gabe']);
+    });
+
+    it('reaches past the window for a second member, and no further', () => {
+        const notes = notesFor({
+            Andy: [logEntry({ watchDate: '2026-03-01' })],
+            Gabe: [logEntry({ watchDate: '2026-06-01' })],
+            Jacob: [logEntry({ watchDate: '2026-09-15' })],
+        });
+
+        expect(notes.map((note) => note.member)).toEqual(['Jacob', 'Gabe']);
+    });
+
+    it('stays empty when nobody has been active inside the window', () => {
+        const notes = notesFor({
+            Gabe: [logEntry({ watchDate: '2026-06-01' })],
+            Jacob: [logEntry({ watchDate: '2026-07-01' })],
+        });
+
+        expect(notes).toEqual([]);
+    });
+
+    it('names a list when that is the newest thing a member did', () => {
+        const notes = notesFor({ Jacob: [logEntry({ watchDate: '2026-09-15' })] }, [
+            { ...datedList, createdAt: '2026-09-18T15:00:00Z' },
+        ]);
+
+        expect(notes).toEqual([{ member: 'Jacob', subject: 'Even Your Therapist', more: 1 }]);
+    });
+
+    it('falls back when a film has no title yet', () => {
+        const notes = notesFor({
+            Gabe: [logEntry({ imdbID: 'tt9999999', watchDate: '2026-09-15' })],
+        });
+
+        expect(notes[0].subject).toBe('a film');
+    });
+});
 
 describe('buildWall', () => {
     it('dates a club screening by the sheet date, without drifting a day', () => {

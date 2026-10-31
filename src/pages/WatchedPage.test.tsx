@@ -43,6 +43,17 @@ jest.mock('../types/watched', () => {
                     updatedAt: '2026-06-01T12:00:00Z',
                 },
             ],
+            // Long enough to page. One date throughout, so the log's tiebreak on
+            // the id keeps these in the order they're written: `tt1000050` is
+            // the row at index 50.
+            Greg: Array.from({ length: 95 }, (_, index) => ({
+                imdbID: `tt${1000000 + index}`,
+                watchDate: '2026-05-01',
+                score: null,
+                scoreQualifier: null,
+                blurb: null,
+                updatedAt: '2026-05-01T12:00:00Z',
+            })),
         },
     };
 });
@@ -179,6 +190,63 @@ describe('WatchedPage', () => {
         expect(
             screen.getByText(/hasn't logged anything watched outside the club/i)
         ).toBeInTheDocument();
+    });
+
+    describe('paging', () => {
+        const rows = () => document.querySelectorAll('li[id^="log-"]');
+        const showMore = () => screen.queryByRole('button', { name: 'Show more' });
+
+        it('shows a page at a time, while the heading counts the whole log', () => {
+            renderFor('Greg');
+            expect(screen.getByRole('heading', { name: '95 Films' })).toBeInTheDocument();
+            expect(rows()).toHaveLength(40);
+            expect(screen.getByText('40 of 95')).toBeInTheDocument();
+
+            fireEvent.click(showMore()!);
+            expect(rows()).toHaveLength(80);
+            expect(screen.getByText('80 of 95')).toBeInTheDocument();
+        });
+
+        it('stops offering more once the log has run out', () => {
+            renderFor('Greg');
+            fireEvent.click(showMore()!);
+            fireEvent.click(showMore()!);
+            expect(rows()).toHaveLength(95);
+            expect(showMore()).not.toBeInTheDocument();
+        });
+
+        it('offers nothing on a log that fits on one page', () => {
+            renderFor('Andy');
+            expect(showMore()).not.toBeInTheDocument();
+        });
+
+        // Every log row on the wall links here by name, so this is the common
+        // way into the older half of a long log.
+        describe('with a link to a row past the first page', () => {
+            let scrollIntoView: jest.SpyInstance;
+
+            beforeEach(() => {
+                scrollIntoView = jest
+                    .spyOn(Element.prototype, 'scrollIntoView')
+                    .mockImplementation(() => {});
+            });
+
+            afterEach(() => scrollIntoView.mockRestore());
+
+            it('reaches that row in whole pages and scrolls to it', () => {
+                renderFor('Greg', '#log-tt1000050');
+                expect(rows()).toHaveLength(80);
+                expect(scrollIntoView.mock.instances[0]).toBe(
+                    document.getElementById('log-tt1000050')
+                );
+            });
+
+            it('still adds a full page on the next click', () => {
+                renderFor('Greg', '#log-tt1000050');
+                fireEvent.click(showMore()!);
+                expect(rows()).toHaveLength(95);
+            });
+        });
     });
 
     // The profile's watch preview links to a row by name so the click lands on

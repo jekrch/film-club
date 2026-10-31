@@ -486,6 +486,32 @@ body {
         }
     }
 
+    /* The home page's log tab sliding out from under the banner — see
+     OffDocketStrip. The banner has no fill to hide behind, so the tab clips itself
+     instead: the clip and the slide cover the same distance, which holds the
+     visible edge still on the banner's bottom border. It runs on the details
+     panel's curve, late enough to arrive after the page has settled. */
+    @keyframes off-docket-descend {
+        from {
+            transform: translateY(-100%);
+            clip-path: inset(100% 0 0 0);
+        }
+        to {
+            transform: translateY(0);
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    .animate-off-docket-descend {
+        animation: off-docket-descend 480ms cubic-bezier(0.22, 1, 0.36, 1) 320ms backwards;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .animate-off-docket-descend {
+            animation: none;
+        }
+    }
+
     /* Content that resizes in place rather than opening — see AnimatedHeight.
      The details panel's duration and curve, so a chart growing a bar taller
      and a row opening out read as the same move. */
