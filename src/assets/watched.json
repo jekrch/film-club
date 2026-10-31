@@ -363,6 +363,18 @@
       "updatedAt": "2026-10-31T03:04:48Z"
     },
     {
+      "imdbID": "tt0026138",
+      "watchDate": "2026-10-30",
+      "score": null,
+      "scoreQualifier": null,
+      "blurb": null,
+      "image": null,
+      "posterImage": null,
+      "trailerKey": null,
+      "hideTrailer": false,
+      "updatedAt": "2026-10-31T03:05:04Z"
+    },
+    {
       "imdbID": "tt0100506",
       "watchDate": "2026-10-24",
       "score": 2,
