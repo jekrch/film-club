@@ -4353,6 +4353,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0083907": {
+    "imdbID": "tt0083907",
+    "title": "The Evil Dead",
+    "year": "1983",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNWRmZGQyYzgtNjA5OC00NGYzLTlhYWMtNzBhZTFlZGNjYWI2XkEyXkFqcGc@._V1_QL75_UX380_CR0,4,380,562_.jpg",
+    "runtime": "85 min",
+    "genre": "Horror",
+    "director": "Sam Raimi",
+    "writer": "Sam Raimi",
+    "imdbRating": "7.3",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.3/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "85%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "71/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "0cQmKgV0cug",
+    "tagline": "The ultimate experience in gruelling terror.",
+    "plot": "In 1979, a group of college students find a Sumerian Book of the Dead in an old wilderness cabin they've rented for a weekend getaway.",
+    "cast": [
+      {
+        "name": "Bruce Campbell",
+        "character": "Ash",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/p9335ljr7luOWsfwZSOlsIzFJKE.jpg",
+        "tmdbId": 11357
+      },
+      {
+        "name": "Ellen Sandweiss",
+        "character": "Cheryl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m0IWMfRtY7djjvXWsn9tK7Gh1dQ.jpg",
+        "tmdbId": 11462
+      },
+      {
+        "name": "Richard DeManincor",
+        "character": "Scott",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wUU9Axate8lhMYTxxE4OUwbTR2E.jpg",
+        "tmdbId": 11463
+      },
+      {
+        "name": "Betsy Baker",
+        "character": "Linda",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gzNmo9G6Q1TMwlqwshFBR1B6Qbt.jpg",
+        "tmdbId": 11464
+      },
+      {
+        "name": "Theresa Tilly",
+        "character": "Shelly",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dArbS5OBk1pyBOu74HlzkIuCSss.jpg",
+        "tmdbId": 11465
+      },
+      {
+        "name": "Philip A. Gillis",
+        "character": "Fake Shemp",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2kSl61cd9mWXlCVl8EGU5DxWsLf.jpg",
+        "tmdbId": 1116941
+      },
+      {
+        "name": "Dorothy Tapert",
+        "character": "Fake Shemp",
+        "profileUrl": null,
+        "tmdbId": 1116942
+      },
+      {
+        "name": "Cheryl Klam",
+        "character": "Fake Shemp",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lH1Wru6HHHUkKn3oMxmZAwE0Yae.jpg",
+        "tmdbId": 1116943
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/onq6lsJLX8ay5iwxEbKX3qJKeO9.jpg",
+      "https://image.tmdb.org/t/p/w1280/qBayL198ACrAVX9ixzFPYtqvxQX.jpg",
+      "https://image.tmdb.org/t/p/w1280/2OgSIyerY8zUNw8czWiIn6D4kos.jpg",
+      "https://image.tmdb.org/t/p/w1280/HwGry7Ui0RsHG5qPMMdGkvPpkQ.jpg",
+      "https://image.tmdb.org/t/p/w1280/eUEqWIswh9yBXhPvfJsl8MBC8DG.jpg",
+      "https://image.tmdb.org/t/p/w1280/vDP7hXPcUtBKEOh1yhmzmeVzYsH.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Sam Raimi",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8gssvwiPrFRuFRlr5ruKx68k1Jl.jpg",
+        "tmdbId": 7623
+      },
+      {
+        "name": "Sam Raimi",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8gssvwiPrFRuFRlr5ruKx68k1Jl.jpg",
+        "tmdbId": 7623
+      },
+      {
+        "name": "Tim Philo",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 11469
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0084649": {
     "imdbID": "tt0084649",
     "title": "The Secret of NIMH",
