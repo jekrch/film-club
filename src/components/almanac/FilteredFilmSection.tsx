@@ -21,11 +21,11 @@ const FilteredFilmListSection: React.FC<FilteredFilmListSectionProps> = ({
     onClose,
     layoutMode = 'horizontal',
     hideSizeButtons = true,
-    containerClassName = 'p-4 mb-8 sm:mb-10 mt-4 animate-fade-in',
+    containerClassName = 'mb-8 sm:mb-10 mt-4 animate-fade-in',
 }) => {
     return (
         <div ref={listRef}>
-            <AccentCard accent="blue" className={containerClassName}>
+            <AccentCard className={containerClassName}>
                 <div className="flex justify-between items-center mb-3 border-b border-slate-700/60 pb-2">
                     {/* Title is passed to FilmList now */}
                     <Button

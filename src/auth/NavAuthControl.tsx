@@ -57,7 +57,7 @@ const MemberAvatar: React.FC<{ name: string | null; className?: string }> = ({
         aria-hidden="true"
         className={classNames(
             'flex shrink-0 items-center justify-center rounded-full font-semibold',
-            'bg-gradient-to-br from-blue-500/35 to-indigo-500/20 text-blue-100 ring-1 ring-blue-400/40',
+            'bg-gradient-to-br from-blue-500/35 to-blue-500/10 text-blue-100 ring-1 ring-blue-400/40',
             className
         )}
     >

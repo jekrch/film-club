@@ -6,10 +6,41 @@
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-serif: Georgia, 'Gelasio', serif;
+
+    /* The page colour. index.html, the PWA manifest and chartTheme.ts can't read a
+       CSS variable and restate it; palette.test.ts holds them to this value. */
+    --color-page: #0f172b;
+
+    /* Tailwind's slate ramp, redrawn at the same lightness steps with about 80% of
+       its blue, so the posters supply the colour and every `*-slate-*` class
+       follows. chartTheme.ts mirrors these for Highcharts, and
+       generate_brand_assets.py reads them for the icons and share card. */
+    --color-slate-50: #f8fafb;
+    --color-slate-100: #f2f5f8;
+    --color-slate-200: #e3e8ef;
+    --color-slate-300: #ccd5e0;
+    --color-slate-400: #93a1b4;
+    --color-slate-500: #657489;
+    --color-slate-600: #485567;
+    --color-slate-700: #344153;
+    --color-slate-800: #1f2939;
+    --color-slate-900: var(--color-page);
+    --color-slate-950: #030614;
+
+    /* The green for Up Next and anything positive: Tailwind's emerald at about 85% of its
+       chroma, so it sits on the muted blue page without looking like mint. */
+    --color-jade-200: #aef1d3;
+    --color-jade-300: #77e5b8;
+    --color-jade-400: #2ed09b;
+    --color-jade-500: #0db986;
+    --color-jade-600: #0b966c;
+    --color-jade-700: #157757;
+    --color-jade-800: #175e45;
+    --color-jade-900: #184d39;
 }
 
 body {
-    background-color: #0f172b;
+    background-color: var(--color-page);
 }
 
 /* Tint the stills lightbox (react-viewport-lightbox) with the app's blue accent. */
@@ -33,8 +64,8 @@ body {
     font-weight: 400;
 
     /* color-scheme: light dark; */
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #0f172b;
+    color: var(--color-slate-200);
+    background-color: var(--color-page);
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -176,13 +207,13 @@ body {
 /* The page's backdrop: a darkened screening room rather than a flat field.
 
    Three quiet layers, each borrowed from the cinema rather than from UI chrome:
-     - the element itself: the slate base, lit from above by a cool wash in the
+     - the element itself: the page colour, lit from above by a cool wash in the
        site's blue accent (the projector's throw), answered from below by a
        fainter wash of the same light (the screen's spill on the floor) and an
        indigo pool in the lower-left, so the field has depth in both
-       directions. The base ends on #0f172b, the colour iOS gives its toolbar
-       strip, so the bottom edge meets that strip the way the top meets the
-       status bar: lit page fading down into it, not a pale band under a
+       directions. The base ends on --color-page, the colour iOS gives its
+       toolbar strip, so the bottom edge meets that strip the way the top meets
+       the status bar: lit page fading down into it, not a pale band under a
        darker page;
      - ::before, a vignette that darkens the edges the way a screen falls off
        toward its frame;
@@ -207,7 +238,7 @@ body {
         radial-gradient(ellipse 75% 55% at 50% -12%, rgb(96 165 250 / 0.11), transparent 70%),
         radial-gradient(ellipse 70% 40% at 50% 112%, rgb(96 165 250 / 0.07), transparent 70%),
         radial-gradient(ellipse 55% 45% at 0% 105%, rgb(129 140 248 / 0.07), transparent 70%),
-        linear-gradient(to bottom, #111a31, #0f172b);
+        linear-gradient(to bottom, #111a31, var(--color-page));
 }
 
 .site-backdrop::before,
@@ -221,7 +252,7 @@ body {
 
    The fades are for iOS Safari in a browser tab. At the top and bottom of the
    scroll it fills the status-bar and toolbar strips with one flat colour taken
-   from the page (#0f172b, the root background), and no CSS can draw a gradient
+   from the page (--color-page, the root background), and no CSS can draw a gradient
    there. Left alone, the glow peaks right at that edge and meets the strip in a
    hard seam. Starting both edges on that exact colour lets the strip read as
    the dark top of the room instead of a block laid over it. They are listed
@@ -233,8 +264,8 @@ body {
    strip to meet and the fades would only dim the glow. */
 .site-backdrop::before {
     background:
-        linear-gradient(to bottom, #0f172b, transparent 5rem),
-        linear-gradient(to top, #0f172b, transparent 5rem),
+        linear-gradient(to bottom, var(--color-page), transparent 5rem),
+        linear-gradient(to top, var(--color-page), transparent 5rem),
         radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgb(2 6 23 / 0.6));
 }
 
@@ -255,11 +286,11 @@ body {
     mix-blend-mode: overlay;
 }
 
-/* Thin, dark-themed scrollbar matching the site's slate palette.
+/* Thin, dark-themed scrollbar matching the site's palette.
    Used for overflow containers like the cast strip. */
 .themed-scrollbar {
     scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #475569 transparent; /* thumb / track (Firefox) */
+    scrollbar-color: var(--color-slate-600) transparent; /* thumb / track (Firefox) */
 }
 .themed-scrollbar::-webkit-scrollbar {
     height: 6px;
@@ -269,11 +300,11 @@ body {
     background: transparent;
 }
 .themed-scrollbar::-webkit-scrollbar-thumb {
-    background: #475569; /* slate-600 */
+    background: var(--color-slate-600);
     border-radius: 9999px;
 }
 .themed-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #64748b; /* slate-500 */
+    background: var(--color-slate-500);
 }
 
 .swiper-scrollbar {
@@ -290,11 +321,7 @@ body {
 /* Target the draggable scrollbar handle (the thumb) */
 .swiper-scrollbar-drag {
     /* Make the handle lighter for dark mode */
-    /* Use a Tailwind color hex code or any color you prefer */
-    background: #6b7280 !important; /* Example: Slate-500 */
-    /* Try other options: */
-    /* background: #9ca3af !important; /* Slate-400 */
-    /* background: #d1d5db !important; /* Slate-300 */
+    background: var(--color-slate-500) !important;
 
     /* Ensure the handle visually fills the track height */
     border-radius: 5px !important; /* Make border-radius half of the track height */
@@ -302,7 +329,7 @@ body {
 
 /* Optional: Hover effect for the drag handle */
 .swiper-scrollbar-drag:hover {
-    background: #9ca3af !important; /* Example: Lighten on hover (Slate-400) */
+    background: var(--color-slate-400) !important; /* Lighten on hover */
 }
 
 @layer utilities {
@@ -629,6 +656,17 @@ body {
     }
     .stats-collapse[data-collapsed='true'] {
         --stats-fade: 4rem;
+    }
+
+    /* From sm the groups lay out in rows, short enough to show whole. The
+       important beats the max-height set inline for the phone layout. */
+    @media (min-width: 40rem) {
+        .stats-collapse {
+            max-height: none !important;
+            overflow: visible;
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {

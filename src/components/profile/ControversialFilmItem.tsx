@@ -31,7 +31,7 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
     };
 
     const getDivergenceColorClass = (divergence: number): string => {
-        return divergence > 1e-9 ? 'text-emerald-400' : 'text-rose-400';
+        return divergence > 1e-9 ? 'text-jade-300' : 'text-blue-300';
     };
 
     const ratingColorClass = getRatingColorClass(film.userScore);
@@ -43,7 +43,7 @@ const ControversialFilmItem: React.FC<ControversialFilmItemProps> = ({ film }) =
 
     return (
         <div
-            className="flex items-center gap-3.5 rounded-xl border border-slate-600/30 bg-slate-700/25 p-3 transition-colors duration-200 hover:border-rose-400/30 hover:bg-slate-700/45 cursor-pointer"
+            className="flex items-center gap-3.5 rounded-xl border border-slate-600/30 bg-slate-700/25 p-3 transition-colors duration-200 hover:border-amber-400/30 hover:bg-slate-700/45 cursor-pointer"
             onClick={handleNavigate}
             title={`View ${film.title}`} // Tooltip for accessibility
             role="button" // Semantics for interaction

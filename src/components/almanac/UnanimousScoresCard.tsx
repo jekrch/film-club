@@ -11,19 +11,17 @@ interface UnanimousScoresCardProps {
 }
 
 const getScoreColorClass = (score: number): string => {
-    if (score >= 9) return 'text-emerald-400';
-    if (score >= 7) return 'text-green-400';
-    if (score >= 5) return 'text-yellow-400';
-    if (score >= 3) return 'text-orange-400';
-    return 'text-red-400';
+    if (score >= 9) return 'text-jade-200';
+    if (score >= 7) return 'text-jade-300';
+    if (score >= 5) return 'text-yellow-300';
+    if (score >= 3) return 'text-orange-300';
+    return 'text-red-300';
 };
 
 const getScoreBgClass = (score: number): string => {
-    if (score >= 9) return 'bg-emerald-500/10';
-    if (score >= 7) return 'bg-green-500/10';
-    if (score >= 5) return 'bg-yellow-500/10';
-    if (score >= 3) return 'bg-orange-500/10';
-    return 'bg-red-500/10';
+    if (score >= 9) return 'bg-jade-400/[0.14]';
+    if (score >= 7) return 'bg-jade-400/[0.08]';
+    return 'bg-slate-700/25';
 };
 
 const stripLeadingArticle = (title: string): string => {
@@ -46,8 +44,8 @@ const UnanimousScoreItem: React.FC<UnanimousScoreItemProps> = ({
     const { score, films, namesakeFilm } = data;
 
     return (
-        // Keeps its semantic score tint, but sits at the inset level: same
-        // radius and border as every other card nested inside a card.
+        // Clickable, so it stays a card, tinted by its score: same radius and
+        // border as the rest of the site's clickable rows.
         <div
             className={`p-3 ${getScoreBgClass(score)} rounded-xl border border-slate-600/30 transition-colors`}
         >
@@ -170,7 +168,7 @@ const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({ unanimousScor
 
     if (unanimousScores.length === 0) {
         return (
-            <AccentCard accent="emerald" className="p-6">
+            <AccentCard>
                 <h4 className="mb-3 font-serif text-2xl italic text-slate-100">Unanimous Scores</h4>
                 <p className="text-sm text-slate-400 italic text-center py-4">
                     No unanimous scores found yet. Keep watching!
@@ -180,15 +178,12 @@ const UnanimousScoresCard: React.FC<UnanimousScoresCardProps> = ({ unanimousScor
     }
 
     return (
-        <AccentCard accent="emerald" className="p-6">
+        <AccentCard>
             {/* Serif italic like the page's section heads, kept inside the
                 card because this one is a card of its own. */}
             <div className="mb-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h4 className="font-serif text-2xl italic text-slate-100">Unanimous Scores</h4>
-                <span
-                    className="h-px flex-grow self-center bg-gradient-to-r from-emerald-400/25 via-slate-700/60 to-transparent"
-                    aria-hidden="true"
-                />
+                <span className="h-px flex-grow self-center bg-slate-700/60" aria-hidden="true" />
             </div>
             {/* <p className="text-xs text-slate-500 mb-2">
                 <span className="text-slate-400">{totalCount}</span> films across{' '}

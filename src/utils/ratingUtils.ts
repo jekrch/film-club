@@ -42,10 +42,10 @@ export const getRatingColorClass = (rating: number | string): string => {
     }
 
     if (numericRating >= 7) {
-        return 'text-emerald-400';
+        return 'text-jade-300';
     } else if (numericRating >= 4) {
-        return 'text-amber-500';
+        return 'text-slate-200';
     } else {
-        return 'text-rose-400';
+        return 'text-slate-400';
     }
 };

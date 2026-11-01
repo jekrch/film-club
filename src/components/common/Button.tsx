@@ -18,14 +18,14 @@ export type ButtonSize = 'xs' | 'sm' | 'md';
 
 // Tailwind can't see dynamically built class names, so accents are static maps.
 const LINK: Record<CardAccent, string> = {
-    emerald: 'text-emerald-400 hover:text-emerald-300',
+    neutral: 'text-slate-300 hover:text-slate-100',
     blue: 'text-blue-400 hover:text-blue-300',
     amber: 'text-amber-400 hover:text-amber-300',
     rose: 'text-rose-400 hover:text-rose-300',
 };
 
 const SOLID: Record<CardAccent, string> = {
-    emerald: 'bg-emerald-600 hover:bg-emerald-500 text-white',
+    neutral: 'bg-slate-600 hover:bg-slate-500 text-white',
     blue: 'bg-blue-600 hover:bg-blue-500 text-white',
     amber: 'bg-amber-600 hover:bg-amber-500 text-white',
     rose: 'bg-rose-600 hover:bg-rose-500 text-white',

@@ -22,11 +22,11 @@ interface IntervalDetailDisplayProps {
 
 const IntervalDetailDisplay: React.FC<IntervalDetailDisplayProps> = ({ detail, onClose }) => {
     return (
-        // Inset level: this sits inside the chart's card. Set like a stat card:
+        // Set like a stat card:
         // a small-caps label, the figure in serif, the film as a serif title.
         // No margin or fade of its own: it opens in a `Collapse`, which carries
         // both.
-        <div className="p-4 bg-slate-700/25 rounded-xl border border-slate-600/30">
+        <div>
             <div className="flex items-center gap-2.5">
                 <h4 className="truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
                     Interval ending{' '}

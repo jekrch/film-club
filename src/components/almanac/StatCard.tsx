@@ -11,9 +11,8 @@ interface StatCardProps {
 }
 
 /**
- * A club-wide figure, set like the profile's stat cards: a small-caps label
- * ruled out across the card, the value in large serif numerals with any unit
- * words dropped to small caps.
+ * A club-wide figure: a small-caps label ruled out across the card, the value
+ * in large serif numerals with any unit words dropped to small caps.
  */
 const StatCard: React.FC<StatCardProps> = ({
     label,
@@ -22,8 +21,7 @@ const StatCard: React.FC<StatCardProps> = ({
     valueClassName = 'text-slate-100 text-3xl sm:text-4xl',
 }) => {
     return (
-        // No edge: these repeat in a grid
-        <AccentCard key={`card-${label}`} edge={false} className="p-4 sm:p-5">
+        <AccentCard key={`card-${label}`}>
             <div className="flex items-center gap-2.5">
                 <p className="truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
                     {label}

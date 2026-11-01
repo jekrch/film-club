@@ -94,7 +94,7 @@ export const useMemberStatistics = (
 
                     // For avgRuntime, 'low' is good, 'high' is bad (or vice-versa depending on perspective)
                     // This logic directly maps to 'high' for high values and 'low' for low values.
-                    // The component using getHighlightClass will decide if 'high' is green or red.
+                    // The component using getHighlightClass will decide how 'high' and 'low' are drawn.
                     if (isHigh) return 'high';
                     if (isLow) return 'low';
                     return null;
@@ -126,10 +126,10 @@ export const useMemberStatistics = (
 
     const getHighlightClass = useCallback((highlight: MemberStatHighlight): string => {
         // This function determines the color based on 'high' or 'low'
-        // Typically, 'high' is green (good) and 'low' is blue/red (bad or just different)
-        // Adjust as per your visual requirements.
-        if (highlight === 'high') return 'text-emerald-300';
-        if (highlight === 'low') return 'text-blue-300'; // Or 'text-rose-400' if low is "bad"
+        // Green for the top of the club, as for any high score. Rose is kept for
+        // errors, so the bottom is just blue.
+        if (highlight === 'high') return 'text-jade-300';
+        if (highlight === 'low') return 'text-blue-300';
         return 'text-slate-100';
     }, []);
 

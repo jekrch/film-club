@@ -51,15 +51,15 @@ const EYEBROW = 'text-[11px] uppercase tracking-[0.25em] font-semibold';
  * carries no fill of its own — the light has to have somewhere dark to land.
  *
  * The idle three cycle by position, so the row is lit in varying warm tungsten
- * rather than one flat wash. The selector's is emerald, the club's colour for a
- * member's own voice.
+ * rather than one flat wash. The selector's is jade, the color of Up Next, so it
+ * stands out from them as the one that is on.
  */
 const SPOTLIGHT_IDLE = [
     'bg-gradient-to-t from-amber-900 via-orange-700 to-yellow-600',
     'bg-gradient-to-t from-yellow-900 via-amber-700 to-orange-800',
     'bg-gradient-to-t from-orange-900 via-yellow-700 to-amber-600',
 ];
-const SPOTLIGHT_ACTIVE = 'bg-gradient-to-t from-emerald-900 via-emerald-600 to-emerald-700';
+const SPOTLIGHT_ACTIVE = 'bg-gradient-to-t from-jade-900 via-jade-600 to-jade-700';
 
 /**
  * The column tracks the portrait's width below it, flaring a little past it at
@@ -241,7 +241,7 @@ const SelectionCommitteeHero: React.FC<SelectionCommitteeHeroProps> = ({
                                             size="w-14 h-14 sm:w-16 sm:h-16"
                                             className={`transition-colors duration-300 ease-out border ${
                                                 isActive
-                                                    ? 'border-emerald-400/70 shadow-[0_0_0_4px_rgba(16,185,129,0.10)]'
+                                                    ? 'border-jade-400/70 shadow-[0_0_0_4px_rgba(13,185,134,0.10)]'
                                                     : 'border-slate-600/80 group-hover:border-slate-400'
                                             }`}
                                         />
@@ -249,7 +249,7 @@ const SelectionCommitteeHero: React.FC<SelectionCommitteeHeroProps> = ({
                                         <span
                                             className={`mt-2 block text-xs font-medium transition-colors duration-300 ${
                                                 isActive
-                                                    ? 'text-emerald-300'
+                                                    ? 'text-jade-300'
                                                     : 'text-slate-300 group-hover:text-slate-100'
                                             }`}
                                         >
@@ -260,7 +260,7 @@ const SelectionCommitteeHero: React.FC<SelectionCommitteeHeroProps> = ({
                                         portraits stays level and doesn't jump when the
                                         turn passes to the next member. */}
                                         <span
-                                            className={`mt-1 block text-[9px] uppercase tracking-[0.22em] text-emerald-400/80 ${
+                                            className={`mt-1 block text-[9px] uppercase tracking-[0.22em] text-jade-400/80 ${
                                                 isActive ? '' : 'invisible'
                                             }`}
                                             aria-hidden={!isActive}

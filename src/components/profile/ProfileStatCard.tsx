@@ -20,6 +20,8 @@ export interface ProfileStatCardProps {
     valueClassName?: string;
     /** Optional Heroicon component to display next to the label. */
     icon?: React.ElementType;
+    /** Optional classes for the card's outer element. */
+    className?: string;
 }
 
 const ordinal = (n: number): string => {
@@ -95,9 +97,10 @@ const GenreBars: React.FC<{ genres: { genre: string; count: number }[] }> = ({ g
 };
 
 /**
- * Displays a single statistic in a card format: a small-caps label ruled out
- * to the icon, the value set in large serif numerals, and — when the stat is
- * ranked — a meter placing the member among the rest of the club.
+ * Displays a single statistic: an icon and small-caps label, the value set in
+ * large serif numerals, and — when the stat is ranked — a meter placing the
+ * member among the rest of the club. Draws no box of its own; the group it sits
+ * in rules the cells apart, and passes the padding that needs via className.
  */
 const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
     id,
@@ -107,6 +110,7 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
     description,
     valueClassName = 'text-slate-100', // Default value class
     icon: IconComponent,
+    className,
 }) => {
     // Determine if the value should be considered empty for rendering purposes.
     // Allows 0 for specific stats like totalSelections.
@@ -133,27 +137,20 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
     }
 
     return (
-        // No edge: these repeat in a grid, where a wall of them reads as noise
-        <AccentCard
-            edge={false}
-            surface="inset"
-            className="min-h-[132px]"
-            contentClassName="flex h-full flex-col p-4"
-        >
-            <div className="flex items-center gap-2.5">
-                <h4
+        <AccentCard className={className} contentClassName="flex h-full flex-col">
+            <div className="flex items-center gap-1.5">
+                {IconComponent && (
+                    <IconComponent
+                        className="h-3.5 w-3.5 flex-shrink-0 text-slate-500 transition-colors duration-300 group-hover/card:text-blue-300/80"
+                        aria-hidden="true"
+                    />
+                )}
+                <h5
                     className="truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400"
                     title={label}
                 >
                     {label}
-                </h4>
-                <span className="h-px flex-1 bg-slate-600/40" aria-hidden="true" />
-                {IconComponent && (
-                    <IconComponent
-                        className="h-4 w-4 flex-shrink-0 text-slate-500 transition-colors duration-300 group-hover/card:text-blue-300/80"
-                        aria-hidden="true"
-                    />
-                )}
+                </h5>
             </div>
 
             <div className="mt-3">
@@ -161,7 +158,7 @@ const ProfileStatCard: React.FC<ProfileStatCardProps> = ({
                     <GenreBars genres={value} />
                 ) : (
                     <p
-                        className={`font-serif text-4xl font-normal leading-none tracking-tight tabular-nums break-words ${valueClassName}`}
+                        className={`font-serif text-3xl font-normal leading-none tracking-tight tabular-nums break-words xl:text-4xl ${valueClassName}`}
                     >
                         {typeof value === 'string' ? (
                             <UnitValue value={value} />

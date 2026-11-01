@@ -43,7 +43,7 @@ const SelectorPickBadge: React.FC<SelectorPickBadgeProps> = ({ name, pickNumber 
         }
     >
         <div className="relative mb-4">
-            <div className="rounded-full p-1 ring-1 ring-emerald-400/25 transition-colors duration-200 group-hover:ring-emerald-400/50">
+            <div className="rounded-full p-1 ring-1 ring-blue-400/25 transition-colors duration-200 group-hover:ring-blue-400/50">
                 <CircularImage alt={name} size="w-32 h-32 md:w-36 md:h-36" />
             </div>
             {/* drop-shadow on the wrapper, not box-shadow on the ticket: the
@@ -53,18 +53,18 @@ const SelectorPickBadge: React.FC<SelectorPickBadgeProps> = ({ name, pickNumber 
                 aria-hidden="true"
             >
                 <div
-                    className="flex items-stretch whitespace-nowrap bg-emerald-700 text-emerald-50"
+                    className="flex items-stretch whitespace-nowrap bg-blue-700 text-blue-50"
                     style={{ mask: TICKET_MASK, WebkitMask: TICKET_MASK }}
                 >
                     <div className="py-1.5 pl-3.5 pr-3 text-left leading-none">
-                        <span className="block text-[9px] font-medium uppercase tracking-[0.22em] text-emerald-200/75">
+                        <span className="block text-[9px] font-medium uppercase tracking-[0.22em] text-blue-200/75">
                             Picked by
                         </span>
                         <span className="mt-1 block font-serif text-base italic">{name}</span>
                     </div>
                     {pickNumber ? (
-                        <div className="flex flex-col items-center justify-center border-l border-dashed border-emerald-300/40 pl-2.5 pr-3.5 leading-none">
-                            <span className="text-[8px] font-medium uppercase tracking-[0.2em] text-emerald-200/75">
+                        <div className="flex flex-col items-center justify-center border-l border-dashed border-blue-300/40 pl-2.5 pr-3.5 leading-none">
+                            <span className="text-[8px] font-medium uppercase tracking-[0.2em] text-blue-200/75">
                                 No.
                             </span>
                             <span className="mt-1 font-serif text-sm tabular-nums">

@@ -179,7 +179,7 @@ const FilmTrophyEditor: React.FC<FilmTrophyEditorProps> = ({
                 <h4 className="text-sm font-semibold uppercase tracking-wider text-amber-400">
                     Trophies for {film.title}
                 </h4>
-                <span className="h-px flex-grow bg-gradient-to-r from-amber-400/25 via-slate-700/60 to-transparent" />
+                <span className="h-px flex-grow bg-slate-700/60" />
                 <Button
                     type="button"
                     variant="ghost"
@@ -354,7 +354,7 @@ const FilmTrophyEditor: React.FC<FilmTrophyEditorProps> = ({
                 </div>
             )}
 
-            {notice && <p className="mt-3 text-sm text-emerald-300">{notice}</p>}
+            {notice && <p className="mt-3 text-sm text-jade-300">{notice}</p>}
             {saveError && <p className="mt-3 text-sm text-rose-300">{saveError}</p>}
             {authError && !saveError && <p className="mt-3 text-sm text-rose-300">{authError}</p>}
         </AccentCard>

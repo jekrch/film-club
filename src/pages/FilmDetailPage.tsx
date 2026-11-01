@@ -18,7 +18,6 @@ import {
 } from '../utils/filmUtils';
 import { getPersonProfileByName } from '../utils/personUtils';
 import { Film } from '../types/film';
-import { getMemberImage } from '../types/team';
 import FilmCastStrip from '../components/films/FilmCastStrip';
 import FilmStills from '../components/films/FilmStills';
 import PlotParagraphs from '../components/films/PlotParagraphs';
@@ -36,10 +35,7 @@ import {
 } from '../components/films/HolidayPod';
 import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
-import BaseCard from '../components/common/BaseCard';
-import AccentCard from '../components/common/AccentCard';
 import Button from '../components/common/Button';
-import QuoteMarkIcon from '../components/common/QuoteMarkIcon';
 import CollapsibleContent from '../components/common/CollapsableContent';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';
@@ -266,7 +262,7 @@ const FilmDetailPage = () => {
                     Back
                 </Button>
 
-                <BaseCard key={`film-card-${film.imdbID}`} className="!p-0 overflow-hidden mb-12 ">
+                <div key={`film-card-${film.imdbID}`} className="mb-12">
                     <div className="md:flex">
                         <div className="md:flex-shrink-0 md:w-1/3 lg:w-[400px] relative group overflow-hidden">
                             <img
@@ -294,7 +290,7 @@ const FilmDetailPage = () => {
                                         className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent flex items-end justify-end p-4 transition-opacity duration-300 ease-in-out h-auto md:h-1/3 opacity-100 md:opacity-0 md:group-hover:opacity-100`}
                                     >
                                         <span
-                                            className={`bg-gray-900 bg-opacity-70 opacity-70 text-gray-100 text-lg font-semibold pr-5 pl-3 py-2 rounded-lg inline-flex items-center shadow-xl border border-white/20 pointer-events-auto `}
+                                            className={`bg-slate-900 bg-opacity-70 opacity-70 text-slate-100 text-lg font-semibold pr-5 pl-3 py-2 rounded-lg inline-flex items-center shadow-xl border border-white/20 pointer-events-auto `}
                                         >
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -436,7 +432,7 @@ const FilmDetailPage = () => {
                                 )}
 
                                 {externalRatings.length > 0 && (
-                                    <div className="flex flex-wrap gap-2 mb-5">
+                                    <div className="flex flex-wrap gap-x-6 gap-y-2 mb-5">
                                         {externalRatings.map((rating) => {
                                             const isImdb =
                                                 rating.source === 'Internet Movie Database';
@@ -461,13 +457,13 @@ const FilmDetailPage = () => {
                                                     href={imdbUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="group inline-flex items-baseline gap-2 px-3 py-1.5 bg-slate-700/25 hover:bg-slate-700/45 border border-yellow-500/25 hover:border-yellow-500/50 rounded-lg text-sm transition-colors duration-200"
+                                                    className="group inline-flex items-baseline gap-2 text-sm"
                                                     title={`View on IMDb`}
                                                 >
                                                     {chipContent}
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-3 w-3 self-center text-slate-400 group-hover:text-yellow-400 transition"
+                                                        className="h-3 w-3 self-center text-slate-400 group-hover:text-amber-400 transition"
                                                         viewBox="0 0 20 20"
                                                         fill="currentColor"
                                                     >
@@ -478,7 +474,7 @@ const FilmDetailPage = () => {
                                             ) : (
                                                 <span
                                                     key={rating.source}
-                                                    className="inline-flex items-baseline gap-2 px-3 py-1.5 bg-slate-700/25 border border-slate-600/30 rounded-lg text-sm"
+                                                    className="inline-flex items-baseline gap-2 text-sm"
                                                     title={rating.source}
                                                 >
                                                     {chipContent}
@@ -532,7 +528,7 @@ const FilmDetailPage = () => {
                         awardsDisplay ||
                         crewPeople.length > 0 ||
                         (film.cast && film.cast.length > 0)) && (
-                        <div className="relative overflow-hidden">
+                        <div className="relative mt-8 overflow-hidden">
                             {detailsBackdrop && (
                                 <SelectionCommitteeBackground
                                     imageUrl={detailsBackdrop}
@@ -551,16 +547,9 @@ const FilmDetailPage = () => {
                                         {filmGenres.length > 0 && (
                                             <div className="flex-shrink-0">
                                                 <h3 className={`${FIELD_LABEL} mb-2`}>Genres</h3>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {filmGenres.map((genre) => (
-                                                        <span
-                                                            key={genre}
-                                                            className="px-3 py-1 bg-slate-700 text-blue-300 text-xs font-medium rounded-full"
-                                                        >
-                                                            {genre}
-                                                        </span>
-                                                    ))}
-                                                </div>
+                                                <p className="text-slate-300">
+                                                    {filmGenres.join(' · ')}
+                                                </p>
                                             </div>
                                         )}
                                         {budgetDisplay && (
@@ -615,310 +604,284 @@ const FilmDetailPage = () => {
                     )}
 
                     {film.movieClubInfo && (
-                        <div className="relative bg-slate-900/30 border-t-2 border-slate-700/60 p-6 md:p-8 overflow-hidden">
-                            {/* Subtle ambient glow anchoring the club section */}
-                            <div
-                                aria-hidden="true"
-                                className="pointer-events-none absolute -top-24 -right-16 h-64 w-64 rounded-full bg-blue-500/[0.07] blur-3xl"
-                            />
-                            <div className="relative z-10">
-                                {/* Serif italic, like the profile's Interview head:
+                        <div className="mt-8 px-6 md:px-8">
+                            {/* Serif italic, like the profile's Interview head:
                                     this is the club's own account of the film. */}
-                                <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                                    <h2 className="font-serif text-2xl italic text-slate-100">
-                                        Film Club Facts
-                                    </h2>
-                                    <span className="h-px flex-grow self-center bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
-                                </div>
-                                <div className="md:flex md:justify-between md:items-start">
-                                    <div className="flex-1 mb-6 md:mb-0 md:pr-6">
-                                        {film.movieClubInfo.watchDate && (
-                                            <div className="mb-6 inline-flex items-center gap-3 rounded-lg border border-slate-700/50 bg-slate-800/40 px-4 py-2.5">
-                                                <CalendarDaysIcon className="h-5 w-5 flex-shrink-0 text-blue-400/80" />
-                                                <div className="leading-tight">
-                                                    <span className={`block ${FIELD_LABEL}`}>
-                                                        Watch Date
-                                                    </span>
-                                                    <span className="mt-0.5 block font-serif text-base tabular-nums text-slate-100">
-                                                        {film.movieClubInfo.watchDate}
-                                                    </span>
-                                                </div>
+                            <div className="mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                                <h2 className="font-serif text-2xl italic text-slate-100">
+                                    Film Club Facts
+                                </h2>
+                                <span className="h-px flex-grow self-center bg-slate-700/60" />
+                            </div>
+                            <div className="md:flex md:justify-between md:items-start">
+                                <div className="flex-1 mb-6 md:mb-0 md:pr-6">
+                                    {film.movieClubInfo.watchDate && (
+                                        <div className="mb-6 inline-flex items-center gap-3">
+                                            <CalendarDaysIcon className="h-5 w-5 flex-shrink-0 text-blue-400/80" />
+                                            <div className="leading-tight">
+                                                <span className={`block ${FIELD_LABEL}`}>
+                                                    Watch Date
+                                                </span>
+                                                <span className="mt-0.5 block font-serif text-base tabular-nums text-slate-100">
+                                                    {film.movieClubInfo.watchDate}
+                                                </span>
                                             </div>
-                                        )}
-                                        {/* An undated holiday pod isn't the up-next
+                                        </div>
+                                    )}
+                                    {/* An undated holiday pod isn't the up-next
                                             pick, so nothing else on the page says
                                             the club is still to meet for it. */}
-                                        {isUpcomingPod && (
-                                            <div className="mb-6 inline-flex items-center gap-3 rounded-lg border border-dashed border-slate-700/60 bg-slate-800/30 px-4 py-2.5">
-                                                <CalendarDaysIcon className="h-5 w-5 flex-shrink-0 text-slate-500" />
-                                                <div className="leading-tight">
-                                                    <span className={`block ${FIELD_LABEL}`}>
-                                                        Watch Date
-                                                    </span>
-                                                    <span
-                                                        className={`mt-0.5 block font-serif text-base ${holidayTheme?.upcomingText ?? 'text-slate-300'}`}
-                                                    >
-                                                        Upcoming
-                                                    </span>
-                                                </div>
+                                    {isUpcomingPod && (
+                                        <div className="mb-6 inline-flex items-center gap-3">
+                                            <CalendarDaysIcon className="h-5 w-5 flex-shrink-0 text-slate-500" />
+                                            <div className="leading-tight">
+                                                <span className={`block ${FIELD_LABEL}`}>
+                                                    Watch Date
+                                                </span>
+                                                <span
+                                                    className={`mt-0.5 block font-serif text-base ${holidayTheme?.upcomingText ?? 'text-slate-300'}`}
+                                                >
+                                                    Upcoming
+                                                </span>
                                             </div>
-                                        )}
-                                        {numberOfValidRatings > 0 ? (
-                                            <div>
-                                                <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
-                                                    Club Rating
-                                                </h3>
-                                                {clubAverageDisplay &&
-                                                    !isNaN(clubAverageDisplay) && (
-                                                        <div className="mb-5 flex items-center gap-x-4 gap-y-2 flex-wrap">
-                                                            {/* Large serif numeral with the scale
+                                        </div>
+                                    )}
+                                    {numberOfValidRatings > 0 ? (
+                                        <div>
+                                            <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
+                                                Club Rating
+                                            </h3>
+                                            {clubAverageDisplay && !isNaN(clubAverageDisplay) && (
+                                                <div className="mb-5 flex items-center gap-x-4 gap-y-2 flex-wrap">
+                                                    {/* Large serif numeral with the scale
                                                                 dropped to small caps, as the
                                                                 profile's stat cards set values. */}
-                                                            <div className="flex items-baseline whitespace-nowrap">
-                                                                <span className="font-serif text-5xl leading-none tracking-tight tabular-nums text-blue-300">
-                                                                    {clubAverageDisplay}
-                                                                </span>
-                                                                <span className="ml-2 text-xs font-medium uppercase tracking-widest text-slate-400">
-                                                                    / {MAX_RATING}
-                                                                </span>
-                                                            </div>
-                                                            <PopcornRating
-                                                                rating={clubAverageDisplay}
-                                                                maxRating={MAX_RATING}
-                                                                size="regular"
-                                                                title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                {!clubAverageDisplay &&
-                                                    numberOfValidRatings === 1 && (
-                                                        <p className="mb-4 text-slate-400 text-sm italic">
-                                                            Needs at least 2 ratings to show an
-                                                            average.
-                                                        </p>
-                                                    )}
-                                                <div className="mb-4 mt-4 flex items-center gap-2.5">
-                                                    <h4 className={FIELD_LABEL}>
-                                                        Individual Ratings
-                                                    </h4>
-                                                    <span
-                                                        className="h-px flex-1 bg-slate-600/40"
-                                                        aria-hidden="true"
+                                                    <div className="flex items-baseline whitespace-nowrap">
+                                                        <span className="font-serif text-5xl leading-none tracking-tight tabular-nums text-blue-300">
+                                                            {clubAverageDisplay}
+                                                        </span>
+                                                        <span className="ml-2 text-xs font-medium uppercase tracking-widest text-slate-400">
+                                                            / {MAX_RATING}
+                                                        </span>
+                                                    </div>
+                                                    <PopcornRating
+                                                        rating={clubAverageDisplay}
+                                                        maxRating={MAX_RATING}
+                                                        size="regular"
+                                                        title={`Average rating: ${clubAverageDisplay} out of ${MAX_RATING}`}
                                                     />
                                                 </div>
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
-                                                    {film.movieClubInfo.clubRatings
-                                                        .filter(
-                                                            (rating) =>
-                                                                rating.score !== null &&
-                                                                typeof rating.score === 'number'
-                                                        )
-                                                        .sort((a, b) =>
-                                                            a.user.localeCompare(b.user)
-                                                        )
-                                                        .map((rating) => {
-                                                            // When any member on this film used a score qualifier (e.g. Joey's
-                                                            // documentary "d"), reserve a wider fixed-width score cell for every
-                                                            // row so the qualifier + info icon don't shove that row's popcorn
-                                                            // out of alignment with the others.
-                                                            const filmHasQualifier =
-                                                                film.movieClubInfo!.clubRatings.some(
-                                                                    (r) => r.scoreQualifier
-                                                                );
-                                                            return (
-                                                                <div
-                                                                    key={rating.user}
-                                                                    className="space-y-2"
-                                                                >
-                                                                    <div className="flex items-center space-x-2">
-                                                                        <Link
-                                                                            to={`/profile/${encodeURIComponent(capitalizeFirstLetter(rating.user))}`}
-                                                                            className="w-20 truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 transition-colors hover:text-blue-300"
-                                                                            title={`View ${capitalizeFirstLetter(rating.user)}'s profile`}
-                                                                        >
-                                                                            {capitalizeFirstLetter(
-                                                                                rating.user
-                                                                            )}
-                                                                        </Link>
-                                                                        <span
-                                                                            className={`font-serif text-lg leading-none tabular-nums text-slate-100 whitespace-nowrap ${filmHasQualifier ? 'w-14' : 'w-8 text-right'}`}
-                                                                        >
-                                                                            {rating.score}
-                                                                            {rating.scoreQualifier && (
-                                                                                <ScoreQualifierNote
-                                                                                    user={
-                                                                                        rating.user
-                                                                                    }
-                                                                                    qualifier={
-                                                                                        rating.scoreQualifier
-                                                                                    }
-                                                                                />
-                                                                            )}
-                                                                        </span>
-                                                                        <PopcornRating
-                                                                            rating={
-                                                                                rating.score as number
-                                                                            }
-                                                                            maxRating={MAX_RATING}
-                                                                            size="small"
-                                                                            // Qualified scores get a distinctly deep-gold popcorn (matching
-                                                                            // the amber "d") to signal that they come from a different,
-                                                                            // medium-specific scoring rubric.
-                                                                            className={
-                                                                                rating.scoreQualifier
-                                                                                    ? '[filter:sepia(1)_saturate(3.5)_hue-rotate(-18deg)_brightness(1.1)]'
-                                                                                    : undefined
-                                                                            }
-                                                                            title={
-                                                                                rating.scoreQualifier
-                                                                                    ? `${capitalizeFirstLetter(rating.user)}'s ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} rating: ${rating.score} out of ${MAX_RATING}`
-                                                                                    : `${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`
-                                                                            }
-                                                                        />
-                                                                        {/* Visible only to a signed-in member, since that's the
+                                            )}
+                                            {!clubAverageDisplay && numberOfValidRatings === 1 && (
+                                                <p className="mb-4 text-slate-400 text-sm italic">
+                                                    Needs at least 2 ratings to show an average.
+                                                </p>
+                                            )}
+                                            <div className="mb-4 mt-4 flex items-center gap-2.5">
+                                                <h4 className={FIELD_LABEL}>Individual Ratings</h4>
+                                                <span
+                                                    className="h-px flex-1 bg-slate-600/40"
+                                                    aria-hidden="true"
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
+                                                {film.movieClubInfo.clubRatings
+                                                    .filter(
+                                                        (rating) =>
+                                                            rating.score !== null &&
+                                                            typeof rating.score === 'number'
+                                                    )
+                                                    .sort((a, b) => a.user.localeCompare(b.user))
+                                                    .map((rating) => {
+                                                        // When any member on this film used a score qualifier (e.g. Joey's
+                                                        // documentary "d"), reserve a wider fixed-width score cell for every
+                                                        // row so the qualifier + info icon don't shove that row's popcorn
+                                                        // out of alignment with the others.
+                                                        const filmHasQualifier =
+                                                            film.movieClubInfo!.clubRatings.some(
+                                                                (r) => r.scoreQualifier
+                                                            );
+                                                        return (
+                                                            <div
+                                                                key={rating.user}
+                                                                className="space-y-2"
+                                                            >
+                                                                <div className="flex items-center space-x-2">
+                                                                    <Link
+                                                                        to={`/profile/${encodeURIComponent(capitalizeFirstLetter(rating.user))}`}
+                                                                        className="w-20 truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400 transition-colors hover:text-blue-300"
+                                                                        title={`View ${capitalizeFirstLetter(rating.user)}'s profile`}
+                                                                    >
+                                                                        {capitalizeFirstLetter(
+                                                                            rating.user
+                                                                        )}
+                                                                    </Link>
+                                                                    <span
+                                                                        className={`font-serif text-lg leading-none tabular-nums text-slate-100 whitespace-nowrap ${filmHasQualifier ? 'w-14' : 'w-8 text-right'}`}
+                                                                    >
+                                                                        {rating.score}
+                                                                        {rating.scoreQualifier && (
+                                                                            <ScoreQualifierNote
+                                                                                user={rating.user}
+                                                                                qualifier={
+                                                                                    rating.scoreQualifier
+                                                                                }
+                                                                            />
+                                                                        )}
+                                                                    </span>
+                                                                    <PopcornRating
+                                                                        rating={
+                                                                            rating.score as number
+                                                                        }
+                                                                        maxRating={MAX_RATING}
+                                                                        size="small"
+                                                                        // Qualified scores get a distinctly deep-gold popcorn (matching
+                                                                        // the amber "d") to signal that they come from a different,
+                                                                        // medium-specific scoring rubric.
+                                                                        className={
+                                                                            rating.scoreQualifier
+                                                                                ? '[filter:sepia(1)_saturate(3.5)_hue-rotate(-18deg)_brightness(1.1)]'
+                                                                                : undefined
+                                                                        }
+                                                                        title={
+                                                                            rating.scoreQualifier
+                                                                                ? `${capitalizeFirstLetter(rating.user)}'s ${rating.scoreQualifier === 'd' ? 'documentary' : 'qualified'} rating: ${rating.score} out of ${MAX_RATING}`
+                                                                                : `${capitalizeFirstLetter(rating.user)}'s rating: ${rating.score} out of ${MAX_RATING}`
+                                                                        }
+                                                                    />
+                                                                    {/* Visible only to a signed-in member, since that's the
                                                                     only time the overrides are loaded. It marks a row edited
                                                                     on the site, whose spreadsheet cell is now ignored. */}
-                                                                        {overrides.ratings[
-                                                                            rating.user.toLowerCase()
-                                                                        ] && (
-                                                                            <span
-                                                                                className="rounded bg-slate-700/60 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-slate-400"
-                                                                                title={`Edited on the site by ${overrides.ratings[rating.user.toLowerCase()].updatedBy}. The Google Sheet no longer sets this row.`}
-                                                                            >
-                                                                                edited
-                                                                            </span>
-                                                                        )}
-                                                                    </div>
-                                                                    {rating.blurb && (
-                                                                        // Watermarked with the reviewer's portrait — the varying subject here is the member
-                                                                        <AccentCard
-                                                                            accent="emerald"
-                                                                            surface="inset"
-                                                                            watermarkSrc={getMemberImage(
-                                                                                rating.user
-                                                                            )}
-                                                                            className="ml-2 mt-4 px-4 pb-3 pt-3.5"
+                                                                    {overrides.ratings[
+                                                                        rating.user.toLowerCase()
+                                                                    ] && (
+                                                                        <span
+                                                                            className="text-[10px] uppercase tracking-wider text-slate-400"
+                                                                            title={`Edited on the site by ${overrides.ratings[rating.user.toLowerCase()].updatedBy}. The Google Sheet no longer sets this row.`}
                                                                         >
-                                                                            <QuoteMarkIcon className="mb-1.5 h-5 w-5 text-emerald-400/50" />
-                                                                            <CollapsibleContent
-                                                                                buttonSize="sm"
-                                                                                lineClamp={3}
-                                                                                className="text-sm italic leading-relaxed text-slate-300"
-                                                                            >
-                                                                                {rating.blurb}
-                                                                                <span className="capitalize">
-                                                                                    &nbsp;&mdash;&nbsp;
-                                                                                    {capitalizeFirstLetter(
-                                                                                        rating.user
-                                                                                    )}
-                                                                                </span>
-                                                                            </CollapsibleContent>
-                                                                        </AccentCard>
+                                                                            edited
+                                                                        </span>
                                                                     )}
                                                                 </div>
-                                                            );
-                                                        })}
-                                                </div>
+                                                                {rating.blurb && (
+                                                                    <div className="mt-4 border-l-2 border-slate-500/50 pl-3">
+                                                                        <CollapsibleContent
+                                                                            buttonSize="sm"
+                                                                            lineClamp={3}
+                                                                            className="text-sm italic leading-relaxed text-slate-300"
+                                                                        >
+                                                                            {rating.blurb}
+                                                                            <span className="capitalize">
+                                                                                &nbsp;&mdash;&nbsp;
+                                                                                {capitalizeFirstLetter(
+                                                                                    rating.user
+                                                                                )}
+                                                                            </span>
+                                                                        </CollapsibleContent>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
                                             </div>
-                                        ) : (
-                                            <div>
-                                                {' '}
-                                                <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
-                                                    Club Rating
-                                                </h3>{' '}
-                                                <p className="text-slate-400 italic">
-                                                    No ratings submitted yet.
-                                                </p>{' '}
-                                            </div>
-                                        )}
-                                    </div>
-                                    {selectorName && (
-                                        <SelectorPickBadge
-                                            name={capitalizeFirstLetter(selectorName)}
-                                            pickNumber={selectorPickNumber}
-                                        />
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {' '}
+                                            <h3 className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
+                                                Club Rating
+                                            </h3>{' '}
+                                            <p className="text-slate-400 italic">
+                                                No ratings submitted yet.
+                                            </p>{' '}
+                                        </div>
                                     )}
                                 </div>
+                                {selectorName && (
+                                    <SelectorPickBadge
+                                        name={capitalizeFirstLetter(selectorName)}
+                                        pickNumber={selectorPickNumber}
+                                    />
+                                )}
+                            </div>
 
-                                {/* The film's own club record — whose pick, when
+                            {/* The film's own club record — whose pick, when
                                 the club watched it, and its two images. Club
                                 property rather than anyone's row, so any signed-in
                                 member may set it; it renders nothing for a visitor. */}
-                                <FilmDetailsEditor
-                                    film={film}
-                                    override={overrides.film}
-                                    added={overrides.added}
-                                    loading={overrides.loading}
-                                    onSaved={(record) => overrides.applyFilmLocal(record)}
-                                    onReverted={() => overrides.applyFilmLocal(null)}
-                                />
+                            <FilmDetailsEditor
+                                film={film}
+                                override={overrides.film}
+                                added={overrides.added}
+                                loading={overrides.loading}
+                                onSaved={(record) => overrides.applyFilmLocal(record)}
+                                onReverted={() => overrides.applyFilmLocal(null)}
+                            />
 
-                                {/* A member's own score and review, editable in place. Renders
+                            {/* A member's own score and review, editable in place. Renders
                                 nothing at all unless a member is signed in. */}
-                                <MyRatingEditor
-                                    film={film}
-                                    ratings={overrides.ratings}
-                                    overridesLoading={overrides.loading}
-                                    // Keyed by the row's owner rather than by
-                                    // `updatedBy`: an admin filling in the
-                                    // evening's scores is the one who typed it,
-                                    // not the one it belongs to.
-                                    onSaved={(owner, rating) => overrides.applyLocal(owner, rating)}
-                                    onReverted={(owner) => overrides.applyLocal(owner, null)}
-                                />
+                            <MyRatingEditor
+                                film={film}
+                                ratings={overrides.ratings}
+                                overridesLoading={overrides.loading}
+                                // Keyed by the row's owner rather than by
+                                // `updatedBy`: an admin filling in the
+                                // evening's scores is the one who typed it,
+                                // not the one it belongs to.
+                                onSaved={(owner, rating) => overrides.applyLocal(owner, rating)}
+                                onReverted={(owner) => overrides.applyLocal(owner, null)}
+                            />
 
-                                {/* The club's awards for this film — the sheet's
+                            {/* The club's awards for this film — the sheet's
                                 `trophyNotes` prose and the ones members hand out
                                 here, resolved into one shelf. The editor renders
                                 nothing at all unless a member is signed in, so the
                                 gallery appears for a visitor only when there is
                                 something in it. */}
-                                <TrophyGallery trophies={filmTrophies}>
-                                    <FilmTrophyEditor
-                                        film={film}
-                                        trophies={trophies.trophies}
-                                        loading={trophies.loading}
-                                        onSaved={(trophy) => trophies.applyLocal(trophy.id, trophy)}
-                                        onWithdrawn={(id) => trophies.applyLocal(id, null)}
-                                    />
-                                </TrophyGallery>
+                            <TrophyGallery trophies={filmTrophies}>
+                                <FilmTrophyEditor
+                                    film={film}
+                                    trophies={trophies.trophies}
+                                    loading={trophies.loading}
+                                    onSaved={(trophy) => trophies.applyLocal(trophy.id, trophy)}
+                                    onWithdrawn={(id) => trophies.applyLocal(id, null)}
+                                />
+                            </TrophyGallery>
 
-                                {/* Trophy Info (if separate from notes) */}
-                                {film.movieClubInfo.trophyInfo &&
-                                    !film.movieClubInfo.trophyNotes && (
-                                        <div className="mt-8 pt-6 border-t border-slate-700">
-                                            <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
-                                                Trophy Info
-                                            </h3>
-                                            <p className="text-slate-300 whitespace-pre-line">
-                                                {film.movieClubInfo.trophyInfo}
-                                            </p>
-                                        </div>
-                                    )}
+                            {/* Trophy Info (if separate from notes) */}
+                            {film.movieClubInfo.trophyInfo && !film.movieClubInfo.trophyNotes && (
+                                <div className="mt-8 pt-6 border-t border-slate-700/60">
+                                    <h3 className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.2em] text-blue-300/80">
+                                        Trophy Info
+                                    </h3>
+                                    <p className="text-slate-300 whitespace-pre-line">
+                                        {film.movieClubInfo.trophyInfo}
+                                    </p>
+                                </div>
+                            )}
 
-                                {/* What the club says back about the screening, as
+                            {/* What the club says back about the screening, as
                                 on its wall row: the same thread, read and written
                                 in either place. Draws nothing for a visitor when
                                 nobody has responded, border included. */}
-                                <LogResponses
-                                    threadId={clubThreadId(film.imdbID)}
-                                    owner={null}
-                                    title={film.title}
-                                    className="mt-8 border-t border-slate-700 pt-6"
-                                />
+                            <LogResponses
+                                threadId={clubThreadId(film.imdbID)}
+                                owner={null}
+                                title={film.title}
+                                className="mt-8 border-t border-slate-700/60 pt-6"
+                            />
 
-                                {/* Previous / Next film in the club's watch timeline */}
-                                <WatchTimelineNav
-                                    previousFilm={previousFilm}
-                                    nextFilm={nextFilm}
-                                    nextSelectorPlaceholder={nextSelectorPlaceholder}
-                                    sincePreviousGap={sincePreviousGap}
-                                    untilNextGap={untilNextGap}
-                                />
-                            </div>
+                            {/* Previous / Next film in the club's watch timeline */}
+                            <WatchTimelineNav
+                                previousFilm={previousFilm}
+                                nextFilm={nextFilm}
+                                nextSelectorPlaceholder={nextSelectorPlaceholder}
+                                sincePreviousGap={sincePreviousGap}
+                                untilNextGap={untilNextGap}
+                            />
                         </div>
                     )}
-                </BaseCard>
+                </div>
 
                 {selectorName && filmsBySameSelector.length > 0 && (
                     <div className="mb-12">

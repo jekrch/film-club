@@ -16,6 +16,7 @@ import {
     SERIF,
     SLATE_100,
     SLATE_500,
+    SLATE_800,
     PAGE_BG,
     COPPER,
     COPPER_DIM,
@@ -37,7 +38,7 @@ export const CALENDAR_SHADE_LABELS: Record<CalendarShade, string> = {
 };
 
 /** A month with nothing in it: slate-800, a step up from the card it sits on. */
-const EMPTY_CELL = '#1e293b';
+const EMPTY_CELL = SLATE_800;
 /** From a dim, barely warm cell to bright copper. */
 const RAMP: [number, string][] = [
     [0, COPPER_DIM],

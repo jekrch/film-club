@@ -68,7 +68,6 @@ const LogFilmDialog: React.FC<LogFilmDialogProps> = ({
         <Modal
             isOpen={isOpen}
             onClose={close}
-            accent="emerald"
             eyebrow="Your log"
             title="Log a film"
             subtitle="Logged as watched today. Add a score or review from your log."

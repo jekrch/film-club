@@ -13,10 +13,7 @@ interface SectionHeaderProps {
 const SectionHeader: React.FC<SectionHeaderProps> = ({ title, className }) => (
     <div className={classNames('mb-6 flex flex-wrap items-baseline gap-x-3 gap-y-1', className)}>
         <h3 className="font-serif text-2xl italic text-slate-100">{title}</h3>
-        <span
-            className="h-px flex-grow self-center bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent"
-            aria-hidden="true"
-        />
+        <span className="h-px flex-grow self-center bg-slate-700/60" aria-hidden="true" />
     </div>
 );
 

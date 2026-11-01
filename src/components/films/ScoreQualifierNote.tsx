@@ -62,7 +62,6 @@ const ScoreQualifierNote: React.FC<ScoreQualifierNoteProps> = ({ user, qualifier
                 onClose={() => setIsOpen(false)}
                 // Amber is the qualifier accent throughout — the letter in the
                 // score, the word in the copy, and now the panel's own rail.
-                accent="amber"
                 eyebrow="Qualified score"
                 title={
                     <>

@@ -271,7 +271,7 @@ const AlmanacPage: React.FC = () => {
                     hideSizeButtons={true}
                     // The section's default, less its fade-in: `Collapse`
                     // fades it as it opens.
-                    containerClassName="p-4 mb-8 sm:mb-10 mt-4"
+                    containerClassName="mb-8 sm:mb-10 mt-4"
                 />
             </Collapse>
 
@@ -312,11 +312,10 @@ const AlmanacPage: React.FC = () => {
                 {frequentPersons.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-6">
                         {frequentPersons.map((person) => (
-                            // No edge: one card per artist, repeating in a grid.
                             // The wash is drawn from the artist's own films.
                             <AccentCard
                                 key={person.name}
-                                edge={false}
+                                surface="card"
                                 className="p-4"
                                 decoration={
                                     <FilmFrameWash

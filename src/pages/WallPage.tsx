@@ -66,23 +66,23 @@ const PILLAR_OPACITY = 0.1;
  * Where the pillar stands, in pixels from the left edge of the page container.
  *
  * The shaft is centered in the SVG's box, so seating it under the timeline nodes
- * is a matter of centering that box on them: a node sits at the card's left
- * padding edge (`p-3 sm:p-6 md:p-8`) and reaches half its own width (`h-8
- * sm:h-9`) past it. The widths are picked so the shaft — 22 of the drawing's 50
- * units — comes out about as wide as a node, which is what makes the icons read
- * as hanging on the column rather than beside it. All pixel facts the SVG needs
+ * is a matter of centering that box on them: a node sits at the container's left
+ * edge, the wall's section having no padding of its own, and reaches half its own
+ * width (`h-8 sm:h-9`) past it. The widths are picked so the shaft — 22 of the
+ * drawing's 50 units — comes out about as wide as a node, which is what makes the
+ * icons read as hanging on the column rather than beside it. They also have to
+ * round to a shaft centered on the pixel: the pillar rounds its shaft's edges, and
+ * at 80 that lands it half a pixel left of the node. All pixel facts the SVG needs
  * as numbers, which is why this is a media query rather than responsive classes.
  *
- * Below `sm` there is no gutter for a node to stand in — the boxes start at the
- * card's own padding edge — so the nodes stand at that edge on the caption line
- * above each box instead (see `TimelineNode`). Still one column, which is all
- * the shaft has to line up with.
+ * Below `sm` there is no gutter for a node to stand in — the boxes start at that
+ * same edge — so the nodes stand on the caption line above each box instead (see
+ * `TimelineNode`). Still one column, which is all the shaft has to line up with.
  */
 const usePillarPlacement = (): { width: number; left: number } => {
-    const isMd = useMediaQuery('(min-width: 768px)');
     const isSm = useMediaQuery('(min-width: 640px)');
-    const width = isSm ? 80 : 64;
-    const nodeCenter = isMd ? 32 + 18 : isSm ? 24 + 18 : 12 + 16;
+    const width = isSm ? 82 : 64;
+    const nodeCenter = isSm ? 18 : 16;
     return { width, left: nodeCenter - width / 2 };
 };
 
@@ -145,10 +145,10 @@ const wallWatchedLog = (): WatchedLog => {
 
 /**
  * The header's one action, in the filter chips' shape so the row stays one
- * height, and lit in the log's emerald so it doesn't read as a fourth filter.
+ * height, and lit in the accent so it doesn't read as a fourth filter.
  */
 const LOG_BUTTON_CLASS =
-    'inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-emerald-500/50 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-emerald-200 transition-colors duration-200 hover:border-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-100';
+    'inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-blue-500/50 bg-blue-500/10 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-blue-200 transition-colors duration-200 hover:border-blue-400 hover:bg-blue-500/20 hover:text-blue-100';
 
 const WallPage: React.FC = () => {
     const { configured, status, member, canEditAs } = useClubAuth();
@@ -280,12 +280,12 @@ const WallPage: React.FC = () => {
                     </h1>
                 </HeroBanner>
 
-                <AccentCard accent="blue" className="mb-12 p-3 sm:p-6 md:p-8">
+                <AccentCard className="mb-12">
                     <div className="mb-6 flex flex-wrap items-center gap-3">
                         <h4 className="text-xl font-bold text-slate-100">
                             {filtered.length} Event{filtered.length !== 1 ? 's' : ''}
                         </h4>
-                        <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                        <span className="h-px flex-grow bg-slate-700/60" />
                         <div className="flex flex-wrap gap-1.5">
                             {FILTERS.filter((filter) => present.has(filter.kind)).map(
                                 ({ kind, label, Icon }) => (
@@ -317,11 +317,11 @@ const WallPage: React.FC = () => {
                     </div>
 
                     {canLog && justLogged && (
-                        <p className="mb-6 text-sm text-emerald-300" role="status">
+                        <p className="mb-6 text-sm text-jade-300" role="status">
                             Logged {justLogged.title}.{' '}
                             <Link
                                 to={`${watchedPathFor(member)}#${watchedRowId(justLogged.imdbID)}`}
-                                className="text-emerald-200 underline decoration-emerald-400/40 underline-offset-4 transition-colors hover:text-white"
+                                className="text-jade-200 underline decoration-jade-400/40 underline-offset-4 transition-colors hover:text-white"
                             >
                                 Add a score or review
                             </Link>
@@ -344,7 +344,7 @@ const WallPage: React.FC = () => {
                                             <h5 className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
                                                 {month.label}
                                             </h5>
-                                            <span className="h-px flex-grow bg-gradient-to-r from-slate-700/70 to-transparent" />
+                                            <span className="h-px flex-grow bg-slate-700/60" />
                                             <span className="text-xs tabular-nums text-slate-600">
                                                 {month.events.length}
                                             </span>

@@ -101,7 +101,7 @@ const EntryRatingChips: React.FC<{ ratings: Rating[]; imdbID: string }> = ({ rat
                     href={`https://www.imdb.com/title/${imdbID}/`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-baseline gap-1.5 rounded-md bg-slate-700/60 px-2.5 py-1 ring-1 ring-yellow-500/30 transition hover:bg-slate-600/60 hover:ring-yellow-500/60"
+                    className="inline-flex items-baseline gap-1.5 rounded-md bg-slate-700/60 px-2.5 py-1 ring-1 ring-amber-400/30 transition hover:bg-slate-600/60 hover:ring-amber-400/60"
                     title="View on IMDb"
                 >
                     {body}

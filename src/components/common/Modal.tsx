@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import React, { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { ACCENT_EDGE, ACCENT_EDGE_BASE, type CardAccent } from './accents';
 import Button from './Button';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useModalPresence } from '../../hooks/useModalPresence';
@@ -39,8 +38,6 @@ interface ModalProps {
      * for a heading written as a sentence.
      */
     truncateTitle?: boolean;
-    /** Rail color, from the same semantic set the cards use. */
-    accent?: CardAccent;
     /**
      * Inert art spanning the panel and clipped to its corners — a still wash, a
      * portrait. Sits under the content, above the panel fill. Mirrors
@@ -57,11 +54,10 @@ interface ModalProps {
  * needs — scroll lock, Escape, a focus trap that restores focus on close, and a
  * portal to `document.body`.
  *
- * The panel is built the way the cards are (see AccentCard): a light border and
- * an accent-lit top edge, not a drop shadow. On a dark UI a black shadow over a
- * dark scrim over a near-black page is invisible, and a panel whose edge you
- * can't find reads as flat no matter how much elevation the shadow claims. The
- * hairline along the top edge is the light catch that makes it look raised.
+ * The panel is built the way the cards are (see AccentCard): a light border rather
+ * than a drop shadow alone. On a dark UI a black shadow over a dark scrim over a
+ * near-black page is invisible, and a panel whose edge you can't find reads as
+ * flat no matter how much elevation the shadow claims.
  *
  * Portalling is load-bearing rather than tidiness: callers render modals deep
  * inside pages and rows that clip to their own rounded corners, and an ancestor
@@ -78,7 +74,6 @@ const Modal: React.FC<ModalProps> = ({
     hideHeader = false,
     subtitle,
     truncateTitle = true,
-    accent = 'blue',
     decoration,
     className,
     children,
@@ -187,10 +182,6 @@ const Modal: React.FC<ModalProps> = ({
                         {decoration}
                     </div>
                 )}
-
-                {/* The accent-lit top edge, above the decoration so art washed
-                    into the panel can't bury it. */}
-                <span className={classNames(ACCENT_EDGE_BASE, 'z-20', ACCENT_EDGE[accent])} />
 
                 {hideHeader ? (
                     <>

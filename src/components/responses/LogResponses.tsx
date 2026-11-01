@@ -30,7 +30,7 @@ export const COMMENT_LIMIT = 1000;
  */
 const FIELD_CLASS =
     'w-full rounded-md border border-slate-600/60 bg-slate-800/60 px-3 py-2 text-sm text-slate-100 ' +
-    'placeholder:text-slate-500 focus:border-emerald-400/50 focus:outline-none resize-y leading-relaxed ' +
+    'placeholder:text-slate-500 focus:border-blue-400/50 focus:outline-none resize-y leading-relaxed ' +
     'min-h-[calc(1lh+1rem+2px)]';
 
 /**
@@ -210,7 +210,7 @@ const LogResponses: React.FC<LogResponsesProps> = ({
                             aria-controls={commentsId}
                             className={`${TEXT_TOGGLE} ${
                                 commentsOpen
-                                    ? 'text-emerald-300'
+                                    ? 'text-blue-300'
                                     : 'text-slate-500 group-hover:text-slate-400 hover:text-slate-200!'
                             }`}
                         >
@@ -495,7 +495,7 @@ const CommentRow: React.FC<{
                 <CircularImage alt={comment.author} size="w-6 h-6" />
             </Link>
 
-            <div className="min-w-0 flex-1 border-l-2 border-emerald-400/20 pl-3">
+            <div className="min-w-0 flex-1 border-l-2 border-slate-500/40 pl-3">
                 <div className="flex flex-wrap items-baseline gap-x-2 text-xs">
                     <Link
                         to={`/profile/${encodeURIComponent(comment.author)}`}
@@ -584,7 +584,7 @@ const CommentRow: React.FC<{
                                 type="button"
                                 variant="solid"
                                 size="xs"
-                                accent="emerald"
+                                accent="blue"
                                 onClick={() => void save()}
                                 disabled={busy || !draft.trim()}
                             >
@@ -663,7 +663,7 @@ const CommentComposer: React.FC<{
                         type="button"
                         variant="solid"
                         size="xs"
-                        accent="emerald"
+                        accent="blue"
                         onClick={() => void post()}
                         disabled={busy || !draft.trim()}
                     >

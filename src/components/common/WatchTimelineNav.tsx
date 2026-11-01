@@ -149,7 +149,7 @@ const WatchTimelineNav = ({
                 <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-[0.2em]">
                     Club Timeline
                 </h3>
-                <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                <span className="h-px flex-grow bg-slate-700/60" />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -179,13 +179,13 @@ const ProfilePage: React.FC = () => {
             <ProfileWatchedSection owner={member.name} />
 
             {shown.interview && shown.interview.length > 0 && (
-                <AccentCard accent="blue" className="p-6 md:p-10 mb-8">
+                <AccentCard className="mb-12">
                     {/* Set in serif italic rather than the bold sans of the
                         other sections: this one is editorial, closer to a
                         printed interview than to a panel of data. */}
                     <div className="mb-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                         <h3 className="font-serif text-2xl italic text-slate-100">Interview</h3>
-                        <span className="h-px flex-grow self-center bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                        <span className="h-px flex-grow self-center bg-slate-700/60" />
                     </div>
                     <div
                         className={`transition-all duration-500 ease-in-out overflow-hidden ${!isInterviewExpanded && needsInterviewExpansion ? collapsedInterviewMaxHeight : 'max-h-[1500px]'}`}
@@ -248,7 +248,7 @@ const ProfilePage: React.FC = () => {
                     </div>
                     {hasEnoughControversialFilms && (
                         <div className="lg:col-span-1">
-                            <AccentCard accent="rose" className="p-6 h-full">
+                            <AccentCard className="h-full">
                                 <h4 className="text-lg font-semibold text-slate-200 mb-3 pb-2 border-b border-slate-700/60">
                                     Most Divergent Scores
                                 </h4>
@@ -271,7 +271,7 @@ const ProfilePage: React.FC = () => {
             )}
 
             {reviewBlurbs.length > 0 && (
-                <AccentCard accent="emerald" className="p-6 md:p-10 mb-8">
+                <AccentCard className="mb-12">
                     <h4 className="text-xl font-bold text-slate-100 mb-6 border-b border-slate-700/60 pb-3">
                         In Their Own Words
                     </h4>

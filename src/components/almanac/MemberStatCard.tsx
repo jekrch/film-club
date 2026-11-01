@@ -31,8 +31,7 @@ const MemberStatCard: React.FC<MemberStatCardProps> = ({
     getHighlightClass,
 }) => {
     return (
-        // No edge: one card per member, repeating in a grid
-        <AccentCard edge={false} contentClassName="flex h-full flex-col p-4">
+        <AccentCard contentClassName="flex h-full flex-col">
             {/* Member header, a small title card like the profile banner's: the
                 member's role as a small-caps credit over their name in serif. */}
             <div className="mb-4 flex items-center border-b border-slate-700/60 pb-3">

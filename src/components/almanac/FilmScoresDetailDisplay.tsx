@@ -37,9 +37,9 @@ const FilmScoresDetailDisplay: React.FC<FilmScoresDetailDisplayProps> = ({
     onClose,
     closeLabel,
 }) => (
-    // Inset level, set like the interval detail beside it: a small-caps label,
+    // Set like the interval detail beside it: a small-caps label,
     // the figure in serif, then the films in watch order.
-    <div className="p-4 bg-slate-700/25 rounded-xl border border-slate-600/30">
+    <div>
         <div className="flex items-center gap-2.5">
             <h4 className="truncate text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
                 {label}

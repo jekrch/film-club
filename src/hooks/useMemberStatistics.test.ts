@@ -68,7 +68,7 @@ describe('useMemberStatistics', () => {
     it('maps highlights to the expected CSS classes', () => {
         const { result } = renderHook(() => useMemberStatistics(films, members));
         const { getHighlightClass } = result.current;
-        expect(getHighlightClass('high')).toContain('emerald');
+        expect(getHighlightClass('high')).toContain('jade');
         expect(getHighlightClass('low')).toContain('blue');
         expect(getHighlightClass(null)).toContain('slate');
     });

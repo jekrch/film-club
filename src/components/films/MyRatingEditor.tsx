@@ -236,7 +236,7 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
                 <h4 className="text-sm font-semibold uppercase tracking-wider text-blue-400">
                     {owner ? `${owner}'s rating` : 'Edit my rating'}
                 </h4>
-                <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                <span className="h-px flex-grow bg-slate-700/60" />
                 <Button
                     type="button"
                     variant="ghost"
@@ -400,7 +400,7 @@ const MyRatingEditor: React.FC<MyRatingEditorProps> = ({
                     )}
                 </div>
 
-                {notice && <p className="text-sm text-emerald-300">{notice}</p>}
+                {notice && <p className="text-sm text-jade-300">{notice}</p>}
                 {saveError && <p className="text-sm text-rose-300">{saveError}</p>}
                 {authError && !saveError && <p className="text-sm text-rose-300">{authError}</p>}
 

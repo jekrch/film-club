@@ -53,14 +53,14 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
     const watchedPath = watchedPathFor(owner);
 
     return (
-        <AccentCard accent="blue" className="mb-8 p-4 sm:p-6 md:p-10">
+        <AccentCard className="mb-12">
             {/* Wraps rather than squeezing: the trailing link and count are
                 `whitespace-nowrap`, so on a narrow screen they would take their
                 width out of the heading instead. */}
             <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-1">
                 <EyeIcon className="h-5 w-5 text-blue-400/80" />
                 <h4 className="text-xl font-bold text-slate-100">Watched</h4>
-                <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                <span className="h-px flex-grow bg-slate-700/60" />
                 {canEdit ? (
                     <Link
                         to={watchedPath}

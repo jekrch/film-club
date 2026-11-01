@@ -41,7 +41,7 @@ function AppContent() {
         // keeps the nav out from under the status bar, the footer clear of the
         // home indicator, and both clear of the notch in landscape. Each inset
         // is 0 everywhere else.
-        <div className="relative isolate flex flex-col min-h-screen bg-[#0f172b] font-se overflow-x-hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+        <div className="relative isolate flex flex-col min-h-screen bg-page font-se overflow-x-hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
             <div className="site-backdrop" aria-hidden="true" />
 
             {/* Background pillar wrapper - stretches to full document height */}

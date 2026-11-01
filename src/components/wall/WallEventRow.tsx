@@ -23,7 +23,7 @@ import { getRatingColorClass } from '../../utils/ratingUtils';
 import { MAX_SCORE } from '../../utils/ratingEditUtils';
 import { formatWatchDate, watchedRowId } from '../../utils/watchedUtils';
 import { isRankedList } from '../../types/list';
-import { ACCENT_EDGE, ACCENT_EDGE_BASE, type CardAccent } from '../common/accents';
+import type { CardAccent } from '../common/accents';
 import type { ListEvent, TrophyEvent, WallEvent, WallRow } from '../../utils/wallUtils';
 import {
     CLUB_PICK_NODE_CLASS,
@@ -442,7 +442,7 @@ const ScoreBadge: React.FC<{
  *
  * Railed rather than merely greyed: the line under a subject is the one place
  * on this wall where somebody is talking rather than something being recorded,
- * which is the distinction the emerald rail draws everywhere else, and which is
+ * which is the distinction the rail draws everywhere else, and which is
  * how the watch log draws a review.
  *
  * Clamped to two lines with the site's own collapsible under it, so a long
@@ -461,7 +461,7 @@ const ScoreBadge: React.FC<{
  * the reader actually sees.
  */
 const Detail: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <div className="relative mt-3 border-l-2 sm:mt-1.5 border-emerald-400/30 pl-3">
+    <div className="relative mt-3 border-l-2 sm:mt-1.5 border-slate-500/50 pl-3">
         <CollapsibleContent
             lineClamp={2}
             buttonSize="sm"
@@ -565,20 +565,6 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected, onEdit }) =
                 >
                     <RowFrameWash image={lead.wash} />
 
-                    {/* The club pick's lit top edge — the cards' accent edge, in
-                        the blue the row already wears at rest. Drawn after the
-                        wash so the art never passes over it. Not a left rail: a
-                        flat 2px left rail is already spoken for on this wall (it
-                        is what `Detail` draws in emerald when somebody is
-                        talking), and a bar down the side gets bent into a
-                        fingernail by the row's rounded corners. */}
-                    {clubPick && (
-                        <span
-                            className={`${ACCENT_EDGE_BASE} ${ACCENT_EDGE.blue}`}
-                            aria-hidden="true"
-                        />
-                    )}
-
                     {/* A grid rather than a flex row, and the watch log's grid: on a
                         wide screen the prose belongs beside the poster in the
                         subject's column, and on a phone that column is barely
@@ -681,7 +667,7 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected, onEdit }) =
                                 onClick={onEdit}
                                 aria-label={`Edit ${film.title}`}
                                 title="Edit your log entry"
-                                className="col-start-3 row-start-1 -my-1 ml-2 hover:text-emerald-300"
+                                className="col-start-3 row-start-1 -my-1 ml-2 hover:text-blue-300"
                             >
                                 <PencilSquareIcon className="h-4 w-4" aria-hidden="true" />
                             </Button>
@@ -958,7 +944,7 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
             return (
                 <>
                     {/* Not a Detail: this is a fact about the screening, not
-                        somebody talking, so it takes no emerald rail. */}
+                        somebody talking, so it takes no rail. */}
                     {event.selector && (
                         <p className="relative mt-1 text-sm text-slate-500">
                             <Link

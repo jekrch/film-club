@@ -45,19 +45,19 @@ describe('ratingUtils', () => {
     });
 
     describe('getRatingColorClass', () => {
-        it('should return "text-emerald-400" for ratings >= 7', () => {
-            expect(getRatingColorClass(7)).toBe('text-emerald-400');
-            expect(getRatingColorClass(9)).toBe('text-emerald-400');
+        it('should return "text-jade-300" for ratings >= 7', () => {
+            expect(getRatingColorClass(7)).toBe('text-jade-300');
+            expect(getRatingColorClass(9)).toBe('text-jade-300');
         });
 
-        it('should return "text-amber-500" for ratings >= 4 and < 7', () => {
-            expect(getRatingColorClass(4)).toBe('text-amber-500');
-            expect(getRatingColorClass(6.9)).toBe('text-amber-500');
+        it('should return "text-slate-200" for ratings >= 4 and < 7', () => {
+            expect(getRatingColorClass(4)).toBe('text-slate-200');
+            expect(getRatingColorClass(6.9)).toBe('text-slate-200');
         });
 
-        it('should return "text-rose-400" for ratings < 4', () => {
-            expect(getRatingColorClass(3.9)).toBe('text-rose-400');
-            expect(getRatingColorClass(0)).toBe('text-rose-400');
+        it('should return "text-slate-400" for ratings < 4', () => {
+            expect(getRatingColorClass(3.9)).toBe('text-slate-400');
+            expect(getRatingColorClass(0)).toBe('text-slate-400');
         });
 
         it('should return "text-slate-400" for NaN or invalid ratings', () => {

@@ -57,7 +57,6 @@ const EditLogDialog: React.FC<EditLogDialogProps> = ({ event, isOpen, onClose, o
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            accent="emerald"
             eyebrow={actingFor ? `${owner}'s log` : 'Your log'}
             title={title}
             subtitle={entry.year ?? undefined}

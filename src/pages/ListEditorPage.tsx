@@ -245,7 +245,7 @@ const ListEditorPage: React.FC = () => {
                 Back
             </Button>
 
-            <AccentCard accent="amber" className="mb-8 p-3 sm:p-6 md:p-8">
+            <AccentCard className="mb-12">
                 {/* Wraps rather than squeezing: the signed-in line is
                     `whitespace-nowrap`, so on a narrow screen it would take its
                     width out of the heading instead. */}
@@ -253,7 +253,7 @@ const ListEditorPage: React.FC = () => {
                     <h1 className="text-2xl font-thin text-slate-100">
                         {creating ? 'New list' : 'Edit list'}
                     </h1>
-                    <span className="h-px flex-grow bg-gradient-to-r from-amber-400/25 via-slate-700/60 to-transparent" />
+                    <span className="h-px flex-grow bg-slate-700/60" />
                     {status === 'signed-in' && (
                         <span className="whitespace-nowrap text-xs text-slate-500">
                             {member}
@@ -491,7 +491,7 @@ const ListEditorPage: React.FC = () => {
                             )}
                         </div>
 
-                        {notice && <p className="text-sm text-amber-300">{notice}</p>}
+                        {notice && <p className="text-sm text-jade-300">{notice}</p>}
                         {saveError && <p className="text-sm text-rose-300">{saveError}</p>}
                     </div>
                 )}

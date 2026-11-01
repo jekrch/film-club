@@ -160,7 +160,7 @@ const FilmDetailsEditor: React.FC<FilmDetailsEditorProps> = ({
                     <FilmIcon className="h-4 w-4" aria-hidden="true" />
                     Film details
                 </h4>
-                <span className="h-px flex-grow bg-gradient-to-r from-blue-400/25 via-slate-700/60 to-transparent" />
+                <span className="h-px flex-grow bg-slate-700/60" />
                 <Button
                     type="button"
                     variant="ghost"
@@ -244,7 +244,7 @@ const FilmDetailsEditor: React.FC<FilmDetailsEditorProps> = ({
                 )}
             </div>
 
-            {notice && <p className="mt-3 text-sm text-emerald-300">{notice}</p>}
+            {notice && <p className="mt-3 text-sm text-jade-300">{notice}</p>}
             {saveError && <p className="mt-3 text-sm text-rose-300">{saveError}</p>}
             {authError && !saveError && <p className="mt-3 text-sm text-rose-300">{authError}</p>}
 

@@ -103,12 +103,12 @@ const ListPage: React.FC = () => {
                 )}
             </HeroBanner>
 
-            <AccentCard accent="amber" className="mb-12 p-3 sm:p-6 md:p-8">
+            <AccentCard className="mb-12">
                 <div className="mb-6 flex items-center gap-3">
                     <h4 className="text-xl font-bold text-slate-100">
                         {entries.length} Film{entries.length !== 1 ? 's' : ''}
                     </h4>
-                    <span className="h-px flex-grow bg-gradient-to-r from-amber-400/25 via-slate-700/60 to-transparent" />
+                    <span className="h-px flex-grow bg-slate-700/60" />
                 </div>
 
                 {entries.length > 0 ? (

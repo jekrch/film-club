@@ -31,12 +31,17 @@ interface ProfileStatsSectionProps {
     rankings: UserRankings | null;
 }
 
+/** Headed groups the stats are sorted into, in display order. */
+const STAT_GROUPS = ['Selections', 'Scoring', 'Range'] as const;
+
 /**
  * Configuration interface for defining how each stat card is generated.
  */
 interface StatCardConfig {
     /** Unique key matching a property in UserProfileStats. */
     id: keyof UserProfileStats;
+    /** The group the stat is listed under. */
+    group: (typeof STAT_GROUPS)[number];
     /** Display label for the stat card. */
     label: string;
     /** Function to extract the raw value from the stats object. */
@@ -66,7 +71,8 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
     const [isExpanded, setIsExpanded] = useState(false);
     // Max number of cards to show when collapsed
     const MAX_VISIBLE_CARDS_COLLAPSED = 8;
-    // Collapsed height: two rows of cards at xl
+    // Collapsed height on phones, where the cards stack. From sm everything shows;
+    // see .stats-collapse.
     const COLLAPSED_HEIGHT_REM = 21;
 
     // Memoize the configuration array for stat cards to avoid recalculation on every render
@@ -74,6 +80,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
         () => [
             {
                 id: 'totalSelections',
+                group: 'Selections',
                 label: 'Films Selected',
                 getValue: (s) => s.totalSelections,
                 formatValue: (v) => (v !== null ? v : null),
@@ -81,6 +88,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'totalRuntime',
+                group: 'Selections',
                 label: 'Total Runtime',
                 getValue: (s) => s.totalRuntime,
                 formatValue: formatTotalRuntime,
@@ -90,6 +98,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'avgRuntime',
+                group: 'Selections',
                 label: 'Avg. Runtime',
                 getValue: (s) => s.avgRuntime,
                 formatValue: (v) => {
@@ -101,14 +110,8 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
                 icon: ClockIcon,
             },
             {
-                id: 'topGenres',
-                label: 'Top Genres',
-                getValue: (s) => s.topGenres,
-                description: 'Most frequently selected genres.',
-                icon: TagIcon,
-            },
-            {
                 id: 'avgSelectedScore',
+                group: 'Scoring',
                 label: 'Avg. Club Score',
                 getValue: (s) => s.avgSelectedScore,
                 formatValue: (v) => formatAverage(v, 2),
@@ -118,6 +121,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'avgGivenScore',
+                group: 'Scoring',
                 label: 'Avg. Score Given',
                 getValue: (s) => s.avgGivenScore,
                 formatValue: (v) => formatAverage(v, 2),
@@ -127,6 +131,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'avgDivergence',
+                group: 'Scoring',
                 label: 'Avg. Divergence',
                 getValue: (s) => s.avgAbsoluteDivergence, // Change this to use absolute!
                 formatValue: (v) => formatAverage(v, 2), // Remove the +/- logic
@@ -136,6 +141,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'languageCount',
+                group: 'Range',
                 label: 'Languages',
                 getValue: (s) => s.languageCount,
                 formatValue: (v) => (v !== null && v > 0 ? v : null),
@@ -144,6 +150,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
             },
             {
                 id: 'countryCount',
+                group: 'Range',
                 label: 'Countries',
                 getValue: (s) => s.countryCount,
                 formatValue: (v: any, stats?: UserProfileStats) => {
@@ -171,6 +178,14 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
                 getRank: (r) => r.countryDiversityRank,
                 description: 'Primary countries of selected films.',
                 icon: MapPinIcon,
+            },
+            {
+                id: 'topGenres',
+                group: 'Range',
+                label: 'Top Genres',
+                getValue: (s) => s.topGenres,
+                description: 'Most frequently selected genres.',
+                icon: TagIcon,
             },
         ],
         []
@@ -274,7 +289,7 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
     }
 
     return (
-        <AccentCard accent="blue" className="h-full p-6 md:p-8">
+        <AccentCard className="h-full">
             <h3 className="text-2xl font-bold text-slate-100 mb-5 border-b border-slate-700/60 pb-3">
                 Member Stats
             </h3>
@@ -288,27 +303,44 @@ const ProfileStatsSection: React.FC<ProfileStatsSectionProps> = ({ stats, rankin
                 <div ref={contentRef} className={`pr-2 -mr-2`}>
                     {' '}
                     {/* Adjust padding for potential scrollbar */}
-                    {/* Grid layout for the stat cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {visibleStatCards.map((card) => (
-                            <ProfileStatCard
-                                key={card.id}
-                                id={card.id}
-                                label={card.label}
-                                // Assert non-null as empty cards are filtered out
-                                value={card.displayValue!}
-                                rank={card.displayRank}
-                                description={card.description}
-                                icon={card.icon}
-                                valueClassName={card.displayClassName}
-                            />
-                        ))}
-                    </div>
+                    {STAT_GROUPS.map((group) => {
+                        const cards = visibleStatCards.filter((card) => card.group === group);
+                        if (cards.length === 0) return null;
+                        return (
+                            // The section head's rule stands in for the first group's
+                            <div
+                                key={group}
+                                className="mt-7 border-t border-slate-700/60 pt-5 first:mt-0 first:border-t-0 first:pt-0"
+                            >
+                                <h4 className="mb-4 text-sm font-semibold text-slate-200">
+                                    {group}
+                                </h4>
+                                {/* Three tracks even for a short group, so columns line up
+                                    from one group to the next */}
+                                <div className="grid grid-cols-1 divide-y divide-slate-700/40 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+                                    {cards.map((card) => (
+                                        <ProfileStatCard
+                                            key={card.id}
+                                            id={card.id}
+                                            label={card.label}
+                                            // Assert non-null as empty cards are filtered out
+                                            value={card.displayValue!}
+                                            rank={card.displayRank}
+                                            description={card.description}
+                                            icon={card.icon}
+                                            valueClassName={card.displayClassName}
+                                            className="py-4 first:pt-0 last:pb-0 sm:px-5 sm:py-0 sm:first:pl-0 sm:last:pr-0"
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
             {/* Render the expand/collapse button if needed */}
             {needsExpansion && (
-                <div className="mt-4 text-center border-t border-slate-700/60 pt-4">
+                <div className="mt-4 text-center border-t border-slate-700/60 pt-4 sm:hidden">
                     <Button
                         onClick={() => setIsExpanded(!isExpanded)}
                         variant="link"

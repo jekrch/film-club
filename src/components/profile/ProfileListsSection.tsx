@@ -33,11 +33,11 @@ const ProfileListsSection: React.FC<ProfileListsSectionProps> = ({ lists, owner 
     if (lists.length === 0 && !canEdit) return null;
 
     return (
-        <AccentCard accent="amber" className="mb-8 p-6 md:p-10">
+        <AccentCard className="mb-12">
             <div className="mb-6 flex items-center gap-3">
                 <QueueListIcon className="h-5 w-5 text-amber-400/80" />
                 <h4 className="text-xl font-bold text-slate-100">Lists</h4>
-                <span className="h-px flex-grow bg-gradient-to-r from-amber-400/25 via-slate-700/60 to-transparent" />
+                <span className="h-px flex-grow bg-slate-700/60" />
                 {canEdit ? (
                     <Link
                         to="/lists/new"

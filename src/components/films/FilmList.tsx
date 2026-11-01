@@ -48,7 +48,7 @@ const FilmList: React.FC<FilmListProps> = ({
             {/* Header Section */}
             <div className="flex justify-between items-center mb-4">
                 {/* ... Title and Buttons ... */}
-                {title && <h2 className="text-lg font-bold text-gray-200 mr-3">{title}</h2>}
+                {title && <h2 className="text-lg font-bold text-slate-200 mr-3">{title}</h2>}
                 {!hideSizeButtons && (
                     <div className="flex items-center space-x-2">
                         <Button
@@ -88,7 +88,7 @@ const FilmList: React.FC<FilmListProps> = ({
             {/* Film Content Section */}
             {!hasContent ? (
                 <div className="text-center py-10">
-                    <p className="text-gray-500">No films found.</p>
+                    <p className="text-slate-500">No films found.</p>
                 </div>
             ) : layoutMode === 'horizontal' ? (
                 // --- Horizontal Layout with Swiper ---
@@ -99,7 +99,7 @@ const FilmList: React.FC<FilmListProps> = ({
                     freeMode={true} // Enable free scrolling with momentum
                     scrollbar={{ draggable: true, hide: false }} // Optional: Add scrollbar
                     mousewheel={true} // Enable mousewheel control
-                    className="pb-4 text-gray-200" // Add padding for scrollbar visibility
+                    className="pb-4 text-slate-200" // Add padding for scrollbar visibility
                 >
                     {/* Map films to SwiperSlides */}
                     {films.map((film) => (

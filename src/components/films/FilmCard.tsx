@@ -152,7 +152,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
             {/* --- UP NEXT BANNER ---
                 A folded corner ribbon cut from the same cloth as the Popcorn Pod
                 sash: same band construction, same tucked-under tails, same swell
-                on hover — in the club's emerald rather than concession amber.
+                on hover — in jade rather than concession amber.
 
                 Every dimension below is in `em` against the wrapper's font size,
                 so the whole ribbon holds its proportions and only one number
@@ -183,11 +183,11 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             each stays visible, so the ribbon reads as folding around
                             the corner rather than being painted on it. */}
                         <div
-                            className="absolute top-full left-0 w-[34%] h-[0.75em] bg-emerald-700/90"
+                            className="absolute top-full left-0 w-[34%] h-[0.75em] bg-jade-800/90"
                             style={{ clipPath: RIBBON_FOLD_CLIP_LEFT }}
                         />
                         <div
-                            className="absolute top-full right-0 w-[34%] h-[0.75em] bg-emerald-700/90"
+                            className="absolute top-full right-0 w-[34%] h-[0.75em] bg-jade-800/90"
                             style={{ clipPath: RIBBON_FOLD_CLIP_RIGHT }}
                         />
 
@@ -200,12 +200,12 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                             relative text-center whitespace-nowrap leading-none
                             py-[0.34em] tracking-[0.08em]
                             font-black uppercase text-white
-                            [text-shadow:0_0.04em_0.1em_rgba(6,78,59,0.7)]
-                            bg-gradient-to-r from-emerald-600/90 via-emerald-500/90 to-emerald-600/90
+                            [text-shadow:0_0.04em_0.1em_rgba(24,77,57,0.7)]
+                            bg-gradient-to-r from-jade-700/90 via-jade-600/90 to-jade-700/90
                             backdrop-blur-[2px]
-                            border-y border-emerald-800/40 shadow-lg shadow-black/40
+                            border-y border-jade-800/40 shadow-lg shadow-black/40
                             transition-all duration-300 ease-out
-                            group-hover:from-emerald-500/90 group-hover:via-emerald-400/90 group-hover:to-emerald-500/90
+                            group-hover:from-jade-600/90 group-hover:via-jade-500/90 group-hover:to-jade-600/90
                             group-hover:shadow-xl
                         "
                         >
@@ -321,7 +321,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                 >
                                     {selectorName && (
                                         <>
-                                            <span className="w-1 h-1 rounded-full flex-shrink-0 bg-emerald-400/80"></span>
+                                            <span className="w-1 h-1 rounded-full flex-shrink-0 bg-slate-400/60"></span>
                                             <span className="truncate">{selectorName}</span>
                                         </>
                                     )}

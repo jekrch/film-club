@@ -296,16 +296,15 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                     )}
                 </div>
 
-                {/* Railed in emerald, the accent this codebase reserves for a
-                    member's own voice (see `AccentCard`). The details panel
+                {/* Railed, the mark this codebase reserves for a member's own
+                    voice. The details panel
                     below sets the film's tagline and synopsis in the same grey
                     at the same size, and with only a hairline between them the
                     owner's note read as more of the film's own copy. A rail is
-                    as far as this goes — the reviews on a film page get a whole
-                    card, but a list is a column of these and a column of cards
-                    would bury the ranking. */}
+                    as far as this goes, the same one the reviews on a film page
+                    get, because a column of cards would bury the ranking. */}
                 {description && (
-                    <div className="col-span-3 col-start-1 row-start-2 mt-3 border-l-2 border-emerald-400/30 pl-3 prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-slate-300 sm:col-span-1 sm:col-start-3 sm:ml-4 sm:mt-1.5">
+                    <div className="col-span-3 col-start-1 row-start-2 mt-3 border-l-2 border-slate-500/50 pl-3 prose prose-sm prose-invert max-w-none text-sm leading-relaxed text-slate-300 sm:col-span-1 sm:col-start-3 sm:ml-4 sm:mt-1.5">
                         <Markdown>{description}</Markdown>
                     </div>
                 )}

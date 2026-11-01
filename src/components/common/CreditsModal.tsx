@@ -152,7 +152,6 @@ const CreditsModal: React.FC<CreditsModalProps> = ({
             eyebrow="Credits"
             title={activePersonName}
             subtitle={personInfo?.knownForDepartment}
-            accent="blue"
             decoration={decoration}
             className="max-w-xl md:max-w-2xl max-h-[88vh]"
         >

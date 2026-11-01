@@ -4,18 +4,19 @@ import Highcharts from 'highcharts';
 //
 // Chart type, matched to the profile page's: labels in small-caps sans, figures
 // in serif. Highcharts draws to SVG and can't see Tailwind, so the slates the
-// rest of the page uses are spelled out here.
+// rest of the page uses (the @theme block in index.css) are spelled out here.
 export const SANS = 'Inter, sans-serif';
 export const SERIF = 'Georgia, Gelasio, serif';
-export const SLATE_100 = '#f1f5f9';
-export const SLATE_300 = '#cbd5e1';
-export const SLATE_400 = '#94a3b8';
-export const SLATE_500 = '#64748b';
-export const SLATE_600 = '#475569';
+export const SLATE_100 = '#f2f5f8';
+export const SLATE_300 = '#ccd5e0';
+export const SLATE_400 = '#93a1b4';
+export const SLATE_500 = '#657489';
+export const SLATE_600 = '#485567';
+export const SLATE_800 = '#1f2939';
 // The page background (index.css). Slice borders in this color read as gaps.
 export const PAGE_BG = '#0f172b';
 // slate-600 at the opacity the stat cards' rules use.
-export const RULE = 'rgba(71, 85, 105, 0.4)';
+export const RULE = 'rgba(72, 85, 103, 0.4)';
 export const COPPER = '#b76e41';
 
 export const SMALL_CAPS: Highcharts.CSSObject = {
@@ -40,13 +41,13 @@ export const escapeHtml = (text: string): string =>
  * and an optional serif-italic note (a film title).
  *
  * The whole card is drawn here in HTML rather than by Highcharts' SVG box (see
- * TOOLTIP_CARD), so it can have a real shadow, the modal's faint ring, and an
- * accent-lit top edge — the hairline the page's cards carry, here in the hovered
- * slice or line's own color so the tooltip reads as belonging to it.
+ * TOOLTIP_CARD), so it can have a real shadow, the modal's faint ring, and a top
+ * rule in the hovered slice or line's own color, so the tooltip reads as belonging
+ * to it.
  */
 export const tooltipCard = (label: string, figure: string, accent: string, note?: string): string =>
-    `<div style="position:relative;overflow:hidden;min-width:120px;padding:10px 14px;border-radius:8px;background:rgba(30,41,59,0.94);box-shadow:0 12px 28px -8px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)">` +
-    `<span style="position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(to right,transparent,${accent},transparent)"></span>` +
+    `<div style="position:relative;overflow:hidden;min-width:120px;padding:10px 14px;border-radius:8px;background:rgba(31,41,57,0.94);box-shadow:0 12px 28px -8px rgba(0,0,0,0.65),0 0 0 1px rgba(255,255,255,0.07);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)">` +
+    `<span style="position:absolute;left:0;right:0;top:0;height:1px;background:${accent}"></span>` +
     `<div style="font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:${SLATE_400}">${escapeHtml(label)}</div>` +
     `<div style="margin-top:4px;font-family:${SERIF};font-size:18px;line-height:1.1;color:${SLATE_100}">${figure}</div>` +
     (note

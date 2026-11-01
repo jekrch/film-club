@@ -5,9 +5,9 @@ import type { WallEventKind } from '../../utils/wallUtils';
  * What each kind of wall event is drawn in.
  *
  * These are the site's existing semantics, applied rather than invented (see
- * `common/accents.ts`): blue is club fact, so a screening is blue; emerald is a
+ * `common/accents.ts`): blue is club fact, so a screening is blue; neutral is a
  * member's own voice, so a film they logged — which carries their score and
- * their review and nobody else's — is emerald, and so is a late review of a club
+ * their review and nobody else's — is neutral, and so is a late review of a club
  * film, which is that same voice; amber is awards and curation, so
  * a trophy and a list are both amber. That last pair sharing a color is
  * deliberate. A fifth tint would say the two are as different from each other as
@@ -20,8 +20,8 @@ import type { WallEventKind } from '../../utils/wallUtils';
  */
 export const KIND_ACCENT: Record<WallEventKind, CardAccent> = {
     'club-watch': 'blue',
-    log: 'emerald',
-    'late-review': 'emerald',
+    log: 'neutral',
+    'late-review': 'neutral',
     list: 'amber',
     trophy: 'amber',
 };
@@ -32,7 +32,7 @@ export const KIND_ACCENT: Record<WallEventKind, CardAccent> = {
  * see a class name it didn't find in the source, so these are static maps.
  */
 export const NODE_CLASS: Record<CardAccent, string> = {
-    emerald: 'ring-emerald-400/25 bg-emerald-400/[0.07] text-emerald-400/80',
+    neutral: 'ring-slate-400/25 bg-slate-400/[0.07] text-slate-400',
     blue: 'ring-blue-400/25 bg-blue-400/[0.07] text-blue-400/80',
     amber: 'ring-amber-400/25 bg-amber-400/[0.07] text-amber-400/80',
     rose: 'ring-rose-400/25 bg-rose-400/[0.07] text-rose-400/80',
@@ -47,7 +47,7 @@ export const NODE_CLASS: Record<CardAccent, string> = {
  * of itself, and here it has to hold one around a picture.
  */
 export const NODE_PHOTO_CLASS: Record<CardAccent, string> = {
-    emerald: 'ring-emerald-400/40 hover:ring-emerald-400/80',
+    neutral: 'ring-slate-400/40 hover:ring-slate-400/80',
     blue: 'ring-blue-400/40 hover:ring-blue-400/80',
     amber: 'ring-amber-400/40 hover:ring-amber-400/80',
     rose: 'ring-rose-400/40 hover:ring-rose-400/80',
@@ -78,7 +78,7 @@ export const CLUB_PICK_NODE_CLASS = 'ring-blue-400/50 bg-blue-400/[0.15] text-bl
  * would read as three things stacked rather than as one event.
  */
 export const ROW_HOVER_CLASS: Record<CardAccent, string> = {
-    emerald: 'group-hover:border-emerald-500/25',
+    neutral: 'group-hover:border-slate-400/25',
     blue: 'group-hover:border-blue-500/25',
     amber: 'group-hover:border-amber-500/25',
     rose: 'group-hover:border-rose-500/25',
@@ -86,7 +86,7 @@ export const ROW_HOVER_CLASS: Record<CardAccent, string> = {
 
 /** The date caption picking up the accent as the row is hovered. */
 export const DATE_HOVER_CLASS: Record<CardAccent, string> = {
-    emerald: 'group-hover:text-emerald-300/80',
+    neutral: 'group-hover:text-slate-300/80',
     blue: 'group-hover:text-blue-300/80',
     amber: 'group-hover:text-amber-300/80',
     rose: 'group-hover:text-rose-300/80',

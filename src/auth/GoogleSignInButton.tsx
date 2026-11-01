@@ -21,7 +21,7 @@ import { initGoogleIdentity } from './gis';
  * iframe is theirs, and no stylesheet of ours crosses that boundary.
  *
  * `filled_black` is the dark treatment — #202124 face, white label, the
- * four-colour mark. It is a warm neutral next to the site's cool slate rather
+ * four-colour mark. It is a flat grey next to the site's blue-tinted dark rather
  * than a match for it, and Google gives no way to close that gap: what is inside
  * the iframe is theirs. The alternative, `outline`, is a white slab on a dark
  * page, which is louder than a sign-in row wants to be.

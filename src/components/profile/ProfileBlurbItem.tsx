@@ -2,8 +2,6 @@ import PopcornRating from '../common/PopcornRating';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import CollapsibleContent from '../common/CollapsableContent';
-import AccentCard from '../common/AccentCard';
-import QuoteMarkIcon from '../common/QuoteMarkIcon';
 
 export interface ProfileReviewBlurb {
     filmId: string;
@@ -62,14 +60,7 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                     )}
                 </div>
 
-                {/* Watermarked with the film poster — on a profile the film is the varying subject */}
-                <AccentCard
-                    accent="emerald"
-                    surface="inset"
-                    watermarkSrc={blurbItem.filmPoster}
-                    className="mt-2 px-4 pb-3 pt-3.5"
-                >
-                    <QuoteMarkIcon className="mb-1.5 h-5 w-5 text-emerald-400/50" />
+                <div className="mt-2 border-l-2 border-slate-500/50 pl-3">
                     <CollapsibleContent
                         buttonSize="sm"
                         lineClamp={3}
@@ -77,7 +68,7 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                     >
                         {blurbItem.blurb}
                     </CollapsibleContent>
-                </AccentCard>
+                </div>
             </div>
         </div>
     );

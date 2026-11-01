@@ -28,9 +28,8 @@ const MemberSection: React.FC<{ title: string; members: TeamMember[] }> = ({ tit
                     to={`/profile/${encodeURIComponent(member.name)}`}
                     className="group block h-full"
                 >
-                    {/* No edge: one card per member, repeating in a grid */}
                     <AccentCard
-                        edge={false}
+                        surface="card"
                         className="h-full"
                         contentClassName="flex h-full flex-col items-center p-5 text-center"
                     >
@@ -117,8 +116,7 @@ const AboutPage: React.FC = () => {
             <MemberSection title="Committee" members={committee} />
             <MemberSection title="Friends of the Club" members={friends} />
 
-            {/* Attribution is a qualifier on the data, so it takes the amber accent. */}
-            <AccentCard accent="amber" className="p-6 md:p-8">
+            <AccentCard>
                 <h2 className="text-xl font-bold text-slate-100 mb-5 border-b border-slate-700/60 pb-3">
                     Data &amp; Attribution
                 </h2>

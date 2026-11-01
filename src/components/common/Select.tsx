@@ -21,7 +21,7 @@ interface SelectProps {
 
 /**
  * Custom, fully-styled dropdown that replaces the native <select> so the
- * option panel matches the app's austere slate aesthetic. Keyboard
+ * option panel matches the app's austere dark aesthetic. Keyboard
  * accessible (arrow keys, Home/End, Enter/Space, Escape, type-ahead) and
  * closes on outside click.
  */

@@ -42,7 +42,7 @@ const FilmsPage = () => {
         <PageLayout>
             <div className="text-3xl text-slate-300 mb-8">Film Collection</div>
 
-            <AccentCard key={'search-card'} accent="blue" className="p-6 mb-8 text-sm">
+            <AccentCard key={'search-card'} className="mb-8 text-sm">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
                         <label

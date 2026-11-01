@@ -25,7 +25,6 @@ const TrailerModal: React.FC<TrailerModalProps> = ({ isOpen, onClose, trailerKey
         title={`${title} trailer`}
         hideHeader
         className="max-w-3xl"
-        accent="blue"
     >
         <div className="relative w-full aspect-video bg-black">
             <iframe

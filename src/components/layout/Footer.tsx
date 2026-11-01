@@ -48,9 +48,8 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Right section - Team Members. The emerald dot is the same one the
-              film cards put before a selector's name — emerald is the club's
-              member-voice accent, so it ties the two together. */}
+                    {/* Right section - Team Members. The dot is the same one the film
+              cards put before a selector's name, which ties the two together. */}
                     <div>
                         <h3 className={HEADING_CLASS}>Team Members</h3>
                         <div className="grid grid-cols-2 gap-2">
@@ -60,7 +59,7 @@ const Footer = () => {
                                     to={`/profile/${member.name}`}
                                     className={`group inline-flex items-center gap-1.5 ${LINK_CLASS}`}
                                 >
-                                    <span className="h-1 w-1 flex-shrink-0 rounded-full bg-emerald-400/50 transition-colors duration-200 group-hover:bg-emerald-400" />
+                                    <span className="h-1 w-1 flex-shrink-0 rounded-full bg-slate-400/60 transition-colors duration-200 group-hover:bg-blue-400" />
                                     {member.name}
                                 </Link>
                             ))}

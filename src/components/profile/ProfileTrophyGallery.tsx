@@ -31,31 +31,25 @@ const ProfileTrophyGallery = ({ memberName, films }: ProfileTrophyGalleryProps) 
 
     return (
         <AccentCard
-            accent="amber"
-            className="p-6 md:p-10 mb-8"
-            decoration={
-                <TrophyEmblem className="-right-10 -top-10 h-72 w-72 group-hover/card:text-amber-400/[0.12]" />
-            }
+            className="mb-12"
+            decoration={<TrophyEmblem className="right-0 top-0 h-72 w-72" />}
         >
             <div className="flex items-center gap-3 mb-6">
                 <TrophyIcon className="h-5 w-5 text-amber-400/80" />
                 <h4 className="text-xl font-bold text-slate-100">Trophy Shelf</h4>
-                <span className="h-px flex-grow bg-gradient-to-r from-amber-400/25 via-slate-700/60 to-transparent" />
+                <span className="h-px flex-grow bg-slate-700/60" />
                 <span className="text-sm text-slate-400 whitespace-nowrap">
                     {trophies.length} award{trophies.length !== 1 ? 's' : ''}
                 </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="divide-y divide-slate-700/60">
                 {groups.map((group) => {
                     const Icon = resolveTrophyIcon(group.award);
                     return (
-                        <div
-                            key={group.award.toLowerCase()}
-                            className="group/tile rounded-xl border border-slate-600/30 bg-slate-700/25 p-4 transition-colors duration-200 hover:border-amber-500/25 hover:bg-slate-700/40"
-                        >
+                        <div key={group.award.toLowerCase()} className="py-4">
                             <div className="mb-3 flex items-center gap-3">
-                                <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-amber-400/10 text-amber-400/80 ring-1 ring-amber-400/15 transition-colors duration-200 group-hover/tile:text-amber-300">
+                                <span className="flex-shrink-0 text-amber-400/80">
                                     <Icon className="h-5 w-5" />
                                 </span>
                                 <h5 className="min-w-0 flex-grow font-medium leading-snug text-slate-200">

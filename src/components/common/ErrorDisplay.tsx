@@ -37,7 +37,7 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center bg-slate-900 text-slate-300 min-h-[calc(100vh-200px)]">
             {/* Error message box */}
             <div
-                className="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded relative mb-6 inline-block shadow"
+                className="bg-rose-900 border border-rose-700 text-rose-200 px-4 py-3 rounded relative mb-6 inline-block shadow"
                 role="alert"
             >
                 <strong className="font-bold block sm:inline">Error: </strong>

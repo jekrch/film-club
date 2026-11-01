@@ -48,7 +48,7 @@ export const PopcornPodDisclaimer: React.FC = () => (
 
 /**
  * A ribbon folded around the poster's top-left corner — the "Up Next" sash in
- * concession amber rather than the club's emerald: same -45deg rake, same
+ * concession amber rather than jade: same -45deg rake, same
  * tucked-under tails, same swell on hover. Sitting on the corner rather than
  * across the middle leaves the artwork readable while still being the first
  * thing the eye lands on.

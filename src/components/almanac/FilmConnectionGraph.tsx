@@ -33,7 +33,6 @@ import {
 import { Film } from '../../types/film';
 import ChartContainer from './ChartContainer';
 import Button from '../common/Button';
-import { ACCENT_EDGE, ACCENT_EDGE_BASE } from '../common/accents';
 import CreditsModal from '../common/CreditsModal';
 import { getAllFilmCreditsForPerson, PersonCredit } from '../../utils/filmUtils';
 
@@ -502,7 +501,7 @@ function ConnectionEdge({
                     // Inline because the stroke scales continuously with weight.
                     stroke: lit
                         ? 'rgba(147, 197, 253, 0.85)'
-                        : `rgba(148, 163, 184, ${0.35 + normalised * 0.3})`,
+                        : `rgba(147, 161, 180, ${0.35 + normalised * 0.3})`,
                     strokeWidth: (1.25 + normalised * 2 + (selected || hovered ? 0.75 : 0)) * scale,
                     strokeLinecap: 'round',
                     opacity: dimmed ? 0.25 : 1,
@@ -649,7 +648,7 @@ function ConnectionDetailPanel({
     const count = detail.sharedCredits.length;
     return (
         // Floats over the canvas, so it takes the Modal panel's surface: solid
-        // fill, light border and the accent-lit top edge.
+        // fill and light border.
         <div
             className={classNames(
                 'absolute inset-x-3 bottom-3 z-20 flex max-h-[calc(100%-1.5rem)] flex-col overflow-hidden rounded-xl',
@@ -657,8 +656,6 @@ function ConnectionDetailPanel({
                 'animate-fadeIn sm:left-1/2 sm:right-auto sm:w-[26rem] sm:-translate-x-1/2'
             )}
         >
-            <span className={classNames(ACCENT_EDGE_BASE, ACCENT_EDGE.blue)} aria-hidden="true" />
-
             <div className="flex items-center gap-2.5 pl-4 pr-2 pt-2.5">
                 <h4 className="text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">
                     <span className="mr-1 font-serif text-sm normal-case tracking-normal tabular-nums text-slate-200">
@@ -1015,7 +1012,7 @@ const FilmConnectionGraph: React.FC<FilmConnectionGraphProps> = ({ films, classN
                     >
                         <Background
                             variant={BackgroundVariant.Dots}
-                            color="rgba(148, 163, 184, 0.18)"
+                            color="rgba(147, 161, 180, 0.18)"
                             gap={24}
                             size={1}
                         />
