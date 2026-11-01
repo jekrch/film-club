@@ -4587,6 +4587,132 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0089885": {
+    "imdbID": "tt0089885",
+    "title": "Re-Animator",
+    "year": "1985",
+    "poster": "https://m.media-amazon.com/images/M/MV5BZGZhYzk5MDEtOTc2Yi00ZTAyLWI1MjctZDYzYzhmNzgyZThlXkEyXkFqcGc@._V1_QL75_UX380_CR0,11,380,562_.jpg",
+    "runtime": "84 min",
+    "genre": "Comedy, Horror, Sci-Fi",
+    "director": "Stuart Gordon",
+    "writer": "H.P. Lovecraft, Dennis Paoli, William Norris",
+    "imdbRating": "7.1",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.1/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "73/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "wLJ8Z3PDEGU",
+    "tagline": "Herbert West has a good head on his shoulders...and another one on his desk.",
+    "plot": "Conducting clandestine experiments within the morgue at Miskatonic University, scientist Herbert West reveals to a fellow graduate student his groundbreaking work concerning the re-animation of fresh corpses.",
+    "cast": [
+      {
+        "name": "Jeffrey Combs",
+        "character": "Herbert West",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/dfWcxKNsyGuN18GjWkbOmMhO4c9.jpg",
+        "tmdbId": 27993
+      },
+      {
+        "name": "Bruce Abbott",
+        "character": "Dan Cain",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9a2ve1mVCCEeO9GTR55UlC566wD.jpg",
+        "tmdbId": 27994
+      },
+      {
+        "name": "Barbara Crampton",
+        "character": "Megan Halsey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AaLIWSrUgHIESuJEh6w7UD5RzV4.jpg",
+        "tmdbId": 27995
+      },
+      {
+        "name": "David Gale",
+        "character": "Dr. Carl Hill",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8mv679cVSyqvbZkkPX38EJUWxk1.jpg",
+        "tmdbId": 27996
+      },
+      {
+        "name": "Robert Sampson",
+        "character": "Dean Alan Halsey",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9vKQtyPmAkthF0Fr2dQSJXy5uGa.jpg",
+        "tmdbId": 22048
+      },
+      {
+        "name": "Carolyn Purdy-Gordon",
+        "character": "Dr. Harrod",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/rkNC80zwfLwDAb23eXZuyZO0JOO.jpg",
+        "tmdbId": 37028
+      },
+      {
+        "name": "Peter Kent",
+        "character": "Melvin the Re-Animated",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/el1868cXV8Byu4uAUPkOrkIu9wd.jpg",
+        "tmdbId": 37029
+      },
+      {
+        "name": "Ian Patrick Williams",
+        "character": "Swiss Professor",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/2GkjmbqE7yGgJsQYULkXFG2yHTC.jpg",
+        "tmdbId": 34986
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/xxBV7ZyywpBBEdQbuen7Rp3RIIp.jpg",
+      "https://image.tmdb.org/t/p/w1280/uIcGKM2jnjHF0wXUxAvKdBlajdC.jpg",
+      "https://image.tmdb.org/t/p/w1280/ogojPeWqjHBVUGCPGhfMxyQJLZ7.jpg",
+      "https://image.tmdb.org/t/p/w1280/plJPbHjiLXIcR3FxnJwciavRQR0.jpg",
+      "https://image.tmdb.org/t/p/w1280/gT6Vun2nXa38ssvNRLVA8DvIdDB.jpg",
+      "https://image.tmdb.org/t/p/w1280/xeEVgi5wsrF2KDmU0SRM1QmHPkh.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Stuart Gordon",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9LZpmQx9pwgFInRbbAFEkyUMGlc.jpg",
+        "tmdbId": 27991
+      },
+      {
+        "name": "William Norris",
+        "job": "Writer",
+        "profileUrl": null,
+        "tmdbId": 1697636
+      },
+      {
+        "name": "Dennis Paoli",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/c7Xr94R6QSntsi6OFg0RqKdtcnN.jpg",
+        "tmdbId": 58046
+      },
+      {
+        "name": "Stuart Gordon",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9LZpmQx9pwgFInRbbAFEkyUMGlc.jpg",
+        "tmdbId": 27991
+      },
+      {
+        "name": "H.P. Lovecraft",
+        "job": "Story",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vOGKvnqADcJwRRmVeGdbc7HWK7s.jpg",
+        "tmdbId": 67054
+      },
+      {
+        "name": "Mac Ahlberg",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/a1BF9YiCGQ66Mncin2UmYi1g2iN.jpg",
+        "tmdbId": 4614
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0090756": {
     "imdbID": "tt0090756",
     "title": "Blue Velvet",
