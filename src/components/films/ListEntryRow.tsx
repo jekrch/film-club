@@ -70,9 +70,9 @@ interface EntryRowProps {
 }
 
 /**
- * An editable row. Deliberately not `RankedListItem`: every element of that one
- * is a link to the film, and a stray click on a poster would navigate away from
- * a draft that hasn't been saved.
+ * An editable row. Deliberately not `RankedListItem`: that one's title is a link
+ * to the film, as is its poster when it has no details to open, and a stray click
+ * on either would navigate away from a draft that hasn't been saved.
  *
  * Dragging is bound to the handle rather than the row (`dragListener={false}`),
  * so selecting text in the note textarea can't start a reorder.

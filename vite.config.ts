@@ -191,9 +191,7 @@ export default defineConfig({
                         },
                     },
                     {
-                        // Cache Google Fonts (if you were fetching them from Google's CDN directly via CSS)
-                        // Your current setup uses local fonts in `src/fonts.css` which will be covered by globPatterns.
-                        // This is an example if you had external font requests.
+                        // Cache the Google Fonts stylesheet and files that index.html loads.
                         urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
                         handler: 'CacheFirst',
                         options: {

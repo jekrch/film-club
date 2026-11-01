@@ -4,10 +4,8 @@ coverage
 node_modules
 worker/node_modules
 
-# Lockfiles are generated. `package-lock.json` is also stale — this project
-# uses Bun, and `bun.lock` is the live one.
+# Generated.
 bun.lock
-package-lock.json
 
 # Every JSON under assets is data, not source. Most of it is written by the
 # editing worker via `JSON.stringify(data, null, 2)` + trailing newline

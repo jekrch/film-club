@@ -216,7 +216,7 @@ const Modal: React.FC<ModalProps> = ({
                                     {eyebrow}
                                 </p>
                             )}
-                            {/* Merriweather ships 400 and 700 only, and
+                            {/* Georgia ships 400 and 700 only, and
                                 `font-synthesis: none` means anything between is
                                 a lie — so the serif title carries its weight
                                 through size and color instead. */}

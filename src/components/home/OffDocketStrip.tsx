@@ -60,7 +60,7 @@ const OffDocketStrip: React.FC<{ notes: OffDocketNote[] }> = ({ notes }) => {
                         {note.member}
                         <span className="sr-only">: </span>
                     </span>
-                    <span className="truncate font-[family-name:Merriweather,serif] text-xs italic text-slate-300 transition-colors duration-200 group-hover:text-slate-100 group-focus-visible:text-slate-100">
+                    <span className="truncate font-serif text-xs italic text-slate-300 transition-colors duration-200 group-hover:text-slate-100 group-focus-visible:text-slate-100">
                         {note.subject}
                     </span>
                     {note.more > 0 && (

@@ -135,7 +135,8 @@ describe('useAlmanacCharts runtime and genre categories', () => {
         const { result } = renderHook(() => useAlmanacCharts(films));
         act(() => result.current.setSelectedCategory('genre'));
 
-        const other = mobileBars(result.current.donutChartOptions).at(-1)!;
+        const bars = mobileBars(result.current.donutChartOptions);
+        const other = bars[bars.length - 1];
         expect(other).toMatchObject({ name: 'Other', y: 1 });
         clickBar(result.current.handleCategoryClick, 'Other');
         expect(result.current.filteredFilmsForPieSlice).toHaveLength(1);

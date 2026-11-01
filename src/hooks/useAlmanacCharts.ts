@@ -444,7 +444,7 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
                             chart: { type: 'bar', height: calculatedHeight },
                             xAxis: {
                                 categories: mobileBarData.map((d) => d.name || ''),
-                                title: { text: null },
+                                title: { text: undefined },
                                 labels: { style: SMALL_CAPS },
                                 lineColor: RULE,
                                 tickColor: RULE,

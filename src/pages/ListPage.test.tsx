@@ -109,6 +109,17 @@ describe('ListPage', () => {
         expect(screen.getByTitle(/Andy's score: 7.5\/9 \(on this list\)/)).toBeInTheDocument();
     });
 
+    it("opens a film's details from its poster, and links out from one with none to open", () => {
+        renderAt('andy-top-horror');
+        expect(
+            screen.getByRole('img', { name: `${filmData[0].title} poster` }).closest('button')
+        ).toHaveAttribute('aria-expanded', 'false');
+
+        expect(
+            screen.getByRole('img', { name: 'A Cached Film poster' }).closest('a')
+        ).toHaveAttribute('href', 'https://www.imdb.com/title/tt9999999/');
+    });
+
     it('shows an error for an unknown list id', () => {
         renderAt('does-not-exist');
         expect(screen.getByRole('alert')).toHaveTextContent(/not found/i);

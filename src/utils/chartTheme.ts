@@ -6,7 +6,7 @@ import Highcharts from 'highcharts';
 // in serif. Highcharts draws to SVG and can't see Tailwind, so the slates the
 // rest of the page uses are spelled out here.
 export const SANS = 'Inter, sans-serif';
-export const SERIF = 'Merriweather, serif';
+export const SERIF = 'Georgia, Gelasio, serif';
 export const SLATE_100 = '#f1f5f9';
 export const SLATE_300 = '#cbd5e1';
 export const SLATE_400 = '#94a3b8';

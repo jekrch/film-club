@@ -167,7 +167,7 @@ export const useCalendarHeatmap = (films: Film[]): UseCalendarHeatmapReturn => {
                 categories: years.map(String),
                 // Oldest year on top, reading down like a calendar.
                 reversed: true,
-                title: { text: null },
+                title: { text: undefined },
                 labels: { style: FIGURES },
                 gridLineWidth: 0,
             },
