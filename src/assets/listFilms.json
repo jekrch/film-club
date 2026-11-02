@@ -2337,6 +2337,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0050894": {
+    "imdbID": "tt0050894",
+    "title": "The Revenge of Frankenstein",
+    "year": "1958",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDI4MmZhZDYtNzkyOC00NzhhLTkxN2EtMWY2YTEyNGE3ZmIxXkEyXkFqcGc@._V1_QL75_UX380_CR0,6,380,562_.jpg",
+    "runtime": "90 min",
+    "genre": "Horror, Sci-Fi",
+    "director": "Terence Fisher",
+    "writer": "Jimmy Sangster, Hurford Janes, George Baxt",
+    "imdbRating": "6.7",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.7/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "87%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "68/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "_nkd3AlNug8",
+    "tagline": "The Terror Rises Again.",
+    "plot": "Rescued from the guillotine by his devoted dwarf Fritz, the Baron relocates to Carlsbruck, where he continues his gruesome experiments.",
+    "cast": [
+      {
+        "name": "Peter Cushing",
+        "character": "Dr. Victor Stein",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/if5g03wn6uvHx7F6FxXHLebKc0q.jpg",
+        "tmdbId": 5
+      },
+      {
+        "name": "Francis Matthews",
+        "character": "Dr. Hans Kleve",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7Zuiry4LXzPeKDCLTQs029LpnvX.jpg",
+        "tmdbId": 30704
+      },
+      {
+        "name": "Eunice Gayson",
+        "character": "Margaret Conrad",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mi4fyZeIn1PG065kt4i3sqSb32T.jpg",
+        "tmdbId": 9877
+      },
+      {
+        "name": "Michael Gwynn",
+        "character": "Karl",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pyklvVKyfDM1JVD1LSVrIu5U05y.jpg",
+        "tmdbId": 30705
+      },
+      {
+        "name": "John Welsh",
+        "character": "Bergman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ulZ0z1Tbs8rKzGGNadjkiBXqMr6.jpg",
+        "tmdbId": 12816
+      },
+      {
+        "name": "Lionel Jeffries",
+        "character": "Fritz",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xWSvHUHofPDlVgiJPk4S8qyonWL.jpg",
+        "tmdbId": 30706
+      },
+      {
+        "name": "Oscar Quitak",
+        "character": "Dwarf",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kzkoHc7ZQW449NKNxCwpkMZT6c5.jpg",
+        "tmdbId": 30707
+      },
+      {
+        "name": "Richard Wordsworth",
+        "character": "Up Patient",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ymq6SEtwzBBMeXTsOijFSM5JRvS.jpg",
+        "tmdbId": 30708
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/mnHVOgE2JbAyLYtMJ8z064KiE9P.jpg",
+      "https://image.tmdb.org/t/p/w1280/6AoqlNIjbiCLhJ3LU374PLQ3Y7m.jpg",
+      "https://image.tmdb.org/t/p/w1280/gW82B1O31J8ryzHIEeJBAOG9RFo.jpg",
+      "https://image.tmdb.org/t/p/w1280/oEcfaN2GMsbew75W0ZtSiVemRyp.jpg",
+      "https://image.tmdb.org/t/p/w1280/uYkRhx99msTSz5MTReoF5siEkJ1.jpg",
+      "https://image.tmdb.org/t/p/w1280/4fuKgS6n6yH9eMMYxGC8kXCvnST.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Terence Fisher",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cigdIPxmq839x0tID9BwK5CREBc.jpg",
+        "tmdbId": 29662
+      },
+      {
+        "name": "Jimmy Sangster",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oDLQFovGVoTMyVjjTDKOAdvJYFr.jpg",
+        "tmdbId": 30700
+      },
+      {
+        "name": "Jack Asher",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mgQU6wdIU5fd5dIXc2Pwzn3LC8h.jpg",
+        "tmdbId": 29667
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0053925": {
     "imdbID": "tt0053925",
     "title": "House of Usher",
