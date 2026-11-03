@@ -101,7 +101,14 @@
       }
     },
     "tt0057495": {
-      "ratings": {},
+      "ratings": {
+        "jacob": {
+          "score": 4,
+          "scoreAddedAt": "2026-11-03T05:19:56Z",
+          "updatedBy": "Jacob",
+          "updatedAt": "2026-11-03T05:19:56Z"
+        }
+      },
       "film": {
         "selector": "Andy",
         "poster": "https://s3.amazonaws.com/criterion-production/films/655fa066ac6fb4c96d560667e9459fd0/8nYRqrpwiqf90Uwvh0SI7wzA0vnfcX_large.jpg",
