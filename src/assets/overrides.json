@@ -113,6 +113,12 @@
           "scoreAddedAt": "2026-11-03T05:20:41Z",
           "updatedBy": "Jacob",
           "updatedAt": "2026-11-03T05:20:41Z"
+        },
+        "andy": {
+          "score": 4,
+          "scoreAddedAt": "2026-11-03T05:20:51Z",
+          "updatedBy": "Jacob",
+          "updatedAt": "2026-11-03T05:20:51Z"
         }
       },
       "film": {
