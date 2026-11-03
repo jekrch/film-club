@@ -17292,7 +17292,7 @@
     ],
     "movieClubInfo": {
       "selector": "Andy",
-      "watchDate": null,
+      "watchDate": "11/02/2026",
       "clubRatings": [
         {
           "user": "jacob",
