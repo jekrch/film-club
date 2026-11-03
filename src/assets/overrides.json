@@ -119,6 +119,12 @@
           "scoreAddedAt": "2026-11-03T05:20:51Z",
           "updatedBy": "Jacob",
           "updatedAt": "2026-11-03T05:20:51Z"
+        },
+        "joey": {
+          "score": 3,
+          "scoreAddedAt": "2026-11-03T05:21:27Z",
+          "updatedBy": "Jacob",
+          "updatedAt": "2026-11-03T05:21:27Z"
         }
       },
       "film": {
