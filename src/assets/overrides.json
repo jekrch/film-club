@@ -205,6 +205,20 @@
           "updatedAt": "2026-10-31T02:50:46Z"
         }
       }
+    },
+    "tt0093342": {
+      "ratings": {},
+      "film": {
+        "selector": "Gabe",
+        "updatedBy": "Jacob",
+        "updatedAt": "2026-11-03T05:23:13Z"
+      },
+      "added": {
+        "addedBy": "Jacob",
+        "addedAt": "2026-11-03T05:23:13Z",
+        "title": "Where Is the Friend's House?",
+        "year": "1987"
+      }
     }
   }
 }
