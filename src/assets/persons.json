@@ -1949,6 +1949,16 @@
     "profileUrl": null,
     "tmdbId": 1192603
   },
+  "119294": {
+    "biography": "Abbas Kiarostami (Persian: عباس کیارستمی [ʔæbˌbɒːs kijɒːɾostæˈmi] ; June 22, 1940 – July 4, 2016) was an Iranian film director, screenwriter, poet, photographer, and film producer. An active filmmaker from 1970, Kiarostami had been involved in the production of over forty films, including shorts and documentaries. Kiarostami attained critical acclaim for directing the Koker trilogy (1987–1994), Close-Up (1990), The Wind Will Carry Us (1999), and Taste of Cherry (1997), which was awarded the Palme d'Or at the Cannes Film Festival that year. In later works, Certified Copy (2010) and Like Someone in Love (2012), he filmed for the first time outside Iran: in Italy and Japan, respectively. His films Where Is the Friend's Home? (1987), Close-Up, and The Wind Will Carry Us were ranked among the 100 best foreign films in a 2018 critics' poll by BBC Culture. Close-Up was also ranked one of the 50 greatest movies of all time in the famous decennial Sight & Sound poll conducted in 2012.\n\nKiarostami had worked extensively as a screenwriter, film editor, art director, and producer and had designed credit titles and publicity material. He was also a poet, photographer, painter, illustrator, and graphic designer. He was part of a generation of filmmakers in the Iranian New Wave, a Persian cinema movement that started in the late 1960s and emphasized the use of poetic dialogue and allegorical storytelling dealing with political and philosophical issues.\n\nKiarostami had a reputation for using child protagonists, for documentary-style narrative films, for stories that take place in rural villages, and for conversations that unfold inside cars, using stationary mounted cameras. He is also known for his use of Persian poetry in the dialogue, titles, and themes of his films. Kiarostami's films contain a notable degree of ambiguity, an unusual mixture of simplicity and complexity, and often a mix of fictional and documentary elements. The concepts of change and continuity, in addition to the themes of life and death, play a major role in Kiarostami's works.\n\nDescription above from the Wikipedia article Abbas Kiarostami, licensed under CC-BY-SA, full list of contributors on Wikipedia.",
+    "birthday": "1940-06-22",
+    "deathday": "2016-07-04",
+    "knownForDepartment": "Directing",
+    "name": "Abbas Kiarostami",
+    "placeOfBirth": "Tehran, Iran",
+    "profileUrl": "https://image.tmdb.org/t/p/w185/rTlz5ciu41FxyVuXA82a3tSYVZ8.jpg",
+    "tmdbId": 119294
+  },
   "119454": {
     "biography": "Cheung Wing-Fat (Chinese: 蔣榮發), nicknamed Mars (火星), was a Hong Kong actor and stuntman. He was as a member of Madame Fan Fok-Fa's The Spring And Autumn Drama School's Peking Opera, as well as a member of Jackie Chan's Stuntmen Association.",
     "birthday": "1954-02-28",
@@ -3159,6 +3169,16 @@
     "profileUrl": "https://image.tmdb.org/t/p/w185/eQNps8pPE5hQ1QOK8tcIRQYVV2n.jpg",
     "tmdbId": 13568
   },
+  "1358323": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Costume & Make-Up",
+    "name": "Hassan Zahidi",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1358323
+  },
   "1360152": {
     "biography": "Tosin Cole (/ˈtoʊsɪn/) is a British actor. He is known for various roles in British television series and films. He began his on-screen career starring in The Cut and EastEnders: E20. He later secured a regular role as Neil Cooper in the soap opera Hollyoaks and Ryan Sinclair in Doctor Who. In 2024, Cole appeared in Netflix's Supacell in a lead role.\n\nDescription above from the Wikipedia article Tosin Cole, licensed under CC-BY-SA, full list of contributors on Wikipedia.",
     "birthday": "1992-07-23",
@@ -3838,6 +3858,56 @@
     "placeOfBirth": "Cincinnati, Ohio, USA",
     "profileUrl": "https://image.tmdb.org/t/p/w185/9XrbQfOjDeqjXJUHeSIA6OxJAJa.jpg",
     "tmdbId": 14312
+  },
+  "143153": {
+    "biography": "Babak Ahamadpour, born in 1977 (or 1356 in the Persian calender) in the village of Koker in Rudbar County, Gilan Province of Iran, is an Iranian boy who is very well known in Iranian cinema and cinephile circles as the main protagonist Ahmed Ahmadpour in Where Is The Friend’s directed by Abbas Kiarostami, which is widely considered one of the greatest films of Iranian and global cinema, alongside his brother named similarly Ahmad Ahamdpour who plays the character’s best friend Mohammad Reza Nematzadeh.  He grew up with almost no exposure to media, and later recalled, “we had never seen television or a camera, and did not even know what film was”. In late-1986, Kiarostami had been taking a trip to the village of Koker and had selected him and his brother as the two leads for his film. They had no prior acting experience before the film and the film would be their only lead roles. Babak later said they simply recited Kiarostami’s lines without knowing they would become a film. He described the whole process of making the film deeply surreal.  Part of what makes the film so loved is how natural the performances are.\n\nHe and his brother make brief background appearances in the final film of Abbas Kiarostami’s Koker Trilogy titled Through The Olive Trees. They were interviewed by Houman Baba-Nouruzi in the 2018 documentary Tree Of Life.",
+    "birthday": "1977-09-11",
+    "deathday": "2025-11-01",
+    "knownForDepartment": "Acting",
+    "name": "Babek Ahmadpour",
+    "placeOfBirth": "Koker, Rudbar County, Gilan Province, Iran",
+    "profileUrl": "https://image.tmdb.org/t/p/w185/jfOIUu4Q8HyB9qtbCbeGpKDZWK6.jpg",
+    "tmdbId": 143153
+  },
+  "143154": {
+    "biography": "Ahmad Ahmadpour, born around 1979, is famous in Iranian film and cinephile circles for his role as Mohamed Reza Nematzadeh in Abbas Kiarostami’s 1987 film Where Is The Friend’s House?, widely considered one of the greatest films ever made. He grew up in the village of Koker, Iran with little exposure to media along with his brother Babak Ahmadpour.",
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Ahmed Ahmadpour",
+    "placeOfBirth": "Koker, Rudbar County, Gilan Province, Iran",
+    "profileUrl": "https://image.tmdb.org/t/p/w185/uxQwlReRXb6FoPpp6ZKT52bQ13E.jpg",
+    "tmdbId": 143154
+  },
+  "143155": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Khodabakhsh Defai",
+    "placeOfBirth": null,
+    "profileUrl": "https://image.tmdb.org/t/p/w185/1aXIPt4h437zCfqjNHeKhDTuF8h.jpg",
+    "tmdbId": 143155
+  },
+  "143156": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Iran Outari",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 143156
+  },
+  "143157": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Ait Ansari",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 143157
   },
   "143230": {
     "biography": null,
@@ -5609,6 +5679,76 @@
     "profileUrl": "https://image.tmdb.org/t/p/w185/nraZoTzwJQPHspAVsKfgl3RXKKa.jpg",
     "tmdbId": 18897
   },
+  "1890073": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Sadika Taohidi",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1890073
+  },
+  "1890074": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Biman Mouafi",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1890074
+  },
+  "1890075": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Ali Djamali",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1890075
+  },
+  "1890076": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Aziz Babai",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1890076
+  },
+  "1890077": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Nader Ghoulami",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1890077
+  },
+  "1890078": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Akbar Mouradi",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1890078
+  },
+  "1890079": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Acting",
+    "name": "Teba Slimani",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 1890079
+  },
   "1892": {
     "biography": "Matthew Paige Damon (born October 8, 1970) is a multifaceted American actor, producer, and screenwriter. In 2007, he was highlighted as one of Forbes' most bankable stars, and by 2010, he emerged as one of the highest-grossing actors in cinematic history. His accolades include an Academy Award and two Golden Globe Awards, along with nominations for three BAFTA Awards and seven Primetime Emmy Awards.\n\nDamon's journey in acting began with *Mystic Pizza* in 1988, but it was in 1997 that he truly came into the limelight. Collaborating with Ben Affleck on *Good Will Hunting*, they not only starred in the film but also won the Academy Award for Best Original Screenplay as well as the Golden Globe for Best Screenplay. He solidified his reputation as a leading man through iconic roles, such as Tom Ripley in *The Talented Mr. Ripley*, Jason Bourne in the *Bourne* series, and Linus Caldwell in the *Ocean's* trilogy. His portrayal of an astronaut stranded on Mars in *The Martian* earned him a Golden Globe for Best Actor, and he has been part of various notable films, including *Saving Private Ryan*, *The Departed*, and *Ford v Ferrari*.\n\nOn the small screen, Damon played Scott Thorson in HBO's *Behind the Candelabra*, which garnered him an Emmy nomination. His guest appearances in *30 Rock* and hosting *Saturday Night Live* were also Emmy-nominated. Beyond acting, Damon has produced projects like *Project Greenlight* and *Manchester by the Sea*. He co-founded two production companies with Ben Affleck and has lent his voice to several animated and documentary projects. His philanthropic efforts span multiple organizations, including the One Campaign and Water.org.",
     "birthday": "1970-10-08",
@@ -6129,6 +6269,16 @@
     "profileUrl": "https://image.tmdb.org/t/p/w185/ciCglSZKfSbqzK6wiBk4Q5XPGTz.jpg",
     "tmdbId": 211077
   },
+  "2117741": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Camera",
+    "name": "Farhad Saba",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 2117741
+  },
   "2122662": {
     "biography": null,
     "birthday": null,
@@ -6278,6 +6428,16 @@
     "placeOfBirth": "Paris, France",
     "profileUrl": "https://image.tmdb.org/t/p/w185/yNhxilJd1QPGf1snqLtesAD7Z6M.jpg",
     "tmdbId": 21678
+  },
+  "2168771": {
+    "biography": null,
+    "birthday": null,
+    "deathday": null,
+    "knownForDepartment": "Sound",
+    "name": "Amine Allah Hessine",
+    "placeOfBirth": null,
+    "profileUrl": null,
+    "tmdbId": 2168771
   },
   "2169": {
     "biography": "From Wikipedia, the free encyclopedia.\n\nRobert Michael Jeter (August 26, 1952 – March 30, 2003) was an American character actor of film, stage, and television. His television roles included Herman Stiles on the sitcom Evening Shade from 1990 until 1994 and Mr. Noodle's brother, Mister Noodle on the Elmo's World segments of Sesame Street from 2000 until 2003. Jeter's film roles include Zelig, Tango & Cash, The Fisher King, Sister Act 2: Back in the Habit, Waterworld, Air Bud, Patch Adams, The Green Mile, Jurassic Park III, Welcome to Collinwood, Open Range, and The Polar Express.",
