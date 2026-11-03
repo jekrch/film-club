@@ -38,7 +38,18 @@ function assertFilmData(data: unknown): Film[] {
     return data as Film[];
 }
 
-export const filmData = assertFilmData(filmsData);
+/**
+ * Club films kept off the site for now without being deleted. They stay in the
+ * sheet, `overrides.json` and `films.json` with everything set on them, so
+ * bringing one back is deleting its line here.
+ */
+const HIDDEN_FILM_IDS = new Set<string>([
+    'tt0084516', // Poltergeist, the Halloween 2026 holiday pod
+]);
+
+export const filmData = assertFilmData(filmsData).filter(
+    (film) => !HIDDEN_FILM_IDS.has(film.imdbID)
+);
 
 // Interfaces related to component props
 export interface FilmListProps {
