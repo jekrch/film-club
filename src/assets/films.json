@@ -17293,7 +17293,14 @@
     "movieClubInfo": {
       "selector": "Andy",
       "watchDate": null,
-      "clubRatings": [],
+      "clubRatings": [
+        {
+          "user": "jacob",
+          "score": 4,
+          "blurb": null,
+          "scoreAddedAt": "2026-11-03T05:19:56Z"
+        }
+      ],
       "trophyInfo": null,
       "trophyNotes": null
     }
