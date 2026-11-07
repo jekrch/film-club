@@ -3237,6 +3237,110 @@
       }
     ]
   },
+  "tt0066858": {
+    "imdbID": "tt0066858",
+    "title": "The Boy Friend",
+    "year": "1971",
+    "poster": "https://m.media-amazon.com/images/M/MV5BOGUxZmFiZmMtYmM4ZC00MDk0LTk1M2UtNDNmOTY3YWQ2M2NhXkEyXkFqcGc@._V1_QL75_UX380_CR0,9,380,562_.jpg",
+    "runtime": "137 min",
+    "genre": "Comedy, Musical, Romance",
+    "director": "Ken Russell",
+    "writer": "Ken Russell, Sandy Wilson",
+    "imdbRating": "6.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "79%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "NQiR3l3lqJc",
+    "tagline": "A glittering super colossal heart warming toe-tapping continuously delightful musical extravaganza!",
+    "plot": "When the leading lady of a low-budget musical revue sprains her ankle, the assistant stage manager is forced to understudy and perform in her place.",
+    "cast": [
+      {
+        "name": "Twiggy",
+        "character": "Polly",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1D6V0PXnEsjPXIpPKWmWfQRkabt.jpg",
+        "tmdbId": 40092
+      },
+      {
+        "name": "Christopher Gable",
+        "character": "Tony",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/pZPJwn8eFcVWtLRPek1gpVm9cKX.jpg",
+        "tmdbId": 93325
+      },
+      {
+        "name": "Max Adrian",
+        "character": "Max",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xCU6ank4Z22ccltBgXjEGln9BE1.jpg",
+        "tmdbId": 77312
+      },
+      {
+        "name": "Bryan Pringle",
+        "character": "Percy",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/oOrBXDEC5NZEmCm2A9NT785Lemq.jpg",
+        "tmdbId": 22171
+      },
+      {
+        "name": "Murray Melvin",
+        "character": "Alphonse",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s9kz6einxqpufnMtjypeK1CIppB.jpg",
+        "tmdbId": 31722
+      },
+      {
+        "name": "Moyra Fraser",
+        "character": "Mme. Dubonnet",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/1A5ps8kqKQFUs0gaJDHQxxOAJBD.jpg",
+        "tmdbId": 117113
+      },
+      {
+        "name": "Georgina Hale",
+        "character": "Fay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/elEJol92JBxypUayYrYEzOvsKPY.jpg",
+        "tmdbId": 92434
+      },
+      {
+        "name": "Sally Bryant",
+        "character": "Nancy",
+        "profileUrl": null,
+        "tmdbId": 1660790
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/uv7TlTv7IXv8AEOiK2XgFBigYnS.jpg",
+      "https://image.tmdb.org/t/p/w1280/akHskpNknuomWtb7JMAibHDOx0k.jpg",
+      "https://image.tmdb.org/t/p/w1280/1NOUBFaTIkG31qgdUd8NiBHyf68.jpg",
+      "https://image.tmdb.org/t/p/w1280/gbZr3caSCgIQUfClcan926CKxlb.jpg",
+      "https://image.tmdb.org/t/p/w1280/bESbdnot49NOXC7Z7TJButqawdK.jpg",
+      "https://image.tmdb.org/t/p/w1280/kHFv6YZgO9IU1K8Dpc5rpn8LNTa.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Ken Russell",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hM5kaWhCsdZbl2NsHES3rWzt8xa.jpg",
+        "tmdbId": 32327
+      },
+      {
+        "name": "Ken Russell",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hM5kaWhCsdZbl2NsHES3rWzt8xa.jpg",
+        "tmdbId": 32327
+      },
+      {
+        "name": "David Watkin",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gQgs7HEjs2pYI7tm4oL4C6hf5EP.jpg",
+        "tmdbId": 10639
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0069427": {
     "imdbID": "tt0069427",
     "title": "Twins of Evil",
