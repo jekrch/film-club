@@ -807,6 +807,118 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0035258": {
+    "imdbID": "tt0035258",
+    "title": "Rings on Her Fingers",
+    "year": "1942",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYzgyNmY2NTUtNmY5Yi00ZGU3LTk0ZjktZjBlNTI1YzMyNzU2XkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "86 min",
+    "genre": "Comedy, Crime, Romance",
+    "director": "Rouben Mamoulian",
+    "writer": "Ken Englund, Robert Pirosh, Joseph Schrank",
+    "imdbRating": "6.6",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.6/10"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": null,
+    "tagline": "she kissed him out of his life's savings... but the poor guy loved it",
+    "plot": "Two con artists take a shopgirl under their wing, but she disrupts their marrying-for-money scheme by falling for a mathematician.",
+    "cast": [
+      {
+        "name": "Gene Tierney",
+        "character": "Susan Miller / Linda Worthington",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sexaQ4TPHEnwaiEAGpJDGlmEjF3.jpg",
+        "tmdbId": 20124
+      },
+      {
+        "name": "Henry Fonda",
+        "character": "John Wheeler",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6wXWsqSXF3wCsGcwVqiszy6RX9X.jpg",
+        "tmdbId": 4958
+      },
+      {
+        "name": "Spring Byington",
+        "character": "Mrs. Maybelle Worthington",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/uXyfIzuEwtMhcFufThCITAAxKRh.jpg",
+        "tmdbId": 20369
+      },
+      {
+        "name": "Laird Cregar",
+        "character": "Warren",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/5GZK8alMyQGmoNmZzFJa7jp1Ok6.jpg",
+        "tmdbId": 80726
+      },
+      {
+        "name": "Shepperd Strudwick",
+        "character": "Tod Fenwick",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/weRqJOKGWXPKUQ6C8xJSt7b3gOY.jpg",
+        "tmdbId": 82676
+      },
+      {
+        "name": "Frank Orth",
+        "character": "Kellogg",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s8yUbtAu6wueQjDRncuSX6x6ZUt.jpg",
+        "tmdbId": 30240
+      },
+      {
+        "name": "Henry Stephenson",
+        "character": "Colonel Prentiss",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mZGKdbb7v92kIED67aePhTmcY40.jpg",
+        "tmdbId": 81934
+      },
+      {
+        "name": "Marjorie Gateson",
+        "character": "Mrs. Fenwick",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tqh5vaRV3LPbEAMLJtcgX3UQ89g.jpg",
+        "tmdbId": 131340
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/9g2xPr6tzacLo3EpqJxNLS11xta.jpg",
+      "https://image.tmdb.org/t/p/w1280/bQdyZ94QrLk9ZHSrTkfsCErhwNo.jpg",
+      "https://image.tmdb.org/t/p/w1280/8GvwV7k8dcnaMNI9ibLTmsdLJld.jpg",
+      "https://image.tmdb.org/t/p/w1280/eoZZDZ68i6P1XKrfNt2utkgqJfa.jpg",
+      "https://image.tmdb.org/t/p/w1280/dMwJR2AtIClu3aEt7NlTP2TgH1R.jpg",
+      "https://image.tmdb.org/t/p/w1280/qQqe5i9UJIw5rxASYUtdWPyLmWd.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Rouben Mamoulian",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/A1P47V8OcxF0ukAnWboY4YvGJr9.jpg",
+        "tmdbId": 29595
+      },
+      {
+        "name": "Ken Englund",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 130001
+      },
+      {
+        "name": "Emeric Pressburger",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wb8vDYVpKSjgJS1SmrX9PchDWc7.jpg",
+        "tmdbId": 37846
+      },
+      {
+        "name": "Robert Pirosh",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 70980
+      },
+      {
+        "name": "Joseph Schrank",
+        "job": "Story",
+        "profileUrl": null,
+        "tmdbId": 190735
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0035567": {
     "imdbID": "tt0035567",
     "title": "Woman of the Year",
