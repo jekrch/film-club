@@ -4221,6 +4221,120 @@
       }
     ]
   },
+  "tt0078754": {
+    "imdbID": "tt0078754",
+    "title": "All That Jazz",
+    "year": "1979",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNmU1ZjBlNWItMjNiYS00OWNlLTk3YjUtN2U1MTI0OTAxOGEwXkEyXkFqcGc@._V1_QL75_UX380_CR0,6,380,562_.jpg",
+    "runtime": "123 min",
+    "genre": "Drama, Music, Musical",
+    "director": "Bob Fosse",
+    "writer": "Robert Alan Aurthur, Bob Fosse",
+    "imdbRating": "7.8",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.8/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "72/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "8_aIhkKlrwk",
+    "tagline": "All that work. All that glitter. All that pain. All that love. All that crazy rhythm.",
+    "plot": "Joe Gideon is at the top of the heap, one of the most successful directors and choreographers in musical theater. But he can feel his world slowly collapsing around him - his obsession with work has almost destroyed his personal life, and only his bottles of pills keep him going.",
+    "cast": [
+      {
+        "name": "Roy Scheider",
+        "character": "Joe Gideon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yyZ0DwUz3qAelJIUGVoOktGgMIh.jpg",
+        "tmdbId": 6355
+      },
+      {
+        "name": "Jessica Lange",
+        "character": "Angelique",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/aWcO6trggSWsglUOdTVzjG4LSh3.jpg",
+        "tmdbId": 4431
+      },
+      {
+        "name": "Ann Reinking",
+        "character": "Kate Jagger",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7arkhrziMSTt3NJ4DeP2WtdEdsA.jpg",
+        "tmdbId": 80928
+      },
+      {
+        "name": "Leland Palmer",
+        "character": "Audrey Paris",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/YJKhptxL9dHdWY7nVKsAA9fe5r.jpg",
+        "tmdbId": 80927
+      },
+      {
+        "name": "Cliff Gorman",
+        "character": "Davis Newman",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sWCUAavM204vykyoVKW3TlRYmWF.jpg",
+        "tmdbId": 19183
+      },
+      {
+        "name": "Ben Vereen",
+        "character": "O'Connor Flood",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/krMLkdkj1rtLsU2h2BBPCK0E7HH.jpg",
+        "tmdbId": 26664
+      },
+      {
+        "name": "Erzsebet Foldi",
+        "character": "Michelle Gideon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/quV9INHJ6dtj8VD3LQEDFhPWxhy.jpg",
+        "tmdbId": 1155690
+      },
+      {
+        "name": "Michael Tolan",
+        "character": "Dr. Ballinger",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/yOSgxl4ol4AbGud0aJrpLjkzlHa.jpg",
+        "tmdbId": 161650
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/wQVkhFgKiej4XdEnTsrXU3isoK0.jpg",
+      "https://image.tmdb.org/t/p/w1280/4tOzDfIzeynN8WCy1kQ4kBHdgLp.jpg",
+      "https://image.tmdb.org/t/p/w1280/u218sykbUQIh6EWtTdJzguU5LcG.jpg",
+      "https://image.tmdb.org/t/p/w1280/xoLz334wpETrlEIWL3EjDYrHBod.jpg",
+      "https://image.tmdb.org/t/p/w1280/gCWphaXTdI9eTQybEQoA458llzB.jpg",
+      "https://image.tmdb.org/t/p/w1280/9KIrH49Adll5OEHN41Qp45uBxUL.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Bob Fosse",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xWTGPJmWMZh6n5GhGfOB4rdDrVG.jpg",
+        "tmdbId": 66777
+      },
+      {
+        "name": "Robert Alan Aurthur",
+        "job": "Writer",
+        "profileUrl": null,
+        "tmdbId": 47373
+      },
+      {
+        "name": "Bob Fosse",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xWTGPJmWMZh6n5GhGfOB4rdDrVG.jpg",
+        "tmdbId": 66777
+      },
+      {
+        "name": "Giuseppe Rotunno",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wr6CxoAWe52wdLeHF8hqp3hJynd.jpg",
+        "tmdbId": 15131
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0080360": {
     "imdbID": "tt0080360",
     "title": "Altered States",
