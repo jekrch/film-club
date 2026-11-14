@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import React, { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useBodyScrollLock } from '@jekrch/react-viewport-lightbox';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import Button from './Button';
-import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 import { useModalPresence } from '../../hooks/useModalPresence';
 
 /** Anything that can take focus inside the panel, for the tab trap. */
@@ -89,6 +89,8 @@ const Modal: React.FC<ModalProps> = ({
     onCloseRef.current = onClose;
 
     // Stays locked through the close animation so the page doesn't jump early.
+    // The lightbox's own lock, so a modal and the stills viewer opened from it
+    // share one reference-counted lock instead of each pinning the body.
     useBodyScrollLock(isRendered);
 
     useEffect(() => {

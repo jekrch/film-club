@@ -10,11 +10,11 @@
         "tail": "wrangler tail"
     },
     "dependencies": {
-        "jose": "^6.2.14"
+        "jose": "^6.2.17"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20260702.1",
         "typescript": "~5.7.3",
-        "wrangler": "^4.156.0"
+        "wrangler": "^4.162.0"
     }
 }
