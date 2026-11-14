@@ -1033,6 +1033,128 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0037008": {
+    "imdbID": "tt0037008",
+    "title": "Laura",
+    "year": "1944",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYWUyNDNhZGQtZjJkMS00OTM1LWEzNTktMjlkYjM3OGVmODhiXkEyXkFqcGc@._V1_SX300.jpg",
+    "runtime": "88 min",
+    "genre": "Drama, Film-Noir, Mystery",
+    "director": "Otto Preminger, Rouben Mamoulian",
+    "writer": "Vera Caspary, Jay Dratler, Samuel Hoffenstein",
+    "imdbRating": "7.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "100%"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "KgGtRJY516E",
+    "tagline": "The story of a love that became the most fearful thing that ever happened to a woman!",
+    "plot": "A police detective falls in love with the woman whose murder he's investigating.",
+    "cast": [
+      {
+        "name": "Dana Andrews",
+        "character": "Det. Lt. Mark McPherson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gTZaqIS441ejTsQmfZff6SHvWja.jpg",
+        "tmdbId": 13578
+      },
+      {
+        "name": "Gene Tierney",
+        "character": "Laura Hunt",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/sexaQ4TPHEnwaiEAGpJDGlmEjF3.jpg",
+        "tmdbId": 20124
+      },
+      {
+        "name": "Clifton Webb",
+        "character": "Waldo Lydecker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/l1QPGO4z93NSfEgcU5c7RQok0dJ.jpg",
+        "tmdbId": 20125
+      },
+      {
+        "name": "Vincent Price",
+        "character": "Shelby Carpenter",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/7JIv7U5kwveryP7hrPYgHlKea4d.jpg",
+        "tmdbId": 1905
+      },
+      {
+        "name": "Judith Anderson",
+        "character": "Ann Treadwell",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/33Ree0GhYJoxQuh1vAjyGsoKiS4.jpg",
+        "tmdbId": 3362
+      },
+      {
+        "name": "Dorothy Adams",
+        "character": "Laura's Maid Bessie Clary (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tW5VJvit37Z5JTl7siUwvZ5SIgX.jpg",
+        "tmdbId": 3346
+      },
+      {
+        "name": "Wally Albright",
+        "character": "Newsboy (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mMXl7YJ70KlDZeOQRNRUsT5IyFA.jpg",
+        "tmdbId": 148861
+      },
+      {
+        "name": "Bobby Barber",
+        "character": "Newsboy (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/hshe0L8zSxTEUuN1SPHRRoeOmSb.jpg",
+        "tmdbId": 30117
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/d5HjGve67GkNC9lWpzZVKSotLlT.jpg",
+      "https://image.tmdb.org/t/p/w1280/nH8IHZxMIa3u7Vqk4mt4X1Ikycj.jpg",
+      "https://image.tmdb.org/t/p/w1280/r6GwymahVWaqO7bVfvotvWQPhig.jpg",
+      "https://image.tmdb.org/t/p/w1280/ipjANjbMoCNSDUNIJHuE00b9nmB.jpg",
+      "https://image.tmdb.org/t/p/w1280/4Rb9VYP4PeFy5OpJoaW16QtyR2w.jpg",
+      "https://image.tmdb.org/t/p/w1280/kOtagQoJIHTAKHRD6ULxlVqzR0j.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Otto Preminger",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zmJuWBIbWURkB138eD9IPVzpAUt.jpg",
+        "tmdbId": 834
+      },
+      {
+        "name": "Jay Dratler",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 87393
+      },
+      {
+        "name": "Samuel Hoffenstein",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bCcwLNOgI1otEm8IF4k93KuQMw0.jpg",
+        "tmdbId": 29596
+      },
+      {
+        "name": "Elizabeth Reinhardt",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 1160002
+      },
+      {
+        "name": "Ring Lardner Jr.",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9CJbIpq8niBu0mI8iDn7IHWj8Gb.jpg",
+        "tmdbId": 9791
+      },
+      {
+        "name": "Joseph LaShelle",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 4101
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0037865": {
     "imdbID": "tt0037865",
     "title": "Leave Her to Heaven",
