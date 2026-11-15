@@ -50,7 +50,11 @@ const PLAYER_STATES: Record<number, PlayerState> = {
  * video wouldn't loop at all). With it, the embed's `playlistIndex` lines up
  * with `[key, ...then]`.
  */
-export const soundtrackEmbedUrl = (key: string, pageOrigin: string, then: string[] = []): string => {
+export const soundtrackEmbedUrl = (
+    key: string,
+    pageOrigin: string,
+    then: string[] = []
+): string => {
     const params = new URLSearchParams({
         enablejsapi: '1',
         origin: pageOrigin,

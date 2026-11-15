@@ -139,14 +139,66 @@ const loadImage = async (src: string): Promise<ImageBitmap | HTMLImageElement | 
     }
 };
 
-/** The first of these that loads, trying each still at full size and then as given. */
-const firstLoaded = async (urls: string[]): Promise<ImageBitmap | HTMLImageElement | null> => {
-    for (const url of urls.slice(0, KEY_ART_TRIES)) {
+/**
+ * The key art's URLs in the order to try them: each still at full size, then
+ * as given. A phone skips the full size: TMDb's originals run to 4K and more,
+ * and iOS Safari, past its memory for a decoded image, draws nothing at all
+ * without saying so. The stored 1280px still is plenty for a phone's screen.
+ */
+export const artCandidates = (urls: string[], fullSizeToo: boolean): string[] =>
+    urls.slice(0, KEY_ART_TRIES).flatMap((url) => {
         const big = fullSize(url);
-        const image = (await loadImage(big)) ?? (big === url ? null : await loadImage(url));
-        if (image) return image;
+        return fullSizeToo && big !== url ? [big, url] : [url];
+    });
+
+/** A phone or tablet, by its pointer: where the full-size stills aren't worth the risk. */
+const coarsePointer = (): boolean =>
+    typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+
+/**
+ * Whether anything was painted over the fill in this box. A browser that
+ * can't draw an image may leave the canvas untouched rather than throw, so the
+ * art is checked by sampling a grid of points: a real still won't be the
+ * exact page colour at every one.
+ */
+const painted = (ctx: CanvasRenderingContext2D, w: number, h: number): boolean => {
+    const STEPS = 6;
+    for (let i = 0; i < STEPS; i++) {
+        for (let j = 0; j < STEPS; j++) {
+            const x = Math.floor(((i + 0.5) / STEPS) * w);
+            const y = Math.floor(((j + 0.5) / STEPS) * h);
+            const [r, g, b] = ctx.getImageData(x, y, 1, 1).data;
+            if (Math.abs(r - 3) > 2 || Math.abs(g - 6) > 2 || Math.abs(b - 20) > 2) return true;
+        }
     }
-    return null;
+    return false;
+};
+
+/**
+ * Draws the first still that both loads and actually paints into the art's
+ * box, on the page colour. False when none would.
+ */
+const drawKeyArt = async (
+    ctx: CanvasRenderingContext2D,
+    urls: string[],
+    h: number
+): Promise<boolean> => {
+    for (const url of urls) {
+        const image = await loadImage(url);
+        if (!image) continue;
+        ctx.fillStyle = INK;
+        ctx.fillRect(0, 0, WIDTH, h);
+        try {
+            drawCover(ctx, image, 0, 0, WIDTH, h);
+        } catch {
+            // Treated as not drawn: the check below finds the box still blank.
+        }
+        if ('close' in image) image.close();
+        if (painted(ctx, WIDTH, h)) return true;
+    }
+    ctx.fillStyle = INK;
+    ctx.fillRect(0, 0, WIDTH, h);
+    return false;
 };
 
 /** The faces the card is set in, loaded before it's drawn so the canvas doesn't fall back. */
@@ -218,8 +270,7 @@ export interface RenderedPoster {
  */
 export const renderPoster = async (content: PosterContent): Promise<RenderedPoster | null> => {
     const picks = shelfPicks(content.picks);
-    const [art, avatar, favouritePoster, pickPosters] = await Promise.all([
-        firstLoaded(content.keyArt),
+    const [avatar, favouritePoster, pickPosters] = await Promise.all([
         // The member's photo is this site's own, so any load will do.
         loadImage(content.avatar),
         content.favourite?.poster ? loadImage(content.favourite.poster) : null,
@@ -277,7 +328,7 @@ export const renderPoster = async (content: PosterContent): Promise<RenderedPost
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     // The key art, over the top, fading into the page.
-    if (art) drawCover(ctx, art, 0, 0, WIDTH, artH);
+    const art = await drawKeyArt(ctx, artCandidates(content.keyArt, !coarsePointer()), artH);
     const top = ctx.createLinearGradient(0, 0, 0, 380);
     top.addColorStop(0, 'rgba(3, 6, 20, 0.8)');
     top.addColorStop(1, 'rgba(3, 6, 20, 0)');
@@ -408,7 +459,7 @@ export const renderPoster = async (content: PosterContent): Promise<RenderedPost
             resolve(null);
         }
     });
-    return blob ? { blob, complete: !!art || !content.keyArt.length } : null;
+    return blob ? { blob, complete: art || !content.keyArt.length } : null;
 };
 
 /** One one-sheet on the shelf, or its title on a card when it has none or it won't load. */

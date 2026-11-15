@@ -1,4 +1,4 @@
-import { canvasUrl, fullSize, keyArtOrder, shelfPicks } from './posterImage';
+import { artCandidates, canvasUrl, fullSize, keyArtOrder, shelfPicks } from './posterImage';
 
 describe('shelfPicks', () => {
     it('shows every pick when they fit', () => {
@@ -60,5 +60,22 @@ describe('canvasUrl', () => {
         const tmdb = 'https://image.tmdb.org/t/p/w1280/b.jpg';
         expect(keyArtOrder([criterion, tmdb], 'https://worker.example')).toEqual([criterion, tmdb]);
         expect(keyArtOrder([criterion, tmdb], '')).toEqual([tmdb, criterion]);
+    });
+});
+
+describe('artCandidates', () => {
+    const tmdb = 'https://image.tmdb.org/t/p/w1280/b.jpg';
+    const amazon = 'https://m.media-amazon.com/images/c.jpg';
+
+    it('tries each TMDb still at full size before as given, where full size is wanted', () => {
+        expect(artCandidates([tmdb, amazon], true)).toEqual([
+            'https://image.tmdb.org/t/p/original/b.jpg',
+            tmdb,
+            amazon,
+        ]);
+    });
+
+    it('skips the full size on a phone', () => {
+        expect(artCandidates([tmdb, amazon], false)).toEqual([tmdb, amazon]);
     });
 });
