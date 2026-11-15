@@ -84,11 +84,10 @@ const BarArt: React.FC<{ art: FrameImage[] }> = ({ art }) => {
 };
 
 /**
- * The bar's height, safe area aside: with music, the 200px player and 8px
- * either side of it; without, one row of controls.
+ * The bar's height, safe area aside: one row of controls, whether or not
+ * there's music. Also the player's own size: see `SoundtrackDock`.
  */
-const BAR_WITH_PLAYER = 216;
-const BAR_PLAIN = 64;
+export const BAR_PLAIN = 64;
 
 /** The art behind a slide that doesn't ask for more: there, but under the words. */
 const QUIET_ART = 0.14;
@@ -295,7 +294,7 @@ const Story: React.FC<StoryProps> = ({
         <motion.div
             className="fixed inset-0 z-[70] touch-pan-y select-none overflow-hidden bg-page pt-[env(safe-area-inset-top)]"
             style={{
-                ['--bar' as string]: `calc(${player ? BAR_WITH_PLAYER : BAR_PLAIN}px + env(safe-area-inset-bottom))`,
+                ['--bar' as string]: `calc(${BAR_PLAIN}px + env(safe-area-inset-bottom))`,
             }}
             role="region"
             aria-roledescription="slideshow"
@@ -410,7 +409,7 @@ const Story: React.FC<StoryProps> = ({
                     end on a panel of their own. */}
                 <div
                     className={`absolute inset-y-0 left-0 hidden items-center overflow-hidden pb-[env(safe-area-inset-bottom)] sm:flex ${
-                        player ? 'right-[232px]' : 'right-0'
+                        player ? 'right-[80px]' : 'right-0'
                     }`}
                 >
                     <AnimatePresence initial={false}>
@@ -428,18 +427,14 @@ const Story: React.FC<StoryProps> = ({
                                         ? slide.reel
                                         : art.filter((a) => a.kind === 'still').map((a) => a.url)
                                 }
-                                frameClass={player ? 'h-36' : 'h-9'}
-                                sprocketClass={player ? 'h-4' : 'h-2'}
+                                frameClass="h-9"
+                                sprocketClass="h-2"
                                 className="!shadow-none"
                             />
                         </motion.div>
                     </AnimatePresence>
                 </div>
-                <div
-                    className={`relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-2 px-3 sm:my-auto sm:ml-4 sm:max-w-[240px] sm:flex-none sm:rounded-xl sm:bg-slate-950/70 sm:shadow-xl sm:ring-1 sm:ring-slate-100/10 sm:backdrop-blur-md ${
-                        player ? 'sm:gap-3 sm:p-4' : 'sm:px-2 sm:py-1.5'
-                    }`}
-                >
+                <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-2 px-3 sm:my-auto sm:ml-4 sm:max-w-[240px] sm:flex-none sm:rounded-xl sm:bg-slate-950/70 sm:px-2 sm:py-1.5 sm:shadow-xl sm:ring-1 sm:ring-slate-100/10 sm:backdrop-blur-md">
                     <div className="flex items-center gap-1 sm:gap-1.5">
                         <button
                             type="button"
@@ -480,49 +475,38 @@ const Story: React.FC<StoryProps> = ({
                         >
                             <ChevronRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                         </button>
-                        {music && !player && (
+                        {music && (
                             <button
                                 type="button"
                                 onClick={music.onToggleOff}
                                 className={CONTROL}
-                                aria-label="Turn the music on"
-                                aria-pressed
+                                aria-label={
+                                    player ? `Turn off ${music.label}` : 'Turn the music on'
+                                }
+                                title={player ? music.label : undefined}
+                                aria-pressed={!player}
                             >
-                                <SpeakerXMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                                {player ? (
+                                    <SpeakerWaveIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                                ) : (
+                                    <SpeakerXMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                                )}
                             </button>
                         )}
-                        {!player && <Counter index={index} count={slides.length} />}
-                    </div>
-                    {music && player && (
-                        <>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    type="button"
-                                    onClick={music.onToggleOff}
-                                    className={CONTROL}
-                                    aria-label="Turn the music off"
-                                    aria-pressed={false}
-                                >
-                                    <SpeakerWaveIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </button>
-                                <Counter index={index} count={slides.length} />
-                            </div>
-                            <p className="line-clamp-2 max-w-full font-serif text-xs italic leading-snug text-slate-300 sm:text-sm">
-                                ♪ {music.label}
+                        {player && music?.blocked ? (
+                            <p className="truncate text-[11px] leading-snug text-slate-200 sm:text-xs">
+                                Tap the video to start the music →
                             </p>
-                        </>
-                    )}
-                    {player && music?.blocked && (
-                        <p className="text-[11px] leading-snug text-slate-200 sm:text-xs">
-                            Tap the video to start the music →
-                        </p>
-                    )}
+                        ) : (
+                            <Counter index={index} count={slides.length} />
+                        )}
+                    </div>
                 </div>
                 {/* The reel's room on a wide screen is the rest of the bar. */}
                 <div className="hidden flex-1 sm:block" />
                 {/* The player's bay: the tile is drawn here by the page, fixed,
                     so it survives the deck closing long enough to fade out. */}
-                {player && <div className="w-[216px] shrink-0 sm:w-[232px]" aria-hidden="true" />}
+                {player && <div className="w-[72px] shrink-0 sm:w-[80px]" aria-hidden="true" />}
             </div>
 
             <LeaveDialog

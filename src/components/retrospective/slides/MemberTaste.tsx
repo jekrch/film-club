@@ -82,7 +82,7 @@ const MemberTaste: React.FC<MemberTasteProps> = ({ taste, director, accent }) =>
     return (
         <Slide>
             <Reveal>
-                <Eyebrow color={accent}>Your taste</Eyebrow>
+                <Eyebrow color={accent}>Your film diet</Eyebrow>
             </Reveal>
             {taste.genres.length > 0 && (
                 <Reveal step={1}>
