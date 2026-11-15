@@ -85,8 +85,7 @@ function assertTrophyData(data: unknown): TrophiesFile {
 /**
  * Every award as of the last build.
  *
- * Bundled rather than fetched, like `lists.json` and `watched.json` and for the
- * same reason: a trophy is part of what the site *is*, and a visitor should see
+ * Bundled rather than fetched, like `lists.json` and for the same reason: a trophy is part of what the site *is*, and a visitor should see
  * one without a network round trip. A member who has just given one sees it
  * sooner than the next deploy through `TrophiesContext`, which overlays the live
  * file on top of this.

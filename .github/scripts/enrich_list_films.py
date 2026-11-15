@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Build the poster/title cache for films that appear in member-authored data.
 
-Three files reference films the club never watched: `lists.json` (personal
-rankings), `watched.json` (what members watched on their own), and `club.json`
+Three sources reference films the club never watched: `lists.json` (personal
+rankings), the watch logs under `watched/` (what members watched on their own,
+one file per member), and `club.json`
 (the handful of films a member may name for their profile banner). None of those
 kinds has a record in films.json. This script fetches a thin summary for each
 such film from OMDB and stores it in `src/assets/listFilms.json`, keyed by IMDb
@@ -34,12 +35,14 @@ the next deploy that has the key fills the rest in.
 **The cache stays deliberately thinner than a club film.** No keywords, no
 financials, no `personProfiles` index -- a person's TMDb id rides on their own
 cast or crew entry. The crew is the three credits a row shows rather than the
-club films' seven. This file is bundled and shipped to every visitor, and unlike
-films.json (one film per club meeting) it grows with whatever members add, so
-each field here is a per-visitor cost paid on the whole cache.
+club films' seven. The bundle carries only a slim index of this file (see
+`scripts/liveData.ts`) and each full record is fetched when a row's panel
+opens, but the index still grows with whatever members add, so keep the fields
+a row draws before it opens few and small.
 
-Runs in deploy.yml before the build, so a list or a watch logged on the site has
-its posters by the time the site is rebuilt. The worker makes no OMDB call of
+Runs in deploy.yml before the build, so a list logged on the site has its
+posters by the time the site is rebuilt, and in data-deploy.yml for a watch-log
+commit, which publishes the new summary without a build. The worker makes no OMDB call of
 its own on save, which is what keeps a save cheap regardless of how long the
 list is.
 """
@@ -52,7 +55,7 @@ import sys
 import requests
 
 DEFAULT_LISTS_PATH = "src/assets/lists.json"
-DEFAULT_WATCHED_PATH = "src/assets/watched.json"
+DEFAULT_WATCHED_DIR = "src/assets/watched"
 DEFAULT_CLUB_PATH = "src/assets/club.json"
 DEFAULT_FILMS_PATH = "src/assets/films.json"
 DEFAULT_LIST_FILMS_PATH = "src/assets/listFilms.json"
@@ -376,6 +379,28 @@ def _load_json(path, expected_type):
     return data
 
 
+def _load_watched_dir(path):
+    """Every member's watch log, keyed by file name (`jacob` for `jacob.json`).
+
+    A missing directory is no logs at all. A file that isn't a JSON array fails
+    the whole load, for the same reason `_load_json` does: pruning against a log
+    that couldn't be read would evict summaries it still uses.
+    """
+    if not os.path.isdir(path):
+        print(f"No directory at {path}; treating the watch logs as empty.")
+        return {}
+
+    logs = {}
+    for name in sorted(os.listdir(path)):
+        if not name.endswith(".json"):
+            continue
+        data = _load_json(os.path.join(path, name), list)
+        if data is LOAD_FAILED:
+            return LOAD_FAILED
+        logs[name[: -len(".json")]] = data
+    return logs
+
+
 def _collect_ids(entries, source):
     """The valid IMDb ids among a sequence of `{"imdbID": ...}` records."""
     found = set()
@@ -488,11 +513,11 @@ def add_tmdb_details(summaries, tmdb_bearer_token):
 
 
 def enrich_list_films(
-    lists_path, watched_path, films_path, list_films_path, api_key, tmdb_key=None, club_path=None
+    lists_path, watched_dir, films_path, list_films_path, api_key, tmdb_key=None, club_path=None
 ):
     """Refresh the summary cache. Returns True on success (no-op included)."""
     lists_data = _load_json(lists_path, list)
-    watched_data = _load_json(watched_path, dict)
+    watched_data = _load_watched_dir(watched_dir)
     films_data = _load_json(films_path, list)
     club_data = _load_json(club_path or DEFAULT_CLUB_PATH, list)
     cache = _load_json(list_films_path, dict)
@@ -569,7 +594,7 @@ def enrich_list_films(
 def main():
     return enrich_list_films(
         os.environ.get("LISTS_PATH", DEFAULT_LISTS_PATH),
-        os.environ.get("WATCHED_PATH", DEFAULT_WATCHED_PATH),
+        os.environ.get("WATCHED_DIR", DEFAULT_WATCHED_DIR),
         os.environ.get("JSON_PATH", DEFAULT_FILMS_PATH),
         os.environ.get("LIST_FILMS_PATH", DEFAULT_LIST_FILMS_PATH),
         os.environ.get("OMDB_API_KEY"),

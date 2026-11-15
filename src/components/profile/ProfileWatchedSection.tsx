@@ -7,13 +7,14 @@ import RowFrameWash from '../common/RowFrameWash';
 import { useClubAuth } from '../../auth/GoogleAuth';
 import { entryFrameImage } from '../../utils/frameSources';
 import {
+    compareWatched,
     formatWatchDate,
     formatWatchedScore,
-    getWatchedForMember,
     resolveWatchedEntries,
     watchedPathFor,
     watchedRowId,
 } from '../../utils/watchedUtils';
+import { entriesFor, useWatchedLog } from '../../hooks/useWatchedLog';
 
 interface ProfileWatchedSectionProps {
     /** Whose profile this is; the log is looked up and permission-checked on it. */
@@ -29,7 +30,9 @@ const PREVIEW_COUNT = 4;
  *
  * Renders nothing when the log is empty, so the page can include it
  * unconditionally — unless the viewer is the member themself, who needs
- * somewhere to start logging.
+ * somewhere to start logging. The log is fetched rather than bundled, so it
+ * also renders nothing until it arrives: drawing an empty card for a member
+ * who turns out to have no log would show something only to take it away.
  *
  * These are not club films: they never enter `films.json` and contribute to no
  * statistic on this page. The section sits apart from the club-film sections
@@ -39,7 +42,8 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
     const { configured, canEditAs } = useClubAuth();
     const canEdit = configured && canEditAs(owner);
 
-    const entries = useMemo(() => getWatchedForMember(owner), [owner]);
+    const { log } = useWatchedLog(owner ? [owner] : []);
+    const entries = useMemo(() => [...entriesFor(log, owner)].sort(compareWatched), [log, owner]);
     // Sliced before resolving: the log is already in watch order, and a member
     // with two hundred entries shouldn't pay for two hundred lookups to show
     // four rows.
@@ -48,7 +52,7 @@ const ProfileWatchedSection: React.FC<ProfileWatchedSectionProps> = ({ owner }) 
         [entries]
     );
 
-    if (entries.length === 0 && !canEdit) return null;
+    if (log === null || (entries.length === 0 && !canEdit)) return null;
 
     const watchedPath = watchedPathFor(owner);
 

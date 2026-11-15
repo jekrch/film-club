@@ -1,5 +1,5 @@
 import { Film, filmData } from '../types/film';
-import { listFilmSummaries, type ListFilmSummary } from '../types/list';
+import type { ListFilmSummary } from '../types/list';
 import type { TeamMember } from '../types/team';
 import {
     entryFrameSource,
@@ -7,7 +7,7 @@ import {
     toFrameSources,
     type FrameSource,
 } from './frameSources';
-import { pendingFilmSummary } from './pendingFilmSummaries';
+import { findFilmSummary } from '../api/filmSummaries';
 
 /**
  * What a profile banner draws.
@@ -85,7 +85,7 @@ export const resolveBackdropFilm = (
         };
     }
 
-    const summary = (sources.summaries ?? listFilmSummaries)[imdbID] ?? pendingFilmSummary(imdbID);
+    const summary = findFilmSummary(imdbID, sources.summaries);
     const title = summary?.title ?? null;
     const poster = summary?.poster ?? null;
 

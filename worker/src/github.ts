@@ -2,12 +2,14 @@
  * GitHub-as-database: read a JSON file from `main`, mutate it, commit it back.
  *
  * **One writer per file**: CI owns `films.json` and `listFilms.json`; the worker
- * owns `overrides.json`, `lists.json`, `watched.json`, `club.json`,
- * `trophies.json`, and `responses.json`. There is no merge to get wrong — only
- * the sha to respect.
+ * owns `overrides.json`, `lists.json`, the watch logs under `watched/`,
+ * `club.json`, `trophies.json`, and `responses.json`. There is no merge to get
+ * wrong — only the sha to respect.
  *
  * Paths are constants in this module and never derived from request input, which
- * limits a stolen token to the files below rather than the whole repo.
+ * limits a stolen token to the files below rather than the whole repo. The two
+ * exceptions, {@link watchedPath} and {@link memberImagePath}, take a member's
+ * name, which the caller has already resolved against `MEMBER_EMAILS`.
  */
 
 import { HttpError } from './errors';
@@ -21,7 +23,36 @@ const BRANCH = 'main';
 /** The only JSON paths this worker will ever write. */
 export const LISTS_PATH = 'src/assets/lists.json';
 export const OVERRIDES_PATH = 'src/assets/overrides.json';
-export const WATCHED_PATH = 'src/assets/watched.json';
+/**
+ * One watch log per member, `src/assets/watched/<slug>.json`, each an array of
+ * entries, newest watch first.
+ *
+ * Split by member rather than one shared file for three reasons. Two members
+ * saving at once no longer contend for one sha. Each file stays far below the
+ * 1 MB at which the Contents API stops returning content inline. And the site
+ * fetches only the logs a page shows instead of everyone's.
+ */
+export const WATCHED_DIR = 'src/assets/watched';
+
+/**
+ * The log file for one member.
+ *
+ * `owner` must already be a club member's display name (`resolveOwner` returns
+ * nothing else), so the only input that reaches the path is one of a handful of
+ * names this worker was configured with. The pattern check is what makes a
+ * future caller that passes something else fail rather than write elsewhere.
+ * The site derives the same file name (`memberSlug` in `src/types/watched.ts`).
+ */
+export function watchedPath(owner: string): string {
+    const slug = slugify(owner);
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+        throw new HttpError(
+            500,
+            `Refusing to derive a watch-log path from ${JSON.stringify(owner)}.`
+        );
+    }
+    return `${WATCHED_DIR}/${slug}.json`;
+}
 /**
  * Club awards on club films. Owned here for the same reason as the rest: the
  * sheet's `trophyNotes` column is a *different* field, read into `films.json` by

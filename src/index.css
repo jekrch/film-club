@@ -307,6 +307,35 @@ body {
     background: var(--color-slate-500);
 }
 
+/* The retrospective's slides: a translucent thumb with no track, so a slide
+   that scrolls shows it faintly over the art behind rather than as a grey
+   rail. */
+/* A frame that gives up height as its slide is squeezed (see useSqueeze):
+   --aspect with room to spare, --aspect-tight with none. The two are set as
+   arbitrary properties, so they can change with the breakpoint. */
+.retro-give-aspect {
+    aspect-ratio: calc(var(--aspect) + (var(--aspect-tight) - var(--aspect)) * var(--squeeze, 0));
+}
+
+.retro-scrollbar {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(242, 245, 248, 0.22) transparent;
+}
+.retro-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.retro-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.retro-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(242, 245, 248, 0.22);
+    border-radius: 9999px;
+}
+.retro-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(242, 245, 248, 0.4);
+}
+
 .swiper-scrollbar {
     /* Make the scrollbar track slightly thicker */
     height: 10px !important; /* Default is often 4px or 6px. Adjust as needed. */
@@ -673,5 +702,67 @@ body {
         .stats-collapse {
             transition: none;
         }
+    }
+}
+
+/* The retrospective's progress bar: the current slide's segment fills over its
+   run. Scaled rather than widened so it stays on the compositor. */
+@keyframes retro-progress {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* The retrospective's strips of film: a row of stills drawn twice, moved left
+   by the length of one copy and looped, so it never shows an edge. The
+   distance and the duration are set per row by `useMarquee`. */
+@keyframes retro-marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(var(--marquee-shift, -50%));
+    }
+}
+.retro-marquee {
+    animation-name: retro-marquee;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+    .retro-marquee {
+        animation: none;
+    }
+}
+
+/* Film grain on the retrospective's large stills: the noise tile hops a few
+   pixels at a time, which reads as grain moving rather than a pattern. */
+@keyframes retro-grain {
+    0% {
+        transform: translate(0, 0);
+    }
+    25% {
+        transform: translate(-3%, 2%);
+    }
+    50% {
+        transform: translate(2%, -3%);
+    }
+    75% {
+        transform: translate(-2%, 3%);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+.retro-grain {
+    animation: retro-grain 0.6s steps(4) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .retro-grain {
+        animation: none;
     }
 }

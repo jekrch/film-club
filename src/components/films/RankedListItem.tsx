@@ -7,6 +7,7 @@ import RowFrameWash from '../common/RowFrameWash';
 import TrailerButton from '../common/TrailerButton';
 import EntryDetailsPanel, { EntryDetailsToggle } from './EntryDetailsPanel';
 import { ResolvedListEntry, ScoreSource } from '../../utils/listUtils';
+import { useEntryDetails } from '../../hooks/useEntryDetails';
 import { entryFrameImage } from '../../utils/frameSources';
 import { MAX_SCORE } from '../../utils/ratingEditUtils';
 import { calculateClubAverage, getRatingColorClass } from '../../utils/ratingUtils';
@@ -88,8 +89,14 @@ const SPANS_NOTE = 'row-start-1 sm:row-span-3';
 const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, owner }) => {
     const { clubFilm, title, year, poster, rank, description, imdbID, score, scoreSource } = entry;
     const trailerKey = entry.resolvedTrailerKey;
-    const { details } = entry;
-    const [detailsOpen, setDetailsOpen] = useState(false);
+    // The row's own details are the slim index's for a film the club never
+    // watched; the rest is fetched when the panel opens.
+    const {
+        details,
+        open: detailsOpen,
+        toggle: toggleDetails,
+        prefetch: prefetchDetails,
+    } = useEntryDetails(imdbID, entry.details, !clubFilm);
     const panelId = `list-details-${imdbID}`;
     // A dead poster URL falls back to the same empty frame a poster-less entry
     // gets, rather than to a placeholder image. Swapping `src` on error is the
@@ -191,7 +198,9 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                 {details ? (
                     <button
                         type="button"
-                        onClick={() => setDetailsOpen((open) => !open)}
+                        onClick={toggleDetails}
+                        onPointerEnter={prefetchDetails}
+                        onFocus={prefetchDetails}
                         aria-expanded={detailsOpen}
                         aria-controls={panelId}
                         aria-label={
@@ -315,7 +324,8 @@ const RankedListItem: React.FC<RankedListItemProps> = ({ entry, ranked = true, o
                 {details && (
                     <EntryDetailsToggle
                         isOpen={detailsOpen}
-                        onToggle={() => setDetailsOpen((open) => !open)}
+                        onToggle={toggleDetails}
+                        onPrefetch={prefetchDetails}
                         title={displayTitle}
                         panelId={panelId}
                         labeled

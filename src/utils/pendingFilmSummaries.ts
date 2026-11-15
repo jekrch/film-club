@@ -5,7 +5,7 @@ import { listFilmSummaries, type ListFilmSummary } from '../types/list';
  * Poster and title for films picked from search but not yet in the bundle.
  *
  * `listFilms.json` is built in CI (`enrich_list_films.py`) from the ids that
- * `lists.json` and `watched.json` reference, so a film added on the site has no
+ * `lists.json` and the watch logs reference, so a film added on the site has no
  * summary until the next deploy — a minute or two later. Until then the resolvers
  * have nothing but an id and the row renders as "Unknown film" with no poster,
  * which is the state a member sees for exactly as long as they are still working

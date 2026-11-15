@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import type { Plugin } from 'vite';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { liveDataFiles, slimIndex } from './scripts/liveData.ts';
 
 /**
  * The Content Security Policy, injected into the built `index.html` only.
@@ -85,22 +86,28 @@ function contentSecurityPolicy(): Plugin {
 const LIVE_DATA_FILES = [
     'overrides.json',
     'lists.json',
-    'watched.json',
     'trophies.json',
     'club.json',
     'responses.json',
 ];
 
 /**
- * Publishes the files above at `/data/`, next to the app.
+ * Publishes the files above at `/data/`, next to the app, along with the
+ * generated ones that are *not* in the bundle (`scripts/liveData.ts`): every
+ * member's watch log, each list film's full summary, and the slim film index.
  *
- * The bundle already holds them, but a visitor's bundle may be one deploy old.
+ * The bundled files are here because a visitor's bundle may be one deploy old.
  * The service worker serves the precached one until its update reloads the page.
  * A fetch from `/data/` reads whatever the latest deploy published. That is
  * the freshness the editors and the reaction threads need, from the site's own
  * origin rather than the repo's.
  *
- * In dev the same paths serve the working copies in `src/assets`.
+ * The generated ones are here because this is the only place they are. A
+ * watch-log commit doesn't rebuild the site at all: `data-deploy.yml` rewrites
+ * just these files on `gh-pages`, using the same generator.
+ *
+ * In dev the same paths serve the working copies in `src/assets`, regenerated
+ * per request so an edit to a log shows up on reload.
  */
 function liveData(): Plugin {
     let assets = '';
@@ -113,15 +120,44 @@ function liveData(): Plugin {
         configureServer(server) {
             server.middlewares.use('/data', (req, res, next) => {
                 const file = (req.url ?? '').split('?')[0].replace(/^\//, '');
-                if (!LIVE_DATA_FILES.includes(file)) return next();
+                const body = LIVE_DATA_FILES.includes(file)
+                    ? read(file)
+                    : liveDataFiles(assets).get(file);
+                if (body === undefined) return next();
                 res.setHeader('Content-Type', 'application/json');
-                res.end(read(file));
+                res.end(body);
             });
         },
         generateBundle() {
             for (const file of LIVE_DATA_FILES) {
                 this.emitFile({ type: 'asset', fileName: `data/${file}`, source: read(file) });
             }
+            for (const [file, source] of liveDataFiles(assets)) {
+                this.emitFile({ type: 'asset', fileName: `data/${file}`, source });
+            }
+        },
+    };
+}
+
+/**
+ * Bundles `listFilms.json` as its slim index rather than the whole cache.
+ *
+ * `src/types/list.ts` imports the file as usual, and this cuts it down on the
+ * way in to the fields a collapsed row draws (`slimSummary` in
+ * `scripts/liveData.ts`). The rest of each summary is fetched from
+ * `data/films/<id>.json` when a row's panel opens (`src/api/filmSummaries.ts`).
+ * Tests import the full file, which is a superset, so they are unaffected.
+ *
+ * `enforce: 'pre'` so this sees the raw JSON before Vite's own JSON plugin
+ * turns it into a module.
+ */
+function slimListFilms(): Plugin {
+    return {
+        name: 'slim-list-films',
+        enforce: 'pre',
+        transform(code, id) {
+            if (!id.split('?')[0].endsWith('/src/assets/listFilms.json')) return null;
+            return { code: JSON.stringify(slimIndex(JSON.parse(code))), map: null };
         },
     };
 }
@@ -133,6 +169,7 @@ export default defineConfig({
         }),
         tailwindcss(),
         contentSecurityPolicy(),
+        slimListFilms(),
         liveData(),
         VitePWA({
             registerType: 'autoUpdate', // Automatically update the SW when new content is available

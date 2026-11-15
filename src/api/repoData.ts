@@ -6,6 +6,10 @@
  * bundle can be a deploy behind while the service worker swaps it out. These
  * reads are how a page catches up without waiting for that.
  *
+ * The watch logs are the exception: they aren't bundled at all, and these reads
+ * are the only way the site sees them. A watch-log commit is published within a
+ * minute or so by `data-deploy.yml`, without a build.
+ *
  * A deploy lands a minute or two after the commit, longer for a burst of
  * reactions (see `deploy.yml`). So a member never sees a stale copy of their
  * own save, every write returns the stored record and `writeCache.ts` keeps this
@@ -18,7 +22,12 @@ import type { FilmListDefinition } from '../types/list';
 import type { TeamMember } from '../types/team';
 import type { ResponseComment, ResponseThread, ResponsesFile } from '../types/responses';
 import type { TrophiesFile, Trophy } from '../types/trophy';
-import type { WatchedEntry, WatchedLog } from '../types/watched';
+import {
+    assertWatchedEntries,
+    memberSlug,
+    type WatchedEntry,
+    type WatchedLog,
+} from '../types/watched';
 import { compareTrophies } from '../utils/trophyUtils';
 import { compareWatched } from '../utils/watchedUtils';
 import type { FilmRecordPatch, OverridesFile, RatingOverride } from './clubApi';
@@ -31,7 +40,11 @@ import { pendingWrites, reconcile, splitKey, splitTupleKey } from './writeCache'
  * which GitHub Pages' `max-age=600` otherwise invites on a second page view.
  * The revalidation is an ETag round trip and usually a 304.
  */
-async function fetchAsset<T>(file: string, signal?: AbortSignal): Promise<T> {
+async function fetchAsset<T>(
+    file: string,
+    signal?: AbortSignal,
+    options: { missing?: T } = {}
+): Promise<T> {
     let response: Response;
     try {
         response = await fetch(`${DATA_BASE}/${file}`, { signal, cache: 'no-cache' });
@@ -40,6 +53,7 @@ async function fetchAsset<T>(file: string, signal?: AbortSignal): Promise<T> {
         throw new Error("Couldn't load the latest saves.");
     }
 
+    if (response.status === 404 && options.missing !== undefined) return options.missing;
     if (!response.ok) {
         throw new Error(`Couldn't load ${file} (${response.status}).`);
     }
@@ -131,10 +145,41 @@ export async function fetchLists(signal?: AbortSignal): Promise<FilmListDefiniti
     return lists;
 }
 
-/** `watched.json` — every member's personal log, keyed by display name. */
-export async function fetchWatched(signal?: AbortSignal): Promise<WatchedLog> {
-    const file = await fetchAsset<WatchedLog>('watched.json', signal);
-    const { log, source } = overlayPendingWatched(file ?? {});
+/**
+ * The named members' watch logs as published, keyed by the names given, with
+ * nothing overlaid. Each is its own file (`watched/<slug>.json`), fetched in
+ * parallel.
+ *
+ * Every club member has a file on the site, an empty one if they've never
+ * logged anything (`liveDataFiles` in `scripts/liveData.ts`). A 404 still
+ * reads as an empty log rather than an error, since a member added to
+ * `club.json` has no file until the next deploy.
+ */
+export async function fetchWatchedFiles(
+    owners: readonly string[],
+    signal?: AbortSignal
+): Promise<WatchedLog> {
+    const files = await Promise.all(
+        owners.map(async (owner) => {
+            const file = `watched/${memberSlug(owner)}.json`;
+            const data = await fetchAsset<unknown>(file, signal, { missing: [] });
+            return [owner, assertWatchedEntries(data, file)] as const;
+        })
+    );
+    return Object.fromEntries(files);
+}
+
+/**
+ * The named members' watch logs, with this tab's unconfirmed saves laid over
+ * them. Most pages want `useWatchedLog`, which calls this and remembers the
+ * result across navigations.
+ */
+export async function fetchWatched(
+    owners: readonly string[],
+    signal?: AbortSignal
+): Promise<WatchedLog> {
+    const files = await fetchWatchedFiles(owners, signal);
+    const { log, source } = overlayPendingWatched(files, owners);
     reconcile('watched', source);
     return log;
 }
@@ -144,20 +189,27 @@ export async function fetchWatched(signal?: AbortSignal): Promise<WatchedLog> {
  * itself says for each of them — the second half is what {@link reconcile}
  * needs, and only a fresh fetch should hand it that.
  *
- * Exported for the pages that draw from the bundled log, so a film logged a
- * minute ago shows up there too rather than only after the next deploy.
+ * `owners` limits both halves to the members `file` actually holds. A pending
+ * save for anyone else is left alone: laying it over a log this page never
+ * fetched would invent that log, and reporting it to {@link reconcile} as
+ * absent would clear a pending delete before it had landed.
  */
-export function overlayPendingWatched(file: WatchedLog): {
+export function overlayPendingWatched(
+    file: WatchedLog,
+    owners: readonly string[]
+): {
     log: WatchedLog;
     source: Map<string, unknown>;
 } {
     const log: WatchedLog = { ...file };
+    const wanted = new Set(owners.map((owner) => owner.trim().toLowerCase()));
 
     const pending = pendingWrites<WatchedEntry>('watched');
     const source = new Map<string, unknown>();
 
     for (const [key, value] of pending) {
         const { imdbId, owner } = splitKey(key);
+        if (!wanted.has(owner)) continue;
         // The file keys by display name ("Jacob"); the cache keys by the
         // lowercased one, since that is all a caller reliably has.
         const name = Object.keys(log).find((k) => k.trim().toLowerCase() === owner);

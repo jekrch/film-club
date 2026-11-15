@@ -79,7 +79,8 @@ export interface FilmListDefinition {
 }
 
 /**
- * One film a member watched on their own, as stored in `watched.json`.
+ * One film a member watched on their own, as stored in their file under
+ * `src/assets/watched/`.
  *
  * Unlike {@link RatingOverride} every field is always present, `null` when
  * unset. There is no presence semantics to honor here because there is no
@@ -105,12 +106,12 @@ export interface WatchedEntry {
 }
 
 /**
- * The shape of `src/assets/watched.json`: member display name → their log,
- * newest watch first.
+ * Every member's log at once: display name → their entries, newest watch first.
  *
- * Keyed by member rather than a flat array with an `owner` field (the shape
- * `lists.json` uses) because all six members write this one file and a keyed
- * object keeps each person's edits to their own hunk of the diff.
+ * Not a file any more. Each member's log is its own file
+ * (`src/assets/watched/<slug>.json`, a bare {@link WatchedEntry} array; see
+ * `watchedPath` in `github.ts`), and this is what the legacy
+ * `GET /api/watched` assembles from them.
  *
  * **Nothing in here ever reaches `films.json`.** `apply_overrides.py` reads
  * `overrides.json` only, so a personal watch cannot enter club data, the

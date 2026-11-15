@@ -1,0 +1,1393 @@
+import { FEATURED_CLUB_REVIEWS } from '../config/retrospective';
+import { findFilmSummary } from '../api/filmSummaries';
+import type { Film } from '../types/film';
+import type { FilmListDefinition, ListFilmSummary } from '../types/list';
+import {
+    clubThreadId,
+    listThreadId,
+    logThreadId,
+    reviewThreadId,
+    type ReactionKey,
+    type ResponsesFile,
+} from '../types/responses';
+import { capitalizeUserName, type TeamMember } from '../types/team';
+import type { Trophy } from '../types/trophy';
+import type { WatchedEntry, WatchedLog } from '../types/watched';
+import {
+    categoryCounts,
+    decadeOf,
+    listed,
+    meetingIntervals,
+    sortByWatchDate,
+    type CategoryPoint,
+    type FilmWithDate,
+} from './almanacUtils';
+import {
+    getAllFilmCreditsForPerson,
+    getFilmBackdrops,
+    isPodFilm,
+    parseWatchDate,
+} from './filmUtils';
+import { calculateMemberStats, parseRuntime } from './statUtils';
+import { getClubTrophies, groupByRecipient, groupTrophies, type MemberTrophy } from './trophyUtils';
+
+/**
+ * The retrospective: one year of the club, and of each member, as plain data.
+ *
+ * Every figure is computed from files the site already has, and wherever an
+ * existing util computes a figure it is called here with the year's films
+ * rather than reimplemented — so a number on a slide is the number the almanac
+ * or the profile shows for the same films.
+ *
+ * **What counts in a year.** A club film counts in the year of its
+ * `movieClubInfo.watchDate`; a log entry in the year of its own `watchDate`; a
+ * site trophy, list or comment by when it was recorded. A sheet trophy has no
+ * date but its film's. A reaction has no date at all, so it counts in the year
+ * of what it was left on — the screening, the log entry, the review, the list.
+ *
+ * **The club/personal divide.** The sources keep `films` and `watched` apart,
+ * and so do the outputs: a member's count is two figures, not a total with a
+ * flag, and no log entry is ever handed to a function that takes `Film`. The
+ * two meet only in a member's taste and director, through {@link TasteInput},
+ * which both are mapped *into* — the same move `FrameSource` makes for art.
+ *
+ * **Empty is null.** Each field of a report is one slide, and a slide with
+ * nothing to say for that year is null rather than a zero. The page renders the
+ * non-null ones in order, so "omit empty slides" is a filter.
+ */
+
+// ---------------------------------------------------------------------------
+// Inputs
+// ---------------------------------------------------------------------------
+
+export interface RetrospectiveSources {
+    /** `filmData`, unfiltered — the builders filter by year. */
+    films: Film[];
+    /** Every member's log, from `useWatchedLog(ALL_MEMBERS)`. */
+    watched: WatchedLog;
+    /** Summaries for logged films that aren't club films. */
+    summaries: Record<string, ListFilmSummary>;
+    /** `trophies.json`'s `films` map, live where the page has it. */
+    trophies: Record<string, Trophy[]>;
+    responses: ResponsesFile;
+    lists: FilmListDefinition[];
+    members: TeamMember[];
+}
+
+// ---------------------------------------------------------------------------
+// Outputs
+// ---------------------------------------------------------------------------
+
+/** A club film with one member's score on it. */
+export interface MemberScore {
+    film: Film;
+    score: number;
+}
+
+/** A logged film, resolved for display. Its own shape — never a `Film`. */
+export interface LoggedFilm {
+    /** The log's owner, in `club.json` casing. */
+    member: string;
+    entry: WatchedEntry;
+    imdbID: string;
+    /** Null when neither cache knows the film. */
+    title: string | null;
+    year: string | null;
+    poster: string | null;
+    runtime: string | null;
+    genre: string | null;
+    director: string | null;
+    /** Scene art, from the summary cache or, for a club film, its own stills. */
+    stills: string[];
+    /** True when the id is also a club film, so the slide can link to its page. */
+    isClubFilm: boolean;
+}
+
+/** A review, club or personal. */
+export interface RetrospectiveReview {
+    source: 'club' | 'log';
+    member: string;
+    imdbID: string;
+    title: string;
+    poster: string | null;
+    blurb: string;
+    words: number;
+    score: number | null;
+    threadId: string;
+    reactions: number;
+}
+
+/** One person's work on one film, as the film's credits list it. */
+export interface Credit {
+    film: Film;
+    /** `Director`, `Actor`, `Cinematographer`… — every role they had on it. */
+    roles: string[];
+    /** Who they played, when they acted and the film's cast names the part. */
+    character?: string;
+}
+
+export interface MonthCount {
+    /** 0–11, earliest first: every month tied for the most. */
+    months: number[];
+    count: number;
+}
+
+export interface Tally {
+    name: string;
+    count: number;
+}
+
+/** What a reaction thread hangs from, so a slide can say what drew the reactions. */
+export interface ThreadSubject {
+    threadId: string;
+    kind: 'club' | 'log' | 'review' | 'list';
+    title: string;
+    member: string | null;
+    imdbID: string | null;
+    listId: string | null;
+}
+
+export interface ClubRetrospective {
+    year: number;
+    /** The year isn't over yet; the slides say "so far". */
+    inProgress: boolean;
+    /** The year's club films, earliest first. For the cover's collage. */
+    films: FilmWithDate[];
+
+    count: {
+        films: number;
+        minutes: number;
+        /** Films scored by every active member. */
+        fullyScored: number;
+        /** The year before's count, or null when the club watched nothing then. */
+        previousYear: number | null;
+    } | null;
+
+    calendar: {
+        busiestMonth: MonthCount;
+        /** The longest gap between two of the year's screenings. Null with one screening. */
+        longestGap: { days: number; from: Film; to: Film } | null;
+        first: Film;
+        last: Film;
+    } | null;
+
+    places: {
+        countries: CategoryPoint[];
+        languages: CategoryPoint[];
+        decades: CategoryPoint[];
+        /** The mean release year of the films, rounded. */
+        averageYear: number;
+        oldest: Film;
+        newest: Film;
+        /** The same figures for the year before, or null when the club watched nothing then. */
+        previousYear: {
+            countries: number;
+            /** Null when none of that year's films had a release year. */
+            averageYear: number | null;
+        } | null;
+    } | null;
+
+    /**
+     * What each active member scored highest and lowest this year. Each member's
+     * own taste, side by side — never a ranking of films or of the people who
+     * picked them.
+     */
+    favourites:
+        | {
+              member: TeamMember;
+              loved: MemberScore;
+              /** Null when they scored only one film, or scored everything alike. */
+              leastLoved: MemberScore | null;
+          }[]
+        | null;
+
+    /**
+     * The film the members loved most together, and least: averaged over the
+     * members' own scores, so a guest's doesn't tip it. About the films — the
+     * slide never says whose pick either was.
+     */
+    together: {
+        loved: { film: Film; average: number };
+        leastLoved: { film: Film; average: number } | null;
+    } | null;
+
+    /** Who picked what, in the order they were watched. No scores: a pick isn't a contest. */
+    selections: { selector: string; films: Film[] }[] | null;
+
+    trophies: {
+        total: number;
+        mostGiven: { award: string; count: number };
+        topRecipient: { recipient: string; count: number } | null;
+        trophies: MemberTrophy[];
+    } | null;
+
+    offDocket: {
+        entries: number;
+        byMember: Tally[];
+        /**
+         * Films two or more members logged off the docket, counting anyone a
+         * review says the owner watched it with. Most members first; among
+         * those, the ones more of them logged themselves, then earliest
+         * watched. At most {@link SHARED_FILMS_SHOWN}.
+         */
+        sharedFilms: {
+            imdbID: string;
+            title: string;
+            poster: string | null;
+            members: string[];
+        }[];
+    } | null;
+
+    words: {
+        count: number;
+        club: number;
+        log: number;
+        longest: RetrospectiveReview;
+        mostReacted: RetrospectiveReview | null;
+        /** A few reviews to quote: the most-reacted and fullest, spread across members and films. */
+        highlights: RetrospectiveReview[];
+    } | null;
+
+    reactions: {
+        total: number;
+        topReaction: { key: ReactionKey; count: number };
+        topThread: { subject: ThreadSubject; count: number };
+    } | null;
+
+    /**
+     * Repeat artists: people credited on two or more of the year's films, each
+     * with what they did on every one (and who they played, for actors) — up
+     * to three, the most-credited first.
+     */
+    faces: { name: string; credits: Credit[] }[] | null;
+
+    /**
+     * People on this year's films whom the club had met before, on films from
+     * earlier years: who they were then and who they are now. Up to three, not
+     * repeating anyone in {@link faces}.
+     */
+    returning: { name: string; now: Credit[]; before: (Credit & { year: number })[] }[] | null;
+
+    /** Active members with a report of their own this year. */
+    roster: TeamMember[];
+
+    /**
+     * People off the roster who sat in on a screening — Greg, the intern. A
+     * mention in passing; nothing else in the report counts them.
+     */
+    guests: { member: TeamMember; films: Film[] }[];
+}
+
+export interface MemberRetrospective {
+    year: number;
+    inProgress: boolean;
+    member: TeamMember;
+    /** What they saw this year, for the cover's collage. Two lists, never one. */
+    films: { club: FilmWithDate[]; log: LoggedFilm[] };
+
+    count: {
+        withClub: number;
+        onOwn: number;
+        minutes: { withClub: number; onOwn: number };
+    };
+
+    scores: {
+        /** Club scores only; their log scores are {@link logAverage}. */
+        average: number;
+        count: number;
+        /** One bar per whole point, 0 through 9; 6.5 counts toward 6. */
+        distribution: { score: number; count: number }[];
+        highest: MemberScore;
+        lowest: MemberScore | null;
+        /** Average of the scores in their own log this year, and how many there were. */
+        logAverage: number | null;
+        logCount: number;
+    } | null;
+
+    /** Their selections this year, in the order they were watched. */
+    picks: Film[] | null;
+
+    breakaway: { film: Film; score: number; othersAverage: number; divergence: number } | null;
+
+    log: {
+        busiestMonth: MonthCount;
+        /** Most consecutive Monday-to-Sunday weeks with at least one entry. */
+        longestWeekStreak: number;
+        first: LoggedFilm;
+        last: LoggedFilm;
+        /** Films on their log this year that no other member logged and the club never watched. */
+        solo: number;
+    } | null;
+
+    taste: {
+        genres: Tally[];
+        decades: Tally[];
+        /** From club films alone: a log film's summary has no country. */
+        countries: Tally[];
+    } | null;
+
+    director: {
+        name: string;
+        withClub: number;
+        onOwn: number;
+        /** Their films among the member's year, for finding a headshot. */
+        imdbIDs: string[];
+    } | null;
+
+    words: {
+        count: number;
+        longest: RetrospectiveReview;
+        mostReacted: RetrospectiveReview | null;
+        highlights: RetrospectiveReview[];
+    } | null;
+
+    trophies: { received: MemberTrophy[]; given: MemberTrophy[] } | null;
+
+    lists: FilmListDefinition[] | null;
+
+    /** The four figures on the closing card, each present for a club-only member. */
+    closing: {
+        films: number;
+        averageGiven: number | null;
+        favourite: MemberScore | null;
+        trophies: number;
+    };
+}
+
+// ---------------------------------------------------------------------------
+// Dating
+// ---------------------------------------------------------------------------
+
+/** The year a club film was watched, or null when it hasn't been. */
+export const clubYear = (film: Film): number | null =>
+    parseWatchDate(film.movieClubInfo?.watchDate)?.getUTCFullYear() ?? null;
+
+/** The year of a log entry's `YYYY-MM-DD` watch date. */
+export const logYear = (entry: WatchedEntry): number | null => {
+    const year = parseInt(entry.watchDate.slice(0, 4), 10);
+    return Number.isNaN(year) ? null : year;
+};
+
+/**
+ * The year of a recorded instant, for the reader. Local, as the wall dates
+ * instants: a list made at 9pm on New Year's Eve in Minneapolis is last year's.
+ */
+const instantYear = (iso: string | null | undefined): number | null => {
+    if (!iso) return null;
+    const parsed = new Date(iso);
+    return Number.isNaN(parsed.getTime()) ? null : parsed.getFullYear();
+};
+
+const clubFilmsIn = (films: Film[], year: number): FilmWithDate[] =>
+    sortByWatchDate(films.filter((film) => clubYear(film) === year));
+
+// ---------------------------------------------------------------------------
+// Small helpers
+// ---------------------------------------------------------------------------
+
+const validScore = (score: number | null | undefined): score is number =>
+    typeof score === 'number' && !Number.isNaN(score);
+
+const mean = (values: number[]): number | null =>
+    values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : null;
+
+const minutesOf = (runtimes: (string | null | undefined)[]): number =>
+    runtimes.reduce((sum, runtime) => sum + (parseRuntime(runtime) ?? 0), 0);
+
+/** Counts of each name, most first, ties alphabetical. */
+const tally = (names: string[]): Tally[] => {
+    const counts = new Map<string, number>();
+    names.forEach((name) => counts.set(name, (counts.get(name) ?? 0) + 1));
+    return [...counts.entries()]
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+};
+
+/** The months with the most dates in them, every one of them when they tie. */
+export const busiestMonth = (months: number[]): MonthCount | null => {
+    if (!months.length) return null;
+    const counts = Array<number>(12).fill(0);
+    months.forEach((month) => counts[month]++);
+    const count = Math.max(...counts);
+    return { months: counts.flatMap((c, month) => (c === count ? [month] : [])), count };
+};
+
+/** The `club.json` name for a rating's lowercase `user`, or the user capitalized. */
+const displayName = (user: string, members: TeamMember[]): string =>
+    members.find((m) => m.name.toLowerCase() === user.trim().toLowerCase())?.name ??
+    capitalizeUserName(user);
+
+const sameName = (a: string | null | undefined, b: string | null | undefined): boolean =>
+    !!a && !!b && a.trim().toLowerCase() === b.trim().toLowerCase();
+
+const isActive = (member: TeamMember): boolean =>
+    typeof member.queue === 'number' && member.queue > 0;
+
+/** A member's log, matched case-insensitively. */
+const logOf = (watched: WatchedLog, member: string): WatchedEntry[] => {
+    const key = Object.keys(watched).find((name) => sameName(name, member));
+    return key === undefined ? [] : watched[key];
+};
+
+/**
+ * One member's own scores on these films, highest first. The sort is stable, so
+ * among equal scores the earlier screening comes first.
+ */
+const scoresBy = (films: Film[], name: string): MemberScore[] =>
+    films
+        .flatMap((film) => {
+            const rating = film.movieClubInfo?.clubRatings.find((r) => sameName(r.user, name));
+            return rating && validScore(rating.score) ? [{ film, score: rating.score }] : [];
+        })
+        .sort((a, b) => b.score - a.score);
+
+/** Their favourite, and their least favourite when it is actually lower. */
+const lovedAndLeast = (
+    scores: MemberScore[]
+): { loved: MemberScore; leastLoved: MemberScore | null } | null => {
+    if (!scores.length) return null;
+    const last = scores[scores.length - 1];
+    return { loved: scores[0], leastLoved: last.score < scores[0].score ? last : null };
+};
+
+const wordCount = (text: string): number => text.trim().split(/\s+/).filter(Boolean).length;
+
+// ---------------------------------------------------------------------------
+// Logged films
+// ---------------------------------------------------------------------------
+
+/**
+ * A log entry with what the caches know about its film. A club film's metadata
+ * is read for display only, the same crossover `ResolvedWatchedEntry.clubFilm`
+ * makes; the entry stays a log entry.
+ */
+const resolveLogged = (
+    member: string,
+    entry: WatchedEntry,
+    sources: RetrospectiveSources,
+    clubIndex: Map<string, Film>
+): LoggedFilm => {
+    const summary = findFilmSummary(entry.imdbID, sources.summaries);
+    const club = clubIndex.get(entry.imdbID);
+    return {
+        member,
+        entry,
+        imdbID: entry.imdbID,
+        title: summary?.title ?? club?.title ?? null,
+        year: summary?.year ?? club?.year ?? null,
+        poster: entry.posterImage || summary?.poster || club?.poster || null,
+        runtime: summary?.runtime ?? club?.runtime ?? null,
+        genre: summary?.genre ?? club?.genre ?? null,
+        director: summary?.director ?? club?.director ?? null,
+        stills: summary?.backdropImages ?? (club ? getFilmBackdrops(club) : []),
+        isClubFilm: !!club,
+    };
+};
+
+/** Every member's entries in the year, resolved, earliest first. */
+const loggedIn = (
+    year: number,
+    sources: RetrospectiveSources,
+    clubIndex: Map<string, Film>
+): LoggedFilm[] =>
+    Object.entries(sources.watched)
+        .flatMap(([owner, entries]) => {
+            const member = displayName(owner, sources.members);
+            return entries
+                .filter((entry) => logYear(entry) === year)
+                .map((entry) => resolveLogged(member, entry, sources, clubIndex));
+        })
+        .sort(
+            (a, b) =>
+                a.entry.watchDate.localeCompare(b.entry.watchDate) ||
+                a.imdbID.localeCompare(b.imdbID)
+        );
+
+/** How many films more than one member logged the off-docket slide shows. */
+export const SHARED_FILMS_SHOWN = 5;
+
+/**
+ * The club members a log review says the owner watched the film with: any in
+ * `club.json` named after a "with" in the same sentence, as in "saw this at the
+ * Heights with Jenny and Joey". The intern counts too. The retrospective treats
+ * them as having logged it as well.
+ */
+const companionsOf = (logged: LoggedFilm, members: TeamMember[]): string[] => {
+    const blurb = logged.entry.blurb;
+    if (!blurb) return [];
+    const clauses = blurb
+        .split(/[.!?\n]+/)
+        .flatMap((sentence) => sentence.match(/\bwith\b(.*)/i)?.[1] ?? []);
+    return members
+        .filter((m) => !sameName(m.name, logged.member))
+        .filter((m) => clauses.some((clause) => new RegExp(`\\b${m.name}\\b`).test(clause)))
+        .map((m) => m.name);
+};
+
+/**
+ * Who logged what in the year: every entry under its owner, and each film once
+ * more for anyone its review says they watched it with, unless that member
+ * logged it themselves.
+ */
+const offDocketLogs = (
+    logged: LoggedFilm[],
+    members: TeamMember[]
+): { member: string; logged: LoggedFilm }[] => {
+    const key = (member: string, imdbID: string) => `${member.toLowerCase()}|${imdbID}`;
+    const seen = new Set(logged.map((l) => key(l.member, l.imdbID)));
+    return logged.flatMap((l) => [
+        { member: l.member, logged: l },
+        ...companionsOf(l, members).flatMap((member) => {
+            if (seen.has(key(member, l.imdbID))) return [];
+            seen.add(key(member, l.imdbID));
+            return [{ member, logged: l }];
+        }),
+    ]);
+};
+
+// ---------------------------------------------------------------------------
+// Taste: where club films and log films meet
+// ---------------------------------------------------------------------------
+
+/**
+ * What taste and director slides read from a film, whichever source it came
+ * from. Both a `Film` and a {@link LoggedFilm} are mapped into this, so neither
+ * reaches a function written for the other.
+ */
+interface TasteInput {
+    source: 'club' | 'log';
+    imdbID: string;
+    genres: string[];
+    decade: string | null;
+    directors: string[];
+    /** Club films only. */
+    country: string | null;
+}
+
+const tasteOfFilm = (film: Film): TasteInput => ({
+    source: 'club',
+    imdbID: film.imdbID,
+    genres: listed(film.genre),
+    decade: decadeOf(film.year),
+    directors: listed(film.director),
+    country: listed(film.country)[0] ?? null,
+});
+
+const tasteOfLogged = (logged: LoggedFilm): TasteInput => ({
+    source: 'log',
+    imdbID: logged.imdbID,
+    genres: listed(logged.genre),
+    decade: decadeOf(logged.year),
+    directors: listed(logged.director),
+    country: null,
+});
+
+// ---------------------------------------------------------------------------
+// Reviews and reactions
+// ---------------------------------------------------------------------------
+
+const reactionCount = (responses: ResponsesFile, threadId: string): number =>
+    Object.values(responses.threads[threadId]?.reactions ?? {}).reduce(
+        (sum, members) => sum + (members?.length ?? 0),
+        0
+    );
+
+/** The earliest the site recorded a member's score or review on a club film, if it did. */
+const firstAdded = (film: Film, user: string): string | null => {
+    const rating = film.movieClubInfo?.clubRatings.find((r) => sameName(r.user, user));
+    const stamps = [rating?.scoreAddedAt, rating?.blurbAddedAt].filter((s): s is string => !!s);
+    return stamps.sort()[0] ?? null;
+};
+
+/**
+ * Club reviews written in the year: one added on the site counts when it was
+ * added, and one from the sheet counts in the year of its screening.
+ */
+const clubReviewsIn = (year: number, sources: RetrospectiveSources): RetrospectiveReview[] =>
+    sources.films.flatMap((film) =>
+        (film.movieClubInfo?.clubRatings ?? []).flatMap((rating) => {
+            const blurb = rating.blurb?.trim();
+            if (!blurb) return [];
+            const written = rating.blurbAddedAt ? instantYear(rating.blurbAddedAt) : clubYear(film);
+            if (written !== year) return [];
+            const member = displayName(rating.user, sources.members);
+            const threadId = reviewThreadId(member, film.imdbID);
+            return [
+                {
+                    source: 'club' as const,
+                    member,
+                    imdbID: film.imdbID,
+                    title: film.title,
+                    poster: film.poster || null,
+                    blurb,
+                    words: wordCount(blurb),
+                    score: validScore(rating.score) ? rating.score : null,
+                    threadId,
+                    reactions: reactionCount(sources.responses, threadId),
+                },
+            ];
+        })
+    );
+
+const logReviews = (logged: LoggedFilm[], responses: ResponsesFile): RetrospectiveReview[] =>
+    logged.flatMap((l) => {
+        const blurb = l.entry.blurb?.trim();
+        if (!blurb) return [];
+        const threadId = logThreadId(l.member, l.imdbID);
+        return [
+            {
+                source: 'log' as const,
+                member: l.member,
+                imdbID: l.imdbID,
+                title: l.title ?? l.imdbID,
+                poster: l.poster,
+                blurb,
+                words: wordCount(blurb),
+                score: validScore(l.entry.score) ? l.entry.score : null,
+                threadId,
+                reactions: reactionCount(responses, threadId),
+            },
+        ];
+    });
+
+const longestReview = (reviews: RetrospectiveReview[]): RetrospectiveReview =>
+    reviews.reduce((best, r) => (r.words > best.words ? r : best));
+
+const mostReactedReview = (reviews: RetrospectiveReview[]): RetrospectiveReview | null => {
+    const top = reviews.reduce<RetrospectiveReview | null>(
+        (best, r) => (r.reactions > (best?.reactions ?? 0) ? r : best),
+        null
+    );
+    return top && top.reactions > 0 ? top : null;
+};
+
+/**
+ * Every thread the site could have hung reactions on, with the year its subject
+ * belongs to. Reactions carry no date of their own, so this is how one is dated.
+ */
+const threadIndex = (
+    sources: RetrospectiveSources,
+    clubIndex: Map<string, Film>
+): Map<string, { year: number; subject: ThreadSubject }> => {
+    const index = new Map<string, { year: number; subject: ThreadSubject }>();
+    const add = (year: number | null, subject: ThreadSubject) => {
+        if (year !== null) index.set(subject.threadId, { year, subject });
+    };
+
+    sources.films.forEach((film) => {
+        const year = clubYear(film);
+        add(year, {
+            threadId: clubThreadId(film.imdbID),
+            kind: 'club',
+            title: film.title,
+            member: null,
+            imdbID: film.imdbID,
+            listId: null,
+        });
+        film.movieClubInfo?.clubRatings.forEach((rating) => {
+            const member = displayName(rating.user, sources.members);
+            add(instantYear(firstAdded(film, rating.user)) ?? year, {
+                threadId: reviewThreadId(member, film.imdbID),
+                kind: 'review',
+                title: film.title,
+                member,
+                imdbID: film.imdbID,
+                listId: null,
+            });
+        });
+    });
+
+    Object.entries(sources.watched).forEach(([owner, entries]) => {
+        const member = displayName(owner, sources.members);
+        entries.forEach((entry) => {
+            const logged = resolveLogged(member, entry, sources, clubIndex);
+            add(logYear(entry), {
+                threadId: logThreadId(member, entry.imdbID),
+                kind: 'log',
+                title: logged.title ?? entry.imdbID,
+                member,
+                imdbID: entry.imdbID,
+                listId: null,
+            });
+        });
+    });
+
+    sources.lists.forEach((list) =>
+        add(instantYear(list.createdAt), {
+            threadId: listThreadId(list.id),
+            kind: 'list',
+            title: list.name,
+            member: list.owner,
+            imdbID: null,
+            listId: list.id,
+        })
+    );
+
+    return index;
+};
+
+// ---------------------------------------------------------------------------
+// Trophies
+// ---------------------------------------------------------------------------
+
+/**
+ * Every award given in the year: a sheet award with its screening, a site award
+ * when it was handed out — which may be a year after the film it was for.
+ */
+const trophiesIn = (year: number, sources: RetrospectiveSources): MemberTrophy[] => {
+    const awardedAt = new Map<string, string>();
+    Object.entries(sources.trophies).forEach(([imdbID, trophies]) =>
+        trophies.forEach((t) => awardedAt.set(`${imdbID}\n${t.id}`, t.awardedAt))
+    );
+    const clubIndex = new Map(sources.films.map((f) => [f.imdbID, f]));
+
+    return getClubTrophies(sources.films, sources.trophies).filter((trophy) =>
+        trophy.source === 'sheet'
+            ? clubYear(clubIndex.get(trophy.film.imdbID)!) === year
+            : instantYear(awardedAt.get(`${trophy.film.imdbID}\n${trophy.id}`)) === year
+    );
+};
+
+// ---------------------------------------------------------------------------
+// Club figures
+// ---------------------------------------------------------------------------
+
+/** Every field a club film credits people in, as `getAllFilmCreditsForPerson` reads them. */
+const CREDIT_FIELDS = [
+    'director',
+    'writer',
+    'actors',
+    'cinematographer',
+    'editor',
+    'productionDesigner',
+    'musicComposer',
+    'costumeDesigner',
+] as const;
+
+/** Everyone a film credits, by name, once each. */
+const creditedNames = (films: Film[]): string[] => {
+    const names = new Map<string, string>();
+    films.forEach((film) =>
+        [
+            ...CREDIT_FIELDS.flatMap((field) => listed(film[field])),
+            ...(film.cast ?? []).map((c) => c.name),
+        ]
+            .map((name) => name?.trim())
+            .filter((name): name is string => !!name)
+            .forEach((name) => {
+                const key = name.toLowerCase();
+                if (!names.has(key)) names.set(key, name);
+            })
+    );
+    return [...names.values()];
+};
+
+/** How much a set of credits says about a person: directing most, then acting and writing. */
+const ROLE_WEIGHT: Record<string, number> = { Director: 3, Actor: 2, Writer: 2 };
+const weightOf = (credits: Credit[]): number =>
+    credits.reduce(
+        (sum, c) => sum + Math.max(1, ...c.roles.map((role) => ROLE_WEIGHT[role] ?? 1)),
+        0
+    );
+
+/** The part a person played in a film, as its TMDb cast lists it. */
+const characterOf = (name: string, film: Film): string | undefined => {
+    const key = name.trim().toLowerCase();
+    const character = film.cast
+        ?.find((c) => c.name?.trim().toLowerCase() === key)
+        ?.character?.trim();
+    return character || undefined;
+};
+
+const creditsOf = (name: string, films: Film[]): Credit[] =>
+    getAllFilmCreditsForPerson(name, films).map(({ film, roles }) => {
+        const character = roles.includes('Actor') ? characterOf(name, film) : undefined;
+        return character ? { film, roles, character } : { film, roles };
+    });
+
+const FACES_LIMIT = 3;
+
+/**
+ * The people credited on the most of the year's films, through the same lookup
+ * `useFrequentPersons` counts with — so the almanac and the retrospective name
+ * the same people.
+ */
+const frequentFaces = (films: Film[]): ClubRetrospective['faces'] => {
+    const faces = creditedNames(films)
+        .map((name) => ({ name, credits: creditsOf(name, films) }))
+        .filter((face) => face.credits.length >= 2)
+        .sort(
+            (a, b) =>
+                b.credits.length - a.credits.length ||
+                weightOf(b.credits) - weightOf(a.credits) ||
+                a.name.localeCompare(b.name)
+        )
+        .slice(0, FACES_LIMIT);
+    return faces.length ? faces : null;
+};
+
+/** People on the year's films the club had already met on an earlier year's. */
+const returningFaces = (
+    year: number,
+    films: Film[],
+    allFilms: Film[],
+    skip: Set<string>
+): ClubRetrospective['returning'] => {
+    const earlier = allFilms
+        .map((film) => ({ film, year: clubYear(film) }))
+        .filter((f): f is { film: Film; year: number } => f.year !== null && f.year < year);
+    const yearOf = new Map(earlier.map((f) => [f.film.imdbID, f.year]));
+    const earlierFilms = earlier.map((f) => f.film);
+
+    const returning = creditedNames(films)
+        .filter((name) => !skip.has(name.toLowerCase()))
+        .map((name) => ({
+            name,
+            now: creditsOf(name, films),
+            before: creditsOf(name, earlierFilms)
+                .map((c) => ({ ...c, year: yearOf.get(c.film.imdbID)! }))
+                .sort((a, b) => b.year - a.year),
+        }))
+        .filter((person) => person.before.length > 0)
+        .sort(
+            (a, b) =>
+                b.now.length + b.before.length - (a.now.length + a.before.length) ||
+                weightOf([...b.now, ...b.before]) - weightOf([...a.now, ...a.before]) ||
+                a.name.localeCompare(b.name)
+        )
+        .slice(0, FACES_LIMIT);
+    return returning.length ? returning : null;
+};
+
+/**
+ * A few reviews worth quoting: the fullest first,
+ * taking one from each member before a second from anyone, and never two on
+ * the same film. Reviews of a sentence or less are passed over while there are
+ * enough longer ones.
+ */
+const highlightReviews = (reviews: RetrospectiveReview[], limit: number): RetrospectiveReview[] => {
+    const ranked = [...reviews].sort((a, b) => b.words - a.words || b.reactions - a.reactions);
+    const fuller = ranked.filter((r) => r.words >= 8);
+    const pool = fuller.length >= Math.min(limit, ranked.length) ? fuller : ranked;
+
+    const queues = new Map<string, RetrospectiveReview[]>();
+    pool.forEach((r) => queues.set(r.member, [...(queues.get(r.member) ?? []), r]));
+    const picked: RetrospectiveReview[] = [];
+    const films = new Set<string>();
+    while (picked.length < limit && [...queues.values()].some((q) => q.length)) {
+        for (const queue of queues.values()) {
+            while (queue.length && films.has(queue[0].imdbID)) queue.shift();
+            const next = queue.shift();
+            if (!next) continue;
+            picked.push(next);
+            films.add(next.imdbID);
+            if (picked.length >= limit) break;
+        }
+    }
+    return picked;
+};
+
+/** The club's hand-picked quotes first, then the fullest reviews to make up the number. */
+const featuredReviews = (reviews: RetrospectiveReview[], limit: number): RetrospectiveReview[] => {
+    const picked = FEATURED_CLUB_REVIEWS.map((id) => reviews.find((r) => r.threadId === id)).filter(
+        (r): r is RetrospectiveReview => !!r
+    );
+    if (picked.length >= limit) return picked.slice(0, limit);
+    const used = new Set(picked.map((r) => r.imdbID));
+    const rest = highlightReviews(
+        reviews.filter((r) => !used.has(r.imdbID)),
+        limit - picked.length
+    );
+    return [...picked, ...rest];
+};
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+/** Every year with a club screening or a log entry in it, earliest first. */
+export const yearsWithData = (sources: RetrospectiveSources): number[] => {
+    const years = new Set<number>();
+    sources.films.forEach((film) => {
+        const year = clubYear(film);
+        if (year !== null) years.add(year);
+    });
+    Object.values(sources.watched).forEach((entries) =>
+        entries.forEach((entry) => {
+            const year = logYear(entry);
+            if (year !== null) years.add(year);
+        })
+    );
+    return [...years].sort((a, b) => a - b);
+};
+
+export const buildClubRetrospective = (
+    year: number,
+    sources: RetrospectiveSources,
+    now: Date = new Date()
+): ClubRetrospective => {
+    const films = clubFilmsIn(sources.films, year);
+    const clubIndex = new Map(sources.films.map((f) => [f.imdbID, f]));
+    const logged = loggedIn(year, sources, clubIndex);
+    const active = sources.members.filter(isActive);
+
+    // Count
+    const filmsBefore = clubFilmsIn(sources.films, year - 1);
+    const previous = filmsBefore.length;
+    const fullyScored = films.filter(
+        (film) =>
+            active.length > 0 &&
+            active.every((member) =>
+                film.movieClubInfo?.clubRatings.some(
+                    (r) => sameName(r.user, member.name) && validScore(r.score)
+                )
+            )
+    ).length;
+    const count: ClubRetrospective['count'] = films.length
+        ? {
+              films: films.length,
+              minutes: minutesOf(films.filter((f) => !isPodFilm(f)).map((f) => f.runtime)),
+              fullyScored,
+              previousYear: previous || null,
+          }
+        : null;
+
+    // Calendar
+    const gaps = meetingIntervals(films);
+    const longest = gaps.reduce<(typeof gaps)[number] | null>(
+        (best, gap) => (gap.days > (best?.days ?? -1) ? gap : best),
+        null
+    );
+    const calendar: ClubRetrospective['calendar'] = films.length
+        ? {
+              busiestMonth: busiestMonth(films.map((f) => f.parsedWatchDate.getUTCMonth()))!,
+              longestGap: longest
+                  ? { days: longest.days, from: films[longest.index - 1], to: longest.film }
+                  : null,
+              first: films[0],
+              last: films[films.length - 1],
+          }
+        : null;
+
+    // Places
+    const releaseYears = (list: Film[]): number[] =>
+        list.filter((f) => decadeOf(f.year)).map((f) => parseInt(f.year, 10));
+    const averageYear = (list: Film[]): number | null => {
+        const average = mean(releaseYears(list));
+        return average === null ? null : Math.round(average);
+    };
+    const byRelease = films
+        .filter((f) => decadeOf(f.year))
+        .sort((a, b) => parseInt(a.year, 10) - parseInt(b.year, 10));
+    const places: ClubRetrospective['places'] = byRelease.length
+        ? {
+              countries: categoryCounts(films, 'country'),
+              languages: categoryCounts(films, 'language'),
+              decades: categoryCounts(films, 'decade'),
+              averageYear: averageYear(films)!,
+              oldest: byRelease[0],
+              newest: byRelease[byRelease.length - 1],
+              previousYear: filmsBefore.length
+                  ? {
+                        countries: categoryCounts(filmsBefore, 'country').length,
+                        averageYear: averageYear(filmsBefore),
+                    }
+                  : null,
+          }
+        : null;
+
+    // Favourites: each member's own, side by side
+    const favourites = active
+        .map((member) => {
+            const pair = lovedAndLeast(scoresBy(films, member.name));
+            return pair ? { member, ...pair } : null;
+        })
+        .filter((f): f is NonNullable<typeof f> => f !== null);
+
+    // Together: the members' average on each film, two scores or more
+    const averaged = films
+        .map((film) => {
+            const scores = (film.movieClubInfo?.clubRatings ?? [])
+                .filter((r) => validScore(r.score) && active.some((m) => sameName(m.name, r.user)))
+                .map((r) => r.score as number);
+            const average = scores.length >= 2 ? mean(scores) : null;
+            return average === null ? null : { film: film as Film, average };
+        })
+        .filter((a): a is { film: Film; average: number } => a !== null)
+        .sort((a, b) => b.average - a.average);
+    const last = averaged[averaged.length - 1];
+    const together: ClubRetrospective['together'] = averaged.length
+        ? {
+              loved: averaged[0],
+              leastLoved: averaged.length > 1 && last.average < averaged[0].average ? last : null,
+          }
+        : null;
+
+    // Selections: who picked what, in the order they first came up
+    const selections: { selector: string; films: Film[] }[] = [];
+    films
+        .filter((f) => !isPodFilm(f))
+        .forEach((film) => {
+            const selector = film.movieClubInfo?.selector?.trim();
+            if (!selector) return;
+            const existing = selections.find((s) => sameName(s.selector, selector));
+            if (existing) existing.films.push(film);
+            else selections.push({ selector, films: [film] });
+        });
+
+    // Trophies
+    const awarded = trophiesIn(year, sources);
+    const byAward = groupTrophies(awarded);
+    const byRecipient = groupByRecipient(awarded).filter((g) => g.recipient !== null);
+    const trophies: ClubRetrospective['trophies'] = awarded.length
+        ? {
+              total: awarded.length,
+              mostGiven: { award: byAward[0].award, count: byAward[0].trophies.length },
+              topRecipient: byRecipient.length
+                  ? {
+                        recipient: byRecipient[0].recipient!,
+                        count: byRecipient[0].trophies.length,
+                    }
+                  : null,
+              trophies: awarded,
+          }
+        : null;
+
+    // Off the docket
+    const docketLogs = offDocketLogs(logged, sources.members);
+    // In log order, so earliest watched first; the sort below is stable.
+    const loggers = new Map<
+        string,
+        { first: LoggedFilm; members: Set<string>; owners: Set<string> }
+    >();
+    docketLogs.forEach(({ member, logged: l }) => {
+        const film = loggers.get(l.imdbID) ?? { first: l, members: new Set(), owners: new Set() };
+        film.members.add(member);
+        film.owners.add(l.member);
+        loggers.set(l.imdbID, film);
+    });
+    const sharedFilms = [...loggers.values()]
+        .filter((f) => f.members.size >= 2)
+        .sort((a, b) => b.members.size - a.members.size || b.owners.size - a.owners.size)
+        .slice(0, SHARED_FILMS_SHOWN)
+        .map(({ first, members }) => ({
+            imdbID: first.imdbID,
+            title: first.title ?? first.imdbID,
+            poster: first.poster,
+            members: [...members].sort(),
+        }));
+    const offDocket: ClubRetrospective['offDocket'] = docketLogs.length
+        ? {
+              entries: docketLogs.length,
+              byMember: tally(docketLogs.map((d) => d.member)),
+              sharedFilms,
+          }
+        : null;
+
+    // Words
+    const clubReviews = clubReviewsIn(year, sources);
+    const allReviews = [...clubReviews, ...logReviews(logged, sources.responses)];
+    const words: ClubRetrospective['words'] = allReviews.length
+        ? {
+              count: allReviews.length,
+              club: clubReviews.length,
+              log: allReviews.length - clubReviews.length,
+              longest: longestReview(allReviews),
+              mostReacted: mostReactedReview(allReviews),
+              highlights: featuredReviews(allReviews, 4),
+          }
+        : null;
+
+    // Faces
+    const faces = frequentFaces(films);
+
+    // Reactions
+    const threads = threadIndex(sources, clubIndex);
+    const byKey = new Map<ReactionKey, number>();
+    let total = 0;
+    let topThread: { subject: ThreadSubject; count: number } | null = null;
+    for (const [threadId, thread] of Object.entries(sources.responses.threads)) {
+        const known = threads.get(threadId);
+        if (!known || known.year !== year) continue;
+        let taps = 0;
+        (Object.entries(thread.reactions) as [ReactionKey, string[] | undefined][]).forEach(
+            ([key, members]) => {
+                const n = members?.length ?? 0;
+                taps += n;
+                byKey.set(key, (byKey.get(key) ?? 0) + n);
+            }
+        );
+        total += taps;
+        if (taps > (topThread?.count ?? 0)) topThread = { subject: known.subject, count: taps };
+    }
+    const topReaction = [...byKey.entries()].sort(
+        ([a, x], [b, y]) => y - x || a.localeCompare(b)
+    )[0];
+    const reactions: ClubRetrospective['reactions'] =
+        total > 0 && topThread
+            ? { total, topReaction: { key: topReaction[0], count: topReaction[1] }, topThread }
+            : null;
+
+    return {
+        year,
+        inProgress: year >= now.getFullYear(),
+        films,
+        count,
+        calendar,
+        places,
+        favourites: favourites.length ? favourites : null,
+        together,
+        selections: selections.length ? selections : null,
+        trophies,
+        offDocket,
+        words,
+        reactions,
+        faces,
+        returning: returningFaces(
+            year,
+            films,
+            sources.films,
+            new Set((faces ?? []).map((f) => f.name.toLowerCase()))
+        ),
+        roster: sources.members.filter(
+            (member) => isActive(member) && hasMemberData(year, member.name, sources)
+        ),
+        guests: sources.members
+            .filter((member) => !isActive(member))
+            .map((member) => ({ member, films: scoresBy(films, member.name).map((s) => s.film) }))
+            .filter((guest) => guest.films.length > 0),
+    };
+};
+
+/** True when a member scored a club film or logged one in the year. */
+const hasMemberData = (year: number, name: string, sources: RetrospectiveSources): boolean =>
+    sources.films.some(
+        (film) =>
+            clubYear(film) === year &&
+            film.movieClubInfo?.clubRatings.some(
+                (r) => sameName(r.user, name) && validScore(r.score)
+            )
+    ) || logOf(sources.watched, name).some((entry) => logYear(entry) === year);
+
+/**
+ * One active member's year, or null when they neither scored a club film nor
+ * logged one in it. Guests and past members have no report: the members are
+ * the subject, and a guest is a line on the club's closing slide.
+ */
+export const buildMemberRetrospective = (
+    year: number,
+    memberName: string,
+    sources: RetrospectiveSources,
+    now: Date = new Date()
+): MemberRetrospective | null => {
+    const member = sources.members.find((m) => sameName(m.name, memberName));
+    if (!member || !isActive(member) || !hasMemberData(year, member.name, sources)) return null;
+    const name = member.name;
+
+    const yearFilms = clubFilmsIn(sources.films, year);
+    const clubIndex = new Map(sources.films.map((f) => [f.imdbID, f]));
+    const scoreOf = (film: Film): number | null => {
+        const rating = film.movieClubInfo?.clubRatings.find((r) => sameName(r.user, name));
+        return validScore(rating?.score) ? rating!.score : null;
+    };
+
+    // Their club films are the ones they scored: a screening they missed and
+    // never scored isn't one they saw.
+    const club = yearFilms.filter((film) => scoreOf(film) !== null);
+    const log = logOf(sources.watched, name)
+        .filter((entry) => logYear(entry) === year)
+        .map((entry) => resolveLogged(name, entry, sources, clubIndex))
+        .sort(
+            (a, b) =>
+                a.entry.watchDate.localeCompare(b.entry.watchDate) ||
+                a.imdbID.localeCompare(b.imdbID)
+        );
+
+    const count = {
+        withClub: club.length,
+        onOwn: log.length,
+        minutes: {
+            withClub: minutesOf(club.map((f) => f.runtime)),
+            onOwn: minutesOf(log.map((l) => l.runtime)),
+        },
+    };
+
+    // Scores
+    const stats = calculateMemberStats(name, yearFilms);
+    const byScore = scoresBy(club, name);
+    const pair = lovedAndLeast(byScore);
+    const distribution = Array.from({ length: 10 }, (_, score) => ({
+        score,
+        count: byScore.filter((s) => Math.min(9, Math.floor(s.score)) === score).length,
+    }));
+    const logScores = log.map((l) => l.entry.score).filter(validScore);
+    const scores: MemberRetrospective['scores'] = pair
+        ? {
+              average: stats.avgGivenScore ?? mean(byScore.map((s) => s.score))!,
+              count: byScore.length,
+              distribution,
+              highest: pair.loved,
+              lowest: pair.leastLoved,
+              logAverage: mean(logScores),
+              logCount: logScores.length,
+          }
+        : null;
+
+    // Picks
+    const theirPicks = yearFilms.filter(
+        (film) => !isPodFilm(film) && sameName(film.movieClubInfo?.selector, name)
+    );
+
+    // Breakaway
+    let breakaway: MemberRetrospective['breakaway'] = null;
+    for (const film of club) {
+        const score = scoreOf(film)!;
+        const others = film
+            .movieClubInfo!.clubRatings.filter(
+                (r) => !sameName(r.user, name) && validScore(r.score)
+            )
+            .map((r) => r.score as number);
+        const othersAverage = mean(others);
+        if (othersAverage === null) continue;
+        const divergence = score - othersAverage;
+        if (Math.abs(divergence) > Math.abs(breakaway?.divergence ?? 0)) {
+            breakaway = { film, score, othersAverage, divergence };
+        }
+    }
+
+    // Log
+    // Another member's log, or theirs naming someone they watched it with.
+    const othersLogged = new Set([
+        ...Object.entries(sources.watched)
+            .filter(([owner]) => !sameName(owner, name))
+            .flatMap(([, entries]) => entries.map((e) => e.imdbID)),
+        ...log.filter((l) => companionsOf(l, sources.members).length).map((l) => l.imdbID),
+    ]);
+    const watchedByClub = new Set(
+        sources.films.filter((f) => clubYear(f) !== null).map((f) => f.imdbID)
+    );
+    const logSlide: MemberRetrospective['log'] = log.length
+        ? {
+              busiestMonth: busiestMonth(
+                  log.map((l) => parseInt(l.entry.watchDate.slice(5, 7), 10) - 1)
+              )!,
+              longestWeekStreak: longestWeekStreak(log.map((l) => l.entry.watchDate)),
+              first: log[0],
+              last: log[log.length - 1],
+              solo: new Set(
+                  log
+                      .map((l) => l.imdbID)
+                      .filter((id) => !othersLogged.has(id) && !watchedByClub.has(id))
+              ).size,
+          }
+        : null;
+
+    // Taste and director
+    const inputs: TasteInput[] = [...club.map(tasteOfFilm), ...log.map(tasteOfLogged)];
+    const genres = tally(inputs.flatMap((t) => t.genres));
+    const decades = tally(inputs.map((t) => t.decade).filter((d): d is string => !!d));
+    const countries = tally(inputs.map((t) => t.country).filter((c): c is string => !!c));
+    const taste: MemberRetrospective['taste'] =
+        genres.length || decades.length || countries.length ? { genres, decades, countries } : null;
+
+    const directorCounts = new Map<string, NonNullable<MemberRetrospective['director']>>();
+    inputs.forEach((t) =>
+        t.directors.forEach((director) => {
+            const key = director.toLowerCase();
+            const entry = directorCounts.get(key) ?? {
+                name: director,
+                withClub: 0,
+                onOwn: 0,
+                imdbIDs: [],
+            };
+            if (t.source === 'club') entry.withClub++;
+            else entry.onOwn++;
+            if (!entry.imdbIDs.includes(t.imdbID)) entry.imdbIDs.push(t.imdbID);
+            directorCounts.set(key, entry);
+        })
+    );
+    const director =
+        [...directorCounts.values()]
+            .filter((d) => d.withClub + d.onOwn >= 2)
+            .sort(
+                (a, b) =>
+                    b.withClub + b.onOwn - (a.withClub + a.onOwn) || a.name.localeCompare(b.name)
+            )[0] ?? null;
+
+    // Words
+    const reviews = [
+        ...clubReviewsIn(year, sources).filter((r) => sameName(r.member, name)),
+        ...logReviews(log, sources.responses),
+    ];
+    const words: MemberRetrospective['words'] = reviews.length
+        ? {
+              count: reviews.length,
+              longest: longestReview(reviews),
+              mostReacted: mostReactedReview(reviews),
+              highlights: highlightReviews(reviews, 3),
+          }
+        : null;
+
+    // Trophies
+    const awarded = trophiesIn(year, sources);
+    const received = awarded.filter((t) => sameName(t.recipient, name));
+    const given = awarded.filter((t) => t.source === 'club' && sameName(t.awardedBy, name));
+    const trophies: MemberRetrospective['trophies'] =
+        received.length || given.length ? { received, given } : null;
+
+    // Lists
+    const made = sources.lists.filter(
+        (list) => sameName(list.owner, name) && instantYear(list.createdAt) === year
+    );
+
+    return {
+        year,
+        inProgress: year >= now.getFullYear(),
+        member,
+        films: { club, log },
+        count,
+        scores,
+        picks: theirPicks.length ? theirPicks : null,
+        breakaway,
+        log: logSlide,
+        taste,
+        director,
+        words,
+        trophies,
+        lists: made.length ? made : null,
+        closing: {
+            films: count.withClub + count.onOwn,
+            averageGiven: scores?.average ?? null,
+            favourite: pair?.loved ?? null,
+            trophies: received.length,
+        },
+    };
+};
+
+/**
+ * The most consecutive weeks, Monday to Sunday, with at least one of these
+ * `YYYY-MM-DD` dates in each.
+ */
+export const longestWeekStreak = (dates: string[]): number => {
+    const weeks = [
+        ...new Set(
+            dates
+                .map((date) => {
+                    const [y, m, d] = date.split('-').map((part) => parseInt(part, 10));
+                    const days = Date.UTC(y, m - 1, d) / 86_400_000;
+                    // 1970-01-01 was a Thursday; shifting by three puts week
+                    // boundaries on Mondays.
+                    return Number.isNaN(days) ? null : Math.floor((days + 3) / 7);
+                })
+                .filter((week): week is number => week !== null)
+        ),
+    ].sort((a, b) => a - b);
+
+    let longest = 0;
+    let run = 0;
+    weeks.forEach((week, i) => {
+        run = i > 0 && week === weeks[i - 1] + 1 ? run + 1 : 1;
+        longest = Math.max(longest, run);
+    });
+    return longest;
+};

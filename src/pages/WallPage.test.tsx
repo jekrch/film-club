@@ -3,6 +3,8 @@ import { MemoryRouter } from 'react-router-dom';
 import WallPage from './WallPage';
 import { ClubAuthProvider } from '../auth/GoogleAuth';
 import { ResponsesProvider } from '../contexts/ResponsesContext';
+import type { WatchedEntry } from '../types/watched';
+import { logsLoaded, serveWatchedLogs } from '../test-utils/watchedFetch';
 
 // The bundled data is the club's real history — seventy-odd screenings — so the
 // page is exercised against a fixture holding one of each kind of event instead.
@@ -32,23 +34,26 @@ jest.mock('../types/film', () => ({
     ],
 }));
 
-jest.mock('../types/watched', () => ({
-    watchedLog: {
-        Gabe: [
-            {
-                imdbID: 'tt1000009',
-                watchDate: '2026-09-04',
-                score: 7,
-                scoreQualifier: null,
-                blurb: 'Watched it on my own.\nTwice, actually.',
-                // A link of Gabe's own, over the cached film's below: the wall
-                // has to play the trailer his log plays, not the film's.
-                trailerKey: 'GABETRAILER',
-                updatedAt: '2026-09-04T21:14:02Z',
-            },
-        ],
-    },
-}));
+// Fetched rather than bundled, so served through `fetch`.
+const LOGS: Record<string, WatchedEntry[]> = {
+    Gabe: [
+        {
+            imdbID: 'tt1000009',
+            watchDate: '2026-09-04',
+            score: 7,
+            scoreQualifier: null,
+            blurb: 'Watched it on my own.\nTwice, actually.',
+            // A link of Gabe's own, over the cached film's below: the wall
+            // has to play the trailer his log plays, not the film's.
+            trailerKey: 'GABETRAILER',
+            updatedAt: '2026-09-04T21:14:02Z',
+        },
+    ],
+};
+
+beforeEach(() => {
+    serveWatchedLogs(LOGS);
+});
 
 jest.mock('../types/list', () => ({
     // The real predicate rather than a stub: a list row's badge glyph turns on
@@ -88,7 +93,7 @@ jest.mock('../types/trophy', () => ({
     getBundledTrophies: () => [],
 }));
 
-const renderWall = () =>
+const renderWall = async () => {
     render(
         <ClubAuthProvider>
             <ResponsesProvider>
@@ -98,6 +103,8 @@ const renderWall = () =>
             </ResponsesProvider>
         </ClubAuthProvider>
     );
+    await logsLoaded();
+};
 
 /**
  * The boxes, in the order the wall drew them. Scoped to the `article` each box
@@ -128,8 +135,8 @@ afterEach(() => {
 });
 
 describe('WallPage', () => {
-    it('interleaves every kind of event into one column, newest first', () => {
-        renderWall();
+    it('interleaves every kind of event into one column, newest first', async () => {
+        await renderWall();
 
         // Gabe's log on the 4th outranks the screening on the 1st, which is the
         // interleaving the wall exists for. The trophy given at that screening
@@ -142,8 +149,8 @@ describe('WallPage', () => {
         expect(rows()[2]).toHaveTextContent(/Jacob\s*started a list\s*Even Your Therapist/);
     });
 
-    it('names the films at the top of a list rather than only counting them', () => {
-        renderWall();
+    it('names the films at the top of a list rather than only counting them', async () => {
+        await renderWall();
 
         // The badge carries the list's whole length; the line under the title
         // carries as much of it as the caches can name, and the balance as a
@@ -153,20 +160,20 @@ describe('WallPage', () => {
         expect(rows()[2]).toHaveTextContent(/A Cached Film\s*\+1 more/);
     });
 
-    it('heads each run with the month it fell in', () => {
-        renderWall();
+    it('heads each run with the month it fell in', async () => {
+        await renderWall();
         expect(screen.getByRole('heading', { name: 'September 2026' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'August 2026' })).toBeInTheDocument();
     });
 
-    it('counts the events it is showing, not the boxes it drew them in', () => {
-        renderWall();
+    it('counts the events it is showing, not the boxes it drew them in', async () => {
+        await renderWall();
         // Four records, three boxes: the heading counts what happened.
         expect(screen.getByRole('heading', { name: '4 Events' })).toBeInTheDocument();
     });
 
-    it('draws one poster for a screening and the trophies handed out at it', () => {
-        renderWall();
+    it('draws one poster for a screening and the trophies handed out at it', async () => {
+        await renderWall();
 
         // The screening's box holds the award, and the film's poster appears in
         // it once — which is the whole point of the fold.
@@ -177,8 +184,8 @@ describe('WallPage', () => {
         expect(rows()[1].textContent).not.toMatch(/Togetherness trophy\s*on/);
     });
 
-    it("shows the club's average on a screening and the member's own score on a log", () => {
-        renderWall();
+    it("shows the club's average on a screening and the member's own score on a log", async () => {
+        await renderWall();
 
         const screening = within(rows()[1]);
         expect(screening.getByText('6.5')).toBeInTheDocument();
@@ -196,8 +203,8 @@ describe('WallPage', () => {
         expect(log.getByText(/Watched it on my own/)).toBeInTheDocument();
     });
 
-    it("plays a trailer from the row, the member's own where they set one", () => {
-        renderWall();
+    it("plays a trailer from the row, the member's own where they set one", async () => {
+        await renderWall();
 
         // Half of what is on this wall is a film with no page here to follow the
         // title to, so the row itself has to be able to play the trailer.
@@ -222,8 +229,8 @@ describe('WallPage', () => {
         ).not.toBeInTheDocument();
     });
 
-    it("shows every member's own score on a screening, as the film cards do", () => {
-        renderWall();
+    it("shows every member's own score on a screening, as the film cards do", async () => {
+        await renderWall();
 
         // The card's strip of tiles — initials over the number — so the two
         // views of one screening say the same thing about how the room voted.
@@ -237,8 +244,8 @@ describe('WallPage', () => {
         expect(within(rows()[0]).queryByTitle(/^[a-z]+: /)).not.toBeInTheDocument();
     });
 
-    it('keeps the line breaks a member typed into their review', () => {
-        renderWall();
+    it('keeps the line breaks a member typed into their review', async () => {
+        await renderWall();
 
         // The review renders as Markdown on Gabe's own log, where a single
         // newline is a break (`remark-breaks`). Read as plain text here, it has
@@ -249,8 +256,8 @@ describe('WallPage', () => {
         expect(review.closest('.whitespace-pre-line')).not.toBeNull();
     });
 
-    it('links each headline back to where its record lives', () => {
-        renderWall();
+    it('links each headline back to where its record lives', async () => {
+        await renderWall();
 
         expect(within(rows()[1]).getByRole('link', { name: 'The Screening 1999' })).toHaveAttribute(
             'href',
@@ -266,8 +273,8 @@ describe('WallPage', () => {
         ).toHaveAttribute('href', '/lists/jacob-therapists');
     });
 
-    it('sends the poster to the record itself, which for a log is the log', () => {
-        renderWall();
+    it('sends the poster to the record itself, which for a log is the log', async () => {
+        await renderWall();
 
         // Not to the film: the record this box is a view onto is Gabe's own
         // entry, and it names the row so the log opens with that film in view.
@@ -279,8 +286,8 @@ describe('WallPage', () => {
         ).toHaveAttribute('href', '/films/tt1000001');
     });
 
-    it("hangs a log off its member's own portrait, linking to them", () => {
-        renderWall();
+    it("hangs a log off its member's own portrait, linking to them", async () => {
+        await renderWall();
 
         // The node lives outside the row's article, in the timeline gutter, and
         // holds the only portrait of Gabe on the wall.
@@ -295,15 +302,15 @@ describe('WallPage', () => {
         );
     });
 
-    it("marks a logged score as the member's own, never as a club figure", () => {
-        renderWall();
+    it("marks a logged score as the member's own, never as a club figure", async () => {
+        await renderWall();
 
         expect(within(rows()[0]).getByText("Gabe's")).toBeInTheDocument();
         expect(within(rows()[0]).queryByText('Club avg')).not.toBeInTheDocument();
     });
 
-    it('leaves a club screening its own icon rather than a member portrait', () => {
-        renderWall();
+    it('leaves a club screening its own icon rather than a member portrait', async () => {
+        await renderWall();
 
         // The evening belongs to the club, not to whoever picked the film —
         // Mark is named as the selector and nowhere given the node.
@@ -311,9 +318,9 @@ describe('WallPage', () => {
         expect(within(rows()[1]).getByRole('link', { name: 'Mark' })).toBeInTheDocument();
     });
 
-    it('expands prose the row had to cut off, and folds it back', () => {
+    it('expands prose the row had to cut off, and folds it back', async () => {
         stubOverflow();
-        renderWall();
+        await renderWall();
 
         const review = within(rows()[0]).getByRole('button', { name: /Read more/ });
         expect(review).toHaveAttribute('aria-expanded', 'false');
@@ -326,18 +333,18 @@ describe('WallPage', () => {
         expect(within(rows()[0]).getByText(/Watched it on my own/)).toBeInTheDocument();
     });
 
-    it('offers no expander on prose that already fits', () => {
-        renderWall();
+    it('offers no expander on prose that already fits', async () => {
+        await renderWall();
         expect(screen.queryByRole('button', { name: /Read more/ })).not.toBeInTheDocument();
     });
 
-    it('offers a signed-out visitor no way to log a film', () => {
-        renderWall();
+    it('offers a signed-out visitor no way to log a film', async () => {
+        await renderWall();
         expect(screen.queryByRole('button', { name: /Log a film/i })).not.toBeInTheDocument();
     });
 
-    it('narrows to one kind of event, and back', () => {
-        renderWall();
+    it('narrows to one kind of event, and back', async () => {
+        await renderWall();
 
         fireEvent.click(screen.getByRole('button', { name: /Logs/ }));
         expect(rows()).toHaveLength(1);
@@ -349,8 +356,8 @@ describe('WallPage', () => {
         expect(rows()).toHaveLength(3);
     });
 
-    it('combines chips rather than replacing the selection', () => {
-        renderWall();
+    it('combines chips rather than replacing the selection', async () => {
+        await renderWall();
 
         fireEvent.click(screen.getByRole('button', { name: /Logs/ }));
         fireEvent.click(screen.getByRole('button', { name: /Lists/ }));

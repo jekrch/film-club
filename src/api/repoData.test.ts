@@ -267,45 +267,94 @@ describe('fetchLists', () => {
 });
 
 describe('fetchWatched', () => {
+    it("reads each member's own file, by the name's slug", async () => {
+        mockFetch.mockResolvedValue(respond(200, []));
+
+        await fetchWatched(['Andy', 'Mary Ann']);
+
+        const urls = mockFetch.mock.calls.map(([url]) => url);
+        expect(urls).toEqual([`${DATA}/watched/andy.json`, `${DATA}/watched/mary-ann.json`]);
+    });
+
+    it('keys the result by the names asked for', async () => {
+        mockFetch.mockResolvedValue(respond(200, [entry('tt1', '2026-01-01')]));
+
+        const log = await fetchWatched(['Andy']);
+
+        expect(Object.keys(log)).toEqual(['Andy']);
+    });
+
+    /** A member added to `club.json` has no file until the next deploy. */
+    it('reads a missing file as an empty log', async () => {
+        mockFetch.mockResolvedValue(respond(404, null));
+
+        await expect(fetchWatched(['Andy'])).resolves.toEqual({ Andy: [] });
+    });
+
+    it('rejects a file that is not a log', async () => {
+        mockFetch.mockResolvedValue(respond(200, { Andy: [] }));
+
+        await expect(fetchWatched(['Andy'])).rejects.toThrow('watched/andy.json');
+    });
+
     it('overlays an entry onto the owner the file already knows', async () => {
-        mockFetch.mockResolvedValue(respond(200, { Andy: [entry('tt1', '2026-01-01')] }));
+        mockFetch.mockResolvedValue(respond(200, [entry('tt1', '2026-01-01')]));
         recordWrite('watched', writeKeys.watched('Andy', 'tt1'), entry('tt1', '2026-08-16'));
 
-        const log = await fetchWatched();
+        const log = await fetchWatched(['Andy']);
 
         expect(log.Andy).toHaveLength(1);
         expect(log.Andy[0].watchDate).toBe('2026-08-16');
     });
 
     /**
-     * The file keys by display name and the cache by the lowercased one, which
-     * is all a caller reliably has — so the match has to be case-insensitive or
-     * a save would land under a second, duplicate owner key.
+     * The roster spells the name and the cache lowercases it, which is all a
+     * caller reliably has, so the match has to be case-insensitive or a save
+     * would land under a second, duplicate owner key.
      */
     it('matches the owner regardless of case rather than adding a key', async () => {
-        mockFetch.mockResolvedValue(respond(200, { Andy: [entry('tt1', '2026-01-01')] }));
+        mockFetch.mockResolvedValue(respond(200, [entry('tt1', '2026-01-01')]));
         recordWrite('watched', writeKeys.watched('ANDY', 'tt2'), entry('tt2', '2026-08-16'));
 
-        const log = await fetchWatched();
+        const log = await fetchWatched(['Andy']);
 
         expect(Object.keys(log)).toEqual(['Andy']);
         expect(log.Andy).toHaveLength(2);
     });
 
     it('keeps the log newest-first after an overlay', async () => {
-        mockFetch.mockResolvedValue(respond(200, { Andy: [entry('tt1', '2026-01-01')] }));
+        mockFetch.mockResolvedValue(respond(200, [entry('tt1', '2026-01-01')]));
         recordWrite('watched', writeKeys.watched('Andy', 'tt2'), entry('tt2', '2026-08-16'));
 
-        const log = await fetchWatched();
+        const log = await fetchWatched(['Andy']);
 
         expect(log.Andy.map((row) => row.imdbID)).toEqual(['tt2', 'tt1']);
     });
 
     it('removes an entry the file still carries', async () => {
-        mockFetch.mockResolvedValue(respond(200, { Andy: [entry('tt1', '2026-01-01')] }));
+        mockFetch.mockResolvedValue(respond(200, [entry('tt1', '2026-01-01')]));
         recordWrite('watched', writeKeys.watched('Andy', 'tt1'), null);
 
-        await expect(fetchWatched()).resolves.toEqual({ Andy: [] });
+        await expect(fetchWatched(['Andy'])).resolves.toEqual({ Andy: [] });
+    });
+
+    /**
+     * A page that fetched Andy's log knows nothing about Gabe's. Treating
+     * Gabe's pending delete as confirmed because his entry is "absent" from a
+     * file nobody read would clear it before it had landed.
+     */
+    it("leaves another member's pending saves alone", async () => {
+        mockFetch.mockResolvedValue(respond(200, []));
+        recordWrite('watched', writeKeys.watched('Gabe', 'tt9'), null);
+        recordWrite('watched', writeKeys.watched('Gabe', 'tt8'), entry('tt8', '2026-08-16'));
+
+        const log = await fetchWatched(['Andy']);
+
+        expect(Object.keys(log)).toEqual(['Andy']);
+        expect([...pendingWrites('watched').keys()].sort()).toEqual([
+            writeKeys.watched('Gabe', 'tt8'),
+            writeKeys.watched('Gabe', 'tt9'),
+        ]);
     });
 });
 

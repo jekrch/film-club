@@ -1,7 +1,7 @@
 import { Film, filmData } from '../types/film';
-import { ListFilmSummary, listFilmSummaries } from '../types/list';
-import { WatchedEntry, WatchedLog, watchedLog } from '../types/watched';
-import { pendingFilmSummary } from './pendingFilmSummaries';
+import type { ListFilmSummary } from '../types/list';
+import type { WatchedEntry, WatchedLog } from '../types/watched';
+import { findFilmSummary } from '../api/filmSummaries';
 import { resolveEntryDetails, type EntryDetails } from './entryDetails';
 import { resolveTrailerKey } from './youtube';
 
@@ -49,8 +49,12 @@ export interface ResolvedWatchedEntry extends WatchedEntry {
 }
 
 /**
- * Optional data overrides. Production callers pass nothing and get the bundled
- * data; tests pass fixtures rather than reaching for module mocks.
+ * Optional data overrides. Tests pass fixtures rather than reaching for module
+ * mocks, and production callers pass the bundled films and summaries by
+ * default.
+ *
+ * `watched` has no bundled default: logs are fetched (`useWatchedLog`), so a
+ * caller passes what it fetched, and one that passes nothing sees empty logs.
  */
 export interface WatchedDataSources {
     watched?: WatchedLog;
@@ -99,7 +103,7 @@ export const watchedRowId = (imdbID: string): string => `log-${imdbID}`;
 
 /**
  * One member's log, most recent viewing first. Owner matching is
- * case-insensitive because `watched.json` is keyed by display name while
+ * case-insensitive because a log is keyed by display name while
  * callers may hold either that or a normalized rating key.
  */
 export const getWatchedForMember = (
@@ -116,7 +120,7 @@ const rawLogFor = (
     const normalized = name.trim().toLowerCase();
     if (!normalized) return [];
 
-    const log = sources.watched ?? watchedLog;
+    const log = sources.watched ?? {};
     const key = Object.keys(log).find((owner) => owner.trim().toLowerCase() === normalized);
     return key === undefined ? [] : log[key];
 };
@@ -164,11 +168,11 @@ export const resolveWatchedEntry = (
         };
     }
 
-    // The bundled cache first, then whatever the search hit that logged this
-    // film knew — which is all there is between logging a film and the CI step
-    // that enriches it, and is why a row logged a minute ago has a title at all.
-    const summary =
-        (sources.summaries ?? listFilmSummaries)[entry.imdbID] ?? pendingFilmSummary(entry.imdbID);
+    // The bundled cache first, then the live index for a film logged since the
+    // last build, then whatever the search hit that logged it knew — which is
+    // all there is until CI enriches it, and is why a row logged a minute ago
+    // has a title at all.
+    const summary = findFilmSummary(entry.imdbID, sources.summaries);
     if (summary) {
         return {
             ...entry,

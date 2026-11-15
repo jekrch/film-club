@@ -1,5 +1,3 @@
-import watchedData from '../assets/watched.json';
-
 /**
  * Films members watched on their own, outside the club.
  *
@@ -66,43 +64,55 @@ export interface WatchedEntry {
     updatedAt: string;
 }
 
-/** `watched.json`: member display name → their entries, newest watch first. */
+/**
+ * Several members' logs at once: display name → their entries, newest watch
+ * first. Whatever a page fetched, so it holds only the members that page asked
+ * for (see `useWatchedLog`).
+ */
 export type WatchedLog = Record<string, WatchedEntry[]>;
 
 /**
- * Validates the bundled log at module-load time.
+ * The file name a member's log is stored and published under: `Jacob` →
+ * `jacob`, so `src/assets/watched/jacob.json` in the repo and
+ * `data/watched/jacob.json` on the site.
  *
- * Same reasoning as `assertFilmData` and `assertListData`: this file is written
- * by the editor worker, so it is untyped at import and a malformed record would
- * otherwise surface as an opaque crash deep in a render. Intentionally shallow
- * — it checks the fields the page routes and sorts on, not the full schema (the
- * worker validates on write).
+ * **Not bundled.** Each log is fetched by the pages that show it. A logged film
+ * used to add its entry to every visitor's first page load; now it costs only
+ * the reader of that log. The worker writes one file per member, and
+ * a watch-log commit publishes just these files without rebuilding the site
+ * (`.github/workflows/data-deploy.yml`).
+ *
+ * The same rule as the worker's `slugify` and `memberSlug` in
+ * `scripts/liveData.ts`; `watched.test.ts` checks all three agree.
  */
-function assertWatchedData(data: unknown): WatchedLog {
-    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
-        throw new Error('watched.json: expected an object keyed by member name');
+export const memberSlug = (name: string): string =>
+    name
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+
+/**
+ * Checks one fetched log file and returns it typed.
+ *
+ * Intentionally shallow, like the bundled files' asserts: it checks the fields
+ * the page routes and sorts on, not the full schema (the worker validates on
+ * write). A malformed file throws here, where the fetch's caller reports it,
+ * rather than as an opaque crash deep in a render.
+ */
+export function assertWatchedEntries(data: unknown, file: string): WatchedEntry[] {
+    if (!Array.isArray(data)) {
+        throw new Error(`${file}: expected an array of entries`);
     }
-
-    Object.entries(data as Record<string, unknown>).forEach(([owner, entries]) => {
-        if (!Array.isArray(entries)) {
-            throw new Error(`watched.json[${owner}]: expected an array of entries`);
+    data.forEach((entry, index) => {
+        const e = entry as Partial<WatchedEntry> | null;
+        if (typeof e !== 'object' || e === null || typeof e.imdbID !== 'string') {
+            throw new Error(`${file}: entry ${index} missing or invalid "imdbID"`);
         }
-        entries.forEach((entry, index) => {
-            const e = entry as Partial<WatchedEntry> | null;
-            if (typeof e !== 'object' || e === null || typeof e.imdbID !== 'string') {
-                throw new Error(
-                    `watched.json[${owner}]: entry ${index} missing or invalid "imdbID"`
-                );
-            }
-            if (typeof e.watchDate !== 'string' || e.watchDate.length === 0) {
-                throw new Error(
-                    `watched.json[${owner}] (${e.imdbID}): missing or invalid "watchDate"`
-                );
-            }
-        });
+        if (typeof e.watchDate !== 'string' || e.watchDate.length === 0) {
+            throw new Error(`${file} (${e.imdbID}): missing or invalid "watchDate"`);
+        }
     });
-
-    return data as WatchedLog;
+    return data as WatchedEntry[];
 }
-
-export const watchedLog = assertWatchedData(watchedData);

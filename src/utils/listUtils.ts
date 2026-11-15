@@ -1,13 +1,7 @@
 import { Film, filmData } from '../types/film';
-import {
-    FilmListDefinition,
-    FilmListEntry,
-    ListFilmSummary,
-    filmLists,
-    listFilmSummaries,
-} from '../types/list';
+import { FilmListDefinition, FilmListEntry, ListFilmSummary, filmLists } from '../types/list';
 import type { WatchedLog } from '../types/watched';
-import { pendingFilmSummary } from './pendingFilmSummaries';
+import { findFilmSummary } from '../api/filmSummaries';
 import { getWatchedEntryFor } from './watchedUtils';
 import { resolveEntryDetails, type EntryDetails } from './entryDetails';
 import { resolveTrailerKey } from './youtube';
@@ -72,7 +66,7 @@ export interface ResolvedListEntry {
  *
  * - `entry` — set on the list itself, which is the owner saying "on *this* list,
  *   this film is an 8" and therefore wins.
- * - `log` — their `watched.json` entry for the film.
+ * - `log` — their watch-log entry for the film.
  * - `club` — their row in the film's `clubRatings`.
  */
 export type ScoreSource = 'entry' | 'log' | 'club';
@@ -85,7 +79,10 @@ export interface ListDataSources {
     lists?: FilmListDefinition[];
     films?: Film[];
     summaries?: Record<string, ListFilmSummary>;
-    /** Consulted only for the score fallback below. */
+    /**
+     * Consulted only for the score fallback below. Not bundled, so without it
+     * the fallback skips straight from the entry's own score to the club's.
+     */
     watched?: WatchedLog;
 }
 
@@ -215,8 +212,7 @@ export const resolveListEntry = (
     // The bundled cache first, then whatever the search hit that added this film
     // knew — which is all there is between adding a film and the CI step that
     // enriches it, and is why a row added a minute ago has a title at all.
-    const summary =
-        (sources.summaries ?? listFilmSummaries)[entry.imdbID] ?? pendingFilmSummary(entry.imdbID);
+    const summary = findFilmSummary(entry.imdbID, sources.summaries);
     if (summary) {
         return {
             ...base,

@@ -3,7 +3,7 @@ import { FilmListDefinition, filmLists } from '../types/list';
 import { trophyIndex, type Trophy } from '../types/trophy';
 import { clubThreadId, listThreadId, logThreadId, reviewThreadId } from '../types/responses';
 import { capitalizeUserName, getTeamMemberByName } from '../types/team';
-import { watchedLog, type WatchedLog } from '../types/watched';
+import type { WatchedLog } from '../types/watched';
 import { parseWatchDate } from './filmUtils';
 import {
     collectionFrameImage,
@@ -22,12 +22,12 @@ import type { ListFilmSummary } from '../types/list';
  *
  * The site already tells each of these stories in its own place — a film's page,
  * a member's log, a list, a trophy shelf — and nowhere says what happened *last*.
- * This module is the join: it reads the four bundled files that record dated
- * activity and flattens them into one stream of {@link WallEvent}.
+ * This module is the join: it reads the files that record dated activity and
+ * flattens them into one stream of {@link WallEvent}.
  *
  * **It reads, and only reads.** Nothing here writes, and nothing here is a new
  * record of anything: an event is a view onto a row that already exists in
- * `films.json`, `watched.json`, `lists.json`, or `trophies.json`. The club/personal
+ * `films.json`, a member's watch log, `lists.json`, or `trophies.json`. The club/personal
  * divide the rest of the site is built on (see the note atop `types/watched.ts`)
  * survives intact — a `log` event carries a member's private score and a
  * `club-watch` event carries the club's average, and neither can become the
@@ -44,9 +44,9 @@ import type { ListFilmSummary } from '../types/list';
  * film, and the adding is the event. {@link WallEvent.at} carries the recorded
  * instant where there is one, and is only ever a tie-breaker.
  *
- * Everything read here is bundled, so the wall renders for a signed-out visitor
- * with no network round trip — the same reason `lists.json` and `trophies.json`
- * are bundled in the first place. `overrides.json` is deliberately *not* read:
+ * Everything read here is bundled except the watch logs, which the caller
+ * fetches (`useWatchedLog`) and passes in as `sources.watched`; without them
+ * the wall has no log events. `overrides.json` is deliberately *not* read:
  * it is fetched only for signed-in members, and a wall that grew rows when you
  * signed in would be a different wall per viewer.
  */
@@ -459,7 +459,7 @@ export const buildWall = (sources: WallDataSources = {}): WallEvent[] => {
 
     return [
         ...clubWatchEvents(films),
-        ...logEvents(sources.watched ?? watchedLog, sources),
+        ...logEvents(sources.watched ?? {}, sources),
         ...lateReviewEvents(films),
         ...listEvents(sources.lists ?? filmLists, sources),
         ...trophyEvents(films, sources),

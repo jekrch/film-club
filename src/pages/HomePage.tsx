@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import FilmList from '../components/films/FilmList';
 import { Film, filmData } from '../types/film';
 import { TeamMember, teamMembers as teamMembersData } from '../types/team';
@@ -11,6 +11,7 @@ import { buildWall, offDocketNotes, type OffDocketNote } from '../utils/wallUtil
 import PageLayout from '../components/layout/PageLayout';
 import CorinthianPillar from '../components/layout/CorinthianPillar';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import { ALL_MEMBERS, useWatchedLog } from '../hooks/useWatchedLog';
 
 // --- Helper function to format total minutes ---
 const formatTotalMinutes = (totalMinutes: number): string => {
@@ -55,7 +56,14 @@ const HomePage = () => {
     const [currentSelectorName, setCurrentSelectorName] = useState<string | null>(null);
     const [activeCycleMembersList, setActiveCycleMembersList] = useState<TeamMember[]>([]);
     const [upNextFilm, setUpNextFilm] = useState<Film | undefined>(undefined);
-    const [offDocket, setOffDocket] = useState<OffDocketNote[]>([]);
+    // The members' own logs and lists, which need the logs fetched first. The
+    // strip stays empty until then rather than showing lists alone and
+    // rewriting itself a moment later.
+    const { log: watched } = useWatchedLog(ALL_MEMBERS);
+    const offDocket = useMemo<OffDocketNote[]>(
+        () => (watched ? offDocketNotes(buildWall({ watched })) : []),
+        [watched]
+    );
     const pillarWidth = usePillarWidth();
 
     // --- Data Fetching and Processing Effect ---
@@ -139,8 +147,6 @@ const HomePage = () => {
             ...watchedFilmsSorted.slice(0, 8),
         ];
         setRecentClubPicks(recentPicks);
-
-        setOffDocket(offDocketNotes(buildWall()));
 
         // Determine Last Meeting Time
         if (watchedFilmsSorted.length > 0 && watchedFilmsSorted[0].movieClubInfo?.watchDate) {

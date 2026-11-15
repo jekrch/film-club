@@ -23,11 +23,14 @@ browser  ──ID token──▶  worker  ──verify (Google JWKS)
                                      ├─ overrides.json  (scores, reviews)
                                      ├─ lists.json      (member lists)
                                      ├─ trophies.json   (club awards)
-                                     ├─ watched.json    (personal watch logs)
                                      │    │
                                      │    deploy.yml ─▶ apply_overrides.py
                                      │                  enrich_list_films.py
                                      │                  build → gh-pages → live (~1 min)
+                                     │
+                                     ├─ watched/<member>.json  (personal watch logs)
+                                     │    └─ data-deploy.yml ─▶ enrich_list_films.py
+                                     │                          data/ on gh-pages, no build
                                      │
                                      └─ responses.json  (reactions, comments)
                                           └─ [deferred deploy]: deploy.yml waits a
@@ -35,7 +38,7 @@ browser  ──ID token──▶  worker  ──verify (Google JWKS)
 ```
 
 **One writer per file.** CI owns `films.json` and `listFilms.json`; the worker
-owns `overrides.json`, `lists.json`, `watched.json`, `club.json`,
+owns `overrides.json`, `lists.json`, the watch logs under `watched/`, `club.json`,
 `trophies.json`, `responses.json`, and the uploaded pictures under
 `public/images/members/`, and
 never writes the other two. (CI _reads_ `club.json` — the banner films a member names are cached like
@@ -132,7 +135,7 @@ per member: a rewatch moves the entry's date rather than adding a row.
 
 Unlike a rating write there is **no club-film check** — the point of the log is
 films the club never watched. A member may also log one it did; that entry's
-score is theirs alone. Nothing in CI reads `watched.json` into `films.json`, so
+score is theirs alone. Nothing in CI reads the watch logs into `films.json`, so
 a logged film cannot reach the almanac, a club average, or any statistic.
 
 `trailerKey` — on a watch-log entry and on a list entry alike — is the one field
@@ -206,7 +209,7 @@ id for the thing it is about:
 - `list-<listId>` for a list.
 
 Adding a reaction or a comment checks that the subject exists: the entry in
-`watched.json`, the film among the club's (as a rating write does), a score or
+the member's watch log, the film among the club's (as a rating write does), a score or
 review on the member's row in `films.json`, or the list in `lists.json`. Taking one back doesn't, so nothing is stranded on an entry,
 or a list, its owner has since removed. The site simply stops drawing that
 thread.

@@ -19,6 +19,7 @@ import MemberScoreTiles from '../films/MemberScoreTiles';
 import LogResponses from '../responses/LogResponses';
 import { resolveTrophyIcon, type IconComponent } from '../common/trophyIcons';
 import { clubFilmDetails, type EntryDetails } from '../../utils/entryDetails';
+import { useEntryDetails } from '../../hooks/useEntryDetails';
 import { getRatingColorClass } from '../../utils/ratingUtils';
 import { MAX_SCORE } from '../../utils/ratingEditUtils';
 import { formatWatchDate, watchedRowId } from '../../utils/watchedUtils';
@@ -482,9 +483,16 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected, onEdit }) =
     /** The club's own screening, which the wall draws with more weight than the rest. */
     const clubPick = lead.kind === 'club-watch';
 
-    const details = useMemo(() => rowDetails(lead), [lead]);
+    const leadDetails = useMemo(() => rowDetails(lead), [lead]);
     const trailerKey = rowTrailerKey(lead);
-    const [detailsOpen, setDetailsOpen] = useState(false);
+    // Only a log can be of a film outside the club, whose full record is
+    // fetched when the panel opens; a screening's or a trophy's is bundled.
+    const {
+        details,
+        open: detailsOpen,
+        toggle: toggleDetails,
+        prefetch: prefetchDetails,
+    } = useEntryDetails(film?.imdbID, leadDetails, lead.kind === 'log' && !lead.entry.clubFilm);
     // Keyed by the row rather than by the film: a screening and a member's log
     // of the same film can sit on one page, and two panels sharing an `id` would
     // point every one of their toggles at whichever came first.
@@ -495,7 +503,8 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected, onEdit }) =
         details && film ? (
             <EntryDetailsToggle
                 isOpen={detailsOpen}
-                onToggle={() => setDetailsOpen((open) => !open)}
+                onToggle={toggleDetails}
+                onPrefetch={prefetchDetails}
                 title={film.title}
                 panelId={panelId}
                 labeled
@@ -596,7 +605,9 @@ const WallEventRow: React.FC<WallEventRowProps> = ({ row, connected, onEdit }) =
                             (details ? (
                                 <button
                                     type="button"
-                                    onClick={() => setDetailsOpen((open) => !open)}
+                                    onClick={toggleDetails}
+                                    onPointerEnter={prefetchDetails}
+                                    onFocus={prefetchDetails}
                                     aria-expanded={detailsOpen}
                                     aria-controls={panelId}
                                     aria-label={

@@ -17,16 +17,11 @@ import {
     type FilmSearchResult,
     type WatchedPatch,
 } from '../api/clubApi';
-import { fetchWatched } from '../api/repoData';
 import { recordWrite, writeKeys } from '../api/writeCache';
 import { getTeamMemberByName } from '../types/team';
 import type { WatchedEntry } from '../types/watched';
-import {
-    compareWatched,
-    getWatchedForMember,
-    resolveWatchedEntries,
-    watchedRowId,
-} from '../utils/watchedUtils';
+import { compareWatched, resolveWatchedEntries, watchedRowId } from '../utils/watchedUtils';
+import { entriesFor, useWatchedLog } from '../hooks/useWatchedLog';
 import { useListEntrance } from '../hooks/useListEntrance';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { todayLocal } from '../utils/watchedEditUtils';
@@ -53,46 +48,26 @@ const WatchedPage: React.FC = () => {
     const { memberName } = useParams<{ memberName: string }>();
     const { hash } = useLocation();
     const navigate = useNavigate();
-    const { configured, status, member: signedInAs, canEditAs, withToken } = useClubAuth();
+    const { configured, member: signedInAs, canEditAs, withToken } = useClubAuth();
 
     const teamMember = getTeamMemberByName(memberName ?? '');
-    /** The display name as `watched.json` keys it, not the URL's casing. */
+    /** The display name the roster spells, not the URL's casing. */
     const owner = teamMember?.name;
 
-    const [entries, setEntries] = useState<WatchedEntry[]>(() => getWatchedForMember(memberName));
+    // Fetched, not bundled. A save from this page goes through `recordWrite`
+    // and `reapply`, so the write cache is this page's local state as well as
+    // what carries the save across a reload until the deploy catches up.
+    const { log, failed, reapply } = useWatchedLog(owner ? [owner] : []);
+    const entries = useMemo(() => [...entriesFor(log, owner)].sort(compareWatched), [log, owner]);
+    const loading = log === null && !failed;
+
     const [error, setError] = useState<string | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
     const [visible, setVisible] = useState(PAGE_SIZE);
 
-    // A late live read must not overwrite a save made in the meantime, so
-    // seeding checks this rather than the state it is about to replace.
-    const touched = useRef(false);
-
     const canEdit = configured && canEditAs(owner);
     /** Set only when an admin is editing someone else's log; the worker defaults to the caller. */
     const actingFor = owner && signedInAs && owner !== signedInAs ? owner : undefined;
-
-    // The bundle renders instantly but lacks saves that haven't deployed yet;
-    // the live copy from the repo covers those.
-    useEffect(() => {
-        if (status !== 'signed-in' || !owner) return;
-        const controller = new AbortController();
-
-        fetchWatched(controller.signal)
-            .then((log) => {
-                if (controller.signal.aborted || touched.current) return;
-                const key = Object.keys(log).find(
-                    (name) => name.trim().toLowerCase() === owner.toLowerCase()
-                );
-                setEntries(key === undefined ? [] : [...log[key]].sort(compareWatched));
-            })
-            .catch(() => {
-                // The bundled log is already on screen; a failed refresh means
-                // it may be a minute stale, not that the page is broken.
-            });
-
-        return () => controller.abort();
-    }, [status, owner]);
 
     const resolved = useMemo(() => resolveWatchedEntries(entries), [entries]);
     const logged = useMemo(() => new Set(entries.map((entry) => entry.imdbID)), [entries]);
@@ -151,15 +126,10 @@ const WatchedPage: React.FC = () => {
      */
     const applyLocal = useCallback(
         (entry: WatchedEntry) => {
-            touched.current = true;
             if (owner) recordWrite('watched', writeKeys.watched(owner, entry.imdbID), entry);
-            setEntries((current) =>
-                [...current.filter((existing) => existing.imdbID !== entry.imdbID), entry].sort(
-                    compareWatched
-                )
-            );
+            reapply();
         },
-        [owner]
+        [owner, reapply]
     );
 
     const save = useCallback(
@@ -182,13 +152,12 @@ const WatchedPage: React.FC = () => {
             const { owner: removedFrom } = await withToken((token) =>
                 deleteWatched(token, imdbID, actingFor)
             );
-            touched.current = true;
             recordWrite('watched', writeKeys.watched(removedFrom, imdbID), null);
-            setEntries((current) => current.filter((entry) => entry.imdbID !== imdbID));
+            reapply();
             setNotice('Removed — live on the site in about a minute.');
             setError(null);
         },
-        [withToken, actingFor]
+        [withToken, actingFor, reapply]
     );
 
     /**
@@ -257,7 +226,9 @@ const WatchedPage: React.FC = () => {
             <AccentCard className="mb-12">
                 <div className="mb-6 flex items-center gap-3">
                     <h4 className="text-xl font-bold text-slate-100">
-                        {entries.length} Film{entries.length !== 1 ? 's' : ''}
+                        {loading
+                            ? 'Films'
+                            : `${entries.length} Film${entries.length !== 1 ? 's' : ''}`}
                     </h4>
                     <span className="h-px flex-grow bg-slate-700/60" />
                 </div>
@@ -278,7 +249,13 @@ const WatchedPage: React.FC = () => {
                 {error && <p className="mb-4 text-sm text-rose-300">{error}</p>}
 
                 <div ref={logRef}>
-                    {resolved.length > 0 ? (
+                    {loading ? (
+                        <p className="py-6 text-center text-sm text-slate-500">Loading…</p>
+                    ) : failed ? (
+                        <p className="py-6 text-center text-sm text-rose-300">
+                            Couldn't load {owner}'s log. Try reloading the page.
+                        </p>
+                    ) : resolved.length > 0 ? (
                         <ol className="space-y-2">
                             {page.map((entry) => (
                                 <li

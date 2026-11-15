@@ -16,9 +16,7 @@ import { entryFrameSource, filmFrameSource, type FrameSource } from '../utils/fr
 import { useListEntrance } from '../hooks/useListEntrance';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { useClubAuth } from '../auth/GoogleAuth';
-import { overlayPendingWatched } from '../api/repoData';
-import { getTeamMemberByName } from '../types/team';
-import { watchedLog, type WatchedLog } from '../types/watched';
+import { ALL_MEMBERS, entriesFor, useWatchedLog } from '../hooks/useWatchedLog';
 import { watchedPathFor, watchedRowId } from '../utils/watchedUtils';
 import {
     buildWall,
@@ -40,11 +38,13 @@ import {
  * every row is a view onto a record that already exists somewhere else, and
  * every row links back to where that record lives.
  *
- * Public and identical for everyone. It is built from bundled data alone (see
- * the note atop `utils/wallUtils.ts`), so a signed-out visitor gets the whole
- * wall with no round trip and a signed-in member gets exactly the same one —
- * plus whatever they logged in this tab that hasn't deployed yet, so a film
- * logged from the button in the header lands at the top of the wall at once.
+ * Public and identical for everyone. It is built from bundled data plus every
+ * member's watch log, which is fetched (see the note atop `utils/wallUtils.ts`),
+ * so the wall waits for those before it draws: a wall that drew the screenings
+ * and then pushed them down under a month of logs would jump under the reader.
+ * A signed-in member also sees whatever they logged in this tab that hasn't
+ * deployed yet, so a film logged from the button in the header lands at the top
+ * of the wall at once.
  */
 
 /**
@@ -127,23 +127,6 @@ const eventFrameSource = (event: WallEvent): FrameSource | null => {
 };
 
 /**
- * The bundled watch log with this tab's own unconfirmed saves laid over it.
- *
- * The overlay keys a member's first-ever entry by their lowercased name, since
- * that's all the write cache holds; the wall prints that name on the row, so it
- * goes back to the roster's spelling here.
- */
-const wallWatchedLog = (): WatchedLog => {
-    const { log } = overlayPendingWatched(watchedLog);
-    return Object.fromEntries(
-        Object.entries(log).map(([name, entries]) => [
-            getTeamMemberByName(name)?.name ?? name,
-            entries,
-        ])
-    );
-};
-
-/**
  * The header's one action, in the filter chips' shape so the row stays one
  * height, and lit in the accent so it doesn't read as a fourth filter.
  */
@@ -154,10 +137,15 @@ const WallPage: React.FC = () => {
     const { configured, status, member, canEditAs } = useClubAuth();
     const canLog = configured && status === 'signed-in' && member !== null;
 
-    // Read once on arrival and again after a save from this page — the only
+    // Everyone's logs, keyed by the roster's spelling of each name, which is
+    // what the rows print. Re-overlaid after a save from this page — the only
     // write the wall makes. Everything else in it is bundled.
-    const [watched, setWatched] = useState<WatchedLog>(wallWatchedLog);
-    const events = useMemo(() => buildWall({ watched }), [watched]);
+    const { log: watched, failed: logsFailed, reapply } = useWatchedLog(ALL_MEMBERS);
+    const loadingLogs = watched === null && !logsFailed;
+    const events = useMemo(
+        () => (loadingLogs ? [] : buildWall({ watched: watched ?? {} })),
+        [loadingLogs, watched]
+    );
 
     const [logOpen, setLogOpen] = useState(false);
 
@@ -177,9 +165,7 @@ const WallPage: React.FC = () => {
 
     /** The reader's own logged ids, which the search offers as already taken. */
     const logged = useMemo(() => {
-        const name = member?.toLowerCase();
-        const key = Object.keys(watched).find((owner) => owner.toLowerCase() === name);
-        return new Set((key ? watched[key] : []).map((entry) => entry.imdbID));
+        return new Set(entriesFor(watched, member ?? undefined).map((entry) => entry.imdbID));
     }, [watched, member]);
 
     const { width: pillarWidth, left: pillarLeft } = usePillarPlacement();
@@ -224,7 +210,7 @@ const WallPage: React.FC = () => {
     }, [events]);
 
     const onLogged = (imdbID: string, title: string) => {
-        setWatched(wallWatchedLog());
+        reapply();
         setJustLogged({ imdbID, title });
         // A wall narrowed to screenings or lists would swallow the new row,
         // which reads exactly like a save that didn't take.
@@ -283,7 +269,9 @@ const WallPage: React.FC = () => {
                 <AccentCard className="mb-12">
                     <div className="mb-6 flex flex-wrap items-center gap-3">
                         <h4 className="text-xl font-bold text-slate-100">
-                            {filtered.length} Event{filtered.length !== 1 ? 's' : ''}
+                            {loadingLogs
+                                ? 'Events'
+                                : `${filtered.length} Event${filtered.length !== 1 ? 's' : ''}`}
                         </h4>
                         <span className="h-px flex-grow bg-slate-700/60" />
                         <div className="flex flex-wrap gap-1.5">
@@ -328,8 +316,17 @@ const WallPage: React.FC = () => {
                         </p>
                     )}
 
+                    {logsFailed && (
+                        <p className="mb-6 text-sm text-rose-300">
+                            Couldn't load members' film logs, so only the club's own record is
+                            shown. Try reloading the page.
+                        </p>
+                    )}
+
                     <div ref={timelineRef}>
-                        {months.length === 0 ? (
+                        {loadingLogs ? (
+                            <p className="py-6 text-center text-sm text-slate-500">Loading…</p>
+                        ) : months.length === 0 ? (
                             <p className="py-6 text-center italic text-slate-400">
                                 Nothing here yet. Watch something.
                             </p>
@@ -402,7 +399,7 @@ const WallPage: React.FC = () => {
                     event={editing}
                     isOpen={editOpen}
                     onClose={() => setEditOpen(false)}
-                    onChanged={() => setWatched(wallWatchedLog())}
+                    onChanged={reapply}
                 />
             )}
 

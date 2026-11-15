@@ -5,9 +5,10 @@
  * to the repo. The site stays static; a save is live once the Pages build
  * triggered by the commit finishes, about a minute.
  *
- * Six files, one writer each: `overrides.json` for club films — scores,
+ * Six kinds of file, one writer each: `overrides.json` for club films — scores,
  * reviews, and the film's own record — `lists.json` for member lists,
- * `watched.json` for personal watch logs, `club.json` for member profiles,
+ * `watched/<member>.json` for personal watch logs (one per member),
+ * `club.json` for member profiles,
  * `trophies.json` for awards, and `responses.json` for reactions and comments
  * on log entries. CI owns `films.json` and `listFilms.json`, which this worker
  * never touches.
@@ -28,13 +29,13 @@ import {
     OVERRIDES_PATH,
     RESPONSES_PATH,
     TROPHIES_PATH,
-    WATCHED_PATH,
     commitBinary,
     commitJson,
     fetchClubFilmIds,
     fetchClubRating,
     memberImagePath,
     readJson,
+    watchedPath,
     type ClubRatingRow,
     type CommitPlan,
 } from './github';
@@ -93,7 +94,7 @@ import {
 
 const EMPTY_OVERRIDES: OverridesFile = { films: {} };
 const EMPTY_LISTS: FilmListDefinition[] = [];
-const EMPTY_WATCHED: WatchedLog = {};
+const EMPTY_WATCHED: WatchedEntry[] = [];
 const EMPTY_TROPHIES: TrophiesFile = { films: {} };
 const EMPTY_RESPONSES: ResponsesFile = { threads: {} };
 const EMPTY_THREAD: ResponseThread = { reactions: {}, comments: [] };
@@ -534,13 +535,6 @@ function sortWatched(entries: WatchedEntry[]): WatchedEntry[] {
     );
 }
 
-/** Rebuilds the log with member keys in a stable order, so diffs stay local. */
-function sortedLog(log: WatchedLog): WatchedLog {
-    const next: WatchedLog = {};
-    for (const owner of Object.keys(log).sort()) next[owner] = log[owner];
-    return next;
-}
-
 /** The stored fields, minus the `updatedAt` provenance a no-op save shouldn't touch. */
 function watchedUnchanged(existing: WatchedEntry | undefined, next: WatchedEntry): boolean {
     return (
@@ -578,12 +572,12 @@ async function putWatched(
     const patch: WatchedPatch = validateWatchedPatch(body);
     const owner = resolveOwner((body as Record<string, unknown>).owner, member, memberNames(env));
 
-    return commitJson<WatchedLog, unknown>(
+    return commitJson<WatchedEntry[], unknown>(
         env,
-        WATCHED_PATH,
+        watchedPath(owner),
         EMPTY_WATCHED,
-        (current): CommitPlan<WatchedLog, unknown> => {
-            const entries = [...(current[owner] ?? [])];
+        (current): CommitPlan<WatchedEntry[], unknown> => {
+            const entries = [...current];
             const index = entries.findIndex((entry) => entry.imdbID === imdbId);
             const existing = index === -1 ? undefined : entries[index];
 
@@ -631,7 +625,7 @@ async function putWatched(
 
             return {
                 commit: true,
-                next: sortedLog({ ...current, [owner]: sortWatched(entries) }),
+                next: sortWatched(entries),
                 message: `${existing ? 'Update' : 'Log'} watched: ${owner} on ${imdbId}`,
                 result: { entry: next, created: index === -1, changed: true },
             };
@@ -648,26 +642,21 @@ async function deleteWatched(
 ): Promise<unknown> {
     const owner = resolveOwner(requestedOwner, member, memberNames(env));
 
-    return commitJson<WatchedLog, unknown>(
+    return commitJson<WatchedEntry[], unknown>(
         env,
-        WATCHED_PATH,
+        watchedPath(owner),
         EMPTY_WATCHED,
-        (current): CommitPlan<WatchedLog, unknown> => {
-            const entries = current[owner] ?? [];
-            if (!entries.some((entry) => entry.imdbID === imdbId)) {
+        (current): CommitPlan<WatchedEntry[], unknown> => {
+            if (!current.some((entry) => entry.imdbID === imdbId)) {
                 throw notFound(`${owner} hasn't logged ${imdbId} as watched.`);
             }
 
-            const remaining = entries.filter((entry) => entry.imdbID !== imdbId);
-            const log = { ...current };
-            // Drop the member key with their last entry, so the file doesn't
-            // accumulate empty logs for people who cleared theirs.
-            if (remaining.length === 0) delete log[owner];
-            else log[owner] = remaining;
-
+            // A cleared log stays as an empty file rather than being deleted:
+            // `commitJson` only ever writes, and an empty array reads the same
+            // as no file to everything downstream.
             return {
                 commit: true,
-                next: sortedLog(log),
+                next: current.filter((entry) => entry.imdbID !== imdbId),
                 message: `Remove watched: ${owner} on ${imdbId}`,
                 result: { imdbID: imdbId, owner, deleted: true },
             };
@@ -1128,13 +1117,16 @@ interface ThreadResult {
 async function assertThreadSubject(env: Env, target: ThreadTarget): Promise<void> {
     switch (target.kind) {
         case 'log': {
-            const { data } = await readJson<WatchedLog>(env, WATCHED_PATH);
-            const log = data ?? EMPTY_WATCHED;
-            const key = Object.keys(log).find(
+            // The thread id carries the owner as written, so it is matched
+            // against the roster before it is allowed anywhere near a path.
+            const owner = memberNames(env).find(
                 (name) => name.toLowerCase() === target.owner.toLowerCase()
             );
-            if (key !== undefined && log[key].some((entry) => entry.imdbID === target.imdbId)) {
-                return;
+            if (owner !== undefined) {
+                const { data } = await readJson<WatchedEntry[]>(env, watchedPath(owner));
+                if ((data ?? EMPTY_WATCHED).some((entry) => entry.imdbID === target.imdbId)) {
+                    return;
+                }
             }
             throw notFound(`${target.owner} hasn't logged ${target.imdbId}.`);
         }
@@ -1475,8 +1467,18 @@ async function route(request: Request, env: Env): Promise<unknown> {
     }
 
     if (path === '/api/watched' && method === 'GET') {
-        const { data } = await readJson<WatchedLog>(env, WATCHED_PATH);
-        return { watched: data ?? EMPTY_WATCHED };
+        // Legacy, and unused by the site (see the worker README). Assembled
+        // from the per-member files so it keeps answering in its old shape.
+        const names = memberNames(env);
+        const files = await Promise.all(
+            names.map((name) => readJson<WatchedEntry[]>(env, watchedPath(name)))
+        );
+        const watched: WatchedLog = {};
+        names.forEach((name, i) => {
+            const entries = files[i].data;
+            if (entries && entries.length > 0) watched[name] = entries;
+        });
+        return { watched };
     }
 
     if (path === '/api/club' && method === 'GET') {

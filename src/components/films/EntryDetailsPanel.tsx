@@ -21,6 +21,11 @@ interface EntryDetailsToggleProps {
      * one is for a toggle tucked in among the badges on a title line.
      */
     labeled?: boolean;
+    /**
+     * Called when a pointer comes over the control or focus reaches it, so the
+     * row can start fetching what the panel will show before the click.
+     */
+    onPrefetch?: () => void;
     className?: string;
 }
 
@@ -37,11 +42,14 @@ export const EntryDetailsToggle: React.FC<EntryDetailsToggleProps> = ({
     title,
     panelId,
     labeled = false,
+    onPrefetch,
     className = '',
 }) => (
     <button
         type="button"
         onClick={onToggle}
+        onPointerEnter={onPrefetch}
+        onFocus={onPrefetch}
         aria-expanded={isOpen}
         aria-controls={panelId}
         aria-label={isOpen ? `Hide details for ${title}` : `Show details for ${title}`}

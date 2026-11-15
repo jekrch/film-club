@@ -1,8 +1,18 @@
 import { useState, useEffect, useMemo, useCallback, useRef, RefObject } from 'react';
 import { Film } from '../types/film';
-import { parseWatchDate } from '../utils/filmUtils';
 import { prefersReducedMotion } from '../utils/motion';
-import { parseRuntime } from '../utils/statUtils';
+import {
+    CategoryPoint,
+    CATEGORIES,
+    ChartCategory,
+    categoryCounts,
+    categoryValuesOf,
+    FilmWithDate,
+    IntervalDetail,
+    isOrdered,
+    meetingIntervals,
+    sortByWatchDate,
+} from '../utils/almanacUtils';
 import Highcharts from 'highcharts';
 import {
     SANS,
@@ -20,32 +30,10 @@ import {
     unit,
 } from '../utils/chartTheme';
 
-export type ChartCategory = 'country' | 'language' | 'decade' | 'runtime' | 'genre';
-
-/** The chip label for each category. */
-export const CATEGORY_LABELS: Record<ChartCategory, string> = {
-    country: 'Country',
-    language: 'Language',
-    decade: 'Decade',
-    runtime: 'Runtime',
-    genre: 'Genre',
-};
-type FilmWithDate = Film & { parsedWatchDate: Date };
-
-export interface IntervalDetail {
-    startDate: Date;
-    endDate: Date;
-    days: number;
-    films: FilmWithDate[];
-}
-
-// Helper from AlmanacPage (can be local or moved to a date util if more general)
-const daysBetween = (date1: Date, date2: Date): number => {
-    const oneDay = 24 * 60 * 60 * 1000;
-    const utc1 = Date.UTC(date1.getUTCFullYear(), date1.getUTCMonth(), date1.getUTCDate());
-    const utc2 = Date.UTC(date2.getUTCFullYear(), date2.getUTCMonth(), date2.getUTCDate());
-    return Math.floor(Math.abs(utc2 - utc1) / oneDay);
-};
+// The figures live in `almanacUtils` so the retrospective reads the same ones;
+// these re-exports keep the almanac's own imports where they were.
+export { CATEGORY_LABELS } from '../utils/almanacUtils';
+export type { ChartCategory, IntervalDetail } from '../utils/almanacUtils';
 
 /**
  * On narrow screens the donut becomes a bar chart, one bar per category, and a
@@ -56,66 +44,6 @@ const daysBetween = (date1: Date, date2: Date): number => {
  */
 const MOBILE_BAR_LIMIT = 10;
 const OTHER_LABEL = 'Other';
-
-/** Runtime bands, shortest first; a film falls in the first whose `under` it is below. */
-const RUNTIME_BANDS = [
-    { under: 90, label: 'Under 90 min' },
-    { under: 120, label: '90–119 min' },
-    { under: 150, label: '120–149 min' },
-    { under: Infinity, label: '150+ min' },
-];
-
-/** The entries of a comma-separated field, leaving out blanks and "N/A". */
-const listed = (field: string | undefined): string[] =>
-    (field ?? '')
-        .split(',')
-        .map((entry) => entry.trim())
-        .filter((entry) => entry && entry.toLowerCase() !== 'n/a');
-
-/**
- * The labels a film is counted under in a category: its first country or
- * language, its decade, its runtime band, or every one of its genres. Genre is
- * the one category a film can be counted under more than once — OMDb lists a
- * film's genres alphabetically, so its first is no truer than its last.
- */
-const categoryValuesOf = (film: Film, category: ChartCategory): string[] => {
-    switch (category) {
-        case 'country':
-            return listed(film?.country).slice(0, 1);
-        case 'language':
-            return listed(film?.language).slice(0, 1);
-        case 'decade': {
-            const yearNum = parseInt(film.year?.substring(0, 4) || '0', 10);
-            return !isNaN(yearNum) && yearNum > 1000 ? [`${Math.floor(yearNum / 10) * 10}s`] : [];
-        }
-        case 'runtime': {
-            const minutes = parseRuntime(film.runtime);
-            return minutes ? [RUNTIME_BANDS.find((band) => minutes < band.under)!.label] : [];
-        }
-        case 'genre':
-            return listed(film?.genre);
-    }
-};
-
-/** Where a category value sits in its category's natural order; unordered categories return null. */
-const orderOf = (category: ChartCategory, value: string): number | null => {
-    switch (category) {
-        case 'decade':
-            return parseInt(value, 10);
-        case 'runtime':
-            return RUNTIME_BANDS.findIndex((band) => band.label === value);
-        default:
-            return null;
-    }
-};
-
-const isOrdered = (category: ChartCategory): boolean =>
-    category === 'decade' || category === 'runtime';
-
-const CATEGORIES = Object.keys(CATEGORY_LABELS) as ChartCategory[];
-
-/** A slice or bar: how many films carry the value, and what percentage of films that is. */
-type CategoryPoint = { name: string; y: number; share: number; color?: string };
 
 export interface UseAlmanacChartsReturn {
     // Donut Chart
@@ -171,66 +99,36 @@ export const useAlmanacCharts = (filmsInput: Film[]): UseAlmanacChartsReturn => 
     }, [filmsInput]);
 
     useEffect(() => {
-        // Process watched films
-        const watchedWithDates = allFilmsDataState
-            .map((f) => ({ ...f, pDate: parseWatchDate(f.movieClubInfo?.watchDate) }))
-            .filter((f) => f.pDate) as (Film & { pDate: Date })[];
-        const sortedWatched = watchedWithDates.sort(
-            (a, b) => a.pDate.getTime() - b.pDate.getTime()
-        );
-        const finalSortedWatched: FilmWithDate[] = sortedWatched.map(({ pDate, ...rest }) => ({
-            ...rest,
-            parsedWatchDate: pDate,
-        }));
+        const finalSortedWatched = sortByWatchDate(allFilmsDataState);
         setWatchedFilmsSorted(finalSortedWatched);
 
         // Process Donut Chart Data: count each category's values, then sort
         // ordered categories in their order and the rest largest first.
         const dataByCategory: Partial<Record<ChartCategory, CategoryPoint[]>> = {};
         CATEGORIES.forEach((category) => {
-            const counts = new Map<string, number>();
-            let filmsCounted = 0;
-            allFilmsDataState.forEach((film) => {
-                const values = categoryValuesOf(film, category);
-                if (values.length) filmsCounted++;
-                values.forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
-            });
-            // `share` is of films, not of the slices: for genre, where a film
-            // counts under each of its genres, the two differ.
-            dataByCategory[category] = Array.from(counts.entries())
-                .map(([name, y]) => ({ name, y, share: (y / filmsCounted) * 100 }))
-                .sort((a, b) =>
-                    isOrdered(category)
-                        ? orderOf(category, a.name)! - orderOf(category, b.name)! ||
-                          a.name.localeCompare(b.name)
-                        : b.y - a.y
-                );
+            dataByCategory[category] = categoryCounts(allFilmsDataState, category);
         });
         setChartDataByCategory(dataByCategory);
 
         // Process Interval Chart Data
-        const intervals: Highcharts.PointOptionsObject[] = [];
-        const intervalCategories: string[] = [];
-        if (finalSortedWatched.length > 1) {
-            for (let i = 1; i < finalSortedWatched.length; i++) {
-                const date1 = finalSortedWatched[i - 1].parsedWatchDate;
-                const date2 = finalSortedWatched[i].parsedWatchDate;
-                const intervalDays = daysBetween(date1, date2);
-                const categoryLabel = date2.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: '2-digit',
-                });
-                intervalCategories.push(categoryLabel); // Simpler label
-                intervals.push({
-                    y: intervalDays,
-                    intervalIndex: i,
-                    startDate: date1.getTime(),
-                    endDate: date2.getTime(),
-                    category: finalSortedWatched[i].title, // For tooltip
-                } as any); // Cast to any to satisfy Highcharts specific point options
-            }
-        }
+        const gaps = meetingIntervals(finalSortedWatched);
+        const intervalCategories = gaps.map((gap) =>
+            gap.endDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: '2-digit',
+            })
+        );
+        const intervals: Highcharts.PointOptionsObject[] = gaps.map(
+            (gap) =>
+                ({
+                    y: gap.days,
+                    intervalIndex: gap.index,
+                    startDate: gap.startDate.getTime(),
+                    endDate: gap.endDate.getTime(),
+                    category: gap.film.title, // For tooltip
+                }) as any // Cast to any to satisfy Highcharts specific point options
+        );
         setMeetingIntervalData(intervals);
         setMeetingIntervalCategories(intervalCategories);
     }, [allFilmsDataState]);

@@ -1,7 +1,7 @@
 /**
  * The client/server wire contract, checked by the compiler.
  *
- * The editing worker writes `lists.json`, `watched.json`, `club.json`,
+ * The editing worker writes `lists.json`, the watch logs, `club.json`,
  * `responses.json` and `overrides.json`; this app reads them. The shapes describing those files exist
  * in three independently-maintained copies — `worker/src/types.ts`,
  * `src/types/*.ts`, and the request/response types in `src/api/clubApi.ts` —

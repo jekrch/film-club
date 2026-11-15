@@ -14,6 +14,7 @@ import { logThreadId } from '../../types/responses';
 import { entryFrameImage } from '../../utils/frameSources';
 import { getRatingColorClass } from '../../utils/ratingUtils';
 import { formatWatchDate, type ResolvedWatchedEntry } from '../../utils/watchedUtils';
+import { useEntryDetails } from '../../hooks/useEntryDetails';
 import { MAX_SCORE } from '../../utils/ratingEditUtils';
 import type { WatchedPatch } from '../../api/clubApi';
 
@@ -75,8 +76,14 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
     // The resolved key — theirs if they set one, the film's otherwise, null if
     // they hid it — never the raw override this row's editor writes.
     const trailerKey = entry.resolvedTrailerKey;
-    const { details } = entry;
-    const [detailsOpen, setDetailsOpen] = useState(false);
+    // The row's own details are the slim index's for a film the club never
+    // watched; the rest is fetched when the panel opens.
+    const {
+        details,
+        open: detailsOpen,
+        toggle: toggleDetails,
+        prefetch: prefetchDetails,
+    } = useEntryDetails(imdbID, entry.details, !clubFilm);
     const panelId = `log-details-${imdbID}`;
     // A dead poster URL falls back to the empty frame rather than swapping
     // `src`, which can re-fire the handler forever. Same reasoning as
@@ -161,7 +168,9 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                 {details ? (
                     <button
                         type="button"
-                        onClick={() => setDetailsOpen((open) => !open)}
+                        onClick={toggleDetails}
+                        onPointerEnter={prefetchDetails}
+                        onFocus={prefetchDetails}
                         disabled={editing}
                         aria-expanded={detailsOpen}
                         aria-controls={panelId}
@@ -292,7 +301,8 @@ const WatchedFilmItem: React.FC<WatchedFilmItemProps> = ({
                             details && (
                                 <EntryDetailsToggle
                                     isOpen={detailsOpen}
-                                    onToggle={() => setDetailsOpen((open) => !open)}
+                                    onToggle={toggleDetails}
+                                    onPrefetch={prefetchDetails}
                                     title={displayTitle}
                                     panelId={panelId}
                                     labeled

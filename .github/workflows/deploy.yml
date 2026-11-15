@@ -4,12 +4,20 @@ on:
     # Runs on manual trigger
     workflow_dispatch:
 
-    # Deploy on every push to main. This deliberately has no `paths` filter:
-    # source-only commits (components, CSS) are just as deployable as data
-    # changes, and filtering them out silently left production a commit behind.
+    # Deploy on every push to main except one that changes nothing but watch
+    # logs. Source-only commits (components, CSS) are just as deployable as
+    # data changes, and an allowlist of paths once silently left production a
+    # commit behind, so this filters out the one kind of commit that has its
+    # own way to the site instead.
+    #
+    # Watch logs aren't in the bundle. A commit touching only those is published
+    # by data-deploy.yml in under a minute, without a build. A push that also
+    # touches anything else still runs this, and publishes the logs with it.
     push:
         branches:
             - main
+        paths-ignore:
+            - 'src/assets/watched/**'
 
 # Members editing scores and lists on the site produce one commit per save, and
 # a burst of saves would otherwise queue a full build each. Only the newest one
@@ -81,7 +89,7 @@ jobs:
                   # Everything the app imports at build time, plus overrides.json, which
                   # the derived-data steps below read. Validating first means a bad file
                   # fails here with its own name rather than deep inside a Python step.
-                  for file in club.json films.json lists.json listFilms.json overrides.json responses.json trophies.json watched.json; do
+                  for file in club.json films.json lists.json listFilms.json overrides.json responses.json trophies.json watched/*.json; do
                     path="src/assets/$file"
                     if [ -f "$path" ]; then
                       echo "Validating $file..."
@@ -140,7 +148,7 @@ jobs:
               run: python .github/scripts/enrich_list_films.py
               env:
                   LISTS_PATH: 'src/assets/lists.json'
-                  WATCHED_PATH: 'src/assets/watched.json'
+                  WATCHED_DIR: 'src/assets/watched'
                   CLUB_PATH: 'src/assets/club.json'
                   JSON_PATH: 'src/assets/films.json'
                   LIST_FILMS_PATH: 'src/assets/listFilms.json'

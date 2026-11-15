@@ -1,0 +1,202 @@
+name: Publish watch logs
+
+# A watch-log save changes nothing the build reads. The logs aren't in the
+# bundle; the site fetches them from `data/watched/` (see `useWatchedLog`). So a
+# commit that touches only `src/assets/watched/` skips deploy.yml (its
+# `paths-ignore`) and comes here instead. This rewrites the generated data files
+# on `gh-pages` and nothing else: no install, no build, about half a minute.
+#
+# It also enriches a newly logged film, since `listFilms.json` has to know a
+# film before any row can show its title. The new summary reaches the site
+# through `data/films/`, not the bundle. The bundle catches up on the next full
+# deploy, and until then the site reads the live index for any film the
+# bundle doesn't know (`ensureFilmSummaries`).
+#
+# Every push here to `gh-pages` is a GitHub Pages build, and branch-published
+# sites have a soft limit of 10 of those an hour, shared with deploy.yml. The
+# wait below is what keeps a burst of saves (an evening of catching up, an
+# import) to one build.
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'src/assets/watched/**'
+    # Republishes from the latest main, e.g. after a failed run.
+    workflow_dispatch:
+
+# Newest wins. Every run publishes from the latest main rather than from the
+# commit that started it, so cancelling an older one loses nothing.
+concurrency:
+    group: data-deploy
+    cancel-in-progress: true
+
+# `actions: read` is for the wait step, which lists runs of this workflow and
+# of deploy.yml.
+permissions:
+    contents: write
+    actions: read
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            # Two waits, both by asking the API rather than trusting the
+            # concurrency group's cancel, which deploy.yml notes GitHub has been
+            # seen taking over a minute to deliver.
+            #
+            # First, out a burst: half a minute after the commit, stand down if a
+            # newer run exists, since that one publishes this commit too.
+            #
+            # Then out any full deploy. deploy.yml publishes the whole site, these
+            # files included, from the commit it started on. If it finished
+            # after this run, it would put back the logs as they were before this
+            # save. Publishing after it is what makes the newest logs the ones
+            # that stay.
+            - name: Wait for a burst of saves, and for any full deploy
+              id: wait
+              run: |
+                  if [ "$EVENT" = "push" ]; then
+                    remaining=$(( $(date -d "$COMMITTED_AT" +%s) + 30 - $(date +%s) ))
+                    if [ "$remaining" -gt 0 ]; then sleep "$remaining"; fi
+
+                    newer=$(gh api "repos/$GH_REPO/actions/workflows/data-deploy.yml/runs?branch=main&per_page=20" \
+                      --jq "[.workflow_runs[] | select(.run_number > $RUN_NUMBER and .status != \"completed\")] | length")
+                    if [ "$newer" -gt 0 ]; then
+                      echo "A newer run will publish this commit."
+                      echo "superseded=true" >> "$GITHUB_OUTPUT"
+                      exit 0
+                    fi
+                  fi
+
+                  # Up to fifteen minutes, which is several full deploys.
+                  for _ in $(seq 1 45); do
+                    busy=$(gh api "repos/$GH_REPO/actions/workflows/deploy.yml/runs?per_page=20" \
+                      --jq '[.workflow_runs[] | select(.status != "completed")] | length')
+                    if [ "$busy" -eq 0 ]; then break; fi
+                    echo "A full deploy is running; waiting for it to finish."
+                    sleep 20
+                  done
+                  echo "superseded=false" >> "$GITHUB_OUTPUT"
+              env:
+                  EVENT: ${{ github.event_name }}
+                  COMMITTED_AT: ${{ github.event.head_commit.timestamp }}
+                  RUN_NUMBER: ${{ github.run_number }}
+                  GH_TOKEN: ${{ github.token }}
+                  GH_REPO: ${{ github.repository }}
+
+            # `ref: main`, not the commit that started this: the wait above may
+            # have let several more saves land, and this run publishes them all.
+            - name: Checkout main
+              if: steps.wait.outputs.superseded != 'true'
+              uses: actions/checkout@v4
+              with:
+                  ref: main
+
+            - name: Validate the watch logs
+              if: steps.wait.outputs.superseded != 'true'
+              run: |
+                  for path in src/assets/watched/*.json; do
+                    jq -e 'type == "array"' "$path" > /dev/null || {
+                      echo "ERROR: $path is not a JSON array"
+                      exit 1
+                    }
+                  done
+
+            - name: Set up Python
+              if: steps.wait.outputs.superseded != 'true'
+              uses: actions/setup-python@v5
+              with:
+                  python-version: '3.10'
+
+            # A summary for any film logged for the first time. A no-op, with no
+            # network, when every logged film already has one. Allowed to fail:
+            # the logs still publish, and the new row shows without its title
+            # until a later run or deploy fills it in.
+            - name: Enrich newly logged films
+              id: enrich
+              if: steps.wait.outputs.superseded != 'true'
+              continue-on-error: true
+              run: |
+                  python -m pip install --quiet requests
+                  python .github/scripts/enrich_list_films.py
+              env:
+                  LISTS_PATH: 'src/assets/lists.json'
+                  WATCHED_DIR: 'src/assets/watched'
+                  CLUB_PATH: 'src/assets/club.json'
+                  JSON_PATH: 'src/assets/films.json'
+                  LIST_FILMS_PATH: 'src/assets/listFilms.json'
+                  OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
+                  TMDB_KEY: ${{ secrets.TMDB_KEY }}
+
+            # Committed with the default token, which starts no workflow, so
+            # this doesn't set off a full deploy of its own. The next full deploy
+            # bundles it.
+            - name: Commit enriched summaries
+              if: steps.wait.outputs.superseded != 'true' && steps.enrich.outcome == 'success'
+              run: |
+                  git add src/assets/listFilms.json
+                  if git diff --staged --quiet; then
+                    echo "No new summaries."
+                    exit 0
+                  fi
+                  git config --local user.email "github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "github-actions[bot]"
+                  git commit -m "Enrich list films for watch logs"
+                  git pull --rebase --autostash
+                  git push
+
+            # Bun runs the generator straight from TypeScript, and it imports
+            # nothing but Node built-ins, so there is no install step.
+            - name: Set up Bun
+              if: steps.wait.outputs.superseded != 'true'
+              uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+
+            - name: Generate the data files
+              if: steps.wait.outputs.superseded != 'true'
+              run: bun scripts/writeLiveData.ts src/assets "$RUNNER_TEMP/data"
+
+            - name: Check out gh-pages
+              if: steps.wait.outputs.superseded != 'true'
+              uses: actions/checkout@v4
+              with:
+                  ref: gh-pages
+                  path: site
+
+            # Replaces `data/watched/` and `data/films/` whole, so a removed log
+            # or a pruned summary goes too, and leaves the rest of the site as
+            # the last full deploy built it. Rebuilt on the latest gh-pages and
+            # retried if the push loses a race, rather than rebased, since a
+            # conflict here could only be with an older copy of the same files.
+            - name: Publish
+              if: steps.wait.outputs.superseded != 'true'
+              working-directory: site
+              run: |
+                  git config --local user.email "github-actions[bot]@users.noreply.github.com"
+                  git config --local user.name "github-actions[bot]"
+                  source_sha=$(git -C .. rev-parse --short HEAD)
+
+                  publish() {
+                    git fetch origin gh-pages
+                    git reset --hard origin/gh-pages
+                    rm -rf data/watched data/films
+                    mkdir -p data
+                    cp -r "$RUNNER_TEMP/data/watched" "$RUNNER_TEMP/data/films" data/
+                    git add -A data/watched data/films
+                    if git diff --staged --quiet; then
+                      echo "The site already has these files."
+                      return 0
+                    fi
+                    git commit -m "Publish watch logs from $source_sha"
+                    git push origin HEAD:gh-pages
+                  }
+
+                  for attempt in 1 2 3; do
+                    if publish; then exit 0; fi
+                    echo "Push rejected (attempt $attempt); retrying on the latest gh-pages."
+                    sleep 5
+                  done
+                  exit 1

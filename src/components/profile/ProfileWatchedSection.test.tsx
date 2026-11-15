@@ -1,33 +1,37 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ProfileWatchedSection from './ProfileWatchedSection';
 import { ClubAuthProvider } from '../../auth/GoogleAuth';
+import type { WatchedEntry } from '../../types/watched';
+import { serveWatchedLogs } from '../../test-utils/watchedFetch';
 
-// The bundled watched.json is the author's own local data, so the section is
-// exercised against a fixture. Two entries covers having fewer than the preview
-// holds, where the card must still link through to the log page.
-jest.mock('../../types/watched', () => ({
-    watchedLog: {
-        Andy: [
-            {
-                imdbID: 'tt9999999',
-                watchDate: '2026-08-09',
-                score: 8,
-                scoreQualifier: null,
-                blurb: null,
-                updatedAt: '2026-08-09T21:14:02Z',
-            },
-            {
-                imdbID: 'tt8888888',
-                watchDate: '2026-07-14',
-                score: null,
-                scoreQualifier: null,
-                blurb: null,
-                updatedAt: '2026-07-14T19:02:10Z',
-            },
-        ],
-    },
-}));
+// The logs are fetched, so the section is exercised against a fixture served
+// through `fetch`. Two entries covers having fewer than the preview holds,
+// where the card must still link through to the log page.
+const LOGS: Record<string, WatchedEntry[]> = {
+    Andy: [
+        {
+            imdbID: 'tt9999999',
+            watchDate: '2026-08-09',
+            score: 8,
+            scoreQualifier: null,
+            blurb: null,
+            updatedAt: '2026-08-09T21:14:02Z',
+        },
+        {
+            imdbID: 'tt8888888',
+            watchDate: '2026-07-14',
+            score: null,
+            scoreQualifier: null,
+            blurb: null,
+            updatedAt: '2026-07-14T19:02:10Z',
+        },
+    ],
+};
+
+beforeEach(() => {
+    serveWatchedLogs(LOGS);
+});
 
 jest.mock('../../types/list', () => ({
     filmLists: [],
@@ -59,24 +63,33 @@ const renderFor = (owner: string) =>
     );
 
 describe('ProfileWatchedSection', () => {
-    it('renders nothing for a member with an empty log', () => {
+    it('renders nothing for a member with an empty log', async () => {
+        const fetch = serveWatchedLogs(LOGS);
         const { container } = renderFor('Nobody');
+        await waitFor(() => expect(fetch).toHaveBeenCalled());
+        expect(container).toBeEmptyDOMElement();
+    });
+
+    // Drawing an empty card for a member who turns out to have no log would
+    // show something only to take it away.
+    it('renders nothing until the log arrives', () => {
+        const { container } = renderFor('Andy');
         expect(container).toBeEmptyDOMElement();
     });
 
     // The whole point of the footer link: a log shorter than the preview is
     // fully shown, and the card still has to say the log page exists.
-    it('offers a link to the full log even when nothing is left over', () => {
+    it('offers a link to the full log even when nothing is left over', async () => {
         renderFor('Andy');
-        expect(screen.getByRole('link', { name: /Open the full log/i })).toHaveAttribute(
+        expect(await screen.findByRole('link', { name: /Open the full log/i })).toHaveAttribute(
             'href',
             '/watched/Andy'
         );
     });
 
-    it('points each preview row at its own row of the log', () => {
+    it('points each preview row at its own row of the log', async () => {
         renderFor('Andy');
-        const row = within(screen.getByRole('list')).getByRole('link', {
+        const row = within(await screen.findByRole('list')).getByRole('link', {
             name: /A Cached Film/i,
         });
         expect(row).toHaveAttribute('href', '/watched/Andy#log-tt9999999');

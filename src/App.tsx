@@ -12,6 +12,7 @@ import AlmanacPage from './pages/AlmanacPage';
 import ListPage from './pages/ListPage';
 import ListEditorPage from './pages/ListEditorPage';
 import WatchedPage from './pages/WatchedPage';
+import RetrospectivePage from './pages/RetrospectivePage';
 import NotFoundPage from './pages/NotFoundPage';
 import { ViewSettingsProvider } from './contexts/ViewSettingsContext';
 import { OverridesProvider } from './contexts/OverridesContext';
@@ -82,6 +83,23 @@ function AppContent() {
                         {/* A member's personal watch log. Not under /films: nothing here is
                 a club film, and the two must never share a surface. */}
                         <Route path="/watched/:memberName" element={<WatchedPage />} />
+                        {/* The year-end report: the club's year, or one member's. Every
+                figure is computed from the files above; see
+                `utils/retrospectiveUtils.ts`. */}
+                        <Route
+                            path="/retrospective"
+                            element={
+                                <Navigate
+                                    to={`/retrospective/${new Date().getFullYear()}`}
+                                    replace
+                                />
+                            }
+                        />
+                        <Route path="/retrospective/:year" element={<RetrospectivePage />} />
+                        <Route
+                            path="/retrospective/:year/:memberName"
+                            element={<RetrospectivePage />}
+                        />
                         <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                 </PageTransition>

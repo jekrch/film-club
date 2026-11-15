@@ -4,10 +4,11 @@ on:
     push:
         branches:
             - main
-        # Reactions and comments, one commit per tap. Data only, and the deploy
-        # validates the JSON anyway.
+        # Reactions, comments and watch-log saves, one commit each. Data only,
+        # and the deploys validate the JSON anyway.
         paths-ignore:
             - src/assets/responses.json
+            - 'src/assets/watched/**'
     pull_request:
         branches:
             - main

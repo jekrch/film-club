@@ -12,11 +12,13 @@ import EntryRow from '../components/films/ListEntryRow';
 import { useClubAuth } from '../auth/GoogleAuth';
 import { NEW_LIST_ID, deleteList, putList, type FilmSearchResult } from '../api/clubApi';
 import { fetchLists } from '../api/repoData';
+import { useWatchedLog } from '../hooks/useWatchedLog';
 import { recordWrite, writeKeys } from '../api/writeCache';
 import { getListById } from '../utils/listUtils';
 import {
     LIST_LIMITS,
     addFilmToDraft,
+    inheritedScoreFor,
     buildListInput,
     listExitPath,
     moveDraftEntry,
@@ -76,14 +78,33 @@ const ListEditorPage: React.FC = () => {
     // seeding checks this rather than the state it is about to replace.
     const touched = useRef(false);
 
+    // The owner's watch log, for the score each row shows when it sets none of
+    // its own. Fetched, so it may land after the rows are seeded; the effect
+    // below fills the inherited scores in then, without counting as an edit.
+    const scoreOwner = owner ?? member ?? undefined;
+    const { log: watchedLog } = useWatchedLog(scoreOwner ? [scoreOwner] : []);
+    const scoreSources = useMemo(() => ({ watched: watchedLog ?? undefined }), [watchedLog]);
+    const scoreSourcesRef = useRef(scoreSources);
+    scoreSourcesRef.current = scoreSources;
+
     const seed = useCallback((list: FilmListDefinition) => {
         setName(list.name);
         setDescription(list.description ?? '');
         setRanked(isRankedList(list));
-        setEntries(toDraftEntries(list));
+        setEntries(toDraftEntries(list, scoreSourcesRef.current));
         setOwner(list.owner);
         setFound(true);
     }, []);
+
+    useEffect(() => {
+        if (!scoreSources.watched) return;
+        setEntries((current) =>
+            current.map((entry) => ({
+                ...entry,
+                ...inheritedScoreFor(entry.imdbID, scoreOwner, scoreSources),
+            }))
+        );
+    }, [scoreSources, scoreOwner]);
 
     // The bundle renders instantly and is right except for saves that haven't
     // deployed yet.
@@ -125,7 +146,7 @@ const ListEditorPage: React.FC = () => {
     };
 
     const addFilm = (hit: FilmSearchResult) => {
-        const result = addFilmToDraft(entries, hit, owner ?? member ?? undefined);
+        const result = addFilmToDraft(entries, hit, scoreOwner, scoreSources);
         if ('notice' in result) {
             setNotice(result.notice);
             return;

@@ -16,6 +16,7 @@ import { listThreadId } from '../types/responses';
 import { entryFrameSource } from '../utils/frameSources';
 import { getTeamMemberByName } from '../types/team';
 import { useClubAuth } from '../auth/GoogleAuth';
+import { useWatchedLog } from '../hooks/useWatchedLog';
 
 /**
  * A single member-curated list, e.g. "Andy's Top 10 Horror Films".
@@ -30,7 +31,13 @@ const ListPage: React.FC = () => {
     const { configured, canEditAs } = useClubAuth();
 
     const list = getListById(listId);
-    const entries = useMemo(() => (list ? resolveListEntries(list) : []), [list]);
+    // The owner's log, for the score a row falls back to when the list sets
+    // none. Fetched, so those scores fill in a moment after the rows.
+    const { log: watched } = useWatchedLog(list ? [list.owner] : []);
+    const entries = useMemo(
+        () => (list ? resolveListEntries(list, { watched: watched ?? undefined }) : []),
+        [list, watched]
+    );
 
     // Art for the banner, drawn from the whole list rather than just the films
     // the club happens to have watched: a member's own image link first, then
