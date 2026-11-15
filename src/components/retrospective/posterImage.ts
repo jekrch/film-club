@@ -11,10 +11,12 @@
  *
  * A canvas that draws an image from another origin without CORS can't be
  * exported at all, so every image is fetched asking for CORS, and one that
- * refuses is skipped for the next. TMDb and Amazon allow it. Criterion's own
- * bucket doesn't, so its posters and stills go through the editing worker's
- * image proxy (`worker/src/imageProxy.ts`); on a build without the worker,
- * {@link keyArtOrder} puts them last and a poster falls back to its title.
+ * refuses is skipped for the next. They come through the editing worker's
+ * image proxy (`worker/src/imageProxy.ts`): Criterion's bucket sends no CORS
+ * header at all, and TMDb's and Amazon's images, fetched straight, failed on a
+ * member's phone where the proxy's got through. On a build without the worker,
+ * TMDb and Amazon are fetched directly, {@link keyArtOrder} puts Criterion's
+ * stills last, and its posters fall back to their titles.
  */
 
 import { EDITOR_API_URL } from '../../config/editorEnv';
@@ -69,23 +71,31 @@ export interface PosterContent {
 const CORS_HOSTS = /^https:\/\/(image\.tmdb\.org|m\.media-amazon\.com)\//;
 
 /**
- * Criterion's bucket, which sends none, and which the worker's image proxy
- * will fetch. Keep in step with `ALLOWED` in `worker/src/imageProxy.ts`.
+ * What the worker's image proxy will fetch: Criterion's bucket, TMDb's stills
+ * and Amazon's posters. Keep in step with `ALLOWED` in
+ * `worker/src/imageProxy.ts`.
  */
 const PROXIED =
+    /^https:\/\/(s3\.amazonaws\.com\/criterion-production\/|criterion-production\.s3\.amazonaws\.com\/|image\.tmdb\.org\/t\/p\/|m\.media-amazon\.com\/images\/)/;
+
+/** Criterion's bucket, which sends no CORS header and can only be drawn through the proxy. */
+const NO_CORS =
     /^https:\/\/(s3\.amazonaws\.com\/criterion-production\/|criterion-production\.s3\.amazonaws\.com\/)/;
 
 /**
- * Where to fetch an image for the canvas: through the proxy when it needs it
- * and there is one, and otherwise, for a host with CORS, under a URL of its own.
+ * Where to fetch an image for the canvas: through the proxy, when there is
+ * one and it takes the host; otherwise, for a host with CORS, under a URL of
+ * its own.
  *
- * TMDb sends its CORS header only to a request that asks for it, and doesn't
- * say its answer varies by that, so the copy the browser cached when a slide
- * showed a still without CORS can't be used for the canvas. The extra
- * parameter (which the hosts ignore) gives CORS requests a cache entry of
- * their own, always with the header. The slide's card loads its images by
- * these same URLs, with CORS, so by the time the poster is drawn they're
- * already cached and nothing waits on the network.
+ * That URL is for TMDb, which sends its CORS header only to a request that
+ * asks for it and doesn't say its answer varies by that, so the copy the
+ * browser cached when a slide showed a still without CORS can't be used for
+ * the canvas. The extra parameter (which the hosts ignore) gives CORS
+ * requests a cache entry of their own, always with the header.
+ *
+ * The slide's card loads its images by these same URLs, with CORS, so by the
+ * time the poster is drawn they're already cached and nothing waits on the
+ * network.
  */
 export const canvasUrl = (url: string, proxy: string = EDITOR_API_URL): string => {
     if (proxy && PROXIED.test(url)) return `${proxy}/img?url=${encodeURIComponent(url)}`;
@@ -95,7 +105,7 @@ export const canvasUrl = (url: string, proxy: string = EDITOR_API_URL): string =
 
 /** Whether the canvas can draw this image, directly or through the proxy. */
 const drawable = (url: string, proxy: string): boolean =>
-    CORS_HOSTS.test(url) || (!!proxy && PROXIED.test(url));
+    !NO_CORS.test(url) ? CORS_HOSTS.test(url) || (!!proxy && PROXIED.test(url)) : !!proxy;
 
 /** Stills in the order to try them: the ones the canvas can draw first, each list's order kept. */
 export const keyArtOrder = (urls: string[], proxy: string = EDITOR_API_URL): string[] => {

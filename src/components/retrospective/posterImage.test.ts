@@ -49,8 +49,15 @@ describe('canvasUrl', () => {
         );
     });
 
-    it('gives hosts with CORS a URL of their own, and leaves the rest alone', () => {
-        expect(canvasUrl('https://m.media-amazon.com/images/c.jpg', 'https://worker.example')).toBe(
+    it('sends TMDb and Amazon through the proxy too, when there is one', () => {
+        const amazon = 'https://m.media-amazon.com/images/c.jpg';
+        expect(canvasUrl(amazon, 'https://worker.example')).toBe(
+            `https://worker.example/img?url=${encodeURIComponent(amazon)}`
+        );
+    });
+
+    it('gives hosts with CORS a URL of their own without a proxy, and leaves the rest alone', () => {
+        expect(canvasUrl('https://m.media-amazon.com/images/c.jpg', '')).toBe(
             'https://m.media-amazon.com/images/c.jpg?cors=1'
         );
         expect(canvasUrl('https://image.tmdb.org/t/p/w1280/b.jpg?x=1', '')).toBe(

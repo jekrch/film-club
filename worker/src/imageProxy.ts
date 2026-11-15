@@ -1,12 +1,14 @@
 /**
- * A read-only image proxy for the few hosts whose images the site's canvas
- * can't otherwise draw.
+ * A read-only image proxy for the images the site's canvas draws.
  *
  * The retrospective's closing poster is drawn on a canvas so it can be saved
  * as an image, and a canvas that draws a cross-origin image without a CORS
  * header can't be exported. Criterion's own bucket, which holds about two in
- * five of the club's posters and many of its stills, sends none. This passes
- * those images through with `Access-Control-Allow-Origin: *`.
+ * five of the club's posters and many of its stills, sends none. TMDb and
+ * Amazon do, but fetched straight from them the images still failed on a
+ * member's phone (most likely a privacy setting or blocker there), while the
+ * same phone drew everything that came through here. So every image the
+ * poster draws comes through here, with `Access-Control-Allow-Origin: *`.
  *
  * It's the worker's one unauthenticated route, and kept narrow to match:
  *
@@ -28,8 +30,13 @@ export const IMAGE_PROXY_PATH = '/img';
  * site's `posterImage.ts` keeps the same list to decide what to send here.
  */
 const ALLOWED: { host: string; path: string }[] = [
+    // Criterion's posters and stills.
     { host: 's3.amazonaws.com', path: '/criterion-production/' },
     { host: 'criterion-production.s3.amazonaws.com', path: '/' },
+    // TMDb's stills, at any size.
+    { host: 'image.tmdb.org', path: '/t/p/' },
+    // OMDb's posters.
+    { host: 'm.media-amazon.com', path: '/images/' },
 ];
 
 /** Larger than any poster or still; anything bigger isn't what this is for. */
@@ -105,7 +112,9 @@ export async function proxyImage(request: Request): Promise<Response> {
         upstream = await fetch(target.toString(), {
             method: 'GET',
             redirect: 'manual',
-            headers: { Accept: 'image/*' },
+            // JPEG first: TMDb serves WebP to a browser that asks for it, and
+            // the edge caches whichever it got first for everyone.
+            headers: { Accept: 'image/jpeg,image/png;q=0.9,image/*;q=0.5' },
             cf: { cacheEverything: true, cacheTtl: CACHE_SECONDS },
         });
     } catch {

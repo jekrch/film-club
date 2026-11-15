@@ -11,6 +11,16 @@ describe('allowedImageUrl', () => {
         ).not.toBeNull();
     });
 
+    it("allows TMDb's stills and Amazon's posters, and nothing else on those hosts", () => {
+        expect(allowedImageUrl('https://image.tmdb.org/t/p/w1280/b.jpg')).not.toBeNull();
+        expect(allowedImageUrl('https://image.tmdb.org/t/p/original/b.jpg')).not.toBeNull();
+        expect(
+            allowedImageUrl('https://m.media-amazon.com/images/M/MV5Bxyz._V1_SX300.jpg')
+        ).not.toBeNull();
+        expect(allowedImageUrl('https://image.tmdb.org/other/b.jpg')).toBeNull();
+        expect(allowedImageUrl('https://m.media-amazon.com/other/b.jpg')).toBeNull();
+    });
+
     it('refuses other buckets, other hosts, and lookalikes', () => {
         expect(allowedImageUrl('https://s3.amazonaws.com/some-other-bucket/a.jpg')).toBeNull();
         expect(
