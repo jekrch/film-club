@@ -81,12 +81,31 @@ closing poster is drawn on a canvas to be saved as an image, and a canvas can't
 export an image from a host that sends no CORS header — which Criterion's own
 bucket, home to about two in five club posters, doesn't. TMDb and Amazon do,
 but fetched straight from them the images still failed on a member's phone,
-so every image the poster draws comes through here. It fetches only URLs under
-Criterion's bucket, TMDb's `/t/p/` and Amazon's `/images/` (`ALLOWED` in
-`src/imageProxy.ts`), follows no redirects, passes on only `image/*` up to
-12 MB, and answers with `Access-Control-Allow-Origin: *` and a year's caching.
-Anything else is a 403 with no fetch made. The site keeps the same list in
-`src/components/retrospective/posterImage.ts` to decide what to send here.
+so every image the poster draws comes through here. The site keeps the same
+host list in `src/components/retrospective/posterImage.ts` to decide what to
+send here.
+
+What it will do, all in `src/imageProxy.ts`:
+
+- Answer only a request whose `Origin` is in `ALLOWED_ORIGIN`, echoing it back.
+  Another site's pages can't use it; a script that forges the header can.
+- Fetch only `https` URLs under Criterion's bucket, TMDb's `/t/p/` and Amazon's
+  `/images/` (`ALLOWED`), ending in `.jpg`, `.jpeg`, `.png`, `.webp` or `.gif`,
+  with no query, fragment, port or credentials. Anything else is a 403 with no
+  fetch made, so it can't be aimed at another host, and a cache can't be
+  dodged with a query string to run up those hosts' bandwidth.
+- Follow no redirects.
+- Pass on only raster images (no SVG, which TMDb hosts and which could run
+  script on this origin) up to 12 MB, with `nosniff` and a sandboxing CSP.
+- Cache at Cloudflare's edge and in the browser for a year.
+
+What it can't stop is volume. Anyone can ask for allowed images over and over,
+and each request is a worker invocation counted against the account's daily
+quota, which the editing API shares: on the free plan, a flood could use up
+the day's 100,000 requests and take saving down with it until the reset. If
+that ever happens, put a rate limit on `/img` (the Workers rate-limiting
+binding, or a WAF rule once the worker is on the site's own domain), or turn
+the poster's proxying off by removing `/img` here.
 
 ### The four reads that used to be here
 

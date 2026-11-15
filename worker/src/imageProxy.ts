@@ -12,11 +12,22 @@
  *
  * It's the worker's one unauthenticated route, and kept narrow to match:
  *
- * - GET and HEAD only, no credentials in or out, so `*` is safe.
- * - Only URLs under {@link ALLOWED}; anything else is a 403 without a fetch,
- *   so this can't be pointed at an arbitrary host.
+ * - GET and HEAD only, no credentials in or out.
+ * - Only for the site's own pages: a request must carry an `Origin` in
+ *   `ALLOWED_ORIGIN`, which is echoed back. A browser on any other site can't
+ *   use this to serve images, though a script that forges the header can.
+ * - Only URLs under {@link ALLOWED}, ending in a raster image's extension,
+ *   with no query or fragment; anything else is a 403 without a fetch, so this
+ *   can't be pointed at an arbitrary host, and a cache can't be dodged by
+ *   varying a query string to run up the hosts' bandwidth.
  * - No redirects followed, so an allowed URL can't bounce it elsewhere.
- * - Only `image/*` responses, at most {@link MAX_BYTES}, passed on.
+ * - Only raster images ({@link RASTER_TYPES}), at most {@link MAX_BYTES},
+ *   passed on, under a sandboxing CSP. No SVG: TMDb hosts uploaded SVG logos,
+ *   and an SVG served from this origin could run script on it.
+ *
+ * What this can't stop is volume: anyone can request allowed images over and
+ * over, and every request is a worker invocation against the account's quota
+ * (which the editing API shares). See the worker README.
  *
  * Responses are cached at Cloudflare's edge and in the browser for a long
  * time: a poster at a given URL never changes.
@@ -39,23 +50,41 @@ const ALLOWED: { host: string; path: string }[] = [
     { host: 'm.media-amazon.com', path: '/images/' },
 ];
 
+/** The image types passed on: the ones a poster or still comes as, and never SVG. */
+const RASTER_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+
+/** The extensions an allowed URL may end in. */
+const RASTER_EXTENSION = /\.(jpe?g|png|webp|gif)$/i;
+
 /** Larger than any poster or still; anything bigger isn't what this is for. */
 const MAX_BYTES = 12 * 1024 * 1024;
 
 /** A year, in seconds: a URL's image never changes. */
 const CACHE_SECONDS = 365 * 24 * 60 * 60;
 
-/** The CORS and safety headers every response carries, errors included. */
-const BASE_HEADERS: Record<string, string> = {
-    'Access-Control-Allow-Origin': '*',
+/** The safety headers every response carries, errors included. */
+const SAFETY_HEADERS: Record<string, string> = {
     'Cross-Origin-Resource-Policy': 'cross-origin',
     'X-Content-Type-Options': 'nosniff',
+    // Opened directly, nothing in a response can run or load anything.
+    'Content-Security-Policy': "default-src 'none'; sandbox",
+    Vary: 'Origin',
 };
+
+/** A request's `Origin` header, if it's one of the site's own; null otherwise. */
+export function siteOrigin(origin: string | null, allowedOrigins: string): string | null {
+    const allowed = allowedOrigins
+        .split(',')
+        .map((o) => o.trim())
+        .filter(Boolean);
+    return origin && allowed.includes(origin) ? origin : null;
+}
 
 /**
  * The upstream URL a proxy request names, or null if it isn't one this will
- * fetch. Rejects anything but plain https on an allowed host and path, and any
- * URL carrying credentials or a port.
+ * fetch. Rejects anything but plain https on an allowed host and path, ending
+ * in a raster image's extension, and any URL carrying credentials, a port, a
+ * query or a fragment.
  */
 export function allowedImageUrl(raw: string | null): URL | null {
     if (!raw) return null;
@@ -66,6 +95,7 @@ export function allowedImageUrl(raw: string | null): URL | null {
         return null;
     }
     if (url.protocol !== 'https:' || url.username || url.password || url.port) return null;
+    if (url.search || url.hash || !RASTER_EXTENSION.test(url.pathname)) return null;
     // A dot-segment that slipped past `URL`'s normalising would be a way out of
     // the allowed prefix; there's no reason for a real image path to have one.
     if (url.pathname.includes('..') || url.pathname.includes('%2e') || url.pathname.includes('%2E'))
@@ -76,11 +106,12 @@ export function allowedImageUrl(raw: string | null): URL | null {
         : null;
 }
 
-function fail(status: number, message: string): Response {
+function fail(status: number, message: string, origin: string | null): Response {
     return new Response(message, {
         status,
         headers: {
-            ...BASE_HEADERS,
+            ...SAFETY_HEADERS,
+            ...(origin ? { 'Access-Control-Allow-Origin': origin } : {}),
             'Content-Type': 'text/plain; charset=utf-8',
             // Errors aren't cached long: an upstream blip shouldn't stick.
             'Cache-Control': 'public, max-age=60',
@@ -88,24 +119,31 @@ function fail(status: number, message: string): Response {
     });
 }
 
-/** Answers one request to {@link IMAGE_PROXY_PATH}. */
-export async function proxyImage(request: Request): Promise<Response> {
+/**
+ * Answers one request to {@link IMAGE_PROXY_PATH}. `allowedOrigins` is the
+ * worker's `ALLOWED_ORIGIN`: the site's own origins, comma-separated.
+ */
+export async function proxyImage(request: Request, allowedOrigins: string): Promise<Response> {
+    const origin = siteOrigin(request.headers.get('Origin'), allowedOrigins);
+    if (!origin) return fail(403, 'Only for the club site.', null);
+
     if (request.method === 'OPTIONS') {
         return new Response(null, {
             status: 204,
             headers: {
-                ...BASE_HEADERS,
+                ...SAFETY_HEADERS,
+                'Access-Control-Allow-Origin': origin,
                 'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
                 'Access-Control-Max-Age': '86400',
             },
         });
     }
     if (request.method !== 'GET' && request.method !== 'HEAD') {
-        return fail(405, 'Only GET and HEAD.');
+        return fail(405, 'Only GET and HEAD.', origin);
     }
 
     const target = allowedImageUrl(new URL(request.url).searchParams.get('url'));
-    if (!target) return fail(403, 'Not an image this proxy fetches.');
+    if (!target) return fail(403, 'Not an image this proxy fetches.', origin);
 
     let upstream: Response;
     try {
@@ -118,25 +156,26 @@ export async function proxyImage(request: Request): Promise<Response> {
             cf: { cacheEverything: true, cacheTtl: CACHE_SECONDS },
         });
     } catch {
-        return fail(502, 'Could not reach the image.');
+        return fail(502, 'Could not reach the image.', origin);
     }
 
     if (upstream.status !== 200) {
-        return fail(upstream.status === 404 ? 404 : 502, 'The image is not available.');
+        return fail(upstream.status === 404 ? 404 : 502, 'The image is not available.', origin);
     }
-    const type = upstream.headers.get('Content-Type') ?? '';
-    if (!type.toLowerCase().startsWith('image/')) return fail(502, 'That is not an image.');
+    const type = (upstream.headers.get('Content-Type') ?? '').split(';')[0].trim().toLowerCase();
+    if (!RASTER_TYPES.includes(type)) return fail(502, 'That is not a raster image.', origin);
     // S3 always says how big an image is; a response that doesn't is refused
     // rather than streamed without a limit.
     const length = Number(upstream.headers.get('Content-Length') ?? '');
     if (!Number.isFinite(length) || length <= 0 || length > MAX_BYTES) {
-        return fail(502, 'The image is missing its size or is too large.');
+        return fail(502, 'The image is missing its size or is too large.', origin);
     }
 
     return new Response(request.method === 'HEAD' ? null : upstream.body, {
         status: 200,
         headers: {
-            ...BASE_HEADERS,
+            ...SAFETY_HEADERS,
+            'Access-Control-Allow-Origin': origin,
             'Content-Type': type,
             'Cache-Control': `public, max-age=${CACHE_SECONDS}, immutable`,
             'Content-Length': String(length),

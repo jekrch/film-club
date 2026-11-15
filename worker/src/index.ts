@@ -1592,9 +1592,10 @@ async function route(request: Request, env: Env): Promise<unknown> {
 
 export default {
     async fetch(request: Request, env: Env): Promise<Response> {
-        // Public and credential-free, with CORS of its own; nothing below
-        // applies to it.
-        if (new URL(request.url).pathname === IMAGE_PROXY_PATH) return proxyImage(request);
+        // Unauthenticated and credential-free, with CORS of its own; nothing
+        // below applies to it.
+        if (new URL(request.url).pathname === IMAGE_PROXY_PATH)
+            return proxyImage(request, env.ALLOWED_ORIGIN || '');
 
         const cors = corsHeaders(request, env);
 
