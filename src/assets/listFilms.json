@@ -6259,6 +6259,104 @@
       }
     ]
   },
+  "tt14173636": {
+    "imdbID": "tt14173636",
+    "title": "The Invite",
+    "year": "2026",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjI0MzJjMjctNmQzZi00Y2U4LWEwZGItMmE3NDUzNzk1YzY3XkEyXkFqcGc@._V1_QL75_UX380_CR0,15,380,562_.jpg",
+    "runtime": "107 min",
+    "genre": "Comedy, Drama, Romance",
+    "director": "Olivia Wilde",
+    "writer": "Cesc Gay, Will McCormack, Rashida Jones",
+    "imdbRating": "7.5",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.5/10"
+      },
+      {
+        "source": "Metacritic",
+        "value": "82/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "nelkiuezJxg",
+    "tagline": "It'll be fun.",
+    "plot": "Joe and Angela's marriage is on thin ice. When they invite their enigmatic upstairs neighbors for a dinner party, the night spirals into unexpected places. Have they reignited the spark or lit the match that burns it all down?",
+    "cast": [
+      {
+        "name": "Olivia Wilde",
+        "character": "Angela",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eODi1QKamyVa41eSK2SjU20VAZS.jpg",
+        "tmdbId": 59315
+      },
+      {
+        "name": "Seth Rogen",
+        "character": "Joe",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/nYl9bvQzaPQLzlf0wf75clLN6Hi.jpg",
+        "tmdbId": 19274
+      },
+      {
+        "name": "Penélope Cruz",
+        "character": "Piña",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/n5SFgmvJSENQt8poE4qYacUnKOi.jpg",
+        "tmdbId": 955
+      },
+      {
+        "name": "Edward Norton",
+        "character": "Howard \"Hawk\" Wilson Kelly",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/8nytsqL59SFJTVYVrN72k6qkGgJ.jpg",
+        "tmdbId": 819
+      },
+      {
+        "name": "Rachel Thurow",
+        "character": "Subway Goer (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cmc9sL0MfauEeeyRPmMFvNDePhK.jpg",
+        "tmdbId": 3709705
+      },
+      {
+        "name": "Mario Valdez",
+        "character": "Subway Goer (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4CShBxkTX3OLYtHjuAkMbzgKI5y.jpg",
+        "tmdbId": 6353553
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/lEwqBGNR65KZv6Ej5ufcmhZu2y2.jpg",
+      "https://image.tmdb.org/t/p/w1280/bs32Ds4L8VADGjBVasSK1ASU7OW.jpg",
+      "https://image.tmdb.org/t/p/w1280/w83IdXDgD2g82cWqJnbiYf8UQTR.jpg",
+      "https://image.tmdb.org/t/p/w1280/9DDQmfhXqiDYFsWa1T6V2omBuE8.jpg",
+      "https://image.tmdb.org/t/p/w1280/kLA1GqiOEyVgXxgNqLoCr7bYcqu.jpg",
+      "https://image.tmdb.org/t/p/w1280/ifOExsweHnEn5j1e76wo3p86Cqd.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Olivia Wilde",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/eODi1QKamyVa41eSK2SjU20VAZS.jpg",
+        "tmdbId": 59315
+      },
+      {
+        "name": "Rashida Jones",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cgWGm9eYCretBWeljPVtpRV7n6V.jpg",
+        "tmdbId": 80591
+      },
+      {
+        "name": "Will McCormack",
+        "job": "Screenplay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/l9ApCcWgtHa3U1zzEC2fzSlnMEh.jpg",
+        "tmdbId": 78500
+      },
+      {
+        "name": "Adam Newport-Berra",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cex0jRPbj2XYr30W9h9fLfPtRfC.jpg",
+        "tmdbId": 1388962
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt31170389": {
     "imdbID": "tt31170389",
     "title": "Evil Dead Burn",
