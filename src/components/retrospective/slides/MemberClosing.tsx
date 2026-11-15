@@ -10,6 +10,7 @@ import CircularImage from '../../common/CircularImage';
 import CountUp from '../CountUp';
 import Slide, { Reveal } from '../Slide';
 import {
+    canvasUrl,
     deliverPoster,
     renderPoster,
     sharesFiles,
@@ -55,16 +56,20 @@ const CARD_WIDTH =
 
 /** A one-sheet on the card's shelf, sized to match the saved image's (130 of 1080). */
 const ShelfPoster: React.FC<{ film: Film; children?: React.ReactNode }> = ({ film, children }) => {
-    const [failed, setFailed] = useState(false);
-    const src = film.poster && !film.poster.includes('N/A') && !failed ? film.poster : null;
+    // Loaded as the saved image will load it, so that's already cached when
+    // it's drawn; then plainly, should that fail; then the title on a card.
+    const [attempt, setAttempt] = useState(0);
+    const poster = film.poster && !film.poster.includes('N/A') ? film.poster : null;
+    const src = !poster || attempt > 1 ? null : attempt === 0 ? canvasUrl(poster) : poster;
     return (
         <div className="relative w-[12cqw] shrink-0" title={film.title}>
             {src ? (
                 <img
+                    key={src}
                     src={src}
                     alt={film.title}
-                    loading="lazy"
-                    onError={() => setFailed(true)}
+                    crossOrigin={attempt === 0 ? 'anonymous' : undefined}
+                    onError={() => setAttempt((n) => n + 1)}
                     className="aspect-[2/3] w-full object-cover shadow-lg ring-1 ring-slate-100/10"
                 />
             ) : (
@@ -109,9 +114,18 @@ const MemberClosing: React.FC<MemberClosingProps> = ({
     const favourite = closing.favourite;
     const shelf = shelfPicks(picks ?? []);
 
-    // A still that won't load gives way to the next.
-    const [artIndex, setArtIndex] = useState(0);
-    const art = keyArt[artIndex];
+    // Each still is loaded as the saved image will load it, so it's cached by
+    // the time that's drawn; should that fail, plainly; then the next still.
+    const [artAttempt, setArtAttempt] = useState(0);
+    const art = keyArt[Math.floor(artAttempt / 2)];
+    const artPlain = artAttempt % 2 === 1;
+    const artSrc = art && (artPlain ? art : canvasUrl(art));
+    /** The card's key art has loaded, or given up, or had long enough. */
+    const [artSettled, setArtSettled] = useState(false);
+    useEffect(() => {
+        const timer = window.setTimeout(() => setArtSettled(true), 4000);
+        return () => window.clearTimeout(timer);
+    }, []);
 
     const content = useMemo<PosterContent>(
         () => ({
@@ -137,12 +151,14 @@ const MemberClosing: React.FC<MemberClosingProps> = ({
     );
 
     // A phone's share sheet only opens straight from a tap, so there the image
-    // is drawn ahead of time; anywhere else it's drawn when asked for.
+    // is drawn ahead of time — once the card's own art is in, so it's drawn
+    // from the cache rather than racing the card for the network. Anywhere
+    // else it's drawn when asked for.
     const [shares] = useState(sharesFiles);
     const pending = useRef<Promise<RenderedPoster | null> | null>(null);
     useEffect(() => {
-        pending.current = shares ? renderPoster(content) : null;
-    }, [shares, content]);
+        pending.current = shares && artSettled ? renderPoster(content) : null;
+    }, [shares, artSettled, content]);
 
     const [saveState, setSaveState] = useState<SaveState>('idle');
     const save = async () => {
@@ -220,9 +236,10 @@ const MemberClosing: React.FC<MemberClosingProps> = ({
                         {art && (
                             <div className="absolute inset-x-0 top-0 h-[58%] overflow-hidden">
                                 <motion.img
-                                    key={art}
-                                    src={art}
+                                    key={artSrc}
+                                    src={artSrc}
                                     alt=""
+                                    crossOrigin={artPlain ? undefined : 'anonymous'}
                                     className="h-full w-full object-cover"
                                     initial={still ? false : { scale: 1.04 }}
                                     animate={still ? undefined : { scale: 1.14 }}
@@ -232,7 +249,8 @@ const MemberClosing: React.FC<MemberClosingProps> = ({
                                         repeat: Infinity,
                                         repeatType: 'reverse',
                                     }}
-                                    onError={() => setArtIndex((i) => i + 1)}
+                                    onLoad={() => setArtSettled(true)}
+                                    onError={() => setArtAttempt((n) => n + 1)}
                                 />
                             </div>
                         )}

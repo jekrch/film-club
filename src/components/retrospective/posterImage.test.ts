@@ -49,11 +49,15 @@ describe('canvasUrl', () => {
         );
     });
 
-    it('leaves hosts with CORS alone, and everything alone without a worker', () => {
+    it('gives hosts with CORS a URL of their own, and leaves the rest alone', () => {
         expect(canvasUrl('https://m.media-amazon.com/images/c.jpg', 'https://worker.example')).toBe(
-            'https://m.media-amazon.com/images/c.jpg'
+            'https://m.media-amazon.com/images/c.jpg?cors=1'
+        );
+        expect(canvasUrl('https://image.tmdb.org/t/p/w1280/b.jpg?x=1', '')).toBe(
+            'https://image.tmdb.org/t/p/w1280/b.jpg?x=1&cors=1'
         );
         expect(canvasUrl(criterion, '')).toBe(criterion);
+        expect(canvasUrl('/images/jacob.jpg', 'https://worker.example')).toBe('/images/jacob.jpg');
     });
 
     it("counts Criterion's stills as drawable once there's a proxy", () => {

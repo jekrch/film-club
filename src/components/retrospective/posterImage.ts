@@ -31,7 +31,7 @@ const SERIF = 'Georgia, Gelasio, serif';
 const SANS = 'Inter, ui-sans-serif, system-ui, sans-serif';
 
 /** How long one image gets to load before the next is tried. */
-const IMAGE_TIMEOUT_MS = 12000;
+const IMAGE_TIMEOUT_MS = 20000;
 /** Key art tried at most, in order. */
 const KEY_ART_TRIES = 6;
 
@@ -75,9 +75,23 @@ const CORS_HOSTS = /^https:\/\/(image\.tmdb\.org|m\.media-amazon\.com)\//;
 const PROXIED =
     /^https:\/\/(s3\.amazonaws\.com\/criterion-production\/|criterion-production\.s3\.amazonaws\.com\/)/;
 
-/** Where to fetch an image for the canvas: through the proxy when it needs it and there is one. */
-export const canvasUrl = (url: string, proxy: string = EDITOR_API_URL): string =>
-    proxy && PROXIED.test(url) ? `${proxy}/img?url=${encodeURIComponent(url)}` : url;
+/**
+ * Where to fetch an image for the canvas: through the proxy when it needs it
+ * and there is one, and otherwise, for a host with CORS, under a URL of its own.
+ *
+ * TMDb sends its CORS header only to a request that asks for it, and doesn't
+ * say its answer varies by that, so the copy the browser cached when a slide
+ * showed a still without CORS can't be used for the canvas. The extra
+ * parameter (which the hosts ignore) gives CORS requests a cache entry of
+ * their own, always with the header. The slide's card loads its images by
+ * these same URLs, with CORS, so by the time the poster is drawn they're
+ * already cached and nothing waits on the network.
+ */
+export const canvasUrl = (url: string, proxy: string = EDITOR_API_URL): string => {
+    if (proxy && PROXIED.test(url)) return `${proxy}/img?url=${encodeURIComponent(url)}`;
+    if (CORS_HOSTS.test(url)) return `${url}${url.includes('?') ? '&' : '?'}cors=1`;
+    return url;
+};
 
 /** Whether the canvas can draw this image, directly or through the proxy. */
 const drawable = (url: string, proxy: string): boolean =>
@@ -100,11 +114,10 @@ export const fullSize = (url: string): string =>
     url.replace(/^(https:\/\/image\.tmdb\.org\/t\/p\/)w\d+\//, '$1original/');
 
 /**
- * An image the canvas may draw and still export, or null when its host won't
- * allow that. Fetched past the cache rather than set on an <img>: the copy
- * cached when a slide showed the same image was fetched without CORS, and
- * reusing it taints the canvas or fails outright. The blob that comes back is
- * this page's own to draw.
+ * An image the canvas may draw and still export, or null when it can't be had.
+ * Fetched by its {@link canvasUrl}, so it comes from the cache the slide's card
+ * filled when it can, and the blob that comes back is this page's own to draw.
+ * A failure is logged, to find in the browser's console.
  */
 const loadImage = async (src: string): Promise<ImageBitmap | HTMLImageElement | null> => {
     const controller = new AbortController();
@@ -113,14 +126,12 @@ const loadImage = async (src: string): Promise<ImageBitmap | HTMLImageElement | 
         const response = await fetch(canvasUrl(src), {
             mode: 'cors',
             credentials: 'omit',
-            // TMDb sends its CORS header only to a request that asks for it, and
-            // doesn't say it varies by that. The copy the browser cached when a
-            // slide showed the still has no header, and a fetch answered from
-            // it fails; so this one always goes to the network.
-            cache: 'no-store',
             signal: controller.signal,
         });
-        if (!response.ok) return null;
+        if (!response.ok) {
+            console.warn(`Poster image: ${response.status} for ${src}`);
+            return null;
+        }
         const blob = await response.blob();
         if (typeof createImageBitmap === 'function') return await createImageBitmap(blob);
         const url = URL.createObjectURL(blob);
@@ -132,7 +143,8 @@ const loadImage = async (src: string): Promise<ImageBitmap | HTMLImageElement | 
         } finally {
             URL.revokeObjectURL(url);
         }
-    } catch {
+    } catch (error) {
+        console.warn(`Poster image: couldn't load ${src}`, error);
         return null;
     } finally {
         window.clearTimeout(timer);
