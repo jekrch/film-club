@@ -316,18 +316,18 @@ const Story: React.FC<StoryProps> = ({
                     <FaceStack faces={faces} size="h-4 w-4 sm:h-5 sm:w-5" className="!-space-x-1" />
                 )}
                 <div className="min-w-0 flex-1">
-                <StoryProgress
-                    onSelect={(i) => {
-                        touched();
-                        go(i);
-                    }}
-                    count={slides.length}
-                    index={index}
-                    runMs={autoplay && index < slides.length - 1 ? SLIDE_MS : null}
-                    restartKey={lastTouch}
-                    paused={held}
-                    accent={accent}
-                />
+                    <StoryProgress
+                        onSelect={(i) => {
+                            touched();
+                            go(i);
+                        }}
+                        count={slides.length}
+                        index={index}
+                        runMs={autoplay && index < slides.length - 1 ? SLIDE_MS : null}
+                        restartKey={lastTouch}
+                        paused={held}
+                        accent={accent}
+                    />
                 </div>
             </div>
 

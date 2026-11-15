@@ -18,7 +18,9 @@ const ClubSelections: React.FC<ClubSelectionsProps> = ({ selections, accent, ree
     <Slide reel={reel}>
         <Reveal>
             <Eyebrow color={accent}>The year in picks</Eyebrow>
-            <h2 className="mt-3 font-serif text-3xl text-slate-50 sm:text-5xl">Our official selections</h2>
+            <h2 className="mt-3 font-serif text-3xl text-slate-50 sm:text-5xl">
+                Our official selections
+            </h2>
         </Reveal>
         <div className="mt-6 flex flex-col sm:mt-8" style={{ gap: give('1.25rem', '0.625rem') }}>
             {selections.map(({ selector, films }, i) => {

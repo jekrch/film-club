@@ -54,7 +54,11 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
                         const color = member ? memberColor(member, i) : undefined;
                         return (
                             <div key={name} className="flex items-center gap-2">
-                                <MemberFace name={name} color={color} size="h-7 w-7 sm:h-8 sm:w-8" />
+                                <MemberFace
+                                    name={name}
+                                    color={color}
+                                    size="h-7 w-7 sm:h-8 sm:w-8"
+                                />
                                 <div className="flex items-baseline gap-2">
                                     <dt
                                         className="text-xs font-semibold uppercase tracking-[0.18em]"
@@ -83,16 +87,19 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
                         <div className="flex items-center gap-4">
                             <Poster src={lead.poster} title={lead.title} className="w-14 sm:w-20" />
                             <div className="min-w-0">
-                            <FaceStack
-                                faces={lead.members.map((name) => ({ name, color: colorOf(name) }))}
-                                size="h-7 w-7"
-                                className="mb-2"
-                            />
-                            <p className="text-slate-300 sm:text-lg">
-                                {listNames(lead.members)}{' '}
-                                {lead.members.length === 2 ? 'both' : 'all'} found their way to{' '}
-                                <em className="font-serif text-slate-50">{lead.title}</em>
-                            </p>
+                                <FaceStack
+                                    faces={lead.members.map((name) => ({
+                                        name,
+                                        color: colorOf(name),
+                                    }))}
+                                    size="h-7 w-7"
+                                    className="mb-2"
+                                />
+                                <p className="text-slate-300 sm:text-lg">
+                                    {listNames(lead.members)}{' '}
+                                    {lead.members.length === 2 ? 'both' : 'all'} found their way to{' '}
+                                    <em className="font-serif text-slate-50">{lead.title}</em>
+                                </p>
                             </div>
                         </div>
                         <FeatureStill stills={sharedStills} accent={accent} />

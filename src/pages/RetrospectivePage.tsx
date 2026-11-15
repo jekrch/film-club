@@ -240,8 +240,7 @@ const RetrospectivePage: React.FC = () => {
     const audition = params.get('track');
     const choices = useMemo(() => soundtrackChoices(audition), [audition]);
     const isChoice = useCallback(
-        (id: string | null): id is string =>
-            id === SILENCE || choices.some((c) => c.id === id),
+        (id: string | null): id is string => id === SILENCE || choices.some((c) => c.id === id),
         [choices]
     );
     const fallbackId = (): string => {
