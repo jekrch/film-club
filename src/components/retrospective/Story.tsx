@@ -112,8 +112,9 @@ interface StoryProps {
      */
     music?: {
         label: string;
-        muted: boolean;
-        onToggleMute: () => void;
+        /** Switched off: no player, no bay, and the bar is as short as without music. */
+        off: boolean;
+        onToggleOff: () => void;
         /** Play was refused: the reader has to tap the video. */
         blocked: boolean;
     };
@@ -154,8 +155,8 @@ const SWIPE_PX = 50;
  * The full-screen deck: one slide at a time, a progress bar along the top, and
  * a close control in the corner every story app puts it.
  *
- * The reader moves through it by hand unless they ask otherwise: tap the right
- * two-thirds to go on and the left third to go back, swipe, use the arrow keys
+ * The reader moves through it by hand unless they ask otherwise: tap
+ * anywhere to go on (never back), swipe, use the arrow keys
  * and space, or the arrows in the corner. The play control beside them sets the
  * deck going by itself, a slide every few seconds, and pauses it again; holding
  * a slide pauses it too. Moving by hand while it plays restarts the slide's
@@ -172,6 +173,8 @@ const Story: React.FC<StoryProps> = ({
     music,
     onHold,
 }) => {
+    // The player and its bay are there only while the music is on.
+    const player = !!music && !music.off;
     const still = prefersReducedMotion();
     /** Off until the reader turns it on: the deck waits on them by default. */
     const [autoplay, setAutoplay] = useState(false);
@@ -274,8 +277,7 @@ const Story: React.FC<StoryProps> = ({
             go(dx < 0 ? index + 1 : index - 1);
             return;
         }
-        const { left, width } = event.currentTarget.getBoundingClientRect();
-        go(event.clientX - left < width / 3 ? index - 1 : index + 1);
+        go(index + 1);
     };
 
     const onPointerCancel = () => {
@@ -293,7 +295,7 @@ const Story: React.FC<StoryProps> = ({
         <motion.div
             className="fixed inset-0 z-[70] touch-pan-y select-none overflow-hidden bg-page pt-[env(safe-area-inset-top)]"
             style={{
-                ['--bar' as string]: `calc(${music ? BAR_WITH_PLAYER : BAR_PLAIN}px + env(safe-area-inset-bottom))`,
+                ['--bar' as string]: `calc(${player ? BAR_WITH_PLAYER : BAR_PLAIN}px + env(safe-area-inset-bottom))`,
             }}
             role="region"
             aria-roledescription="slideshow"
@@ -408,7 +410,7 @@ const Story: React.FC<StoryProps> = ({
                     end on a panel of their own. */}
                 <div
                     className={`absolute inset-y-0 left-0 hidden items-center overflow-hidden pb-[env(safe-area-inset-bottom)] sm:flex ${
-                        music ? 'right-[232px]' : 'right-0'
+                        player ? 'right-[232px]' : 'right-0'
                     }`}
                 >
                     <AnimatePresence initial={false}>
@@ -426,8 +428,8 @@ const Story: React.FC<StoryProps> = ({
                                         ? slide.reel
                                         : art.filter((a) => a.kind === 'still').map((a) => a.url)
                                 }
-                                frameClass={music ? 'h-36' : 'h-9'}
-                                sprocketClass={music ? 'h-4' : 'h-2'}
+                                frameClass={player ? 'h-36' : 'h-9'}
+                                sprocketClass={player ? 'h-4' : 'h-2'}
                                 className="!shadow-none"
                             />
                         </motion.div>
@@ -435,7 +437,7 @@ const Story: React.FC<StoryProps> = ({
                 </div>
                 <div
                     className={`relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-2 px-3 sm:my-auto sm:ml-4 sm:max-w-[240px] sm:flex-none sm:rounded-xl sm:bg-slate-950/70 sm:shadow-xl sm:ring-1 sm:ring-slate-100/10 sm:backdrop-blur-md ${
-                        music ? 'sm:gap-3 sm:p-4' : 'sm:px-2 sm:py-1.5'
+                        player ? 'sm:gap-3 sm:p-4' : 'sm:px-2 sm:py-1.5'
                     }`}
                 >
                     <div className="flex items-center gap-1 sm:gap-1.5">
@@ -478,23 +480,30 @@ const Story: React.FC<StoryProps> = ({
                         >
                             <ChevronRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                         </button>
-                        {!music && <Counter index={index} count={slides.length} />}
+                        {music && !player && (
+                            <button
+                                type="button"
+                                onClick={music.onToggleOff}
+                                className={CONTROL}
+                                aria-label="Turn the music on"
+                                aria-pressed
+                            >
+                                <SpeakerXMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                            </button>
+                        )}
+                        {!player && <Counter index={index} count={slides.length} />}
                     </div>
-                    {music && (
+                    {music && player && (
                         <>
                             <div className="flex items-center gap-2">
                                 <button
                                     type="button"
-                                    onClick={music.onToggleMute}
+                                    onClick={music.onToggleOff}
                                     className={CONTROL}
-                                    aria-label={music.muted ? 'Unmute the music' : 'Mute the music'}
-                                    aria-pressed={music.muted}
+                                    aria-label="Turn the music off"
+                                    aria-pressed={false}
                                 >
-                                    {music.muted ? (
-                                        <SpeakerXMarkIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                                    ) : (
-                                        <SpeakerWaveIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                                    )}
+                                    <SpeakerWaveIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </button>
                                 <Counter index={index} count={slides.length} />
                             </div>
@@ -503,7 +512,7 @@ const Story: React.FC<StoryProps> = ({
                             </p>
                         </>
                     )}
-                    {music?.blocked && (
+                    {player && music?.blocked && (
                         <p className="text-[11px] leading-snug text-slate-200 sm:text-xs">
                             Tap the video to start the music →
                         </p>
@@ -513,7 +522,7 @@ const Story: React.FC<StoryProps> = ({
                 <div className="hidden flex-1 sm:block" />
                 {/* The player's bay: the tile is drawn here by the page, fixed,
                     so it survives the deck closing long enough to fade out. */}
-                {music && <div className="w-[216px] shrink-0 sm:w-[232px]" aria-hidden="true" />}
+                {player && <div className="w-[216px] shrink-0 sm:w-[232px]" aria-hidden="true" />}
             </div>
 
             <LeaveDialog

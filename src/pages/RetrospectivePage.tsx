@@ -316,6 +316,7 @@ const RetrospectivePage: React.FC = () => {
     const play = () => {
         autoStart.current = false;
         setStarted(true);
+        setMusicOff(false);
         if (hasMusic) {
             // Sent now, inside the tap, and held until the new player is
             // listening; the tap is what lets it start with sound.
@@ -324,6 +325,22 @@ const RetrospectivePage: React.FC = () => {
             startMusic();
         }
         if (slideParam === null) setSlide(0);
+    };
+
+    // The reader can switch the music off for the rest of the show, which also
+    // gives the player's room back to the slides. Switching it on again is a
+    // tap, so it can start with sound, on a fresh player.
+    const [musicOff, setMusicOff] = useState(false);
+    const toggleMusicOff = () => {
+        if (musicOff) {
+            resetMusic();
+            setSession((n) => n + 1);
+            setMusicOff(false);
+            startMusic();
+        } else {
+            stopMusic();
+            setMusicOff(true);
+        }
     };
 
     const close = useCallback(() => {
@@ -459,8 +476,8 @@ const RetrospectivePage: React.FC = () => {
                         nowPlaying
                             ? {
                                   label: nowPlaying.label,
-                                  muted: soundtrack.muted,
-                                  onToggleMute: () => soundtrack.setMuted(!soundtrack.muted),
+                                  off: musicOff,
+                                  onToggleOff: toggleMusicOff,
                                   blocked: soundtrack.status === 'blocked',
                               }
                             : undefined
@@ -468,7 +485,7 @@ const RetrospectivePage: React.FC = () => {
                 />
             )}
 
-            {hasMusic && (playing || lingering) && (
+            {hasMusic && !musicOff && (playing || lingering) && (
                 <SoundtrackDock
                     key={session}
                     queue={queue}
