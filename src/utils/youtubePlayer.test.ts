@@ -74,7 +74,7 @@ describe('soundtrackEmbedUrl', () => {
         expect(url.searchParams.get('playlist')).toBe('abcdefghijk');
     });
 
-    it('queues the following videos after the first, wrapping round', () => {
+    it('leads the queue with the chosen video, the following ones after it', () => {
         const url = new URL(
             soundtrackEmbedUrl('abcdefghijk', 'https://www.criterionclub.org', [
                 'bcdefghijkl',
@@ -82,7 +82,7 @@ describe('soundtrackEmbedUrl', () => {
             ])
         );
         expect(url.pathname).toBe('/embed/abcdefghijk');
-        expect(url.searchParams.get('playlist')).toBe('bcdefghijkl,-cdefghijkm');
+        expect(url.searchParams.get('playlist')).toBe('abcdefghijk,bcdefghijkl,-cdefghijkm');
         expect(url.searchParams.get('list')).toBeNull();
         expect(url.searchParams.get('loop')).toBe('1');
     });

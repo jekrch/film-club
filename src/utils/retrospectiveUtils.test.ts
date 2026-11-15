@@ -587,11 +587,22 @@ describe('buildClubRetrospective', () => {
 
 describe('buildMemberRetrospective', () => {
     it('counts club films and log films as two figures', () => {
-        expect(jacob2026().count).toEqual({
+        expect(jacob2026().count).toMatchObject({
             withClub: 7,
             onOwn: 4,
             minutes: { withClub: 97 + 6 * 120, onOwn: 100 + 120 + 91 + 109 },
         });
+    });
+
+    it('sets their club films beside every year since their first, log aside', () => {
+        const { history, withClub } = jacob2026().count;
+        expect(history[history.length - 1]).toEqual({ year: 2026, withClub });
+        expect(history.map((h) => h.year)).toEqual(
+            Array.from({ length: history.length }, (_, i) => history[0].year + i)
+        );
+        expect(buildMemberRetrospective(2025, 'Jacob', sources, NOW)!.count.history).toEqual(
+            history.slice(0, -1)
+        );
     });
 
     it('puts a log entry from 2026-01-01 in 2026, and one from the day before in 2025', () => {
@@ -673,9 +684,10 @@ describe('buildMemberRetrospective', () => {
         expect(words!.count).toBe(3);
         expect(words!.longest.imdbID).toBe(nadja.imdbID);
         expect(words!.mostReacted!.imdbID).toBe('tt9000001');
+        // Highest scores first; with only three reviews there's no separate lowest.
         expect(words!.highlights.map((r) => r.imdbID)).toEqual([
-            nadja.imdbID,
             'tt9000001',
+            nadja.imdbID,
             odyssey.imdbID,
         ]);
     });

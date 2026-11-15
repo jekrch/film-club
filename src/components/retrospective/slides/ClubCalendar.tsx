@@ -5,7 +5,7 @@ import { prefersReducedMotion } from '../../../utils/motion';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { Poster } from './shared';
-import { listNames, MONTHS, numberWord } from './format';
+import { calendarPosterWidth, listNames, MONTHS, numberWord } from './format';
 
 interface ClubCalendarProps {
     calendar: NonNullable<ClubRetrospective['calendar']>;
@@ -18,15 +18,6 @@ interface ClubCalendarProps {
  * The year as a row of months, one poster-dot per screening, then the shape of
  * it in words: where it began and ended, when it was busiest, the longest gap.
  */
-/**
- * How wide a screening's poster may be, by the busiest month's count: the
- * fuller the fullest month, the narrower every poster, so the tallest stack
- * still sits comfortably on a phone or a laptop. A poster otherwise fills its
- * month's column.
- */
-const posterWidth = (densest: number): string =>
-    densest >= 4 ? 'max-w-8' : densest === 3 ? 'max-w-9' : 'max-w-11';
-
 const ClubCalendar: React.FC<ClubCalendarProps> = ({ calendar, films, inProgress, accent }) => {
     const still = prefersReducedMotion();
     const byMonth = MONTHS.map((_, month) =>
@@ -36,7 +27,7 @@ const ClubCalendar: React.FC<ClubCalendarProps> = ({ calendar, films, inProgress
     const busiest = busiestMonth.count > 1 ? busiestMonth.months : [];
     const monthOf = (film: typeof first) =>
         MONTHS[films.find((f) => f.imdbID === film.imdbID)!.parsedWatchDate.getUTCMonth()];
-    const width = posterWidth(busiestMonth.count);
+    const width = calendarPosterWidth(busiestMonth.count);
 
     return (
         <Slide>

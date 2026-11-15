@@ -2,6 +2,7 @@ import PopcornRating from '../common/PopcornRating';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import CollapsibleContent from '../common/CollapsableContent';
+import Markdown from '../common/Markdown';
 
 export interface ProfileReviewBlurb {
     filmId: string;
@@ -64,9 +65,9 @@ const ProfileBlurbItem: React.FC<ProfileBlurbItemProps> = ({ blurbItem, maxRatin
                     <CollapsibleContent
                         buttonSize="sm"
                         lineClamp={3}
-                        className="text-sm italic leading-relaxed text-slate-300"
+                        className="text-sm italic leading-relaxed text-slate-300 [&_em]:not-italic"
                     >
-                        {blurbItem.blurb}
+                        <Markdown>{blurbItem.blurb}</Markdown>
                     </CollapsibleContent>
                 </div>
             </div>

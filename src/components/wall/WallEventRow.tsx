@@ -12,6 +12,7 @@ import {
 import Button from '../common/Button';
 import CircularImage from '../common/CircularImage';
 import CollapsibleContent from '../common/CollapsableContent';
+import Markdown from '../common/Markdown';
 import RowFrameWash from '../common/RowFrameWash';
 import TrailerButton from '../common/TrailerButton';
 import EntryDetailsPanel, { EntryDetailsToggle } from '../films/EntryDetailsPanel';
@@ -453,24 +454,28 @@ const ScoreBadge: React.FC<{
  * member's log to get it. `CollapsibleContent` measures, so the toggle appears
  * only on prose that is actually cut off.
  *
- * `whitespace-pre-line` for the reason `Markdown` carries `remark-breaks`: all
- * of this prose is typed into a plain `<textarea>`, and a member who pressed
- * Enter meant it. HTML collapses those newlines to spaces, so a review that
- * broke into lines on its author's log arrived here as one run-on paragraph —
- * the same words laid out two different ways in two places. Blank lines still
- * read as a gap, and wrapping is untouched, so the clamp still counts the lines
- * the reader actually sees.
+ * Reviews, club blurbs and list descriptions are written as Markdown — the
+ * editors say so — and render through `Markdown` here exactly as they do on
+ * the member's log or the list's page, so the same words don't read as raw
+ * asterisks on one surface and emphasis on another. `Markdown` carries
+ * `remark-breaks`, so a member who pressed Enter keeps their line break.
+ *
+ * A trophy's note is the exception: it is typed into a one-line `<input>` and
+ * shown as plain text everywhere else, so it stays plain here, with
+ * `whitespace-pre-line` keeping any newline it does carry. That class stays off
+ * the Markdown path, where it would turn the newlines `react-markdown` emits
+ * between blocks into stray blank lines.
  */
-const Detail: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const Detail: React.FC<{ text: string; markdown?: boolean }> = ({ text, markdown = true }) => (
     <div className="relative mt-3 border-l-2 sm:mt-1.5 border-slate-500/50 pl-3">
         <CollapsibleContent
             lineClamp={2}
             buttonSize="sm"
             buttonTexts={{ more: 'Read more', less: 'Read less' }}
             buttonClassName="not-italic mt-1"
-            className="whitespace-pre-line text-sm leading-relaxed text-slate-300"
+            className={`${markdown ? '' : 'whitespace-pre-line '}text-sm leading-relaxed text-slate-300`}
         >
-            {children}
+            {markdown ? <Markdown>{text}</Markdown> : text}
         </CollapsibleContent>
     </div>
 );
@@ -797,7 +802,7 @@ const FoldedTrophies: React.FC<{ trophies: TrophyEvent[] }> = ({ trophies }) => 
                             )}
                             <span className="font-medium text-slate-200">{event.trophy.award}</span>
                         </p>
-                        {event.trophy.note && <Detail>{event.trophy.note}</Detail>}
+                        {event.trophy.note && <Detail text={event.trophy.note} markdown={false} />}
                     </li>
                 );
             })}
@@ -983,11 +988,9 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
             );
 
         case 'log':
-            // Plain text rather than Markdown: the review renders as Markdown on
-            // the member's log, and this is a plain-text reading of the same
-            // words — expandable in place, so the whole review is here. Its line
-            // breaks survive the trip; `Detail` says how.
-            return event.entry.blurb ? <Detail>{event.entry.blurb}</Detail> : null;
+            // Expandable in place, so the whole review is here, rendered as
+            // Markdown the way it is on the member's own log.
+            return event.entry.blurb ? <Detail text={event.entry.blurb} /> : null;
 
         case 'late-review':
             return (
@@ -998,7 +1001,7 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
                     <p className="relative mt-1 text-sm text-slate-500">
                         The club watched this {formatWatchDate(event.watchDay)}
                     </p>
-                    {event.rating.blurb && <Detail>{event.rating.blurb}</Detail>}
+                    {event.rating.blurb && <Detail text={event.rating.blurb} />}
                 </>
             );
 
@@ -1011,12 +1014,12 @@ const WallDetail: React.FC<{ event: WallEvent }> = ({ event }) => {
                     {/* Railed and expandable rather than run onto the line above:
                         a list's blurb is its owner talking, which is what the
                         rail means, and some of them run for a paragraph. */}
-                    {event.list.description && <Detail>{event.list.description}</Detail>}
+                    {event.list.description && <Detail text={event.list.description} />}
                 </>
             );
 
         case 'trophy':
-            return event.trophy.note ? <Detail>{event.trophy.note}</Detail> : null;
+            return event.trophy.note ? <Detail text={event.trophy.note} markdown={false} /> : null;
     }
 };
 

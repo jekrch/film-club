@@ -42,14 +42,20 @@ const PLAYER_STATES: Record<number, PlayerState> = {
  * queued after it, which gives the player its own next and previous buttons;
  * `loop` wraps those round. Left to itself the player would also move on when
  * a video ends — {@link YouTubeSoundtrack} stops that, so each one repeats
- * until the reader skips. A single video loops only with a `playlist` of itself.
+ * until the reader skips.
+ *
+ * `playlist` is the player's whole queue, and a play sent by message starts at
+ * its head, not at the video in the path — so `key` leads it too. Without that
+ * the reader's choice is skipped and the one after it plays (and a single
+ * video wouldn't loop at all). With it, the embed's `playlistIndex` lines up
+ * with `[key, ...then]`.
  */
-export const soundtrackEmbedUrl = (key: string, pageOrigin: string, then?: string[]): string => {
+export const soundtrackEmbedUrl = (key: string, pageOrigin: string, then: string[] = []): string => {
     const params = new URLSearchParams({
         enablejsapi: '1',
         origin: pageOrigin,
         loop: '1',
-        playlist: then?.length ? then.join(',') : key,
+        playlist: [key, ...then].join(','),
         playsinline: '1',
         rel: '0',
         iv_load_policy: '3',

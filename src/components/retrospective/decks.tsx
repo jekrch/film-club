@@ -4,6 +4,7 @@ import { COPPER } from '../../utils/chartTheme';
 import { getFilmBackdrops } from '../../utils/filmUtils';
 import { stillsFor } from '../../utils/retrospectiveArt';
 import type { ClubRetrospective, MemberRetrospective } from '../../utils/retrospectiveUtils';
+import { keyArtOrder } from './posterImage';
 import type { StorySlide } from './Story';
 import ClubCalendar from './slides/ClubCalendar';
 import ClubClosing from './slides/ClubClosing';
@@ -41,6 +42,14 @@ import WordsSlide from './slides/WordsSlide';
 const TITLE_ART = 0.6;
 const CLOSING_ART = 0.32;
 
+/**
+ * Key art picked by hand, by member and year, for when the favourite's first
+ * still doesn't suit their poster. Tried ahead of the rest.
+ */
+const PINNED_KEY_ART: Record<string, Record<number, string>> = {
+    Joey: { 2026: 'https://image.tmdb.org/t/p/w1280/7AgPZV34QJYiasClUJvv684HsE9.jpg' },
+};
+
 /** A club film's own stills, read off the record the report already holds. */
 const filmStills = (film: Film): string[] =>
     getFilmBackdrops(film).filter((url) => url.startsWith('http'));
@@ -72,7 +81,7 @@ export const clubDeck = (report: ClubRetrospective, activeMembers: number): Stor
                 <TitleCard
                     eyebrow="The Criterion Club"
                     title={String(report.year)}
-                    subtitle={report.inProgress ? 'The year so far' : 'A retrospective'}
+                    subtitle={'A year in review'}
                     accent={accent}
                     reel={yearReel}
                 />
@@ -274,6 +283,7 @@ export const memberDeck = (
                     year={report.year}
                     inProgress={report.inProgress}
                     count={report.count}
+                    films={report.films}
                     accent={accent}
                     reel={[...yearReel].reverse()}
                 />
@@ -369,6 +379,16 @@ export const memberDeck = (
                 closing={report.closing}
                 others={others}
                 accent={accent}
+                keyArt={[
+                    ...keyArtOrder([
+                        PINNED_KEY_ART[report.member.name]?.[report.year] ?? '',
+                        ...(report.closing.favourite
+                            ? filmStills(report.closing.favourite.film)
+                            : []),
+                    ]),
+                    ...keyArtOrder(yearReel),
+                ]}
+                picks={report.picks}
                 reel={yearReel}
             />
         ),

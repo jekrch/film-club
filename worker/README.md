@@ -51,7 +51,7 @@ them, which is what keeps personal data out of every club statistic.
 
 ## Endpoints
 
-All require `Authorization: Bearer <google_id_token>`.
+All require `Authorization: Bearer <google_id_token>`, except the image proxy below.
 
 | Method   | Path                                    | Purpose                                                |
 | -------- | --------------------------------------- | ------------------------------------------------------ |
@@ -73,6 +73,18 @@ All require `Authorization: Bearer <google_id_token>`.
 | `PUT`    | `/api/responses/:thread/comments/:id`   | Comment on a thread (`new`), or edit your own          |
 | `DELETE` | `/api/responses/:thread/comments/:id`   | Remove a comment (author, row's owner, or admin)       |
 | `GET`    | `/api/films/search?q=`                  | OMDB title search, so the key stays server-side        |
+
+### The image proxy
+
+`GET /img?url=<image url>` is the one unauthenticated route. The retrospective's
+closing poster is drawn on a canvas to be saved as an image, and a canvas can't
+export an image from a host that sends no CORS header — which Criterion's own
+bucket, home to about two in five club posters, doesn't. This fetches only URLs
+under that bucket (`ALLOWED` in `src/imageProxy.ts`), follows no redirects,
+passes on only `image/*` up to 12 MB, and answers with
+`Access-Control-Allow-Origin: *` and a year's caching. Anything else is a 403
+with no fetch made. The site keeps the same list in
+`src/components/retrospective/posterImage.ts` to decide what to send here.
 
 ### The four reads that used to be here
 

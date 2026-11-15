@@ -37,6 +37,7 @@ import PersonStrip, { PersonStripEntry } from '../components/films/PersonStrip';
 import PageLayout from '../components/layout/PageLayout';
 import Button from '../components/common/Button';
 import CollapsibleContent from '../components/common/CollapsableContent';
+import Markdown from '../components/common/Markdown';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorDisplay from '../components/common/ErrorDisplay';
 import { useFilmDetails } from '../hooks/useFilmDetails';
@@ -768,15 +769,23 @@ const FilmDetailPage = () => {
                                                                         <CollapsibleContent
                                                                             buttonSize="sm"
                                                                             lineClamp={3}
-                                                                            className="text-sm italic leading-relaxed text-slate-300"
+                                                                            className="text-sm italic leading-relaxed text-slate-300 [&_em]:not-italic"
                                                                         >
-                                                                            {rating.blurb}
-                                                                            <span className="capitalize">
-                                                                                &nbsp;&mdash;&nbsp;
+                                                                            {/* Markdown, as the editor promises and the
+                                                                                member's log renders it. The body is
+                                                                                block-level, so the attribution takes
+                                                                                its own line under it. `em` reads
+                                                                                upright, since the review is already
+                                                                                italic. */}
+                                                                            <Markdown>
+                                                                                {rating.blurb}
+                                                                            </Markdown>
+                                                                            <p className="mt-1 capitalize">
+                                                                                &mdash;&nbsp;
                                                                                 {capitalizeFirstLetter(
                                                                                     rating.user
                                                                                 )}
-                                                                            </span>
+                                                                            </p>
                                                                         </CollapsibleContent>
                                                                     </div>
                                                                 )}

@@ -4,7 +4,7 @@ import { getTeamMemberByName } from '../../../types/team';
 import type { RetrospectiveReview } from '../../../utils/retrospectiveUtils';
 import CircularImage from '../../common/CircularImage';
 import Slide, { Eyebrow, Reveal } from '../Slide';
-import { excerpt, memberColor, numberWord } from './format';
+import { excerpt, formatScore, memberColor, numberWord } from './format';
 
 interface WordsSlideProps {
     /** How many reviews, and the breakdown line under it. */
@@ -51,6 +51,11 @@ const Clip: React.FC<{ review: RetrospectiveReview; still?: string; accent: stri
                     style={{ color }}
                 >
                     {review.member}
+                    {review.score !== null && (
+                        <span className="ml-2 tracking-normal text-slate-300">
+                            {formatScore(review.score)}
+                        </span>
+                    )}
                 </figcaption>
                 <blockquote className="mt-2 font-serif text-base leading-snug text-slate-100 sm:text-lg">
                     “{excerpt(review.blurb, 170)}”

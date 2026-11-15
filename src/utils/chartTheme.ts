@@ -70,11 +70,13 @@ export const TOOLTIP_CARD: Highcharts.TooltipOptions = {
 };
 
 /**
- * The Tailwind 300 shades members are given in `club.json`, as hex: the rest of
- * the site sets them as class names, which an SVG chart can't read.
+ * The Tailwind shades members are given in `club.json`, as hex: the rest of
+ * the site sets them as class names, which an SVG chart can't read. Mostly
+ * 300s; `red-400` because red's 300 reads as pink.
  */
 const TAILWIND_300: Record<string, string> = {
     'red-300': '#fca5a5',
+    'red-400': '#f87171',
     'orange-300': '#fdba74',
     'amber-300': '#fcd34d',
     'yellow-300': '#fde047',

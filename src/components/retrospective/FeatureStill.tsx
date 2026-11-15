@@ -14,6 +14,8 @@ interface FeatureStillProps {
      * `.retro-give-aspect`). 16:9 giving to 16:6 unless a slide says otherwise.
      */
     aspectClass?: string;
+    /** Small, fixed-size thumbnails in a row, rather than ones that share the frame's width. */
+    compactRail?: boolean;
     className?: string;
 }
 
@@ -27,6 +29,8 @@ const DISSOLVE: [number, number, number, number] = [0.45, 0, 0.25, 1];
 const GLIDE = { type: 'spring', stiffness: 260, damping: 32, mass: 0.9 } as const;
 /** Thumbnails under the frame, at most. */
 const RAIL = 6;
+/** Thumbnails in a compact rail, which are small enough to fit more. */
+const COMPACT_RAIL = 8;
 
 /**
  * The camera move each frame makes while it holds — a slow push in, a drift
@@ -62,6 +66,7 @@ const FeatureStill: React.FC<FeatureStillProps> = ({
     accent = '#ccd5e0',
     caption,
     aspectClass = '[--aspect:16/9] [--aspect-tight:16/6]',
+    compactRail = false,
     className = '',
 }) => {
     const [index, setIndex] = useState(0);
@@ -82,8 +87,9 @@ const FeatureStill: React.FC<FeatureStillProps> = ({
     const url = usable[current];
     const move = MOVES[index % MOVES.length];
     // The rail shows a window of frames around the current one.
-    const railStart = Math.max(0, Math.min(current - 2, count - RAIL));
-    const rail = usable.slice(railStart, railStart + RAIL);
+    const railLength = compactRail ? COMPACT_RAIL : RAIL;
+    const railStart = Math.max(0, Math.min(current - 2, count - railLength));
+    const rail = usable.slice(railStart, railStart + railLength);
 
     /** Forward to a frame, so the cuts and camera moves carry on in turn. */
     const cutTo = (at: number) =>
@@ -159,7 +165,9 @@ const FeatureStill: React.FC<FeatureStillProps> = ({
                                     transition={still ? { duration: 0 } : GLIDE}
                                     type="button"
                                     onClick={() => !active && cutTo(at)}
-                                    className="group relative aspect-video min-w-0 flex-1 overflow-hidden rounded-[2px]"
+                                    className={`group relative aspect-video min-w-0 overflow-hidden rounded-[2px] ${
+                                        compactRail ? 'w-9 flex-none sm:w-11' : 'flex-1'
+                                    }`}
                                     aria-label={`Frame ${at + 1} of ${count}`}
                                     aria-current={active || undefined}
                                 >

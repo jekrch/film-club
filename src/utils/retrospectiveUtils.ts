@@ -289,6 +289,11 @@ export interface MemberRetrospective {
         withClub: number;
         onOwn: number;
         minutes: { withClub: number; onOwn: number };
+        /**
+         * Their club films in each year from their first through this one, gaps
+         * included. Club films only: the log is too new to compare years by.
+         */
+        history: { year: number; withClub: number }[];
     };
 
     scores: {
@@ -393,6 +398,31 @@ const mean = (values: number[]): number | null =>
 
 const minutesOf = (runtimes: (string | null | undefined)[]): number =>
     runtimes.reduce((sum, runtime) => sum + (parseRuntime(runtime) ?? 0), 0);
+
+/**
+ * A member's club films per year, from the first year they scored one through
+ * `year`, with the years between at zero. Empty when they never have.
+ */
+const clubHistory = (
+    films: Film[],
+    name: string,
+    year: number
+): MemberRetrospective['count']['history'] => {
+    const counts = new Map<number, number>();
+    films.forEach((film) => {
+        const y = clubYear(film);
+        const scored = film.movieClubInfo?.clubRatings.some(
+            (r) => sameName(r.user, name) && validScore(r.score)
+        );
+        if (y !== null && y <= year && scored) counts.set(y, (counts.get(y) ?? 0) + 1);
+    });
+    if (!counts.size) return [];
+    const first = Math.min(...counts.keys());
+    return Array.from({ length: year - first + 1 }, (_, i) => ({
+        year: first + i,
+        withClub: counts.get(first + i) ?? 0,
+    }));
+};
 
 /** Counts of each name, most first, ties alphabetical. */
 const tally = (names: string[]): Tally[] => {
@@ -887,6 +917,35 @@ const highlightReviews = (reviews: RetrospectiveReview[], limit: number): Retros
     return picked;
 };
 
+/**
+ * A member's reviews to quote: their three highest-scored, then the lowest
+ * score they reviewed last. Ties go to the fuller review, and no film appears
+ * twice. When too few reviews carry a score, the fullest unscored ones fill in.
+ */
+const memberHighlightReviews = (reviews: RetrospectiveReview[]): RetrospectiveReview[] => {
+    const scored = reviews.filter((r) => r.score !== null);
+    const byScore = (dir: 1 | -1) =>
+        [...scored].sort((a, b) => dir * (b.score! - a.score!) || b.words - a.words);
+    const top: RetrospectiveReview[] = [];
+    const films = new Set<string>();
+    for (const r of byScore(1)) {
+        if (top.length >= 3) break;
+        if (films.has(r.imdbID)) continue;
+        top.push(r);
+        films.add(r.imdbID);
+    }
+    const lowest = byScore(-1).find((r) => !films.has(r.imdbID));
+    const picked = lowest ? [...top, lowest] : top;
+    if (picked.length >= 4) return picked;
+    const used = new Set(picked.map((r) => r.imdbID));
+    const fill = highlightReviews(
+        reviews.filter((r) => !used.has(r.imdbID)),
+        4 - picked.length
+    );
+    // Keep the lowest-scored review last.
+    return lowest ? [...top, ...fill, lowest] : [...top, ...fill];
+};
+
 /** The club's hand-picked quotes first, then the fullest reviews to make up the number. */
 const featuredReviews = (reviews: RetrospectiveReview[], limit: number): RetrospectiveReview[] => {
     const picked = FEATURED_CLUB_REVIEWS.map((id) => reviews.find((r) => r.threadId === id)).filter(
@@ -1210,6 +1269,7 @@ export const buildMemberRetrospective = (
             withClub: minutesOf(club.map((f) => f.runtime)),
             onOwn: minutesOf(log.map((l) => l.runtime)),
         },
+        history: clubHistory(sources.films, name, year),
     };
 
     // Scores
@@ -1324,7 +1384,7 @@ export const buildMemberRetrospective = (
               count: reviews.length,
               longest: longestReview(reviews),
               mostReacted: mostReactedReview(reviews),
-              highlights: highlightReviews(reviews, 3),
+              highlights: memberHighlightReviews(reviews),
           }
         : null;
 

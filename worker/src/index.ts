@@ -22,6 +22,7 @@
 
 import { authenticate, memberNames } from './auth';
 import { HttpError, badRequest, forbidden, notFound } from './errors';
+import { IMAGE_PROXY_PATH, proxyImage } from './imageProxy';
 import {
     CLUB_PATH,
     DEFER_DEPLOY,
@@ -1442,7 +1443,9 @@ async function deleteComment(
  * Resolves one request to a response body.
  *
  * Every route authenticates first — there is no unauthenticated surface here
- * beyond the CORS preflight. Reads come from `main`, not the deployed bundle, so
+ * beyond the CORS preflight. (The image proxy at {@link IMAGE_PROXY_PATH} is
+ * the one exception, and is answered before this is reached; see
+ * `imageProxy.ts`.) Reads come from `main`, not the deployed bundle, so
  * the editor sees saves that haven't deployed yet.
  */
 async function route(request: Request, env: Env): Promise<unknown> {
@@ -1589,6 +1592,10 @@ async function route(request: Request, env: Env): Promise<unknown> {
 
 export default {
     async fetch(request: Request, env: Env): Promise<Response> {
+        // Public and credential-free, with CORS of its own; nothing below
+        // applies to it.
+        if (new URL(request.url).pathname === IMAGE_PROXY_PATH) return proxyImage(request);
+
         const cors = corsHeaders(request, env);
 
         if (request.method === 'OPTIONS') {

@@ -63,7 +63,7 @@ const ClubFavourites: React.FC<ClubFavouritesProps> = ({ favourites, stillsOf, a
                                 src={loved.film.poster}
                                 title={loved.film.title}
                                 to={`/films/${loved.film.imdbID}`}
-                                className="-mt-8 w-12 shadow-xl sm:-mt-10 sm:w-16"
+                                className="relative z-10 -mt-8 w-12 shadow-xl sm:-mt-10 sm:w-16"
                             />
                             <div className="min-w-0 pt-1.5">
                                 <p className="font-serif text-sm leading-snug text-slate-100 sm:text-base">

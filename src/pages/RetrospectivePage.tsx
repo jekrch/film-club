@@ -377,7 +377,6 @@ const RetrospectivePage: React.FC = () => {
     }
 
     const title = mine ? `${mine.member.name}'s ${year}` : String(year);
-    const inProgress = (mine ?? club)!.inProgress;
 
     return (
         <>
@@ -401,9 +400,7 @@ const RetrospectivePage: React.FC = () => {
                         {title}
                     </h1>
                     <p className="mt-5 font-serif text-lg italic text-slate-300 sm:text-xl">
-                        {inProgress
-                            ? 'The year so far, in a few slides'
-                            : 'The year, in a few slides'}
+                        A year in review
                     </p>
                     <button
                         type="button"

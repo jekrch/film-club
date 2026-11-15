@@ -8,6 +8,11 @@ interface SlideProps {
     children: React.ReactNode;
     /** Stills for a reel of film running across the top of the slide. */
     reel?: string[];
+    /**
+     * On a phone, run the reel behind the slide rather than above it, so
+     * something tall can rise over it and use the height the reel would take.
+     */
+    reelBehind?: boolean;
     className?: string;
 }
 
@@ -25,14 +30,20 @@ interface SlideProps {
  * {@link useSqueeze}) give just as much as it takes. One that is too tall for
  * that scrolls at full size.
  */
-const Slide: React.FC<SlideProps> = ({ children, reel, className = '' }) => {
+const Slide: React.FC<SlideProps> = ({ children, reel, reelBehind = false, className = '' }) => {
     const fit = useSqueeze();
+    const hasReel = !!reel?.length;
+    /** The reel takes room at the top: on a phone, unless it runs behind. */
+    const reelAbove = hasReel && !reelBehind;
     return (
         <div className="absolute inset-0 flex flex-col overflow-hidden pt-8 sm:pt-9">
             {/* On a phone the reel tucks in right under the progress bar; wider,
             it runs through the deck's bottom bar instead (see Story). */}
-            {reel && reel.length > 0 && (
-                <Reveal step={-1} className="shrink-0 sm:hidden">
+            {reel && hasReel && (
+                <Reveal
+                    step={-1}
+                    className={`shrink-0 sm:hidden ${reelBehind ? 'absolute inset-x-0 top-8' : ''}`}
+                >
                     <FilmReel stills={reel} frameClass="h-14" sprocketClass="h-2.5" />
                 </Reveal>
             )}
@@ -40,9 +51,9 @@ const Slide: React.FC<SlideProps> = ({ children, reel, className = '' }) => {
             button rather than below it, and the eyebrow keeps clear of it. */}
             <div
                 ref={fit.frameRef}
-                data-clear-close={reel?.length ? undefined : ''}
+                data-clear-close={reelAbove ? undefined : ''}
                 className={`group/slide retro-scrollbar relative flex min-h-0 w-full flex-1 flex-col overflow-y-auto px-6 pb-6 sm:px-12 sm:pt-1 sm:pb-6 lg:px-20 ${
-                    reel?.length ? 'pt-6' : 'pt-2'
+                    reelAbove ? 'pt-6' : 'pt-2'
                 } ${className}`}
             >
                 {/* Auto margins in a scrolling column: centred when the slide fits,

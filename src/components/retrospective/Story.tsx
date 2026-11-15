@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
     ChevronLeftIcon,
     ChevronRightIcon,
@@ -13,6 +14,7 @@ import type { FrameImage } from '../../utils/frameSources';
 import { useMarquee } from '../../hooks/useMarquee';
 import { prefersReducedMotion } from '../../utils/motion';
 import FilmReel from './FilmReel';
+import LeaveDialog from './LeaveDialog';
 import Mosaic from './Mosaic';
 import StillsBackdrop from './StillsBackdrop';
 import StoryProgress from './StoryProgress';
@@ -119,6 +121,28 @@ interface StoryProps {
     onHold?: (held: boolean) => void;
 }
 
+/** Where the deck's links can go without asking: another retrospective. */
+const RETROSPECTIVE_PREFIX = '/retrospective/';
+
+/**
+ * Where a link in a slide would take the reader, if that's out of the
+ * retrospective and in this tab; null for anything to let through. Routes live
+ * in the hash, so a Link's href is `#/films/…`.
+ */
+const leavingFor = (event: React.MouseEvent): string | null => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return null;
+    }
+    const anchor = (event.target as Element).closest('a[href]');
+    if (!anchor || (anchor.getAttribute('target') ?? '_self') !== '_self') return null;
+    const href = anchor.getAttribute('href') ?? '';
+    if (href.startsWith('#')) {
+        const path = href.slice(1);
+        return path.startsWith(RETROSPECTIVE_PREFIX) ? null : path;
+    }
+    return (anchor as HTMLAnchorElement).href;
+};
+
 /** How long a slide holds when the deck is playing itself. */
 const SLIDE_MS = 11000;
 /** Held this long, a press is a pause rather than a tap. */
@@ -154,6 +178,25 @@ const Story: React.FC<StoryProps> = ({
     const [held, setHeld] = useState(false);
     const [lastTouch, setLastTouch] = useState(0);
     const press = useRef<{ x: number; y: number; timer: number; held: boolean } | null>(null);
+    /** A link out of the retrospective, waiting on the reader to confirm it. */
+    const [leaving, setLeaving] = useState<string | null>(null);
+    const navigate = useNavigate();
+
+    // A link in a slide that leaves the retrospective asks first; the
+    // closing slides' links to other retrospectives just go.
+    const onClickCapture = (event: React.MouseEvent) => {
+        const destination = leavingFor(event);
+        if (destination === null) return;
+        // Prevented here, Link sees it and doesn't navigate.
+        event.preventDefault();
+        setLeaving(destination);
+    };
+    const stay = useCallback(() => setLeaving(null), []);
+    const leave = () => {
+        if (leaving === null) return;
+        if (leaving.startsWith('/')) navigate(leaving);
+        else window.location.assign(leaving);
+    };
 
     const go = useCallback(
         (next: number) => {
@@ -167,6 +210,7 @@ const Story: React.FC<StoryProps> = ({
 
     // Keyboard.
     useEffect(() => {
+        if (leaving !== null) return;
         const onKey = (event: KeyboardEvent) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {
                 event.preventDefault();
@@ -184,10 +228,10 @@ const Story: React.FC<StoryProps> = ({
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, [go, index, onClose, touched]);
+    }, [go, index, onClose, touched, leaving]);
 
     // Moving on by itself, when asked to. It stops at the last slide.
-    const running = autoplay && !held && index < slides.length - 1;
+    const running = autoplay && !held && leaving === null && index < slides.length - 1;
     useEffect(() => {
         if (!running) return;
         const timer = window.setTimeout(() => go(index + 1), SLIDE_MS);
@@ -200,7 +244,12 @@ const Story: React.FC<StoryProps> = ({
     };
 
     const onPointerDown = (event: React.PointerEvent) => {
-        if ((event.target as Element).closest('a, button, iframe, [data-deck-bar]')) return;
+        if (
+            (event.target as Element).closest(
+                'a, button, iframe, [data-deck-bar], [data-deck-dialog]'
+            )
+        )
+            return;
         const timer = window.setTimeout(() => {
             if (press.current) {
                 press.current.held = true;
@@ -255,6 +304,7 @@ const Story: React.FC<StoryProps> = ({
             onPointerDown={onPointerDown}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerCancel}
+            onClickCapture={onClickCapture}
             onContextMenu={(event) => event.preventDefault()}
         >
             <motion.div
@@ -325,7 +375,7 @@ const Story: React.FC<StoryProps> = ({
                         index={index}
                         runMs={autoplay && index < slides.length - 1 ? SLIDE_MS : null}
                         restartKey={lastTouch}
-                        paused={held}
+                        paused={held || leaving !== null}
                         accent={accent}
                     />
                 </div>
@@ -465,6 +515,14 @@ const Story: React.FC<StoryProps> = ({
                     so it survives the deck closing long enough to fade out. */}
                 {music && <div className="w-[216px] shrink-0 sm:w-[232px]" aria-hidden="true" />}
             </div>
+
+            <LeaveDialog
+                open={leaving !== null}
+                onStay={stay}
+                onLeave={leave}
+                accent={accent}
+                still={still}
+            />
 
             <p className="sr-only">
                 Slide {index + 1} of {slides.length}. Use the arrow keys to move between slides.

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { fetchFilmSummary } from '../../../api/filmSummaries';
 import { getTeamMemberByName, teamMembers } from '../../../types/team';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
 import CountUp from '../CountUp';
@@ -29,6 +30,27 @@ interface ClubOffDocketProps {
 const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, accent }) => {
     const { entries, byMember, sharedFilms } = offDocket;
     const [lead, ...others] = sharedFilms;
+    // The bundle carries only a few stills per film; the full set is fetched.
+    const [fetched, setFetched] = useState<{ id: string; urls: string[] } | null>(null);
+    const leadID = lead?.imdbID;
+    useEffect(() => {
+        if (!leadID) return;
+        let live = true;
+        fetchFilmSummary(leadID)
+            .then((summary) => {
+                if (live && summary?.backdropImages?.length) {
+                    setFetched({ id: leadID, urls: summary.backdropImages });
+                }
+            })
+            .catch(() => {});
+        return () => {
+            live = false;
+        };
+    }, [leadID]);
+    // The slide's backdrop is the first still, so the slider leaves it out.
+    const stills = [
+        ...new Set([...sharedStills, ...(fetched?.id === leadID ? fetched.urls.slice(1) : [])]),
+    ].filter((url) => url && url.startsWith('http') && !url.includes('N/A'));
     return (
         <Slide>
             <Reveal>
@@ -102,7 +124,7 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
                                 </p>
                             </div>
                         </div>
-                        <FeatureStill stills={sharedStills} accent={accent} />
+                        <FeatureStill stills={stills} accent={accent} compactRail />
                     </div>
                 </Reveal>
             )}

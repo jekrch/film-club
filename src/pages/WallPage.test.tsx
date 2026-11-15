@@ -244,16 +244,15 @@ describe('WallPage', () => {
         expect(within(rows()[0]).queryByTitle(/^[a-z]+: /)).not.toBeInTheDocument();
     });
 
-    it('keeps the line breaks a member typed into their review', async () => {
+    it('renders a review as Markdown, the way the member log does', async () => {
         await renderWall();
 
-        // The review renders as Markdown on Gabe's own log, where a single
-        // newline is a break (`remark-breaks`). Read as plain text here, it has
-        // to be laid out the same way or the wall reflows his two lines into one
-        // run-on sentence.
+        // Same component as Gabe's own log, so the same words get the same
+        // formatting — emphasis, links, and the single-newline breaks
+        // `remark-breaks` keeps — rather than raw Markdown source.
         const review = within(rows()[0]).getByText(/Watched it on my own/);
+        expect(review).toHaveAttribute('data-testid', 'markdown');
         expect(review.textContent).toContain('\n');
-        expect(review.closest('.whitespace-pre-line')).not.toBeNull();
     });
 
     it('links each headline back to where its record lives', async () => {
