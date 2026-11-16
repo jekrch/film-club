@@ -7,6 +7,7 @@ import {
     type RetrospectiveSources,
 } from './retrospectiveUtils';
 import { awardKey } from './trophyUtils';
+import { CLUB_JOINED } from '../config/retrospective';
 import type { ClubRating, Film } from '../types/film';
 import type { FilmListDefinition, ListFilmSummary } from '../types/list';
 import { clubThreadId, listThreadId, logThreadId, reviewThreadId } from '../types/responses';
@@ -594,14 +595,65 @@ describe('buildMemberRetrospective', () => {
         });
     });
 
-    it('sets their club films beside every year since their first, log aside', () => {
+    it('sets their club films beside each earlier year they saw any, log aside', () => {
         const { history, withClub } = jacob2026().count;
         expect(history[history.length - 1]).toEqual({ year: 2026, withClub });
-        expect(history.map((h) => h.year)).toEqual(
-            Array.from({ length: history.length }, (_, i) => history[0].year + i)
-        );
+        expect(history.slice(0, -1).every((h) => h.withClub > 0)).toBe(true);
         expect(buildMemberRetrospective(2025, 'Jacob', sources, NOW)!.count.history).toEqual(
             history.slice(0, -1)
+        );
+    });
+
+    it('skips a year they saw nothing with the club', () => {
+        const gap = film('tt2300002', 'Gap', '05/01/2023', 'Andy', four(5, 5, 5, 5));
+        const history = buildMemberRetrospective(
+            2026,
+            'jacob',
+            { ...sources, films: [...films, gap] },
+            NOW
+        )!.count.history;
+        expect(history.map((h) => h.year)).toEqual([2023, 2025, 2026]);
+    });
+
+    it('starts their years with the club at the year they joined', () => {
+        const joined = CLUB_JOINED.gabe;
+        const before = film('tt2000001', 'Before', `05/01/${joined - 1}`, 'Andy', [
+            makeRating({ user: 'gabe', score: 6 }),
+        ]);
+        const history = buildMemberRetrospective(
+            2026,
+            'gabe',
+            { ...sources, films: [...films, before] },
+            NOW
+        )!.count.history;
+        expect(history.map((h) => h.year)).not.toContain(joined - 1);
+    });
+
+    it('leaves scores added well after the screening out of their years with the club', () => {
+        const withJacob = (watchDate: string, scoreAddedAt: string, imdbID: string) =>
+            film(imdbID, imdbID, watchDate, 'Andy', [
+                makeRating({ user: 'jacob', score: 6, scoreAddedAt }),
+            ]);
+        const history = (extra: Film[]) =>
+            buildMemberRetrospective(
+                2026,
+                'jacob',
+                { ...sources, films: [...films, ...extra] },
+                NOW
+            )!.count.history;
+        const base = history([]);
+
+        // Caught up on years later: no 2023 bar, and 2025 unchanged.
+        expect(
+            history([
+                withJacob('03/01/2023', '2026-10-31T12:00:00Z', 'tt2300001'),
+                withJacob('06/02/2025', '2026-10-31T12:00:00Z', 'tt2500003'),
+            ])
+        ).toEqual(base);
+        // Scored on the site the next morning: still a night with the club.
+        const nextDay = history([withJacob('06/02/2025', '2025-06-03T12:00:00Z', 'tt2500003')]);
+        expect(nextDay.find((h) => h.year === 2025)!.withClub).toBe(
+            base.find((h) => h.year === 2025)!.withClub + 1
         );
     });
 

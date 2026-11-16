@@ -1,4 +1,4 @@
-import { FEATURED_CLUB_REVIEWS } from '../config/retrospective';
+import { CLUB_JOINED, FEATURED_CLUB_REVIEWS } from '../config/retrospective';
 import { findFilmSummary } from '../api/filmSummaries';
 import type { Film } from '../types/film';
 import type { FilmListDefinition, ListFilmSummary } from '../types/list';
@@ -28,6 +28,7 @@ import {
     isPodFilm,
     parseWatchDate,
 } from './filmUtils';
+import { addedLate } from './ratingUtils';
 import { calculateMemberStats, parseRuntime } from './statUtils';
 import { getClubTrophies, groupByRecipient, groupTrophies, type MemberTrophy } from './trophyUtils';
 
@@ -400,28 +401,38 @@ const minutesOf = (runtimes: (string | null | undefined)[]): number =>
     runtimes.reduce((sum, runtime) => sum + (parseRuntime(runtime) ?? 0), 0);
 
 /**
- * A member's club films per year, from the first year they scored one through
- * `year`, with the years between at zero. Empty when they never have.
+ * A member's club films per year, oldest first: each earlier year they saw
+ * any, then `year` itself, even at zero, since it's the year being told.
+ * Empty when they've never seen one.
+ *
+ * Only films watched with the club count. A score from before they joined
+ * ({@link CLUB_JOINED}), or one added on the site well after the screening, is
+ * a film caught up on later, and would grow bars for years they weren't there.
  */
 const clubHistory = (
     films: Film[],
     name: string,
     year: number
 ): MemberRetrospective['count']['history'] => {
+    const joined = CLUB_JOINED[name.toLowerCase()] ?? -Infinity;
     const counts = new Map<number, number>();
     films.forEach((film) => {
-        const y = clubYear(film);
+        const screening = parseWatchDate(film.movieClubInfo?.watchDate);
+        const y = screening?.getUTCFullYear();
+        if (!screening || y === undefined || y < joined || y > year) return;
         const scored = film.movieClubInfo?.clubRatings.some(
-            (r) => sameName(r.user, name) && validScore(r.score)
+            (r) =>
+                sameName(r.user, name) &&
+                validScore(r.score) &&
+                !addedLate(r.scoreAddedAt, screening)
         );
-        if (y !== null && y <= year && scored) counts.set(y, (counts.get(y) ?? 0) + 1);
+        if (scored) counts.set(y, (counts.get(y) ?? 0) + 1);
     });
     if (!counts.size) return [];
-    const first = Math.min(...counts.keys());
-    return Array.from({ length: year - first + 1 }, (_, i) => ({
-        year: first + i,
-        withClub: counts.get(first + i) ?? 0,
-    }));
+    if (!counts.has(year)) counts.set(year, 0);
+    return [...counts.entries()]
+        .sort(([a], [b]) => a - b)
+        .map(([y, withClub]) => ({ year: y, withClub }));
 };
 
 /** Counts of each name, most first, ties alphabetical. */

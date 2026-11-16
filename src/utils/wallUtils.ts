@@ -12,7 +12,7 @@ import {
     type FrameImage,
 } from './frameSources';
 import { resolveListEntries } from './listUtils';
-import { calculateClubAverage } from './ratingUtils';
+import { addedLate, calculateClubAverage } from './ratingUtils';
 import { resolveFilmTrophies, type ResolvedTrophy } from './trophyUtils';
 import { resolveWatchedEntry, type ResolvedWatchedEntry } from './watchedUtils';
 import type { ListFilmSummary } from '../types/list';
@@ -277,17 +277,6 @@ const logEvents = (log: WatchedLog, sources: WallDataSources): LogEvent[] =>
     );
 
 /**
- * How long after a screening an addition still belongs to that screening.
- *
- * Scores routinely go in the next morning, and that isn't news: the screening's
- * own row already shows them. A week is the shortest gap that clears those while
- * staying under the club's usual gap between films.
- */
-const LATE_REVIEW_GRACE_DAYS = 7;
-
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-/**
  * The instant a member first added something to this film after the grace period,
  * or null if they never did.
  *
@@ -296,12 +285,12 @@ const DAY_MS = 24 * 60 * 60 * 1000;
  * because the row would have nothing to show for it.
  */
 const firstLateAddition = (rating: ClubRating, watchDay: string): string | null => {
-    const cutoff = Date.parse(`${watchDay}T00:00:00Z`) + LATE_REVIEW_GRACE_DAYS * DAY_MS;
+    const screening = new Date(`${watchDay}T00:00:00Z`);
     const [first] = [
         rating.score !== null ? rating.scoreAddedAt : undefined,
         rating.blurb !== null ? rating.blurbAddedAt : undefined,
     ]
-        .filter((stamp): stamp is string => !!stamp && Date.parse(stamp) > cutoff)
+        .filter((stamp): stamp is string => !!stamp && addedLate(stamp, screening))
         .sort();
     return first ?? null;
 };

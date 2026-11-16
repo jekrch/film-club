@@ -1,6 +1,26 @@
 import { ClubRating } from '../types/film';
 
 /**
+ * How long after a screening an addition still belongs to that screening.
+ *
+ * Scores routinely go in the next morning, and that isn't news: the screening's
+ * own row already shows them. A week is the shortest gap that clears those while
+ * staying under the club's usual gap between films.
+ */
+const LATE_ADDITION_GRACE_DAYS = 7;
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Whether a site stamp on a rating (`scoreAddedAt`, `blurbAddedAt`) came after
+ * the grace period following the screening on `screening` (UTC midnight, as
+ * `parseWatchDate` gives it). A late score is a film caught up on afterwards,
+ * not one watched with the club.
+ */
+export const addedLate = (stamp: string | null | undefined, screening: Date): boolean =>
+    !!stamp && Date.parse(stamp) > screening.getTime() + LATE_ADDITION_GRACE_DAYS * DAY_MS;
+
+/**
  * Calculates the average club rating from the provided scores.
  * Only considers non-null numeric scores.
  * Returns the average formatted to one decimal place, or null if no valid scores exist.

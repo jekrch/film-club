@@ -56,21 +56,23 @@ export const yearOnYear = (
     const { year, withClub: now } = history[history.length - 1];
     const before = history.slice(0, -1);
     if (!before.length) return 'Your first year with the club.';
-    const last = before[before.length - 1].withClub;
+    // Their last year with films, which needn't be the one before: a year
+    // they missed isn't in the history.
+    const { year: lastYear, withClub: last } = before[before.length - 1];
     if (now > last) {
         // A most-since only means something with a few years behind it; two
         // years back is just "up from last year" said grandly.
         const since = [...before].reverse().find((h) => h.withClub >= now);
         if (!since && before.length > 1) return 'Your most in any year with the club.';
         if (since && since.year < year - 2) return `Your most since ${since.year}.`;
-        return `Up from ${last} in ${year - 1}.`;
+        return `Up from ${last} in ${lastYear}.`;
     }
-    if (now === last) return `The same as in ${year - 1}.`;
+    if (now === last) return `The same as in ${lastYear}.`;
     return inProgress
-        ? `${numberWord(last - now)} more to match ${year - 1}.`.replace(/^./, (c) =>
+        ? `${numberWord(last - now)} more to match ${lastYear}.`.replace(/^./, (c) =>
               c.toUpperCase()
           )
-        : `Down from ${last} in ${year - 1}.`;
+        : `Down from ${last} in ${lastYear}.`;
 };
 
 /** "1.5" stays, "7.0" reads "7". */

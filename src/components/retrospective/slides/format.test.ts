@@ -28,6 +28,17 @@ describe('yearOnYear', () => {
         expect(yearOnYear(years(9, 7), false)).toBe('Down from 9 in 2025.');
         expect(yearOnYear(years(9, 7), true)).toBe('Two more to match 2025.');
     });
+
+    it('compares with their last year with films when they missed the one before', () => {
+        const gap = [
+            { year: 2023, withClub: 8 },
+            { year: 2026, withClub: 5 },
+        ];
+        expect(yearOnYear(gap, false)).toBe('Down from 8 in 2023.');
+        expect(yearOnYear([gap[0], { year: 2026, withClub: 8 }], false)).toBe(
+            'The same as in 2023.'
+        );
+    });
 });
 
 describe('posterFigures', () => {

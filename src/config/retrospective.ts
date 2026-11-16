@@ -46,6 +46,16 @@ export const playOrder = (choices: Track[], id: string): Track[] => {
 };
 
 /**
+ * The year each member started coming to the club, by lowercase name, for
+ * anyone who joined after it began. Scores they put in the sheet for earlier
+ * screenings were films caught up on afterwards, so a member's years with the
+ * club start here. Absent means they were there from the start.
+ */
+export const CLUB_JOINED: Record<string, number> = {
+    gabe: 2023,
+};
+
+/**
  * The reviews the club retrospective quotes on its words slide, by thread id,
  * in the order shown. Any that no longer exist for the year are skipped and
  * the slide is topped up with the fullest reviews instead.
