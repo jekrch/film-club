@@ -18,13 +18,7 @@ interface ClubCountProps {
  * club of four watching a dozen films is a full year, and the hours and the
  * comparison with last year carry that better than the count alone.
  */
-const ClubCount: React.FC<ClubCountProps> = ({
-    year,
-    inProgress,
-    count,
-    accent,
-    reel,
-}) => {
+const ClubCount: React.FC<ClubCountProps> = ({ year, inProgress, count, accent, reel }) => {
     const films = (n: number) => `${n} ${n === 1 ? 'film' : 'films'}`;
     const change =
         count.previousYear === null
