@@ -114,7 +114,7 @@ interface StoryProps {
         /** Switched off: no player, no bay, and the bar is as short as without music. */
         off: boolean;
         onToggleOff: () => void;
-        /** Play was refused: the reader has to tap the video. */
+        /** Play was refused, or let through only muted: the reader has to tap the video. */
         blocked: boolean;
     };
     /** Called when the reader holds the deck, and again when they let go. */
@@ -434,7 +434,7 @@ const Story: React.FC<StoryProps> = ({
                         </motion.div>
                     </AnimatePresence>
                 </div>
-                <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-2 px-3 sm:my-auto sm:ml-4 sm:max-w-[240px] sm:flex-none sm:rounded-xl sm:bg-slate-950/70 sm:px-2 sm:py-1.5 sm:shadow-xl sm:ring-1 sm:ring-slate-100/10 sm:backdrop-blur-md">
+                <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-2 px-3 sm:my-auto sm:ml-4 sm:flex-none sm:rounded-xl sm:bg-slate-950/70 sm:px-2 sm:py-1.5 sm:shadow-xl sm:ring-1 sm:ring-slate-100/10 sm:backdrop-blur-md">
                     <div className="flex items-center gap-1 sm:gap-1.5">
                         <button
                             type="button"
@@ -494,8 +494,10 @@ const Story: React.FC<StoryProps> = ({
                             </button>
                         )}
                         {player && music?.blocked ? (
-                            <p className="truncate text-[11px] leading-snug text-slate-200 sm:text-xs">
-                                Tap the video to start the music →
+                            <p className="ml-1 whitespace-nowrap text-[11px] leading-tight text-slate-200">
+                                Tap the video
+                                <br />
+                                for sound →
                             </p>
                         ) : (
                             <Counter index={index} count={slides.length} />

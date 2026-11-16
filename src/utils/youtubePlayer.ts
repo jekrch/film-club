@@ -141,7 +141,8 @@ export const parsePlayerMessage = (origin: string, data: unknown): PlayerUpdate 
  * - `idle`: nothing asked of it yet.
  * - `starting`: asked to play, not yet heard that it is.
  * - `playing` / `paused`: as reported by the player.
- * - `blocked`: asked to play and it didn't; the reader has to tap the video.
+ * - `blocked`: asked to play and it didn't, or it plays but muted; either way
+ *   the reader has to tap the video.
  */
 export type SoundtrackStatus = 'idle' | 'starting' | 'playing' | 'paused' | 'blocked';
 
@@ -195,6 +196,22 @@ export const REWIND_BEFORE_END_S = 1;
 const HANDSHAKE_EVERY_MS = 250;
 const HANDSHAKE_TRIES = 40;
 
+/**
+ * Whether this page can set a media element's volume. iOS and iPadOS keep the
+ * volume for the hardware buttons: the property reads back as 1 whatever is
+ * set. There the embed's volume can't be ramped either, so the soundtrack
+ * skips its fades, and never sends the 0 a fade would start from.
+ */
+export const pageCanSetVolume = (): boolean => {
+    try {
+        const probe = document.createElement('audio');
+        probe.volume = 0.5;
+        return probe.volume === 0.5;
+    } catch {
+        return false;
+    }
+};
+
 interface PostTarget {
     postMessage: (message: string, targetOrigin: string) => void;
 }
@@ -217,11 +234,16 @@ export class YouTubeSoundtrack implements Soundtrack {
     private duration = 0;
     /** Set from sending a rewind until the player reports it has gone back. */
     private rewinding = false;
+    /** What the player last said it was doing. */
+    private playerState: PlayerState | null = null;
+    /** The reader asked for silence through {@link setMuted}; any other mute is the browser's. */
+    private wantsMuted = false;
 
     constructor(
         /** The embed's window, once there is one. */
         private readonly target: () => PostTarget | null,
-        private readonly clock: Clock = realClock
+        private readonly clock: Clock = realClock,
+        private readonly canSetVolume: boolean = pageCanSetVolume()
     ) {}
 
     /** Call when the iframe loads: asks the embed to report until it answers. */
@@ -254,6 +276,8 @@ export class YouTubeSoundtrack implements Soundtrack {
             this.muted = update.muted;
             this.emit();
         }
+        const wasPlaying = this.playerState === 'playing';
+        if (update.state) this.playerState = update.state;
         if (update.playlistIndex !== undefined && update.playlistIndex !== this.playlistIndex) {
             this.playlistIndex = update.playlistIndex;
             this.duration = 0;
@@ -272,10 +296,18 @@ export class YouTubeSoundtrack implements Soundtrack {
 
         if (update.state === 'playing') {
             this.clock.clearTimeout(this.blockedTimer);
-            if (this.status === 'starting' || this.status === 'blocked') {
+            if (!wasPlaying && (this.status === 'starting' || this.status === 'blocked')) {
                 this.fadeTo(TARGET_VOLUME, FADE_IN_MS);
             }
-            this.setStatus('playing');
+        }
+        if (
+            this.playerState === 'playing' &&
+            (update.state === 'playing' || update.muted !== undefined)
+        ) {
+            // Playing but muted, and not by the reader: a phone let the play
+            // through only without sound, and YouTube settled for that. Only a
+            // tap on the video itself brings the sound in, so ask for one.
+            this.setStatus(this.muted && !this.wantsMuted ? 'blocked' : 'playing');
         } else if (update.state === 'paused') {
             if (this.status === 'playing' && !this.stopping) this.setStatus('paused');
         }
@@ -285,8 +317,10 @@ export class YouTubeSoundtrack implements Soundtrack {
         this.clock.clearTimeout(this.blockedTimer);
         this.setStatus('starting');
         this.volume = 0;
-        this.send('setVolume', [0]);
-        if (!this.muted) this.send('unMute');
+        if (this.canSetVolume) this.send('setVolume', [0]);
+        // Whatever the player last reported: a mute left by the browser on an
+        // earlier player is no reason to start this one silent.
+        if (!this.wantsMuted) this.send('unMute');
         this.send('playVideo');
         this.blockedTimer = this.clock.setTimeout(() => {
             if (this.status === 'starting') this.setStatus('blocked');
@@ -303,6 +337,7 @@ export class YouTubeSoundtrack implements Soundtrack {
     }
 
     setMuted(muted: boolean): void {
+        this.wantsMuted = muted;
         this.muted = muted;
         this.send(muted ? 'mute' : 'unMute');
         this.emit();
@@ -343,8 +378,11 @@ export class YouTubeSoundtrack implements Soundtrack {
         this.stopping = false;
         this.duration = 0;
         this.rewinding = false;
-        if (this.playlistIndex !== 0) {
+        this.playerState = null;
+        this.wantsMuted = false;
+        if (this.playlistIndex !== 0 || this.muted) {
             this.playlistIndex = 0;
+            this.muted = false;
             this.emit();
         }
         this.setStatus('idle');
@@ -376,9 +414,14 @@ export class YouTubeSoundtrack implements Soundtrack {
         }
     }
 
-    /** A linear ramp in `setVolume` steps. */
+    /** A linear ramp in `setVolume` steps, or a jump where volume can't be set. */
     private fadeTo(volume: number, ms: number, done?: () => void): void {
         this.clock.clearInterval(this.fade);
+        if (!this.canSetVolume) {
+            this.volume = volume;
+            done?.();
+            return;
+        }
         const from = this.volume;
         const steps = Math.max(1, Math.round(ms / FADE_STEP_MS));
         let step = 0;

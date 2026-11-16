@@ -44,9 +44,9 @@ const clock: Clock = {
     clearInterval: (h) => clearInterval(h as ReturnType<typeof setInterval>),
 };
 
-const setup = () => {
+const setup = ({ canSetVolume = true } = {}) => {
     const postMessage = jest.fn();
-    const track = new YouTubeSoundtrack(() => ({ postMessage }), clock);
+    const track = new YouTubeSoundtrack(() => ({ postMessage }), clock, canSetVolume);
     const sent = () =>
         postMessage.mock.calls.map(([message, origin]) => {
             expect(origin).toBe(YOUTUBE_ORIGIN);
@@ -195,6 +195,57 @@ describe('YouTubeSoundtrack', () => {
         track.setMuted(false);
         receive(FRAMES.mutedInfo);
         expect(track.muted).toBe(true);
+    });
+
+    it('asks for a tap when the browser lets it play only muted, and recovers on unmute', () => {
+        const { track, receive } = setup();
+        receive(FRAMES.onReady);
+        track.start();
+        receive(FRAMES.playing);
+        receive(FRAMES.mutedInfo);
+        expect(track.status).toBe('blocked');
+
+        receive(info({ muted: false }));
+        expect(track.status).toBe('playing');
+    });
+
+    it('does not count the reader’s own mute as blocked', () => {
+        const { track, receive } = setup();
+        receive(FRAMES.onReady);
+        track.start();
+        receive(FRAMES.playing);
+        track.setMuted(true);
+        receive(FRAMES.mutedInfo);
+        expect(track.status).toBe('playing');
+    });
+
+    it('unmutes a new player even when the last one was left muted', () => {
+        const { track, commands, receive } = setup();
+        receive(FRAMES.onReady);
+        track.start();
+        receive(FRAMES.playing);
+        receive(FRAMES.mutedInfo);
+        const before = commands().length;
+
+        track.reset();
+        expect(track.muted).toBe(false);
+        track.start();
+        receive(FRAMES.onReady);
+        expect(commands().slice(before)).toContainEqual(['unMute']);
+    });
+
+    it('skips the fades where the page cannot set the volume', () => {
+        const { track, commands, receive } = setup({ canSetVolume: false });
+        receive(FRAMES.onReady);
+        track.start();
+        expect(commands()).toEqual([['unMute'], ['playVideo']]);
+
+        receive(FRAMES.playing);
+        jest.advanceTimersByTime(FADE_IN_MS);
+        track.stop();
+        expect(commands().filter(([func]) => func === 'setVolume')).toEqual([]);
+        expect(commands().slice(-1)).toEqual([['pauseVideo']]);
+        expect(track.status).toBe('paused');
     });
 
     it('forgets the old embed on reset, and waits for the new one', () => {

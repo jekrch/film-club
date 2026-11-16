@@ -4,6 +4,15 @@ import type { SoundtrackHandle } from '../../hooks/useSoundtrack';
 import { soundtrackEmbedUrl } from '../../utils/youtubePlayer';
 import { BAR_PLAIN } from './Story';
 
+/**
+ * The size the player is laid out at, inside the tile. Drawn at the tile's own
+ * size, YouTube crowds a 64px player with its title bar and channel badge and
+ * leaves a sliver of play button to hit; at its usual minimum it lays out
+ * normally, and the tile shows only the middle of it — the play button and the
+ * picture around it, all of which starts the video when tapped.
+ */
+const PLAYER_LAYOUT = 200;
+
 interface SoundtrackDockProps {
     /** Every choice, the one to start on first: see `playOrder`. */
     queue: Track[];
@@ -15,7 +24,8 @@ interface SoundtrackDockProps {
 /**
  * The soundtrack's player: a corner tile no taller than the bar's own row
  * (see `Story`), smaller than YouTube normally asks an embed to stay — a
- * trade this app makes deliberately, for the room back.
+ * trade this app makes deliberately, for the room back. The player inside is
+ * full size and cropped to its centre: see {@link PLAYER_LAYOUT}.
  *
  * It exists only while the show runs, and sits in the bay at the right end of
  * the deck's bottom bar, which is exactly its size plus a margin; the slides
@@ -49,7 +59,13 @@ const SoundtrackDock: React.FC<SoundtrackDockProps> = ({ queue, soundtrack, leav
                 // `autoplay` delegates the page's tap to the embed, which is
                 // what lets a play sent by message start with sound.
                 allow="autoplay; encrypted-media; picture-in-picture"
-                className="h-full w-full"
+                className="absolute max-w-none"
+                style={{
+                    width: PLAYER_LAYOUT,
+                    height: PLAYER_LAYOUT,
+                    left: (BAR_PLAIN - PLAYER_LAYOUT) / 2,
+                    top: (BAR_PLAIN - PLAYER_LAYOUT) / 2,
+                }}
             />
         </figure>
     );
