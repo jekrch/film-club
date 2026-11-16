@@ -2,14 +2,12 @@ import React from 'react';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
 import CountUp from '../CountUp';
 import Slide, { Eyebrow, Reveal } from '../Slide';
-import { hoursOf, numberWord } from './format';
+import { hoursOf } from './format';
 
 interface ClubCountProps {
     year: number;
     inProgress: boolean;
     count: NonNullable<ClubRetrospective['count']>;
-    /** How many members are on the roster, for "scored by all four of us". */
-    activeMembers: number;
     accent: string;
     /** Stills for the reel across the top. */
     reel?: string[];
@@ -24,19 +22,24 @@ const ClubCount: React.FC<ClubCountProps> = ({
     year,
     inProgress,
     count,
-    activeMembers,
     accent,
     reel,
 }) => {
+    const films = (n: number) => `${n} ${n === 1 ? 'film' : 'films'}`;
     const change =
         count.previousYear === null
             ? null
             : count.films > count.previousYear
-              ? `up from ${count.previousYear} in ${year - 1}`
+              ? `up from ${films(count.previousYear)} in ${year - 1}`
               : count.films < count.previousYear
-                ? `down from ${count.previousYear} in ${year - 1}`
+                ? `down from ${films(count.previousYear)} in ${year - 1}`
                 : `the same as in ${year - 1}`;
-    const everyone = count.fullyScored === count.films && activeMembers > 1;
+    const most =
+        count.mostSince === 'ever'
+            ? 'the most of any year yet'
+            : count.mostSince !== null
+              ? `the most since ${count.mostSince}`
+              : null;
 
     return (
         <Slide reel={reel}>
@@ -58,14 +61,10 @@ const ClubCount: React.FC<ClubCountProps> = ({
                     {hoursOf(count.minutes)} hours of film club screening time.
                 </p>
             </Reveal>
-            {(change || everyone) && (
+            {(change || most) && (
                 <Reveal step={4}>
                     <p className="mt-2 text-lg text-slate-400 sm:text-xl">
-                        {change && <>That's {change}</>}
-                        {change && everyone && ', and '}
-                        {!change && everyone && 'And '}
-                        {everyone && <>every one scored by all {numberWord(activeMembers)} of us</>}
-                        .
+                        That's {[change, most].filter(Boolean).join(', ')}.
                     </p>
                 </Reveal>
             )}

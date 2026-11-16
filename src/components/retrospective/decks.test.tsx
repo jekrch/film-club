@@ -123,7 +123,7 @@ const renderSlide = (node: React.ReactNode) =>
 
 describe('retrospective decks', () => {
     it('renders every slide of the club deck', () => {
-        const deck = clubDeck(buildClubRetrospective(2026, sources, NOW), 4);
+        const deck = clubDeck(buildClubRetrospective(2026, sources, NOW));
         expect(deck.map((s) => s.id)).toEqual([
             'title',
             'count',
@@ -163,7 +163,7 @@ describe('retrospective decks', () => {
     });
 
     it('gives a featured film’s slide that film’s stills', () => {
-        const deck = clubDeck(buildClubRetrospective(2026, sources, NOW), 4);
+        const deck = clubDeck(buildClubRetrospective(2026, sources, NOW));
         expect(deck.find((s) => s.id === 'calendar')!.stills).toContain(
             'https://example.com/a1.jpg'
         );

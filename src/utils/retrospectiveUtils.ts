@@ -158,10 +158,13 @@ export interface ClubRetrospective {
     count: {
         films: number;
         minutes: number;
-        /** Films scored by every active member. */
-        fullyScored: number;
         /** The year before's count, or null when the club watched nothing then. */
         previousYear: number | null;
+        /**
+         * The most films in a year since this year, when the count tops at
+         * least the two years before: 'ever' for more than every earlier year.
+         */
+        mostSince: number | 'ever' | null;
     } | null;
 
     calendar: {
@@ -1004,21 +1007,30 @@ export const buildClubRetrospective = (
     // Count
     const filmsBefore = clubFilmsIn(sources.films, year - 1);
     const previous = filmsBefore.length;
-    const fullyScored = films.filter(
-        (film) =>
-            active.length > 0 &&
-            active.every((member) =>
-                film.movieClubInfo?.clubRatings.some(
-                    (r) => sameName(r.user, member.name) && validScore(r.score)
-                )
-            )
-    ).length;
+    const earlierYears = new Map<number, number>();
+    sources.films.forEach((film) => {
+        const y = clubYear(film);
+        if (y !== null && y < year) earlierYears.set(y, (earlierYears.get(y) ?? 0) + 1);
+    });
+    // As the member deck's year-on-year: a most-since needs a few years behind
+    // it, or it's only "up from last year" said grandly.
+    const matched = [...earlierYears]
+        .filter(([, n]) => n >= films.length)
+        .reduce<number | null>((latest, [y]) => (latest === null || y > latest ? y : latest), null);
+    const mostSince =
+        matched === null
+            ? earlierYears.size > 1
+                ? ('ever' as const)
+                : null
+            : matched < year - 2
+              ? matched
+              : null;
     const count: ClubRetrospective['count'] = films.length
         ? {
               films: films.length,
               minutes: minutesOf(films.filter((f) => !isPodFilm(f)).map((f) => f.runtime)),
-              fullyScored,
               previousYear: previous || null,
+              mostSince,
           }
         : null;
 

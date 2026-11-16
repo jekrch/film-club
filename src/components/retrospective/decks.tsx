@@ -68,7 +68,7 @@ const stillsOfFilms = (films: (Film | { stills: string[] })[]): string[] => {
     return out.slice(0, 12);
 };
 
-export const clubDeck = (report: ClubRetrospective, activeMembers: number): StorySlide[] => {
+export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
     const accent = COPPER;
     // Every film of the year, a frame or two each, for the reels.
     const yearReel = stillsOfFilms(report.films);
@@ -99,7 +99,6 @@ export const clubDeck = (report: ClubRetrospective, activeMembers: number): Stor
                     year={report.year}
                     inProgress={report.inProgress}
                     count={report.count}
-                    activeMembers={activeMembers}
                     accent={accent}
                     reel={[...yearReel].reverse()}
                 />

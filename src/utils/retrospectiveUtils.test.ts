@@ -301,9 +301,31 @@ describe('buildClubRetrospective', () => {
         expect(report.count).toEqual({
             films: 7,
             minutes: 697,
-            fullyScored: 7,
             previousYear: 2,
+            mostSince: null,
         });
+    });
+
+    it('names the last year with as many films, or calls it the most yet', () => {
+        const yearOf = (y: number, n: number) =>
+            Array.from({ length: n }, (_, i) =>
+                film(`tt${y}${String(i).padStart(3, '0')}`, `${y} #${i}`, `03/01/${y}`, 'Andy', [])
+            );
+        const withHistory = (...earlier: [number, number][]) =>
+            buildClubRetrospective(
+                2026,
+                {
+                    ...sources,
+                    films: [...earlier.flatMap(([y, n]) => yearOf(y, n)), ...films2026],
+                },
+                NOW
+            ).count!.mostSince;
+        // 2026 has 7.
+        expect(withHistory([2021, 9], [2022, 7], [2023, 5], [2024, 3], [2025, 2])).toBe(2022);
+        expect(withHistory([2023, 5], [2024, 3], [2025, 2])).toBe('ever');
+        // Two years back is only "up from last year".
+        expect(withHistory([2024, 8], [2025, 2])).toBeNull();
+        expect(withHistory([2025, 2])).toBeNull();
     });
 
     it('puts a film watched 12/31/25 in 2025, not 2026', () => {

@@ -216,7 +216,7 @@ const RetrospectivePage: React.FC = () => {
         [year, mine, sources]
     );
     const slides = useMemo(() => {
-        if (club) return clubDeck(club, ACTIVE.length);
+        if (club) return clubDeck(club);
         if (mine) {
             const others = withReports.filter((m) => m !== mine.member);
             return memberDeck(mine, others, accentOf(mine.member));
