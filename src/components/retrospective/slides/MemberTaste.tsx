@@ -82,7 +82,7 @@ const MemberTaste: React.FC<MemberTasteProps> = ({ taste, director, accent }) =>
     return (
         <Slide>
             <Reveal>
-                <Eyebrow color={accent}>Your film diet</Eyebrow>
+                <Eyebrow color={accent}>What you watched</Eyebrow>
             </Reveal>
             {taste.genres.length > 0 && (
                 <Reveal step={1}>
@@ -133,15 +133,14 @@ const MemberTaste: React.FC<MemberTasteProps> = ({ taste, director, accent }) =>
                             size="h-16 w-16 sm:h-20 sm:w-20"
                         />
                         <p className="min-w-0 text-lg text-slate-300">
-                            Your director of the year:{' '}
-                            <span className="font-serif text-2xl text-slate-50">
+                            Most-watched director
+                            <span className="block font-serif text-2xl text-slate-50">
                                 {director.name}
                             </span>
-                            <span className="text-slate-400">
-                                {' '}
-                                — {director.withClub + director.onOwn} films
+                            <span className="block text-base text-slate-400">
+                                {director.withClub + director.onOwn} films
                                 {director.withClub && director.onOwn
-                                    ? `, ${director.withClub} with the club`
+                                    ? `, ${director.withClub} of them with the club`
                                     : ''}
                             </span>
                         </p>

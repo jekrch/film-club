@@ -7,7 +7,6 @@ import { DEFAULT_MEMBER_IMAGE, type TeamMember } from '../../../types/team';
 import type { MemberRetrospective } from '../../../utils/retrospectiveUtils';
 import { prefersReducedMotion } from '../../../utils/motion';
 import CircularImage from '../../common/CircularImage';
-import CountUp from '../CountUp';
 import Slide, { Reveal } from '../Slide';
 import {
     canvasUrl,
@@ -18,13 +17,7 @@ import {
     type PosterContent,
     type RenderedPoster,
 } from '../posterImage';
-import {
-    formatScore,
-    memberColor,
-    posterFigures,
-    posterFilename,
-    retrospectivePath,
-} from './format';
+import { formatScore, posterFigures, posterFilename, retrospectivePath } from './format';
 
 interface MemberClosingProps {
     year: number;
@@ -334,7 +327,7 @@ const MemberClosing: React.FC<MemberClosingProps> = ({
                             )}
 
                             <dl className="mt-[4.5cqw] flex justify-center divide-x divide-slate-100/15">
-                                {figures.map((figure, i) => (
+                                {figures.map((figure) => (
                                     <div
                                         key={figure.label}
                                         className="flex w-[24cqw] flex-col-reverse items-center"
@@ -343,11 +336,7 @@ const MemberClosing: React.FC<MemberClosingProps> = ({
                                             {figure.label}
                                         </dt>
                                         <dd className="font-sans text-[7.4cqw] font-light leading-none tabular-nums text-slate-50">
-                                            <CountUp
-                                                value={Number(figure.value)}
-                                                digits={figure.value.includes('.') ? 1 : 0}
-                                                delay={0.6 + i * 0.15}
-                                            />
+                                            {figure.value}
                                         </dd>
                                     </div>
                                 ))}
@@ -373,12 +362,11 @@ const MemberClosing: React.FC<MemberClosingProps> = ({
                             >
                                 The club's year
                             </Link>
-                            {others.map((other, i) => (
+                            {others.map((other) => (
                                 <Link
                                     key={other.name}
                                     to={retrospectivePath(year, other.name)}
-                                    className="font-medium underline-offset-4 hover:underline"
-                                    style={{ color: memberColor(other, i) }}
+                                    className="font-medium text-slate-200 underline-offset-4 hover:underline"
                                 >
                                     {other.name}
                                 </Link>

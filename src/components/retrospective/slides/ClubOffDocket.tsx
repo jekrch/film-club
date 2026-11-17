@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { fetchFilmSummary } from '../../../api/filmSummaries';
-import { getTeamMemberByName, teamMembers } from '../../../types/team';
+import { getTeamMemberByName } from '../../../types/team';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
-import CountUp from '../CountUp';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { give } from '../../../hooks/useSqueeze';
 import FeatureStill from '../FeatureStill';
 import { FaceStack, MemberFace, Poster } from './shared';
-import { listNames, memberColor } from './format';
-
-/** A member's colour, or none for a name off the roster. */
-const colorOf = (name: string): string | undefined => {
-    const member = getTeamMemberByName(name);
-    return member ? memberColor(member, teamMembers.indexOf(member)) : undefined;
-};
+import { FACE_RING, listNames } from './format';
 
 interface ClubOffDocketProps {
     offDocket: NonNullable<ClubRetrospective['offDocket']>;
@@ -49,7 +42,10 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
     }, [leadID]);
     // The slide's backdrop is the first still, so the slider leaves it out.
     const stills = [
-        ...new Set([...sharedStills, ...(fetched?.id === leadID ? fetched.urls.slice(1) : [])]),
+        ...new Set([
+            ...sharedStills,
+            ...(fetched && fetched.id === leadID ? fetched.urls.slice(1) : []),
+        ]),
     ].filter((url) => url && url.startsWith('http') && !url.includes('N/A'));
     return (
         <Slide>
@@ -59,7 +55,7 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
                 into two lines beside the figure rather than a line under it. */}
                 <div className="mt-3 flex items-center gap-4 sm:gap-5">
                     <p className="font-serif text-[4.5rem] leading-none text-slate-50 sm:text-[6.5rem]">
-                        <CountUp value={entries} />
+                        {entries}
                     </p>
                     <p className="max-w-[9em] font-serif text-2xl leading-tight text-slate-200 sm:text-3xl">
                         films watched on our own
@@ -71,9 +67,8 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
                     className="flex flex-wrap gap-x-6 gap-y-2"
                     style={{ marginTop: give('1.25rem', '0.5rem') }}
                 >
-                    {byMember.map(({ name, count }, i) => {
-                        const member = getTeamMemberByName(name);
-                        const color = member ? memberColor(member, i) : undefined;
+                    {byMember.map(({ name, count }) => {
+                        const color = getTeamMemberByName(name) ? FACE_RING : undefined;
                         return (
                             <div key={name} className="flex items-center gap-2">
                                 <MemberFace
@@ -82,12 +77,7 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
                                     size="h-7 w-7 sm:h-8 sm:w-8"
                                 />
                                 <div className="flex items-baseline gap-2">
-                                    <dt
-                                        className="text-xs font-semibold uppercase tracking-[0.18em]"
-                                        style={{ color }}
-                                    >
-                                        {name}
-                                    </dt>
+                                    <dt className="text-xs font-medium text-slate-200">{name}</dt>
                                     <dd className="font-serif text-2xl leading-none text-slate-100">
                                         {count}
                                     </dd>
@@ -112,7 +102,7 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
                                 <FaceStack
                                     faces={lead.members.map((name) => ({
                                         name,
-                                        color: colorOf(name),
+                                        color: getTeamMemberByName(name) ? FACE_RING : undefined,
                                     }))}
                                     size="h-7 w-7"
                                     className="mb-2"

@@ -3,7 +3,6 @@ import type { Film } from '../../../types/film';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { give } from '../../../hooks/useSqueeze';
 import { FilmStrip, Poster } from './shared';
-import { numberWord } from './format';
 
 interface MemberPicksProps {
     picks: Film[];
@@ -16,9 +15,6 @@ const MemberPicks: React.FC<MemberPicksProps> = ({ picks, stillsOf, accent }) =>
     <Slide>
         <Reveal>
             <Eyebrow color={accent}>Your picks</Eyebrow>
-            <h2 className="mt-3 font-serif text-3xl text-slate-50 sm:text-5xl">
-                You brought us {numberWord(picks.length)} film{picks.length === 1 ? '' : 's'}
-            </h2>
         </Reveal>
         <div className="mt-6 flex flex-col" style={{ gap: give('1.25rem', '0.625rem') }}>
             {picks.slice(0, 3).map((film, i) => (

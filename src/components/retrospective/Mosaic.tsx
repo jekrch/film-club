@@ -2,23 +2,21 @@ import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { FrameImage } from '../../utils/frameSources';
 import { prefersReducedMotion } from '../../utils/motion';
-import { wallColumns } from '../../utils/retrospectiveArt';
+import { EAGER_PER_COLUMN, mosaicColumns } from './mosaicLayout';
 
 interface MosaicProps {
     /** Posters and stills, in the order they should first appear. */
     images: FrameImage[];
     /** How strongly the art shows through, 0–1. */
     strength?: number;
+    /**
+     * Whether the wall brings its own {@link MosaicVeil}. Off when the caller
+     * lays one veil over several walls, as a crossfade between them does.
+     */
+    veiled?: boolean;
     className?: string;
 }
 
-/** The most columns the wall shows (at `lg`); narrower screens show the first three or four. */
-const COLUMNS = 6;
-/**
- * Tiles per column: enough to fill a tall phone screen in a narrow column with
- * a third left over to drift through.
- */
-const PER_COLUMN = 18;
 /**
  * Each column starts a little higher or lower, so the wall never settles into
  * rows. They all drift together, though: separate speeds read as busy. Offsets
@@ -27,6 +25,17 @@ const PER_COLUMN = 18;
 const COLUMN_OFFSET = [0, 6, 2.5, 9, 4, 11];
 /** Seconds for one leg of the drift. */
 const DRIFT_DURATION = 130;
+
+/**
+ * What sits over the wall so copy can sit on it: darkest at the middle band
+ * where the copy goes, and dissolving into the page at the top and bottom.
+ */
+export const MosaicVeil: React.FC = () => (
+    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(15,23,43,0.82)_0%,rgba(15,23,43,0.55)_55%,rgba(15,23,43,0.2)_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-page via-transparent to-page" />
+    </div>
+);
 
 const columnVisibility = (column: number) =>
     column >= 4 ? 'hidden lg:flex' : column === 3 ? 'hidden sm:flex' : 'flex';
@@ -40,12 +49,17 @@ const columnVisibility = (column: number) =>
  * columns so a short year doesn't read as one list stamped over and over, and
  * the columns start at staggered heights. Reduced motion holds it still.
  */
-const Mosaic: React.FC<MosaicProps> = ({ images, strength = 0.35, className = '' }) => {
+const Mosaic: React.FC<MosaicProps> = ({
+    images,
+    strength = 0.35,
+    veiled = true,
+    className = '',
+}) => {
     const [failed, setFailed] = useState<Set<string>>(() => new Set());
 
     // Laid out from the full list, so a broken image just drops out of its
     // column instead of reshuffling the whole wall.
-    const columns = useMemo(() => wallColumns(images, COLUMNS, PER_COLUMN), [images]);
+    const columns = useMemo(() => mosaicColumns(images), [images]);
 
     if (!images.length || images.every((image) => failed.has(image.url))) return null;
 
@@ -77,7 +91,7 @@ const Mosaic: React.FC<MosaicProps> = ({ images, strength = 0.35, className = ''
                                     key={`${image.url}-${index}`}
                                     src={image.url}
                                     alt=""
-                                    loading={index < 4 ? 'eager' : 'lazy'}
+                                    loading={index < EAGER_PER_COLUMN ? 'eager' : 'lazy'}
                                     decoding="async"
                                     className={`block w-full rounded-sm object-cover ${
                                         image.kind === 'poster' ? 'aspect-[2/3]' : 'aspect-video'
@@ -91,10 +105,7 @@ const Mosaic: React.FC<MosaicProps> = ({ images, strength = 0.35, className = ''
                     </motion.div>
                 ))}
             </div>
-            {/* Darkest at the middle band where the copy sits, and dissolving
-                into the page at the top and bottom. */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(15,23,43,0.82)_0%,rgba(15,23,43,0.55)_55%,rgba(15,23,43,0.2)_100%)]" />
-            <div className="absolute inset-0 bg-gradient-to-b from-page via-transparent to-page" />
+            {veiled && <MosaicVeil />}
         </div>
     );
 };

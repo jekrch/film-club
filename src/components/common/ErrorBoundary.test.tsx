@@ -37,8 +37,8 @@ describe('ErrorBoundary', () => {
                 </ErrorBoundary>
             </MemoryRouter>
         );
-        expect(screen.getByRole('alert')).toBeInTheDocument();
+        expect(screen.getByRole('alert')).toHaveTextContent(/on the fritz/i);
         expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /return home/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /back to the lobby/i })).toBeInTheDocument();
     });
 });

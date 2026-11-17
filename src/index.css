@@ -2,10 +2,15 @@
 
 /* Inter and Gelasio are loaded by the Google Fonts link in index.html. Georgia is
    a system font everywhere but Android, which gets Gelasio, drawn to Georgia's
-   metrics. A browser only downloads a face it uses, so nobody else fetches it. */
+   metrics. A browser only downloads a face it uses, so nobody else fetches it,
+   save for `font-figures`. */
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-serif: Georgia, 'Gelasio', serif;
+    /* For display-size numbers, always paired with `lining-nums`. Both faces default
+       to old-style figures, whose 3, 4, 5, 7 and 9 hang below the baseline into the
+       line underneath; only Gelasio has lining figures to switch to. */
+    --font-figures: 'Gelasio', Georgia, serif;
 
     /* The page colour. index.html, the PWA manifest and chartTheme.ts can't read a
        CSS variable and restate it; palette.test.ts holds them to this value. */
@@ -166,6 +171,15 @@ body {
 }
 
 @layer utilities {
+    /* For a `font-figures lining-nums leading-none` number set between lines of text.
+       Gelasio's line box at line-height 1 leaves 0.1em above its lining figures (cap
+       height 0.693em) but 0.207em below the baseline, room for descenders figures
+       don't have. Pulling the bottom up 0.107em leaves 0.1em on both sides, so the
+       number sits as close to the line under it as to the line over it. */
+    .figures-trim {
+        margin-bottom: -0.107em;
+    }
+
     .animate-fade-in {
         animation: fade-in 0.3s ease-out forwards;
     }
@@ -739,6 +753,28 @@ body {
     }
 }
 
+/* The soundtrack's tile arriving once the deck's iris has opened past its
+   corner. Filled backwards only, so once it has run the tile's own opacity
+   (and its fade out when the deck closes) is in charge again. */
+@keyframes retro-dock-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+.retro-dock-in {
+    animation: retro-dock-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.65s backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+    .retro-dock-in {
+        animation: none;
+    }
+}
+
 /* Film grain on the retrospective's large stills: the noise tile hops a few
    pixels at a time, which reads as grain moving rather than a pattern. */
 @keyframes retro-grain {
@@ -763,6 +799,83 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
     .retro-grain {
+        animation: none;
+    }
+}
+
+/* The crash screen's projector (ProjectorOutOfOrder): the reels turn, catch
+   and kick back as if the film has jammed, and the beam sputters. Each loop
+   ends where it began, so neither visibly restarts. */
+@keyframes projector-reel {
+    0% {
+        transform: rotate(0deg);
+    }
+    38% {
+        transform: rotate(300deg);
+    }
+    42% {
+        transform: rotate(286deg);
+    }
+    45% {
+        transform: rotate(292deg);
+    }
+    72% {
+        transform: rotate(292deg);
+    }
+    90%,
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.projector-reel {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: projector-reel 3.2s cubic-bezier(0.3, 0.6, 0.4, 1) infinite;
+}
+.projector-reel-rear {
+    animation-duration: 2.6s;
+    animation-delay: -0.9s;
+}
+
+@keyframes projector-flicker {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    6% {
+        opacity: 0.3;
+    }
+    8% {
+        opacity: 0.9;
+    }
+    11%,
+    38% {
+        opacity: 0.1;
+    }
+    40% {
+        opacity: 0.8;
+    }
+    43% {
+        opacity: 0.3;
+    }
+    46%,
+    74% {
+        opacity: 1;
+    }
+    76% {
+        opacity: 0.1;
+    }
+    80% {
+        opacity: 0.7;
+    }
+}
+.projector-beam {
+    animation: projector-flicker 3.4s steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .projector-reel,
+    .projector-beam {
         animation: none;
     }
 }

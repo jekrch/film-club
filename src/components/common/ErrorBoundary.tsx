@@ -1,6 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import ErrorDisplay from './ErrorDisplay';
+import ProjectorOutOfOrder from './ProjectorOutOfOrder';
 
 interface ErrorBoundaryInnerProps {
     children: ReactNode;
@@ -41,20 +41,14 @@ class ErrorBoundaryInner extends Component<ErrorBoundaryInnerProps, ErrorBoundar
 
     render() {
         if (this.state.hasError) {
-            return (
-                <ErrorDisplay
-                    message="Something went wrong while rendering this page."
-                    backPath="/"
-                    backButtonLabel="Return home"
-                />
-            );
+            return <ProjectorOutOfOrder />;
         }
         return this.props.children;
     }
 }
 
 /**
- * Top-level error boundary. Renders {@link ErrorDisplay} when a descendant
+ * Top-level error boundary. Renders {@link ProjectorOutOfOrder} when a descendant
  * throws during render, and resets itself on route changes so the user can
  * navigate back to a working page.
  */

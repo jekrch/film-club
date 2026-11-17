@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { routeIdentity } from './routeIdentity';
 
 /**
  * Eases each route's content into place instead of cutting to it.
@@ -15,14 +16,15 @@ import { useLocation } from 'react-router-dom';
  * ScrollToTop resetting scroll under a page the user is still looking at. A CSS
  * keyframe on the incoming content costs nothing and can't desync from routing.
  *
- * Keyed on `pathname`, not on `location.key`: a re-navigation to the page
- * you're already on shouldn't replay the animation.
+ * Keyed on the route's identity, not on `location.key`: a re-navigation to the
+ * page you're already on shouldn't replay the animation. That is the pathname,
+ * except where several pathnames are one page (see {@link routeIdentity}).
  */
 const PageTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { pathname } = useLocation();
 
     return (
-        <div key={pathname} className="page-enter">
+        <div key={routeIdentity(pathname)} className="page-enter">
             {children}
         </div>
     );

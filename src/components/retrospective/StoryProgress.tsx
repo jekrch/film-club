@@ -29,17 +29,21 @@ const StoryProgress: React.FC<StoryProgressProps> = ({
     accent,
     onSelect,
 }) => (
-    <nav className="flex gap-1" aria-label="Slides">
+    // The segments butt up against each other, with the visual gap made of each
+    // button's side padding, so sweeping the cursor along the bar never falls
+    // into a dead gap and drops the hover. The hover grow is a scale rather than
+    // a height change: no relayout, no fractional-pixel redraw of the caps.
+    <nav className="-mx-0.5 flex" aria-label="Slides">
         {Array.from({ length: count }, (_, i) => (
             <button
                 key={i}
                 type="button"
                 onClick={() => onSelect(i)}
-                className="group flex-1 py-2.5"
+                className="group flex-1 px-0.5 py-[9px]"
                 aria-label={`Slide ${i + 1} of ${count}`}
                 aria-current={i === index ? 'step' : undefined}
             >
-                <span className="block h-[3px] overflow-hidden rounded-full bg-slate-100/20 transition-[height,background-color] group-hover:h-[5px] group-hover:bg-slate-100/35">
+                <span className="block h-[5px] scale-y-[0.6] overflow-hidden rounded-full bg-slate-100/20 transition-[scale,background-color] duration-150 group-hover:scale-y-100 group-hover:bg-slate-100/35">
                     {i < index && (
                         <span className="block h-full w-full" style={{ backgroundColor: accent }} />
                     )}

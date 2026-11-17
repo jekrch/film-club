@@ -61,7 +61,7 @@ const ClubCalendar: React.FC<ClubCalendarProps> = ({ calendar, films, inProgress
                                         className={`w-full ${width}`}
                                         initial={still ? false : { opacity: 0, y: 12 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.8 + month * 0.06 + i * 0.1 }}
+                                        transition={{ delay: 0.4 + month * 0.05 + i * 0.08 }}
                                     >
                                         <Poster
                                             src={film.poster}
@@ -94,7 +94,7 @@ const ClubCalendar: React.FC<ClubCalendarProps> = ({ calendar, films, inProgress
                     )}
                     {longestGap && (
                         <p className="text-slate-400">
-                            The longest gap: {longestGap.days} days, between{' '}
+                            The longest gap was {longestGap.days} days, between{' '}
                             <em>{longestGap.from.title}</em> and <em>{longestGap.to.title}</em>.
                         </p>
                     )}

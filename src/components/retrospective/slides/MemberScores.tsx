@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { prefersReducedMotion } from '../../../utils/motion';
 import type { MemberRetrospective } from '../../../utils/retrospectiveUtils';
-import CountUp from '../CountUp';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 
 interface MemberScoresProps {
@@ -21,8 +20,8 @@ const MemberScores: React.FC<MemberScoresProps> = ({ scores, accent }) => {
         <Slide>
             <Reveal>
                 <Eyebrow color={accent}>Your club scores</Eyebrow>
-                <p className="mt-4 font-serif text-[5.5rem] leading-none text-slate-50 sm:text-[8rem]">
-                    <CountUp value={scores.average} digits={1} />
+                <p className="mt-4 font-figures figures-trim lining-nums text-[5.5rem] leading-none text-slate-50 sm:text-[8rem]">
+                    {scores.average.toFixed(1)}
                 </p>
                 <p className="font-serif text-2xl text-slate-200 sm:text-3xl">
                     your average score across the {scores.count} club film
@@ -51,7 +50,7 @@ const MemberScores: React.FC<MemberScoresProps> = ({ scores, accent }) => {
                                 }}
                                 initial={still ? false : { scaleY: 0 }}
                                 animate={{ scaleY: 1 }}
-                                transition={{ delay: 1.0 + score * 0.06, duration: 0.6 }}
+                                transition={{ delay: 0.5 + score * 0.05, duration: 0.6 }}
                             />
                             {/* The x axis is the popcorn scale: a bucket over each score, empty at 0. */}
                             <img

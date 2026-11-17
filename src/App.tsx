@@ -24,6 +24,11 @@ import ScrollToTop from './components/layout/ScrollToTop';
 import PageTransition from './components/layout/PageTransition';
 import ErrorBoundary from './components/common/ErrorBoundary';
 
+// TEMP: throws so the ErrorBoundary's crash screen can be previewed at /#/__crash.
+function CrashPreview(): never {
+    throw new Error('Crash screen preview');
+}
+
 function AppContent() {
     const location = useLocation();
     // The pages that raise a colonnade of their own — the home page's pair and
@@ -95,11 +100,14 @@ function AppContent() {
                                 />
                             }
                         />
-                        <Route path="/retrospective/:year" element={<RetrospectivePage />} />
+                        {/* One route for the club's year and each member's, so moving
+                between them keeps the page mounted and animates in place. */}
                         <Route
-                            path="/retrospective/:year/:memberName"
+                            path="/retrospective/:year/:memberName?"
                             element={<RetrospectivePage />}
                         />
+                        {/* TEMP: preview of the crash screen. Remove before committing. */}
+                        <Route path="/__crash" element={<CrashPreview />} />
                         <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                 </PageTransition>

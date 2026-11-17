@@ -46,14 +46,41 @@ export const playOrder = (choices: Track[], id: string): Track[] => {
 };
 
 /**
- * The year each member started coming to the club, by lowercase name, for
- * anyone who joined after it began. Scores they put in the sheet for earlier
- * screenings were films caught up on afterwards, so a member's years with the
- * club start here. Absent means they were there from the start.
+ * The years a member was with the club, by lowercase name, for anyone who
+ * joined after it began or has since left. Both ends are inclusive.
+ *
+ * `joined` absent means they were there from the start. Scores they put in the
+ * sheet for screenings before it were films caught up on afterwards, so they
+ * don't count them in as a member that year.
+ *
+ * `left` absent means they're still with the club, for as long as they're on
+ * the selection queue. A past member needs it to appear in the years they were
+ * there; without one they're treated as never having been a member.
  */
-export const CLUB_JOINED: Record<string, number> = {
-    gabe: 2023,
+export const CLUB_YEARS: Record<string, { joined?: number; left?: number }> = {
+    gabe: { joined: 2023 },
+    mark: { left: 2021 },
 };
+
+/**
+ * The club deck's welcome cards, by lowercase name: one for each newcomer, in
+ * the year they arrived, just after the title card. A member's year is the one
+ * they joined in {@link CLUB_YEARS}; anyone off the roster, like the intern,
+ * needs a `year` here. A member who joins without an entry gets
+ * {@link DEFAULT_WELCOME}.
+ */
+export const WELCOMES: Record<string, { line: string; year?: number }> = {
+    gabe: { line: 'The committee gained a new criterioner' },
+    greg: { line: 'The committee welcomed our first intern', year: 2026 },
+};
+
+export const DEFAULT_WELCOME = 'The committee gained a new criterioner';
+
+/**
+ * Members, by lowercase name, whose review never opens the club words slide:
+ * someone else's goes first whenever anyone else is quoted.
+ */
+export const WORDS_NEVER_FIRST: string[] = ['jacob'];
 
 /**
  * The reviews the club retrospective quotes on its words slide, by thread id,
@@ -61,8 +88,8 @@ export const CLUB_JOINED: Record<string, number> = {
  * the slide is topped up with the fullest reviews instead.
  */
 export const FEATURED_CLUB_REVIEWS: string[] = [
-    'log-Jacob-tt0066858', // The Boy Friend
     'log-Gabe-tt0046478', // Ugetsu
-    'log-Jacob-tt0021884', // Frankenstein
+    'log-Jacob-tt0066858', // The Boy Friend
     'log-Gabe-tt0040155', // Berlin Express
+    'log-Jacob-tt0021884', // Frankenstein
 ];

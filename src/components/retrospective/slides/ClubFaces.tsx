@@ -13,14 +13,14 @@ interface ClubFacesProps {
 }
 
 /**
- * Repeat artists: the people credited on more than one of the year's films,
+ * "Wait, where do I know them from?": the people credited on more than one of the year's films,
  * and what they did on each — the same name as director on one and writer on
  * another is the interesting part, and for actors, who they played.
  */
 const ClubFaces: React.FC<ClubFacesProps> = ({ faces, reel, accent }) => (
     <Slide reel={reel}>
         <Reveal>
-            <Eyebrow color={accent}>Repeat artists</Eyebrow>
+            <Eyebrow color={accent}>Wait, where do I know them from?</Eyebrow>
         </Reveal>
         <div className="mt-5 flex flex-col" style={{ gap: give('1.5rem', '0.75rem') }}>
             {faces.map((face, i) => {

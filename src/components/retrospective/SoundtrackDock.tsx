@@ -39,7 +39,7 @@ const SoundtrackDock: React.FC<SoundtrackDockProps> = ({ queue, soundtrack, leav
     const [first, ...then] = queue;
     return (
         <figure
-            className={`fixed bottom-[calc(env(safe-area-inset-bottom)+8px)] right-2 z-[80] sm:right-4 overflow-hidden rounded-md bg-black shadow-2xl ring-1 ring-slate-100/15 transition-opacity duration-1000 ${
+            className={`fixed bottom-[calc(env(safe-area-inset-bottom)+8px)] right-2 z-[80] sm:right-4 overflow-hidden rounded-md bg-black shadow-2xl ring-1 ring-slate-100/15 retro-dock-in transition-opacity duration-1000 ${
                 leaving ? 'pointer-events-none opacity-0' : 'opacity-100'
             }`}
             style={{ height: BAR_PLAIN, width: BAR_PLAIN }}

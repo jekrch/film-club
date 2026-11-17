@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { give } from '../../../hooks/useSqueeze';
+import { prefersReducedMotion } from '../../../utils/motion';
 import CircularImage from '../../common/CircularImage';
 
 interface PosterProps {
@@ -77,15 +80,84 @@ interface ScoreLineProps {
     max?: number;
 }
 
+/** Room left between two labels side by side, in px. */
+const LABEL_GAP = 6;
+/** How far each stacked level sits above the one below, in px. */
+const LEVEL_RISE = 26;
+
+/**
+ * A level for each mark, in the order given, so that no two marks on one
+ * level touch: each takes the lowest level with room for it. Centres and
+ * widths share a unit; with no widths, only marks at the same spot stack.
+ */
+const stackMarks = (centres: number[], widths: number[], gap: number): number[] => {
+    const taken: { left: number; right: number }[][] = [];
+    return centres.map((centre, i) => {
+        const half = (widths[i] ?? 0) / 2 + gap / 2;
+        const span = { left: centre - half, right: centre + half };
+        let level = 0;
+        while (taken[level]?.some((t) => span.left <= t.right && t.left <= span.right)) level++;
+        (taken[level] = taken[level] ?? []).push(span);
+        return level;
+    });
+};
+
 /**
  * Scores as dots on a line from nothing to nine, each in its giver's colour and
  * named underneath — so a spread reads as a distance, not as a table of
- * numbers. Dots that land on the same score stack.
+ * numbers. Marks close enough for their names to collide stack, earlier marks
+ * staying on the line.
  */
 export const ScoreLine: React.FC<ScoreLineProps> = ({ marks, max = 9 }) => {
-    const stacks = new Map<number, number>();
+    const frame = useRef<HTMLDivElement>(null);
+    const columns = useRef<(HTMLDivElement | null)[]>([]);
+    // The line's width and each mark's, once laid out. Until then (first
+    // paint, jsdom) only marks on the same score stack.
+    const [measured, setMeasured] = useState<{ width: number; widths: number[] } | null>(null);
+
+    // Callers pass a fresh array each render; what matters is what's on it.
+    const shape = marks.map((m) => `${m.label}:${m.score}`).join('|');
+    useLayoutEffect(() => {
+        const line = frame.current;
+        if (!line) return;
+        // offsetWidth, not the bounding box: a slide's reveal scales it.
+        const measure = () => {
+            const next = {
+                width: line.offsetWidth,
+                widths: columns.current.map((c) => c?.offsetWidth ?? 0),
+            };
+            setMeasured((prev) =>
+                prev &&
+                prev.width === next.width &&
+                prev.widths.length === next.widths.length &&
+                prev.widths.every((w, i) => w === next.widths[i])
+                    ? prev
+                    : next
+            );
+        };
+        measure();
+        if (typeof ResizeObserver === 'undefined') return;
+        const observer = new ResizeObserver(measure);
+        observer.observe(line);
+        return () => observer.disconnect();
+    }, [shape]);
+
+    const fractions = marks.map((mark) => Math.min(max, Math.max(0, mark.score)) / max);
+    const levels = measured?.width
+        ? stackMarks(
+              fractions.map((f) => f * measured.width),
+              measured.widths,
+              LABEL_GAP
+          )
+        : stackMarks(fractions, [], 0);
+    const top = Math.max(0, ...levels);
+
     return (
-        <div className="relative mt-10 mb-16 h-px bg-slate-100/25">
+        <div
+            ref={frame}
+            className="relative mb-16 h-px bg-slate-100/25"
+            style={{ marginTop: 40 + top * LEVEL_RISE }}
+        >
             {Array.from({ length: max + 1 }, (_, n) => (
                 <span
                     key={n}
@@ -95,33 +167,32 @@ export const ScoreLine: React.FC<ScoreLineProps> = ({ marks, max = 9 }) => {
                     {n}
                 </span>
             ))}
-            {marks.map((mark) => {
-                const level = stacks.get(mark.score) ?? 0;
-                stacks.set(mark.score, level + 1);
-                return (
-                    <div
-                        key={mark.label}
-                        className="absolute flex -translate-x-1/2 flex-col items-center"
-                        style={{
-                            left: `${(Math.min(max, Math.max(0, mark.score)) / max) * 100}%`,
-                            bottom: `${-7 + level * 26}px`,
-                        }}
+            {marks.map((mark, i) => (
+                <div
+                    key={mark.label}
+                    ref={(el) => {
+                        columns.current[i] = el;
+                    }}
+                    className="absolute flex -translate-x-1/2 flex-col items-center"
+                    style={{
+                        left: `${fractions[i] * 100}%`,
+                        bottom: `${-7 + levels[i] * LEVEL_RISE}px`,
+                    }}
+                >
+                    <span
+                        className="whitespace-nowrap text-[11px] font-semibold leading-none"
+                        style={{ color: mark.color }}
                     >
-                        <span
-                            className="whitespace-nowrap text-[11px] font-semibold leading-none"
-                            style={{ color: mark.color }}
-                        >
-                            {mark.label}
-                        </span>
-                        <span
-                            className={`mt-1 block rounded-full ring-2 ring-page ${
-                                mark.emphasis ? 'h-4 w-4' : 'h-3.5 w-3.5'
-                            }`}
-                            style={{ backgroundColor: mark.color }}
-                        />
-                    </div>
-                );
-            })}
+                        {mark.label}
+                    </span>
+                    <span
+                        className={`mt-1 block rounded-full ring-2 ring-page ${
+                            mark.emphasis ? 'h-4 w-4' : 'h-3.5 w-3.5'
+                        }`}
+                        style={{ backgroundColor: mark.color }}
+                    />
+                </div>
+            ))}
         </div>
     );
 };
@@ -208,3 +279,65 @@ export const FaceStack: React.FC<{
         ))}
     </span>
 );
+
+/**
+ * A figure in each year, a column a year, with one year in the accent. Each
+ * column's height is its `scale`d value, 0 to 1; its label is `format`ted.
+ */
+export const YearColumns: React.FC<{
+    label: string;
+    columns: { year: number; value: number }[];
+    year: number;
+    format: (value: number) => string;
+    scale: (value: number) => number;
+    accent: string;
+    delay: number;
+    /** Taller columns, for a slide where the chart is the point. */
+    tall?: boolean;
+}> = ({ label, columns, year, format, scale, accent, delay, tall = false }) => {
+    const still = prefersReducedMotion();
+    const summary = columns.map((c) => `${c.year}: ${format(c.value)}`).join(', ');
+    const height = tall ? give('6rem', '3rem') : give('3rem', '1.5rem');
+
+    return (
+        <div role="img" aria-label={`${label} — ${summary}`}>
+            <p className="font-sans text-xs font-medium text-slate-500 sm:text-sm">{label}</p>
+            <div className="mt-2 flex items-end gap-2 sm:gap-3">
+                {columns.map((c, i) => {
+                    const isNow = c.year === year;
+                    return (
+                        <div key={c.year} className="flex w-7 flex-col items-center sm:w-8">
+                            <span
+                                className="font-serif text-xs text-slate-500 tabular-nums sm:text-sm"
+                                style={isNow ? { color: accent } : undefined}
+                            >
+                                {format(c.value)}
+                            </span>
+                            <motion.div
+                                className={`mt-1 w-full rounded-t-[2px] ${isNow ? '' : 'bg-slate-500/40'}`}
+                                style={{
+                                    height: `max(2px, calc(${Math.max(0, Math.min(1, scale(c.value)))} * ${height}))`,
+                                    transformOrigin: 'bottom',
+                                    ...(isNow ? { backgroundColor: accent } : {}),
+                                }}
+                                initial={still ? false : { scaleY: 0 }}
+                                animate={{ scaleY: 1 }}
+                                transition={{
+                                    duration: 0.6,
+                                    delay: delay + i * 0.06,
+                                    ease: [0.22, 1, 0.36, 1] as const,
+                                }}
+                            />
+                            <span
+                                className="mt-1 text-[10px] text-slate-500 tabular-nums sm:text-xs"
+                                style={isNow ? { color: accent } : undefined}
+                            >
+                                ’{String(c.year).slice(2)}
+                            </span>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};

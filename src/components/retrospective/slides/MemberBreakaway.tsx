@@ -2,7 +2,6 @@ import React from 'react';
 import type { MemberRetrospective } from '../../../utils/retrospectiveUtils';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { Poster, ScoreLine } from './shared';
-import { formatScore } from './format';
 
 interface MemberBreakawayProps {
     breakaway: NonNullable<MemberRetrospective['breakaway']>;
@@ -16,7 +15,7 @@ const MemberBreakaway: React.FC<MemberBreakawayProps> = ({ breakaway, accent }) 
     return (
         <Slide>
             <Reveal>
-                <Eyebrow color={accent}>Where you begged to differ</Eyebrow>
+                <Eyebrow color={accent}>You saw this one differently</Eyebrow>
             </Reveal>
             <Reveal step={1}>
                 <div className="mt-4 flex items-end gap-5">
@@ -31,8 +30,7 @@ const MemberBreakaway: React.FC<MemberBreakawayProps> = ({ breakaway, accent }) 
                             {film.title}
                         </h2>
                         <p className="mt-2 text-lg text-slate-300">
-                            You {divergence > 0 ? 'liked it more' : 'liked it less'} than everyone
-                            else, by {formatScore(Math.round(Math.abs(divergence) * 10) / 10)}
+                            You liked it {divergence > 0 ? 'more' : 'less'} than the rest of us.
                         </p>
                     </div>
                 </div>

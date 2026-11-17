@@ -3,10 +3,9 @@ import { motion } from 'framer-motion';
 import { give } from '../../../hooks/useSqueeze';
 import { prefersReducedMotion } from '../../../utils/motion';
 import type { MemberRetrospective } from '../../../utils/retrospectiveUtils';
-import CountUp from '../CountUp';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { Poster } from './shared';
-import { calendarPosterWidth, hoursOf, MONTHS, yearOnYear } from './format';
+import { beat, calendarPosterWidth, hoursOf, MONTHS, yearOnYear } from './format';
 
 interface MemberCountProps {
     year: number;
@@ -17,9 +16,6 @@ interface MemberCountProps {
     /** Stills for the reel across the top. */
     reel?: string[];
 }
-
-/** Seconds from the slide's start to a line at `step`, at the pace {@link Reveal} keeps. */
-const beat = (step: number): number => 0.45 + step * 0.3;
 
 /** A logged film's month, 0 for January, read from its date as written. */
 const logMonth = (watchDate: string): number => parseInt(watchDate.slice(5, 7), 10) - 1;
@@ -131,7 +127,7 @@ const YearsRow: React.FC<{
 
     return (
         <div role="img" aria-label={`Club films by year — ${summary}`}>
-            <p className="font-sans text-[10px] font-semibold tracking-[0.2em] text-slate-500 uppercase sm:text-xs">
+            <p className="font-sans text-xs font-medium text-slate-500 sm:text-sm">
                 Your years with the club
             </p>
             <div className="mt-2 flex items-end gap-2 sm:gap-3">
@@ -223,8 +219,8 @@ const MemberCount: React.FC<MemberCountProps> = ({
             </Reveal>
             <Reveal step={1}>
                 <p className="mt-4 font-serif text-2xl text-slate-200 sm:text-3xl">You watched</p>
-                <p className="font-serif text-[6rem] leading-none text-slate-50 sm:text-[8.5rem]">
-                    <CountUp value={total} />
+                <p className="font-figures figures-trim lining-nums text-[6rem] leading-none text-slate-50 sm:text-[8.5rem]">
+                    {total}
                 </p>
                 <p className="font-serif text-2xl text-slate-200 sm:text-3xl">
                     film{total === 1 ? '' : 's'}

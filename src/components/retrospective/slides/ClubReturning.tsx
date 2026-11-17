@@ -46,7 +46,7 @@ const CreditLine: React.FC<{ credit: Credit; year?: number; faded?: boolean }> =
 const ClubReturning: React.FC<ClubReturningProps> = ({ year, returning, reel, accent }) => (
     <Slide reel={reel}>
         <Reveal>
-            <Eyebrow color={accent}>Credits we'd seen before</Eyebrow>
+            <Eyebrow color={accent}>Credits from years past</Eyebrow>
         </Reveal>
         <div className="mt-5 flex flex-col" style={{ gap: give('1.75rem', '0.875rem') }}>
             {returning.map((person, i) => {
@@ -66,7 +66,7 @@ const ClubReturning: React.FC<ClubReturningProps> = ({ year, returning, reel, ac
                                 </h2>
                                 <div className="mt-3 grid gap-4 sm:grid-cols-2">
                                     <div>
-                                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                                        <p className="mb-2 text-xs font-medium text-slate-500">
                                             In {year}
                                         </p>
                                         <ul className="space-y-2">
@@ -79,7 +79,7 @@ const ClubReturning: React.FC<ClubReturningProps> = ({ year, returning, reel, ac
                                         </ul>
                                     </div>
                                     <div>
-                                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                                        <p className="mb-2 text-xs font-medium text-slate-500">
                                             Before
                                         </p>
                                         <ul className="space-y-2">

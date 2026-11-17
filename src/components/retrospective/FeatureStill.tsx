@@ -209,9 +209,7 @@ const FeatureStill: React.FC<FeatureStillProps> = ({
             )}
 
             {caption && (
-                <figcaption className="mt-2 font-sans text-xs uppercase tracking-[0.18em] text-slate-500">
-                    {caption}
-                </figcaption>
+                <figcaption className="mt-2 font-sans text-xs text-slate-500">{caption}</figcaption>
             )}
         </figure>
     );

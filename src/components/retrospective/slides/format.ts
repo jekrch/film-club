@@ -1,7 +1,6 @@
 import type { Film } from '../../../types/film';
-import type { TeamMember } from '../../../types/team';
 import { memberSlug } from '../../../types/watched';
-import { memberChartColor } from '../../../utils/chartTheme';
+import type { Standout } from '../../../utils/retrospectiveUtils';
 
 /** The slides' small formatting helpers, kept apart from components for fast refresh. */
 
@@ -24,12 +23,24 @@ const WORDS = [
 /** "four", "eleven", "23": words to twelve, as prose spells them. */
 export const numberWord = (n: number): string => WORDS[n] ?? String(n);
 
+/**
+ * When a slide's line revealed at `step` starts to show, in seconds: a short
+ * beat, so a slide arrives nearly whole.
+ */
+export const beat = (step: number): number => 0.3 + step * 0.08;
+
 /** Whole hours, for a sentence. */
 export const hoursOf = (minutes: number): number => Math.round(minutes / 60);
 
-/** A member's own colour, the one their name carries everywhere else. */
-export const memberColor = (member: TeamMember, index = 0): string =>
-    memberChartColor(member.color, index);
+/**
+ * The ring around a member's face. Every member wears the same one: the
+ * retrospective keeps colour for the copper accent rather than coding people.
+ */
+export const FACE_RING = 'rgba(242,245,248,0.35)';
+
+/** The day a review was written, for the reader: "October 30, 2026". Local, as the wall dates instants. */
+export const writtenOn = (iso: string): string =>
+    new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
 export const retrospectivePath = (year: number, member?: string): string =>
     member ? `/retrospective/${year}/${memberSlug(member)}` : `/retrospective/${year}`;
@@ -74,6 +85,13 @@ export const yearOnYear = (
           )
         : `Down from ${last} in ${lastYear}.`;
 };
+
+/**
+ * Whether the year's standout is its score, which the count slide then keeps
+ * quiet about, so as not to give it away.
+ */
+export const isScoreStandout = (standout: Standout | null): boolean =>
+    standout?.kind === 'highest-score' || standout?.kind === 'lowest-score';
 
 /** "1.5" stays, "7.0" reads "7". */
 export const formatScore = (score: number): string =>

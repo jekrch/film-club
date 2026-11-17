@@ -15,8 +15,10 @@ import ClubOffDocket from './slides/ClubOffDocket';
 import ClubPlaces from './slides/ClubPlaces';
 import ClubReturning from './slides/ClubReturning';
 import ClubSelections from './slides/ClubSelections';
+import ClubStandout from './slides/ClubStandout';
 import ClubTogether from './slides/ClubTogether';
 import ClubTrophies from './slides/ClubTrophies';
+import ClubWelcome from './slides/ClubWelcome';
 import MemberBreakaway from './slides/MemberBreakaway';
 import MemberClosing from './slides/MemberClosing';
 import MemberCount from './slides/MemberCount';
@@ -28,6 +30,7 @@ import MemberShelf from './slides/MemberShelf';
 import MemberTaste from './slides/MemberTaste';
 import TitleCard from './slides/TitleCard';
 import WordsSlide from './slides/WordsSlide';
+import { isScoreStandout } from './slides/format';
 
 /**
  * The two decks, slide by slide, in the plan's order. Each report field is one
@@ -68,7 +71,14 @@ const stillsOfFilms = (films: (Film | { stills: string[] })[]): string[] => {
     return out.slice(0, 12);
 };
 
-export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
+/**
+ * The club's deck. `following` is the next year with a report after this one,
+ * which a past year's closing slide points on to.
+ */
+export const clubDeck = (
+    report: ClubRetrospective,
+    following: number | null = null
+): StorySlide[] => {
     const accent = COPPER;
     // Every film of the year, a frame or two each, for the reels.
     const yearReel = stillsOfFilms(report.films);
@@ -81,7 +91,6 @@ export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
                 <TitleCard
                     eyebrow="The Criterion Club"
                     title={String(report.year)}
-                    subtitle={'A year in review'}
                     accent={accent}
                     reel={yearReel}
                 />
@@ -100,10 +109,18 @@ export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
                     inProgress={report.inProgress}
                     count={report.count}
                     accent={accent}
+                    hideAverage={isScoreStandout(report.standout)}
                     reel={[...yearReel].reverse()}
                 />
             ),
         }
+    );
+    report.welcomes?.forEach((welcome) =>
+        slides.push({
+            id: `welcome-${welcome.member.name.toLowerCase()}`,
+            stills: welcome.first ? filmStills(welcome.first) : undefined,
+            node: <ClubWelcome year={report.year} welcome={welcome} accent={accent} />,
+        })
     );
     add(
         !!report.calendar && {
@@ -120,23 +137,36 @@ export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
         }
     );
     add(
+        !!report.standout && {
+            id: 'standout',
+            // A score's films, best or worst first, would give the favourites
+            // away; it keeps to the year's art.
+            stills: isScoreStandout(report.standout)
+                ? undefined
+                : stillsOfFilms(report.standout.films.slice(0, 4)),
+            node: (
+                <ClubStandout
+                    year={report.year}
+                    inProgress={report.inProgress}
+                    standout={report.standout}
+                    accent={accent}
+                />
+            ),
+        }
+    );
+    add(
         !!report.places && {
             id: 'places',
             stills: stillsOfFilms([report.places.oldest, report.places.newest]),
-            node: <ClubPlaces year={report.year} places={report.places} accent={accent} />,
+            node: <ClubPlaces places={report.places} accent={accent} />,
         }
     );
     add(
         !!report.together && {
             id: 'together',
             stills: filmStills(report.together.loved.film),
-            node: (
-                <ClubTogether
-                    together={report.together}
-                    lovedStills={filmStills(report.together.loved.film).slice(1)}
-                    accent={accent}
-                />
-            ),
+            hero: true,
+            node: <ClubTogether together={report.together} stillsOf={filmStills} accent={accent} />,
         }
     );
     add(
@@ -154,11 +184,12 @@ export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
     add(
         !!report.selections && {
             id: 'picks',
+            // Each row carries its own frame, so the room behind stays quiet.
             reel: stillsOfFilms(report.selections.flatMap((s) => s.films)),
-            stills: stillsOfFilms(report.selections.flatMap((s) => s.films)),
             node: (
                 <ClubSelections
                     selections={report.selections}
+                    stillsOf={filmStills}
                     accent={accent}
                     reel={stillsOfFilms(report.selections.flatMap((s) => s.films))}
                 />
@@ -224,11 +255,16 @@ export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
             node: (
                 <WordsSlide
                     count={report.words.count}
-                    detail={`${report.words.club} for the club, ${report.words.log} in our own logs`}
+                    detail={
+                        report.words.hadLogs
+                            ? `${report.words.club} for the club, ${report.words.log} in our own logs`
+                            : undefined
+                    }
                     clips={clips}
+                    fromFuture={report.words.future.length}
                     stillsOf={stillsFor}
                     who="we"
-                    moreTo="/log"
+                    moreTo={report.words.hadLogs ? '/log' : undefined}
                     accent={accent}
                 />
             ),
@@ -241,7 +277,10 @@ export const clubDeck = (report: ClubRetrospective): StorySlide[] => {
         node: (
             <ClubClosing
                 year={report.year}
+                inProgress={report.inProgress}
+                following={following}
                 roster={report.roster}
+                reports={report.reports}
                 guests={report.guests}
                 accent={accent}
                 reel={yearReel}
@@ -296,13 +335,8 @@ export const memberDeck = (
         slides.push({
             id: 'favourites',
             stills: filmStills(favourite),
-            node: (
-                <MemberFavourites
-                    scores={report.scores}
-                    stills={filmStills(favourite).slice(1)}
-                    accent={accent}
-                />
-            ),
+            hero: true,
+            node: <MemberFavourites scores={report.scores} accent={accent} />,
         });
         slides.push({
             id: 'scores',
@@ -355,14 +389,14 @@ export const memberDeck = (
                     clips={clips}
                     stillsOf={stillsFor}
                     who="you"
-                    moreTo={`/watched/${report.member.name}`}
+                    moreTo={report.words.hadLogs ? `/watched/${report.member.name}` : undefined}
                     accent={accent}
                 />
             ),
         });
     }
     add(
-        (!!report.trophies || !!report.lists) && {
+        (!!report.trophies?.received.length || !!report.lists) && {
             id: 'shelf',
             node: <MemberShelf trophies={report.trophies} lists={report.lists} accent={accent} />,
         }

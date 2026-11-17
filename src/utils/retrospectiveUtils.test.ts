@@ -3,11 +3,12 @@ import {
     buildMemberRetrospective,
     busiestMonth,
     longestWeekStreak,
+    memberYears,
     yearsWithData,
     type RetrospectiveSources,
 } from './retrospectiveUtils';
 import { awardKey } from './trophyUtils';
-import { CLUB_JOINED } from '../config/retrospective';
+import { CLUB_YEARS, WELCOMES } from '../config/retrospective';
 import type { ClubRating, Film } from '../types/film';
 import type { FilmListDefinition, ListFilmSummary } from '../types/list';
 import { clubThreadId, listThreadId, logThreadId, reviewThreadId } from '../types/responses';
@@ -294,6 +295,24 @@ describe('yearsWithData', () => {
     });
 });
 
+describe('memberYears', () => {
+    it('lists exactly the years a member has a report of their own', () => {
+        ['Andy', 'Gabe', 'Jacob', 'Joey'].forEach((name) => {
+            const expected = [2024, 2025, 2026, 2027].filter(
+                (year) => buildMemberRetrospective(year, name, sources, NOW) !== null
+            );
+            expect(memberYears(name.toLowerCase(), sources)).toEqual(expected);
+        });
+        expect(memberYears('Jacob', sources)).toEqual([2025, 2026]);
+    });
+
+    it('has none for a guest, a past member, or a stranger', () => {
+        expect(memberYears('Greg', sources)).toEqual([]);
+        expect(memberYears('Mark', sources)).toEqual([]);
+        expect(memberYears('Nobody', sources)).toEqual([]);
+    });
+});
+
 describe('buildClubRetrospective', () => {
     it('counts the year by watch date, flags pods, and compares with the year before', () => {
         const report = club2026();
@@ -303,7 +322,28 @@ describe('buildClubRetrospective', () => {
             minutes: 697,
             previousYear: 2,
             mostSince: null,
+            averages: [
+                { year: 2025, average: expect.closeTo(5.375) },
+                { year: 2026, average: expect.closeTo(34.75 / 6) },
+            ],
         });
+    });
+
+    it("averages each year's films by the members with the club then, leaving out popcorn pods", () => {
+        // Greg's 9 is a guest's, and the popcorn pod's 9s aren't counted at all.
+        const withGuest = film('tt2600009', 'Guest Night', '11/05/2026', 'Joey', [
+            ...four(6, 6, 6, 6),
+            makeRating({ user: 'greg', score: 9 }),
+        ]);
+        const pod = film('tt2600010', 'Another Pod', '11/06/2026', '', four(9, 9, 9, 9), {
+            popcornPod: true,
+        });
+        const { averages } = buildClubRetrospective(
+            2026,
+            { ...sources, films: [...films, withGuest, pod] },
+            NOW
+        ).count!;
+        expect(averages[1]).toEqual({ year: 2026, average: expect.closeTo(40.75 / 7) });
     });
 
     it('names the last year with as many films, or calls it the most yet', () => {
@@ -438,6 +478,24 @@ describe('buildClubRetrospective', () => {
         ]);
     });
 
+    it('leaves off the docket out until a year has more than three entries', () => {
+        // 2025 holds a single entry, so the log's first off-docket year is 2026.
+        expect(buildClubRetrospective(2025, sources, NOW).offDocket).toBeNull();
+        // Once a year has cleared the bar, later years show whatever they have.
+        const later = buildClubRetrospective(
+            2027,
+            {
+                ...sources,
+                watched: {
+                    ...sources.watched,
+                    Gabe: [...gabeLog, entry({ imdbID: 'tt9000009', watchDate: '2027-02-02' })],
+                },
+            },
+            NOW
+        );
+        expect(later.offDocket!.entries).toBe(1);
+    });
+
     it('counts a member a review says they watched it with as having logged it too', () => {
         const withCompany = (blurb: string) => ({
             ...sources,
@@ -513,13 +571,87 @@ describe('buildClubRetrospective', () => {
             imdbID: 'tt9000001',
             reactions: 3,
         });
-        // Fullest first, one from each member before a second from
-        // anyone. Too few run past a sentence, so short ones are kept.
+        // Fullest first, one from each member before a second from anyone,
+        // except that Jacob never opens. Too few run past a sentence, so
+        // short ones are kept.
         expect(words!.highlights.map((r) => [r.member, r.imdbID])).toEqual([
-            ['Jacob', nadja.imdbID],
             ['Gabe', 'tt9000004'],
+            ['Jacob', nadja.imdbID],
             ['Jacob', 'tt9000001'],
             ['Gabe', lastOf2025.imdbID],
+        ]);
+    });
+
+    it('leaves the words out of a year with one writer, unless a voice from the future joins them', () => {
+        const joined = CLUB_YEARS.gabe.joined!;
+        const before = joined - 1;
+        const rated = (user: string, blurb: string, blurbAddedAt?: string) =>
+            makeRating({ user, score: 7, blurb, blurbAddedAt });
+        const one = film('tt2000010', 'One', `03/01/${before}`, 'Jacob', [
+            rated('jacob', 'Written on the night, from the sheet.'),
+        ]);
+        const words = (f: Film[]) =>
+            buildClubRetrospective(before, { ...sources, films: [...films, ...f] }, NOW).words;
+
+        // Jacob alone: no slide.
+        expect(words([one])).toBeNull();
+
+        // Gabe, who joined later, wrote on the same film years on.
+        const later = `${joined + 3}-10-31T02:50:46Z`;
+        const withGabe = film('tt2000010', 'One', `03/01/${before}`, 'Jacob', [
+            rated('jacob', 'Written on the night, from the sheet.'),
+            rated('gabe', 'Caught up with this one long after, and glad I did.', later),
+        ]);
+        const w = words([withGabe])!;
+        expect(w.count).toBe(1);
+        // Both quoted, on the one film. Jacob never opens the slide, so the
+        // future goes first when he's the only other voice.
+        expect(w.highlights.map((r) => [r.member, r.writtenAt ?? null])).toEqual([
+            ['Gabe', later],
+            ['Jacob', null],
+        ]);
+        expect(w.future.map((r) => [r.member, r.imdbID, r.writtenAt])).toEqual([
+            ['Gabe', 'tt2000010', later],
+        ]);
+
+        // A late review from a member who was already in the club doesn't count.
+        const lateMember = film('tt2000010', 'One', `03/01/${before}`, 'Jacob', [
+            rated('jacob', 'Written on the night, from the sheet.'),
+            rated('andy', 'Came back to this one much later.', later),
+        ]);
+        expect(words([lateMember])).toBeNull();
+    });
+
+    it('hears from everyone before anyone twice, one-liners and the future included', () => {
+        const joined = CLUB_YEARS.gabe.joined!;
+        const before = joined - 1;
+        const later = `${joined + 3}-10-27T12:00:00Z`;
+        const long = (n: number) => Array.from({ length: n }, (_, i) => `word${i}`).join(' ');
+        const rated = (user: string, blurb: string, blurbAddedAt?: string) =>
+            makeRating({ user, score: 7, blurb, blurbAddedAt });
+        const year = [
+            film('tt2000020', 'A', `02/01/${before}`, 'Jacob', [
+                rated('jacob', long(50)),
+                rated('gabe', long(40), later),
+            ]),
+            film('tt2000021', 'B', `03/01/${before}`, 'Jacob', [rated('jacob', long(80))]),
+            film('tt2000022', 'C', `04/01/${before}`, 'Jacob', [rated('jacob', long(30))]),
+            film('tt2000023', 'D', `05/01/${before}`, 'Jacob', [rated('jacob', long(20))]),
+            film('tt2000024', 'E', `06/01/${before}`, 'Andy', [rated('andy', 'Short and sweet.')]),
+            film('tt2000025', 'F', `07/01/${before}`, 'Andy', [rated('andy', 'Also short.')]),
+        ];
+        const { words } = buildClubRetrospective(
+            before,
+            { ...sources, films: [...films, ...year] },
+            NOW
+        );
+        // Andy opens: Jacob never does.
+        expect(words!.highlights.map((r) => [r.member, r.title])).toEqual([
+            ['Andy', 'E'],
+            ['Jacob', 'B'],
+            ['Jacob', 'C'],
+            // Gabe's, on a film nobody else is quoted on, last.
+            ['Gabe', 'A'],
         ]);
     });
 
@@ -572,19 +704,63 @@ describe('buildClubRetrospective', () => {
         expect(club2026().roster.map((m) => m.name)).toEqual(['Andy', 'Gabe', 'Jacob', 'Joey']);
     });
 
+    it('leaves a member out of the years before they joined', () => {
+        const joined = CLUB_YEARS.gabe.joined!;
+        const before = film('tt2000002', 'Before', `05/01/${joined - 1}`, 'Andy', four(6, 9, 5, 4));
+        const withBefore = { ...sources, films: [...films, before] };
+        const report = buildClubRetrospective(joined - 1, withBefore, NOW);
+        expect(report.roster.map((m) => m.name)).not.toContain('Gabe');
+        expect(report.reports.map((m) => m.name)).not.toContain('Gabe');
+        expect(report.guests).toEqual([]);
+        expect(report.favourites!.map((f) => f.member.name)).not.toContain('Gabe');
+        // (6 + 5 + 4) / 3: Gabe's catch-up 9 aside.
+        expect(report.together!.loved.average).toBeCloseTo(5);
+        expect(buildMemberRetrospective(joined - 1, 'Gabe', withBefore, NOW)).toBeNull();
+        expect(memberYears('Gabe', withBefore)).not.toContain(joined - 1);
+    });
+
+    it('keeps a past member on the roster for their years, with no report', () => {
+        const left = CLUB_YEARS.mark.left!;
+        const picked = (y: number, id: string) =>
+            film(id, id, `05/01/${y}`, 'Mark', four(5, 5, 5, 5));
+        const withMark = {
+            ...sources,
+            films: [...films, picked(left, 'tt2000003'), picked(left + 1, 'tt2000004')],
+        };
+        const during = buildClubRetrospective(left, withMark, NOW);
+        expect(during.roster.map((m) => m.name)).toContain('Mark');
+        expect(during.reports.map((m) => m.name)).not.toContain('Mark');
+        expect(
+            buildClubRetrospective(left + 1, withMark, NOW).roster.map((m) => m.name)
+        ).not.toContain('Mark');
+    });
+
     it('mentions the intern in passing, and nobody else off the roster', () => {
         expect(club2026().guests.map((g) => [g.member.name, g.films.map((f) => f.imdbID)])).toEqual(
             [['Greg', [odyssey.imdbID]]]
         );
     });
 
+    it('welcomes each newcomer in the year they arrived', () => {
+        const welcomed = (y: number) =>
+            buildClubRetrospective(y, sources, NOW).welcomes?.map((w) => [
+                w.member.name,
+                w.line,
+                w.first?.imdbID ?? null,
+            ]) ?? null;
+        expect(welcomed(2026)).toEqual([['Greg', WELCOMES.greg.line, odyssey.imdbID]]);
+        expect(welcomed(CLUB_YEARS.gabe.joined!)).toEqual([['Gabe', WELCOMES.gabe.line, null]]);
+        expect(welcomed(2025)).toBeNull();
+    });
+
     it('leaves every slide null for a year with nothing in it', () => {
         const report = buildClubRetrospective(2024, sources, NOW);
-        const { year, inProgress, films: f, roster, guests, ...slides } = report;
+        const { year, inProgress, films: f, roster, reports, guests, ...slides } = report;
         expect(year).toBe(2024);
         expect(inProgress).toBe(false);
         expect(f).toEqual([]);
         expect(roster).toEqual([]);
+        expect(reports).toEqual([]);
         expect(guests).toEqual([]);
         Object.values(slides).forEach((slide) => expect(slide).toBeNull());
     });
@@ -603,8 +779,119 @@ describe('buildClubRetrospective', () => {
             'selections',
             'trophies',
             'faces',
+            'standout',
         ] as const;
         clubFields.forEach((field) => expect(withLogs[field]).toEqual(withoutLogs[field]));
+    });
+});
+
+describe('the year’s standout', () => {
+    /**
+     * `n` films screened in `year`, every member giving each `score`; the rest
+     * of each film (runtime, country, language, release year) from `overrides`.
+     */
+    const yearOf = (year: number, n: number, score: number, overrides: Partial<Film> = {}) =>
+        Array.from({ length: n }, (_, i) =>
+            film(
+                `tt${year}${String(i).padStart(3, '0')}`,
+                `${year} film ${i + 1}`,
+                `${(i % 12) + 1}/1/${year}`,
+                'Andy',
+                four(score, score, score, score),
+                {
+                    runtime: '100 min',
+                    country: 'United States',
+                    language: 'English',
+                    year: '1980',
+                    ...overrides,
+                }
+            )
+        );
+    const standoutOf = (year: number, ...years: Film[][]) =>
+        buildClubRetrospective(year, { ...sources, films: years.flat(), watched: {} }, NOW)
+            .standout;
+
+    it('puts the score first, highest or lowest, against later years too', () => {
+        const years = [yearOf(2023, 3, 6), yearOf(2024, 3, 7), yearOf(2025, 5, 5)];
+        expect(standoutOf(2024, ...years)).toMatchObject({
+            kind: 'highest-score',
+            years: [
+                { year: 2023, value: 6 },
+                { year: 2024, value: 7 },
+                { year: 2025, value: 5 },
+            ],
+            next: { value: 6, years: [2023] },
+            share: null,
+        });
+        expect(standoutOf(2025, ...years)?.kind).toBe('lowest-score');
+    });
+
+    it('falls to how much we watched when the score is no record', () => {
+        // 2025 has the most films, and its middling score holds nothing.
+        const years = [yearOf(2023, 3, 6), yearOf(2024, 3, 7), yearOf(2025, 5, 6.5)];
+        expect(standoutOf(2025, ...years)).toMatchObject({
+            kind: 'most-films',
+            next: { value: 3, years: [2023, 2024] },
+        });
+    });
+
+    it('counts a tie at the printed precision as no record', () => {
+        // 6.04 prints as 6.0, level with 2023, so the score says nothing.
+        const years = [
+            yearOf(2023, 3, 6),
+            yearOf(2024, 3, 6.04),
+            yearOf(2025, 3, 7, { country: 'France' }),
+        ];
+        expect(standoutOf(2024, ...years)).toBeNull();
+    });
+
+    it('reaches past volume and places to a share of the films', () => {
+        // Level on score, films, hours and countries. 2025 has the most
+        // languages; 2024, all in Japanese, the most not in English.
+        const englishAnd = (language: string) => [
+            ...yearOf(2025, 2, 6, { language }),
+            film('tt2025009', 'In English', '12/1/2025', 'Andy', four(6, 6, 6, 6), {
+                runtime: '100 min',
+                country: 'United States',
+                language: 'English',
+                year: '1980',
+            }),
+        ];
+        const years = [
+            yearOf(2023, 3, 6),
+            yearOf(2024, 3, 6, { language: 'Japanese' }),
+            englishAnd('French'),
+        ];
+        expect(standoutOf(2025, ...years)?.kind).toBe('most-languages');
+        expect(standoutOf(2024, ...years)).toMatchObject({
+            kind: 'least-english',
+            share: { count: 3, of: 3 },
+            next: { value: 67, years: [2025] },
+        });
+    });
+
+    it('leaves an average or a share out of a year of only a film or two', () => {
+        // 2026's one film would make it the best-scored year by far, but one
+        // film is no year: 2025 holds the record.
+        const years = [
+            yearOf(2023, 3, 6),
+            yearOf(2024, 3, 5),
+            yearOf(2025, 3, 7),
+            yearOf(2026, 1, 9),
+        ];
+        expect(standoutOf(2026, ...years)).toBeNull();
+        expect(standoutOf(2025, ...years)).toMatchObject({
+            kind: 'highest-score',
+            years: [
+                { year: 2023, value: 6 },
+                { year: 2024, value: 5 },
+                { year: 2025, value: 7 },
+            ],
+        });
+    });
+
+    it('needs three years to stand out among', () => {
+        expect(standoutOf(2024, yearOf(2023, 3, 6), yearOf(2024, 3, 7))).toBeNull();
     });
 });
 
@@ -638,7 +925,7 @@ describe('buildMemberRetrospective', () => {
     });
 
     it('starts their years with the club at the year they joined', () => {
-        const joined = CLUB_JOINED.gabe;
+        const joined = CLUB_YEARS.gabe.joined!;
         const before = film('tt2000001', 'Before', `05/01/${joined - 1}`, 'Andy', [
             makeRating({ user: 'gabe', score: 6 }),
         ]);
@@ -716,6 +1003,27 @@ describe('buildMemberRetrospective', () => {
         expect(breakaway!.film.imdbID).toBe(odyssey.imdbID);
         expect(breakaway!.othersAverage).toBeCloseTo(6.45);
         expect(breakaway!.divergence).toBeCloseTo(-3.45);
+    });
+
+    it('falls back to a split room when they were never furthest apart', () => {
+        // 9, 8, 5.5, 6: Andy's 9 is furthest out, but Jacob wasn't with any
+        // majority either, so it's still his. Nothing else counts for him.
+        const split = film('tt2700001', 'Split', '2/2/27', 'Andy', four(9, 8, 5.5, 6));
+        const together = film('tt2700002', 'Together', '3/3/27', 'Gabe', four(6, 6, 6.5, 2));
+        const year = { ...sources, films: [split, together], watched: {} };
+        const jacob = buildMemberRetrospective(2027, 'jacob', year, NOW)!;
+        expect(jacob.breakaway!.film.imdbID).toBe(split.imdbID);
+        expect(jacob.breakaway!.divergence).toBeCloseTo(5.5 - 23 / 3);
+    });
+
+    it('never gives a film to the ones who were with the group', () => {
+        // Irma Vep went 7, 4.5, 7, 7: Gabe's 4.5 is the breakaway. Andy's 7 sits
+        // 0.83 above "everyone else" only because Gabe drags that average down.
+        const gabe = buildMemberRetrospective(2026, 'gabe', sources, NOW)!;
+        expect(gabe.breakaway!.film.imdbID).toBe(irma.imdbID);
+        expect(gabe.breakaway!.divergence).toBeCloseTo(-2.5);
+        // Andy never stood apart on any film this year, so there's no slide.
+        expect(buildMemberRetrospective(2026, 'andy', sources, NOW)!.breakaway).toBeNull();
     });
 
     it('reads their log: busiest month, week streak, and films nobody else saw', () => {

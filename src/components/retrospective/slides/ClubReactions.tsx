@@ -1,7 +1,6 @@
 import React from 'react';
 import { REACTIONS } from '../../responses/reactions';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
-import CountUp from '../CountUp';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 
 interface ClubReactionsProps {
@@ -30,9 +29,7 @@ const ClubReactions: React.FC<ClubReactionsProps> = ({ reactions, accent }) => {
                         {glyph?.emoji}
                     </span>
                     <div>
-                        <p className="font-serif text-5xl text-slate-50 sm:text-6xl">
-                            <CountUp value={total} />
-                        </p>
+                        <p className="font-serif text-5xl text-slate-50 sm:text-6xl">{total}</p>
                         <p className="text-lg text-slate-300">
                             taps, and “{glyph?.label}” the most, {topReaction.count}{' '}
                             {topReaction.count === 1 ? 'time' : 'times'}

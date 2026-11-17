@@ -1,36 +1,25 @@
 import React from 'react';
 import { resolveTrophyIcon } from '../../common/trophyIcons';
 import CircularImage from '../../common/CircularImage';
-import { getTeamMemberByName, teamMembers } from '../../../types/team';
 import { groupByRecipient, groupTrophies, type MemberTrophy } from '../../../utils/trophyUtils';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
-import CountUp from '../CountUp';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { give } from '../../../hooks/useSqueeze';
-import { listNames, memberColor, numberWord } from './format';
+import { FACE_RING, listNames, numberWord } from './format';
 
 interface ClubTrophiesProps {
     trophies: NonNullable<ClubRetrospective['trophies']>;
     accent: string;
 }
 
-/** A recipient's own colour, or a neutral one for an award the sheet attributed to nobody. */
-const colorOf = (name: string | null): string => {
-    const member = name ? getTeamMemberByName(name) : undefined;
-    return member ? memberColor(member, teamMembers.indexOf(member)) : '#93a1b4';
-};
-
-/** A recipient's face in their colour, with how many they took if more than one. */
+/** A recipient's face, with how many they took if more than one. */
 const Face: React.FC<{ name: string | null; count?: number; size: string }> = ({
     name,
     count,
     size,
 }) => (
     <span className="relative inline-block" title={name ?? 'Unattributed'}>
-        <span
-            className="block rounded-full p-0.5"
-            style={{ boxShadow: `0 0 0 2px ${colorOf(name)}` }}
-        >
+        <span className="block rounded-full p-0.5" style={{ boxShadow: `0 0 0 2px ${FACE_RING}` }}>
             {name ? (
                 <CircularImage alt={name} size={size} className="!border-0" />
             ) : (
@@ -54,7 +43,7 @@ const recipientsOf = (trophies: MemberTrophy[]): { name: string | null; count: n
     groupByRecipient(trophies).map((g) => ({ name: g.recipient, count: g.trophies.length }));
 
 /**
- * The year's trophy shelf: how many were handed out, who took home the most,
+ * The year's trophy shelf: how many there were, who claimed the most accolades,
  * everyone's haul, and what each award was and whose hands it went into.
  */
 const ClubTrophies: React.FC<ClubTrophiesProps> = ({ trophies, accent }) => {
@@ -69,12 +58,12 @@ const ClubTrophies: React.FC<ClubTrophiesProps> = ({ trophies, accent }) => {
         <Slide>
             <Reveal>
                 <Eyebrow color={accent}>The trophy shelf</Eyebrow>
-                <div className="mt-3 flex items-end gap-4">
-                    <p className="font-serif text-[4.5rem] leading-none text-slate-50 sm:text-[7rem]">
-                        <CountUp value={trophies.total} />
+                <div className="mt-3 flex items-baseline gap-4">
+                    <p className="font-figures lining-nums text-[4.5rem] leading-none text-slate-50 sm:text-[7rem]">
+                        {trophies.total}
                     </p>
-                    <p className="pb-2 font-serif text-xl text-slate-200 sm:text-3xl">
-                        {trophies.total === 1 ? 'trophy' : 'trophies'} handed out
+                    <p className="font-serif text-xl text-slate-200 sm:text-3xl">
+                        {trophies.total === 1 ? 'trophy' : 'trophies'}
                     </p>
                 </div>
             </Reveal>
@@ -92,7 +81,7 @@ const ClubTrophies: React.FC<ClubTrophiesProps> = ({ trophies, accent }) => {
                         </div>
                         <p className="text-lg text-slate-300 sm:text-xl">
                             <span className="font-serif text-slate-50">{listNames(leaders)}</span>{' '}
-                            took home the most —{' '}
+                            claimed the most accolades:{' '}
                             {leaders.length > 1 ? `${numberWord(most)} each` : numberWord(most)}
                         </p>
                     </div>
@@ -108,9 +97,7 @@ const ClubTrophies: React.FC<ClubTrophiesProps> = ({ trophies, accent }) => {
                         {haul.map(({ name, count }) => (
                             <div key={name} className="flex items-center gap-2">
                                 <Face name={name} size="h-8 w-8" />
-                                <span className="text-sm" style={{ color: colorOf(name) }}>
-                                    {name}
-                                </span>
+                                <span className="text-sm text-slate-200">{name}</span>
                                 <span className="font-serif text-lg text-slate-100">{count}</span>
                             </div>
                         ))}

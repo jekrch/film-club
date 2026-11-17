@@ -35,7 +35,7 @@ const films = [
         movieClubInfo: makeClubInfo({
             selector: 'Jacob',
             watchDate: '1/2/26',
-            clubRatings: four(7, 4, 8, 6, 'A long review of the first film.'),
+            clubRatings: four(7, 6, 8, 6, 'A long review of the first film.'),
             trophyNotes: 'Joey gets togetherness trophy',
         }),
     }),
@@ -85,8 +85,17 @@ const sources: RetrospectiveSources = {
                 watchDate: '2026-04-01',
                 score: 6,
                 scoreQualifier: null,
-                blurb: null,
+                blurb: 'Logged and liked well enough.',
                 updatedAt: '2026-04-01T00:00:00Z',
+            },
+            // A fourth entry, so the year clears the off-docket bar.
+            {
+                imdbID: 'tt0000901',
+                watchDate: '2026-04-12',
+                score: 5,
+                scoreQualifier: null,
+                blurb: null,
+                updatedAt: '2026-04-12T00:00:00Z',
             },
         ],
     },
@@ -160,6 +169,61 @@ describe('retrospective decks', () => {
             'closing',
         ]);
         deck.forEach((slide) => expect(renderSlide(slide.node)).toBeTruthy());
+    });
+
+    it('saves a standout score for its own slide, after the calendar', () => {
+        // Three years of three films each; 2024 scored highest.
+        const yearOf = (year: number, score: number) =>
+            [1, 2, 3].map((i) =>
+                makeFilm({
+                    imdbID: `tt${year}00${i}`,
+                    title: `${year} film ${i}`,
+                    movieClubInfo: makeClubInfo({
+                        watchDate: `${i}/1/${year}`,
+                        clubRatings: four(score, score, score, score),
+                    }),
+                })
+            );
+        const report = buildClubRetrospective(
+            2024,
+            { ...sources, films: [...yearOf(2023, 6), ...yearOf(2024, 7.5), ...yearOf(2025, 5)] },
+            NOW
+        );
+        const deck = clubDeck(report);
+        const ids = deck.map((s) => s.id);
+        expect(ids.indexOf('standout')).toBe(ids.indexOf('calendar') + 1);
+        const standout = renderSlide(deck.find((s) => s.id === 'standout')!.node);
+        expect(standout).toContain('Our highest-scoring year');
+        expect(standout).toContain('The next highest was 6.0, in 2023.');
+        expect(renderSlide(deck.find((s) => s.id === 'count')!.node)).not.toContain(
+            'average score'
+        );
+    });
+
+    it('quotes a voice from the future, with the day it was written', () => {
+        // 2022, before Gabe joined: Jacob's review from the night, and Gabe's years on.
+        const daisies = makeFilm({
+            imdbID: 'tt0000201',
+            title: 'Daisies',
+            movieClubInfo: makeClubInfo({
+                watchDate: '3/1/22',
+                clubRatings: [
+                    makeRating({ user: 'jacob', score: 8, blurb: 'Written on the night.' }),
+                    makeRating({
+                        user: 'gabe',
+                        score: 9,
+                        blurb: 'Caught up with this one long after.',
+                        blurbAddedAt: '2026-10-31T02:50:46Z',
+                    }),
+                ],
+            }),
+        });
+        const deck = clubDeck(buildClubRetrospective(2022, { ...sources, films: [daisies] }, NOW));
+        const words = renderSlide(deck.find((s) => s.id === 'words')!.node);
+        expect(words).toContain('One review this year.');
+        expect(words).toContain('And one from the future.');
+        // US Central, as the suite runs: still the 30th there.
+        expect(words).toContain('A voice from the future · October 30, 2026');
     });
 
     it('gives a featured film’s slide that film’s stills', () => {

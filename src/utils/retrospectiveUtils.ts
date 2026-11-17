@@ -1,6 +1,12 @@
-import { CLUB_JOINED, FEATURED_CLUB_REVIEWS } from '../config/retrospective';
+import {
+    CLUB_YEARS,
+    DEFAULT_WELCOME,
+    FEATURED_CLUB_REVIEWS,
+    WORDS_NEVER_FIRST,
+    WELCOMES,
+} from '../config/retrospective';
 import { findFilmSummary } from '../api/filmSummaries';
-import type { Film } from '../types/film';
+import type { ClubRating, Film } from '../types/film';
 import type { FilmListDefinition, ListFilmSummary } from '../types/list';
 import {
     clubThreadId,
@@ -15,6 +21,7 @@ import type { Trophy } from '../types/trophy';
 import type { WatchedEntry, WatchedLog } from '../types/watched';
 import {
     categoryCounts,
+    categoryValuesOf,
     decadeOf,
     listed,
     meetingIntervals,
@@ -116,6 +123,16 @@ export interface RetrospectiveReview {
     score: number | null;
     threadId: string;
     reactions: number;
+    /** Set only on a voice from the future ({@link FutureReview}): when it was written. */
+    writtenAt?: string;
+}
+
+/**
+ * A review written in a later year by someone who joined the club after this
+ * one, on one of this year's films: quoted as a voice from the future.
+ */
+export interface FutureReview extends RetrospectiveReview {
+    writtenAt: string;
 }
 
 /** One person's work on one film, as the film's credits list it. */
@@ -148,6 +165,39 @@ export interface ThreadSubject {
     listId: string | null;
 }
 
+/**
+ * The ways a year can stand out from the others, in the order they're tried:
+ * its score first, then how much we watched, then how far afield, then the
+ * rest, so every year has a fair chance at something.
+ */
+export type StandoutKind =
+    | 'highest-score'
+    | 'lowest-score'
+    | 'most-films'
+    | 'most-hours'
+    | 'most-countries'
+    | 'most-languages'
+    | 'least-english'
+    | 'least-american'
+    | 'oldest'
+    | 'agreed'
+    | 'divided'
+    | 'newest'
+    | 'longest'
+    | 'most-months';
+
+export interface Standout {
+    kind: StandoutKind;
+    /** The figure in every year with one, earliest first, as the slide prints it. */
+    years: { year: number; value: number }[];
+    /** The closest any other year came: the figure, and every year that reached it. */
+    next: { value: number; years: number[] };
+    /** For a share of the year's films: how many, out of how many. */
+    share: { count: number; of: number } | null;
+    /** The films that make the point, the most telling first, for the stills behind the slide. */
+    films: Film[];
+}
+
 export interface ClubRetrospective {
     year: number;
     /** The year isn't over yet; the slides say "so far". */
@@ -165,6 +215,12 @@ export interface ClubRetrospective {
          * least the two years before: 'ever' for more than every earlier year.
          */
         mostSince: number | 'ever' | null;
+        /**
+         * The members' average score in each year up to this one that has
+         * one, earliest first: the mean of each film's average, from those
+         * with the club that year. Popcorn pods aren't in it.
+         */
+        averages: { year: number; average: number }[];
     } | null;
 
     calendar: {
@@ -174,6 +230,13 @@ export interface ClubRetrospective {
         first: Film;
         last: Film;
     } | null;
+
+    /**
+     * The one way the year stood out from every other year with club films:
+     * the first of the standouts, in order, that it holds outright at the
+     * precision the slide prints. Null when it holds none of them.
+     */
+    standout: Standout | null;
 
     places: {
         countries: CategoryPoint[];
@@ -246,10 +309,20 @@ export interface ClubRetrospective {
         count: number;
         club: number;
         log: number;
+        /** Whether anyone logged anything this year; before the log existed, nobody had. */
+        hadLogs: boolean;
         longest: RetrospectiveReview;
         mostReacted: RetrospectiveReview | null;
-        /** A few reviews to quote: the most-reacted and fullest, spread across members and films. */
+        /**
+         * A few reviews to quote, spread as evenly across the voices as they
+         * go, voices from the future among them (last, with `writtenAt` set).
+         */
         highlights: RetrospectiveReview[];
+        /**
+         * Every voice from the future on the year's films ({@link futureVoices}).
+         * Not in `count`, which is the year's own writing.
+         */
+        future: FutureReview[];
     } | null;
 
     reactions: {
@@ -272,14 +345,26 @@ export interface ClubRetrospective {
      */
     returning: { name: string; now: Credit[]; before: (Credit & { year: number })[] }[] | null;
 
-    /** Active members with a report of their own this year. */
+    /**
+     * Everyone with the club this year ({@link CLUB_YEARS}), past members
+     * included: a year before someone joined leaves them out.
+     */
     roster: TeamMember[];
+
+    /** Those with a report of their own this year: current members on the roster. */
+    reports: TeamMember[];
 
     /**
      * People off the roster who sat in on a screening — Greg, the intern. A
      * mention in passing; nothing else in the report counts them.
      */
     guests: { member: TeamMember; films: Film[] }[];
+
+    /**
+     * Whoever arrived this year ({@link WELCOMES}), a card each: the line that
+     * greets them and the first club film they scored, when they scored one.
+     */
+    welcomes: { member: TeamMember; line: string; first: FilmWithDate | null }[] | null;
 }
 
 export interface MemberRetrospective {
@@ -348,6 +433,8 @@ export interface MemberRetrospective {
         longest: RetrospectiveReview;
         mostReacted: RetrospectiveReview | null;
         highlights: RetrospectiveReview[];
+        /** Whether anyone in the club logged anything this year; before the log existed, nobody had. */
+        hadLogs: boolean;
     } | null;
 
     trophies: { received: MemberTrophy[]; given: MemberTrophy[] } | null;
@@ -397,6 +484,13 @@ const clubFilmsIn = (films: Film[], year: number): FilmWithDate[] =>
 const validScore = (score: number | null | undefined): score is number =>
     typeof score === 'number' && !Number.isNaN(score);
 
+/**
+ * How close, in points, a score sits to another's to count as alongside it:
+ * a member whose score most of the room matched this closely was with the
+ * group on that film, not apart from it.
+ */
+const WITH_THE_GROUP = 1;
+
 const mean = (values: number[]): number | null =>
     values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : null;
 
@@ -409,7 +503,7 @@ const minutesOf = (runtimes: (string | null | undefined)[]): number =>
  * Empty when they've never seen one.
  *
  * Only films watched with the club count. A score from before they joined
- * ({@link CLUB_JOINED}), or one added on the site well after the screening, is
+ * ({@link CLUB_YEARS}), or one added on the site well after the screening, is
  * a film caught up on later, and would grow bars for years they weren't there.
  */
 const clubHistory = (
@@ -417,7 +511,7 @@ const clubHistory = (
     name: string,
     year: number
 ): MemberRetrospective['count']['history'] => {
-    const joined = CLUB_JOINED[name.toLowerCase()] ?? -Infinity;
+    const joined = CLUB_YEARS[name.toLowerCase()]?.joined ?? -Infinity;
     const counts = new Map<number, number>();
     films.forEach((film) => {
         const screening = parseWatchDate(film.movieClubInfo?.watchDate);
@@ -466,6 +560,16 @@ const sameName = (a: string | null | undefined, b: string | null | undefined): b
 
 const isActive = (member: TeamMember): boolean =>
     typeof member.queue === 'number' && member.queue > 0;
+
+/**
+ * True when a member was with the club in `year`, by {@link CLUB_YEARS}. Anyone
+ * without a year they left is a member only while they're on the queue.
+ */
+const inClubIn = (member: TeamMember, year: number): boolean => {
+    const span = CLUB_YEARS[member.name.toLowerCase()] ?? {};
+    if (span.left === undefined && !isActive(member)) return false;
+    return year >= (span.joined ?? -Infinity) && year <= (span.left ?? Infinity);
+};
 
 /** A member's log, matched case-insensitively. */
 const logOf = (watched: WatchedLog, member: string): WatchedEntry[] => {
@@ -546,6 +650,32 @@ const loggedIn = (
                 a.entry.watchDate.localeCompare(b.entry.watchDate) ||
                 a.imdbID.localeCompare(b.imdbID)
         );
+
+/** Whether any member logged anything in the year: false for the years before the log. */
+const anyLoggedIn = (year: number, sources: RetrospectiveSources): boolean =>
+    Object.values(sources.watched).some((entries) =>
+        entries.some((entry) => logYear(entry) === year)
+    );
+
+/**
+ * How many entries a year needs before it can be the first off-docket year.
+ * The log started late in 2025 with a single entry, which isn't enough for a
+ * slide; once a year has cleared this, every later year shows whatever it has.
+ */
+const OFF_DOCKET_FIRST_YEAR_MIN = 4;
+
+/** The first year with enough log entries to show off the docket, or null. */
+const firstOffDocketYear = (sources: RetrospectiveSources): number | null => {
+    const perYear = new Map<number, number>();
+    Object.values(sources.watched).forEach((entries) =>
+        entries.forEach((entry) => {
+            const y = logYear(entry);
+            if (y !== null) perYear.set(y, (perYear.get(y) ?? 0) + 1);
+        })
+    );
+    const years = [...perYear].filter(([, n]) => n >= OFF_DOCKET_FIRST_YEAR_MIN).map(([y]) => y);
+    return years.length ? Math.min(...years) : null;
+};
 
 /** How many films more than one member logged the off-docket slide shows. */
 export const SHARED_FILMS_SHOWN = 5;
@@ -643,6 +773,29 @@ const firstAdded = (film: Film, user: string): string | null => {
     return stamps.sort()[0] ?? null;
 };
 
+/** One club review, as the slides quote it. */
+const clubReview = (
+    film: Film,
+    rating: ClubRating,
+    blurb: string,
+    sources: RetrospectiveSources
+): RetrospectiveReview => {
+    const member = displayName(rating.user, sources.members);
+    const threadId = reviewThreadId(member, film.imdbID);
+    return {
+        source: 'club',
+        member,
+        imdbID: film.imdbID,
+        title: film.title,
+        poster: film.poster || null,
+        blurb,
+        words: wordCount(blurb),
+        score: validScore(rating.score) ? rating.score : null,
+        threadId,
+        reactions: reactionCount(sources.responses, threadId),
+    };
+};
+
 /**
  * Club reviews written in the year: one added on the site counts when it was
  * added, and one from the sheet counts in the year of its screening.
@@ -654,22 +807,24 @@ const clubReviewsIn = (year: number, sources: RetrospectiveSources): Retrospecti
             if (!blurb) return [];
             const written = rating.blurbAddedAt ? instantYear(rating.blurbAddedAt) : clubYear(film);
             if (written !== year) return [];
-            const member = displayName(rating.user, sources.members);
-            const threadId = reviewThreadId(member, film.imdbID);
-            return [
-                {
-                    source: 'club' as const,
-                    member,
-                    imdbID: film.imdbID,
-                    title: film.title,
-                    poster: film.poster || null,
-                    blurb,
-                    words: wordCount(blurb),
-                    score: validScore(rating.score) ? rating.score : null,
-                    threadId,
-                    reactions: reactionCount(sources.responses, threadId),
-                },
-            ];
+            return [clubReview(film, rating, blurb, sources)];
+        })
+    );
+
+/**
+ * Voices from the future: reviews of the year's club films written in a later
+ * year by someone who only joined the club after it ({@link CLUB_YEARS}). They
+ * still count in the year they were written; this only lets a year borrow them.
+ */
+const futureVoices = (year: number, sources: RetrospectiveSources): FutureReview[] =>
+    clubFilmsIn(sources.films, year).flatMap((film) =>
+        (film.movieClubInfo?.clubRatings ?? []).flatMap((rating) => {
+            const blurb = rating.blurb?.trim();
+            const writtenAt = rating.blurbAddedAt;
+            if (!blurb || !writtenAt || (instantYear(writtenAt) ?? -Infinity) <= year) return [];
+            const joined = CLUB_YEARS[rating.user.trim().toLowerCase()]?.joined;
+            if (joined === undefined || joined <= year) return [];
+            return [{ ...clubReview(film, rating, blurb, sources), writtenAt }];
         })
     );
 
@@ -903,32 +1058,45 @@ const returningFaces = (
     return returning.length ? returning : null;
 };
 
+/** Fewer words than this is a one-liner, quoted only to hear from its writer at all. */
+const FULL_REVIEW_WORDS = 8;
+
 /**
- * A few reviews worth quoting: the fullest first,
- * taking one from each member before a second from anyone, and never two on
- * the same film. Reviews of a sentence or less are passed over while there are
- * enough longer ones.
+ * A few reviews worth quoting, as evenly spread across the writers as the
+ * number allows: everyone once, their fullest, before anyone twice. A second
+ * quote from anyone skips their one-liners while someone has a fuller review
+ * left. No film is quoted twice unless it's the only way to hear from someone.
+ * Voices from the future go last.
  */
 const highlightReviews = (reviews: RetrospectiveReview[], limit: number): RetrospectiveReview[] => {
     const ranked = [...reviews].sort((a, b) => b.words - a.words || b.reactions - a.reactions);
-    const fuller = ranked.filter((r) => r.words >= 8);
-    const pool = fuller.length >= Math.min(limit, ranked.length) ? fuller : ranked;
-
     const queues = new Map<string, RetrospectiveReview[]>();
-    pool.forEach((r) => queues.set(r.member, [...(queues.get(r.member) ?? []), r]));
+    ranked.forEach((r) => queues.set(r.member, [...(queues.get(r.member) ?? []), r]));
+
     const picked: RetrospectiveReview[] = [];
     const films = new Set<string>();
-    while (picked.length < limit && [...queues.values()].some((q) => q.length)) {
-        for (const queue of queues.values()) {
-            while (queue.length && films.has(queue[0].imdbID)) queue.shift();
-            const next = queue.shift();
-            if (!next) continue;
-            picked.push(next);
-            films.add(next.imdbID);
-            if (picked.length >= limit) break;
+    const heard = new Set<string>();
+    // Rounds of one each, until a round finds nothing to take.
+    const rounds = (takes: (r: RetrospectiveReview) => boolean) => {
+        let took = true;
+        while (took && picked.length < limit) {
+            took = false;
+            for (const [member, queue] of queues) {
+                if (picked.length >= limit) break;
+                const fresh = queue.findIndex((r) => !films.has(r.imdbID) && takes(r));
+                const at = fresh >= 0 || heard.has(member) || !queue.length ? fresh : 0;
+                if (at < 0) continue;
+                const [next] = queue.splice(at, 1);
+                picked.push(next);
+                films.add(next.imdbID);
+                heard.add(member);
+                took = true;
+            }
         }
-    }
-    return picked;
+    };
+    rounds((r) => !heard.has(r.member) || r.words >= FULL_REVIEW_WORDS);
+    rounds(() => true);
+    return [...picked.filter((r) => !r.writtenAt), ...picked.filter((r) => r.writtenAt)];
 };
 
 /**
@@ -960,6 +1128,23 @@ const memberHighlightReviews = (reviews: RetrospectiveReview[]): RetrospectiveRe
     return lowest ? [...top, ...fill, lowest] : [...top, ...fill];
 };
 
+/**
+ * The quotes with someone allowed to open them ({@link WORDS_NEVER_FIRST})
+ * moved to the front, the rest in order. A voice from the present is
+ * preferred; one from the future opens only when nobody else can.
+ */
+const openWithAllowed = (reviews: RetrospectiveReview[]): RetrospectiveReview[] => {
+    const allowed = (r: RetrospectiveReview) =>
+        !WORDS_NEVER_FIRST.includes(r.member.trim().toLowerCase());
+    const at = [
+        reviews.findIndex((r) => allowed(r) && !r.writtenAt),
+        reviews.findIndex(allowed),
+    ].find((i) => i >= 0);
+    return at === undefined || at === 0
+        ? reviews
+        : [reviews[at], ...reviews.slice(0, at), ...reviews.slice(at + 1)];
+};
+
 /** The club's hand-picked quotes first, then the fullest reviews to make up the number. */
 const featuredReviews = (reviews: RetrospectiveReview[], limit: number): RetrospectiveReview[] => {
     const picked = FEATURED_CLUB_REVIEWS.map((id) => reviews.find((r) => r.threadId === id)).filter(
@@ -975,10 +1160,236 @@ const featuredReviews = (reviews: RetrospectiveReview[], limit: number): Retrosp
 };
 
 // ---------------------------------------------------------------------------
+// Standout: how the year differed from every other
+// ---------------------------------------------------------------------------
+
+/** One measure of a year's films, with the films that make it, highest first. */
+interface Figure {
+    value: number;
+    share?: { count: number; of: number };
+    films: Film[];
+}
+
+interface Measure {
+    /** The year's figure, from its club films and the members with the club that year. */
+    figure: (films: FilmWithDate[], members: TeamMember[]) => Figure | null;
+    /** The figure as the slide prints it, so a record is one the reader can see. */
+    shown: (value: number) => number;
+    /** An average or a share, which says little about a year of only a film or two. */
+    rate: boolean;
+}
+
+const toTenth = (n: number): number => Math.round(n * 10) / 10;
+
+/** The members' scores on a film, guests' left out. */
+const memberScoresOn = (film: Film, members: TeamMember[]): number[] =>
+    (film.movieClubInfo?.clubRatings ?? [])
+        .filter((r) => validScore(r.score) && members.some((m) => sameName(m.name, r.user)))
+        .map((r) => r.score as number);
+
+/** The mean of a figure taken film by film, with the films highest first. */
+const averaged = (films: Film[], of: (film: Film) => number | null): Figure | null => {
+    const ranked = films
+        .map((film) => ({ film, value: of(film) }))
+        .filter((f): f is { film: Film; value: number } => f.value !== null)
+        .sort((a, b) => b.value - a.value);
+    const value = mean(ranked.map((f) => f.value));
+    return value === null ? null : { value, films: ranked.map((f) => f.film) };
+};
+
+/** The percentage of the films whose first value in a category passes `test`. */
+const shareOf = (
+    films: Film[],
+    category: 'country' | 'language',
+    test: (value: string) => boolean
+): Figure | null => {
+    const known = films.filter((film) => categoryValuesOf(film, category).length);
+    const matching = known.filter((film) => test(categoryValuesOf(film, category)[0]));
+    return known.length
+        ? {
+              value: (matching.length / known.length) * 100,
+              share: { count: matching.length, of: known.length },
+              films: matching,
+          }
+        : null;
+};
+
+/** A count of the year's films, or of something about them, with the films in watch order. */
+const counted =
+    (count: (films: FilmWithDate[]) => number) =>
+    (films: FilmWithDate[]): Figure | null =>
+        films.length ? { value: count(films), films } : null;
+
+const MEASURES = {
+    /**
+     * The members' average score: the mean of each film's average, from those
+     * with the club that year. Popcorn pods aren't in it. The count slide's
+     * year-by-year averages are this.
+     */
+    score: {
+        rate: true,
+        shown: toTenth,
+        figure: (films, members) =>
+            averaged(
+                films.filter((film) => !film.popcornPod),
+                (film) => mean(memberScoresOn(film, members))
+            ),
+    },
+    films: { rate: false, shown: Math.round, figure: counted((films) => films.length) },
+    hours: {
+        rate: false,
+        shown: Math.round,
+        figure: counted(
+            (films) => minutesOf(films.filter((f) => !isPodFilm(f)).map((f) => f.runtime)) / 60
+        ),
+    },
+    countries: {
+        rate: false,
+        shown: Math.round,
+        figure: counted((films) => categoryCounts(films, 'country').length),
+    },
+    languages: {
+        rate: false,
+        shown: Math.round,
+        figure: counted((films) => categoryCounts(films, 'language').length),
+    },
+    notEnglish: {
+        rate: true,
+        shown: Math.round,
+        figure: (films) => shareOf(films, 'language', (language) => language !== 'English'),
+    },
+    notAmerican: {
+        rate: true,
+        shown: Math.round,
+        figure: (films) => shareOf(films, 'country', (country) => country !== 'United States'),
+    },
+    releaseYear: {
+        rate: true,
+        shown: Math.round,
+        figure: (films) =>
+            averaged(films, (film) => (decadeOf(film.year) ? parseInt(film.year, 10) : null)),
+    },
+    /** How far apart the members' scores on a film were, highest to lowest, on average. */
+    spread: {
+        rate: true,
+        shown: toTenth,
+        figure: (films, members) =>
+            averaged(
+                films.filter((film) => !film.popcornPod),
+                (film) => {
+                    const scores = memberScoresOn(film, members);
+                    return scores.length >= 2 ? Math.max(...scores) - Math.min(...scores) : null;
+                }
+            ),
+    },
+    runtime: {
+        rate: true,
+        shown: Math.round,
+        figure: (films) => averaged(films, (film) => parseRuntime(film.runtime)),
+    },
+    months: {
+        rate: false,
+        shown: Math.round,
+        figure: counted((films) => new Set(films.map((f) => f.parsedWatchDate.getUTCMonth())).size),
+    },
+} satisfies Record<string, Measure>;
+
+type MeasureName = keyof typeof MEASURES;
+
+/**
+ * Each standout: the measure, and whether the year has to have the most of it
+ * or the least. The order is the order they're tried in.
+ */
+const STANDOUTS: { kind: StandoutKind; measure: MeasureName; most: boolean }[] = [
+    { kind: 'highest-score', measure: 'score', most: true },
+    { kind: 'lowest-score', measure: 'score', most: false },
+    { kind: 'most-films', measure: 'films', most: true },
+    { kind: 'most-hours', measure: 'hours', most: true },
+    { kind: 'most-countries', measure: 'countries', most: true },
+    { kind: 'most-languages', measure: 'languages', most: true },
+    { kind: 'least-english', measure: 'notEnglish', most: true },
+    { kind: 'least-american', measure: 'notAmerican', most: true },
+    { kind: 'oldest', measure: 'releaseYear', most: false },
+    { kind: 'agreed', measure: 'spread', most: false },
+    { kind: 'divided', measure: 'spread', most: true },
+    { kind: 'newest', measure: 'releaseYear', most: true },
+    { kind: 'longest', measure: 'runtime', most: true },
+    { kind: 'most-months', measure: 'months', most: true },
+];
+
+/** Fewer years than this, and topping them is hardly standing out. */
+const STANDOUT_MIN_YEARS = 3;
+/** A year with fewer films than this has no average or share worth comparing. */
+const STANDOUT_MIN_FILMS = 3;
+
+/** The members with the club in a year. */
+const membersIn = (year: number, sources: RetrospectiveSources): TeamMember[] =>
+    sources.members.filter((member) => inClubIn(member, year));
+
+/** A measure's figure for one year, or null when the year hasn't one. */
+const figureIn = (
+    name: MeasureName,
+    year: number,
+    sources: RetrospectiveSources
+): Figure | null => {
+    const measure: Measure = MEASURES[name];
+    const films = clubFilmsIn(sources.films, year);
+    if (measure.rate && films.length < STANDOUT_MIN_FILMS) return null;
+    return measure.figure(films, membersIn(year, sources));
+};
+
+/**
+ * The first standout the year holds outright against every other year with
+ * club films, later ones included, compared as the slide prints them, so a
+ * tie on the page is no record.
+ */
+const standoutIn = (year: number, sources: RetrospectiveSources): Standout | null => {
+    const years = [
+        ...new Set(sources.films.map(clubYear).filter((y): y is number => y !== null)),
+    ].sort((a, b) => a - b);
+    const byMeasure = new Map<MeasureName, ({ year: number; shown: number } & Figure)[]>();
+    const figuresOf = (name: MeasureName) => {
+        if (!byMeasure.has(name)) {
+            byMeasure.set(
+                name,
+                years.flatMap((y) => {
+                    const figure = figureIn(name, y, sources);
+                    return figure
+                        ? [{ year: y, shown: MEASURES[name].shown(figure.value), ...figure }]
+                        : [];
+                })
+            );
+        }
+        return byMeasure.get(name)!;
+    };
+
+    for (const { kind, measure, most } of STANDOUTS) {
+        const figures = figuresOf(measure);
+        const mine = figures.find((f) => f.year === year);
+        const others = figures.filter((f) => f.year !== year);
+        if (!mine || figures.length < STANDOUT_MIN_YEARS) continue;
+        if (!others.every((o) => (most ? mine.shown > o.shown : mine.shown < o.shown))) continue;
+        const next = (most ? Math.max : Math.min)(...others.map((o) => o.shown));
+        return {
+            kind,
+            years: figures.map((f) => ({ year: f.year, value: f.shown })),
+            next: { value: next, years: others.filter((o) => o.shown === next).map((o) => o.year) },
+            share: mine.share ?? null,
+            films: most ? mine.films : [...mine.films].reverse(),
+        };
+    }
+    return null;
+};
+
+// ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
-/** Every year with a club screening or a log entry in it, earliest first. */
+/**
+ * Every year with a club screening or a log entry in it, earliest first. These
+ * are the years with a club report: a log entry alone is enough for one, on the
+ * off-docket slide.
+ */
 export const yearsWithData = (sources: RetrospectiveSources): number[] => {
     const years = new Set<number>();
     sources.films.forEach((film) => {
@@ -1002,7 +1413,7 @@ export const buildClubRetrospective = (
     const films = clubFilmsIn(sources.films, year);
     const clubIndex = new Map(sources.films.map((f) => [f.imdbID, f]));
     const logged = loggedIn(year, sources, clubIndex);
-    const active = sources.members.filter(isActive);
+    const active = sources.members.filter((member) => inClubIn(member, year));
 
     // Count
     const filmsBefore = clubFilmsIn(sources.films, year - 1);
@@ -1025,12 +1436,19 @@ export const buildClubRetrospective = (
             : matched < year - 2
               ? matched
               : null;
+    const yearAverage = (y: number): number | null =>
+        MEASURES.score.figure(clubFilmsIn(sources.films, y), membersIn(y, sources))?.value ?? null;
+    const averages = [...earlierYears.keys(), year]
+        .sort((a, b) => a - b)
+        .map((y) => ({ year: y, average: yearAverage(y) }))
+        .filter((a): a is { year: number; average: number } => a.average !== null);
     const count: ClubRetrospective['count'] = films.length
         ? {
               films: films.length,
               minutes: minutesOf(films.filter((f) => !isPodFilm(f)).map((f) => f.runtime)),
               previousYear: previous || null,
               mostSince,
+              averages,
           }
         : null;
 
@@ -1158,27 +1576,36 @@ export const buildClubRetrospective = (
             poster: first.poster,
             members: [...members].sort(),
         }));
-    const offDocket: ClubRetrospective['offDocket'] = docketLogs.length
-        ? {
-              entries: docketLogs.length,
-              byMember: tally(docketLogs.map((d) => d.member)),
-              sharedFilms,
-          }
-        : null;
+    const firstDocketYear = firstOffDocketYear(sources);
+    const offDocket: ClubRetrospective['offDocket'] =
+        docketLogs.length && firstDocketYear !== null && year >= firstDocketYear
+            ? {
+                  entries: docketLogs.length,
+                  byMember: tally(docketLogs.map((d) => d.member)),
+                  sharedFilms,
+              }
+            : null;
 
     // Words
     const clubReviews = clubReviewsIn(year, sources);
     const allReviews = [...clubReviews, ...logReviews(logged, sources.responses)];
-    const words: ClubRetrospective['words'] = allReviews.length
-        ? {
-              count: allReviews.length,
-              club: clubReviews.length,
-              log: allReviews.length - clubReviews.length,
-              longest: longestReview(allReviews),
-              mostReacted: mostReactedReview(allReviews),
-              highlights: featuredReviews(allReviews, 4),
-          }
-        : null;
+    // Anyone who joined later and has since written on the year's films is
+    // heard from too. The slide is the club's voices, so it needs two.
+    const future = futureVoices(year, sources);
+    const voices = new Set([...allReviews, ...future].map((r) => r.member));
+    const words: ClubRetrospective['words'] =
+        voices.size >= 2
+            ? {
+                  count: allReviews.length,
+                  club: clubReviews.length,
+                  log: allReviews.length - clubReviews.length,
+                  hadLogs: logged.length > 0,
+                  longest: longestReview(allReviews),
+                  mostReacted: mostReactedReview(allReviews),
+                  highlights: openWithAllowed(featuredReviews([...allReviews, ...future], 4)),
+                  future,
+              }
+            : null;
 
     // Faces
     const faces = frequentFaces(films);
@@ -1216,6 +1643,7 @@ export const buildClubRetrospective = (
         films,
         count,
         calendar,
+        standout: films.length ? standoutIn(year, sources) : null,
         places,
         favourites: favourites.length ? favourites : null,
         together,
@@ -1231,14 +1659,40 @@ export const buildClubRetrospective = (
             sources.films,
             new Set((faces ?? []).map((f) => f.name.toLowerCase()))
         ),
-        roster: sources.members.filter(
-            (member) => isActive(member) && hasMemberData(year, member.name, sources)
+        roster: active.filter(
+            (member) => films.length > 0 || hasMemberData(year, member.name, sources)
         ),
+        reports: sources.members.filter((member) => hasReport(year, member, sources)),
         guests: sources.members
-            .filter((member) => !isActive(member))
+            .filter((member) => !isActive(member) && !inClubIn(member, year))
             .map((member) => ({ member, films: scoresBy(films, member.name).map((s) => s.film) }))
             .filter((guest) => guest.films.length > 0),
+        welcomes: welcomesIn(year, films, sources.members),
     };
+};
+
+/**
+ * The year's newcomers, in `club.json` order: members whose {@link CLUB_YEARS}
+ * joined year it is, and anyone {@link WELCOMES} names it for.
+ */
+const welcomesIn = (
+    year: number,
+    films: FilmWithDate[],
+    members: TeamMember[]
+): ClubRetrospective['welcomes'] => {
+    const welcomes = members.flatMap((member) => {
+        const key = member.name.toLowerCase();
+        const welcome = WELCOMES[key];
+        if ((welcome?.year ?? CLUB_YEARS[key]?.joined) !== year) return [];
+        const first =
+            films.find((film) =>
+                film.movieClubInfo?.clubRatings.some(
+                    (r) => sameName(r.user, member.name) && validScore(r.score)
+                )
+            ) ?? null;
+        return [{ member, line: welcome?.line ?? DEFAULT_WELCOME, first }];
+    });
+    return welcomes.length ? welcomes : null;
 };
 
 /** True when a member scored a club film or logged one in the year. */
@@ -1252,6 +1706,21 @@ const hasMemberData = (year: number, name: string, sources: RetrospectiveSources
     ) || logOf(sources.watched, name).some((entry) => logYear(entry) === year);
 
 /**
+ * True when a member has a report of their own for `year`: a current member,
+ * with the club that year, who scored a club film or logged one in it. A guest
+ * or past member never has one.
+ */
+const hasReport = (year: number, member: TeamMember, sources: RetrospectiveSources): boolean =>
+    isActive(member) && inClubIn(member, year) && hasMemberData(year, member.name, sources);
+
+/** Every year a member has a report of their own, earliest first. */
+export const memberYears = (memberName: string, sources: RetrospectiveSources): number[] => {
+    const member = sources.members.find((m) => sameName(m.name, memberName));
+    if (!member) return [];
+    return yearsWithData(sources).filter((year) => hasReport(year, member, sources));
+};
+
+/**
  * One active member's year, or null when they neither scored a club film nor
  * logged one in it. Guests and past members have no report: the members are
  * the subject, and a guest is a line on the club's closing slide.
@@ -1263,7 +1732,7 @@ export const buildMemberRetrospective = (
     now: Date = new Date()
 ): MemberRetrospective | null => {
     const member = sources.members.find((m) => sameName(m.name, memberName));
-    if (!member || !isActive(member) || !hasMemberData(year, member.name, sources)) return null;
+    if (!member || !hasReport(year, member, sources)) return null;
     const name = member.name;
 
     const yearFilms = clubFilmsIn(sources.films, year);
@@ -1322,21 +1791,48 @@ export const buildMemberRetrospective = (
     );
 
     // Breakaway
-    let breakaway: MemberRetrospective['breakaway'] = null;
+    // Their film is, first, one where they stood furthest from the rest of the
+    // room (or tied for it). Failing that, the widest gap on a film where they
+    // weren't part of the majority — so a split room still counts. A film where
+    // most of the room scored within a point of them never does: at 2, 2, 2, 8
+    // it's the 8's film, and the 2s were with the group even though the 8 pulls
+    // their "everyone else" average up.
+    type Breakaway = NonNullable<MemberRetrospective['breakaway']>;
+    const furthestApart: Breakaway[] = [];
+    const outsideMajority: Breakaway[] = [];
     for (const film of club) {
-        const score = scoreOf(film)!;
-        const others = film
-            .movieClubInfo!.clubRatings.filter(
-                (r) => !sameName(r.user, name) && validScore(r.score)
-            )
-            .map((r) => r.score as number);
-        const othersAverage = mean(others);
-        if (othersAverage === null) continue;
-        const divergence = score - othersAverage;
-        if (Math.abs(divergence) > Math.abs(breakaway?.divergence ?? 0)) {
-            breakaway = { film, score, othersAverage, divergence };
-        }
+        const ratings = film.movieClubInfo!.clubRatings.filter((r) => validScore(r.score));
+        const apart = ratings.map((rating) => {
+            const others = ratings.filter((r) => r !== rating).map((r) => r.score as number);
+            const othersAverage = mean(others);
+            return {
+                rating,
+                othersAverage,
+                divergence: othersAverage === null ? 0 : (rating.score as number) - othersAverage,
+            };
+        });
+        const theirs = apart.find((a) => sameName(a.rating.user, name));
+        if (!theirs || theirs.othersAverage === null || !theirs.divergence) continue;
+        const score = theirs.rating.score as number;
+        const candidate = {
+            film,
+            score,
+            othersAverage: theirs.othersAverage,
+            divergence: theirs.divergence,
+        };
+        const furthest = Math.max(...apart.map((a) => Math.abs(a.divergence)));
+        const alongside = ratings.filter(
+            (r) => Math.abs((r.score as number) - score) <= WITH_THE_GROUP
+        ).length;
+        if (Math.abs(theirs.divergence) >= furthest - 1e-9) furthestApart.push(candidate);
+        else if (alongside * 2 <= ratings.length) outsideMajority.push(candidate);
     }
+    const widest = (candidates: Breakaway[]): Breakaway | null =>
+        candidates.reduce<Breakaway | null>(
+            (best, c) => (!best || Math.abs(c.divergence) > Math.abs(best.divergence) ? c : best),
+            null
+        );
+    const breakaway = widest(furthestApart) ?? widest(outsideMajority);
 
     // Log
     // Another member's log, or theirs naming someone they watched it with.
@@ -1408,6 +1904,7 @@ export const buildMemberRetrospective = (
               longest: longestReview(reviews),
               mostReacted: mostReactedReview(reviews),
               highlights: memberHighlightReviews(reviews),
+              hadLogs: anyLoggedIn(year, sources),
           }
         : null;
 

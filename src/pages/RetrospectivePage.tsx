@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { AnimatePresence, MotionConfig, motion, type Transition } from 'framer-motion';
 import { PlayIcon } from '@heroicons/react/24/solid';
 import { SOUNDTRACKS, playOrder, soundtrackChoices } from '../config/retrospective';
 import { useResponses } from '../contexts/ResponsesContext';
@@ -15,20 +16,34 @@ import { yearArt } from '../utils/retrospectiveArt';
 import {
     buildClubRetrospective,
     buildMemberRetrospective,
+    memberYears,
     yearsWithData,
     type RetrospectiveSources,
 } from '../utils/retrospectiveUtils';
 import CircularImage from '../components/common/CircularImage';
 import LoadingSpinner from '../components/common/LoadingSpinner';
-import Mosaic from '../components/retrospective/Mosaic';
+import CoverWall from '../components/retrospective/CoverWall';
+import ScorePicker from '../components/retrospective/ScorePicker';
 import { Eyebrow } from '../components/retrospective/Slide';
 import SoundtrackDock from '../components/retrospective/SoundtrackDock';
-import Story from '../components/retrospective/Story';
+import Story, { type IrisOrigin } from '../components/retrospective/Story';
 import { clubDeck, memberDeck } from '../components/retrospective/decks';
-import { memberColor, retrospectivePath } from '../components/retrospective/slides/format';
+import { FACE_RING, retrospectivePath } from '../components/retrospective/slides/format';
 import { MemberFace } from '../components/retrospective/slides/shared';
 
 const ACTIVE = teamMembers.filter((m) => typeof m.queue === 'number' && m.queue > 0);
+
+/**
+ * How the cover moves when the reader switches year or member: the site's
+ * page-enter curve, so it reads as the same product as a route arriving.
+ */
+const COVER_EASE = [0.22, 1, 0.36, 1] as const;
+const GLIDE: Transition = { duration: 0.5, ease: COVER_EASE };
+/**
+ * The cover stepping back while the deck's iris opens over it, and forward
+ * again as the iris closes: timed with the iris, see `Story`.
+ */
+const STEP_BACK: Transition = { duration: 0.8, ease: [0.76, 0, 0.24, 1] };
 
 /** Where the reader's choice of music is remembered, in this browser only. */
 const CHOICE_KEY = 'retrospective-soundtrack';
@@ -52,8 +67,14 @@ const rememberChoice = (id: string): void => {
     }
 };
 
-const accentOf = (member: TeamMember | undefined): string =>
-    member ? memberColor(member, Math.max(0, teamMembers.indexOf(member))) : COPPER;
+/** A face in the report picker arriving, leaving, or moving along the row. */
+const FACE_MOTION = {
+    layout: 'position',
+    initial: { opacity: 0, scale: 0.85 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.85 },
+    transition: GLIDE,
+} as const;
 
 /**
  * The way into each member's own report from the cover, their faces in a row:
@@ -73,48 +94,126 @@ const ReportPicker: React.FC<{
             <p className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
                 {current ? 'Everyone else' : 'Or start with one of us'}
             </p>
-            <ul className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-4 sm:gap-x-8">
-                {current && (
-                    <li>
-                        <Link
-                            to={retrospectivePath(year)}
-                            className="group flex flex-col items-center gap-2"
-                        >
-                            <span
-                                className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/70 font-serif text-lg text-slate-100 transition-transform group-hover:scale-105 sm:h-[4.5rem] sm:w-[4.5rem] sm:text-xl"
-                                style={{ boxShadow: `0 0 0 2px ${COPPER}` }}
+            <ul className="relative mt-5 flex flex-wrap justify-center gap-x-5 gap-y-4 sm:gap-x-8">
+                {/* Faces come and go with the year; the rest close up around them. */}
+                <AnimatePresence initial={false} mode="popLayout">
+                    {current && (
+                        <motion.li key="club" {...FACE_MOTION}>
+                            <Link
+                                to={retrospectivePath(year)}
+                                className="group flex flex-col items-center gap-2"
                             >
-                                {year}
-                            </span>
-                            <span className="text-sm font-medium" style={{ color: COPPER }}>
-                                The club
-                            </span>
-                        </Link>
-                    </li>
-                )}
-                {others.map((member) => (
-                    <li key={member.name}>
-                        <Link
-                            to={retrospectivePath(year, member.name)}
-                            className="group flex flex-col items-center gap-2"
-                        >
-                            <MemberFace
-                                name={member.name}
-                                color={accentOf(member)}
-                                size="w-14 h-14 sm:w-[4.5rem] sm:h-[4.5rem]"
-                                className="transition-transform group-hover:scale-105"
+                                <span
+                                    className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-950/70 font-serif text-lg text-slate-100 transition-transform group-hover:scale-105 sm:h-[4.5rem] sm:w-[4.5rem] sm:text-xl"
+                                    style={{ boxShadow: `0 0 0 2px ${COPPER}` }}
+                                >
+                                    {year}
+                                </span>
+                                <span className="text-sm font-medium" style={{ color: COPPER }}>
+                                    The club
+                                </span>
+                            </Link>
+                        </motion.li>
+                    )}
+                    {others.map((member) => (
+                        <motion.li key={member.name} {...FACE_MOTION}>
+                            <Link
+                                to={retrospectivePath(year, member.name)}
+                                className="group flex flex-col items-center gap-2"
+                            >
+                                <MemberFace
+                                    name={member.name}
+                                    color={FACE_RING}
+                                    size="w-14 h-14 sm:w-[4.5rem] sm:h-[4.5rem]"
+                                    className="transition-transform group-hover:scale-105"
+                                />
+                                <span className="text-sm font-medium text-slate-100">
+                                    {member.name}
+                                </span>
+                            </Link>
+                        </motion.li>
+                    ))}
+                </AnimatePresence>
+            </ul>
+        </nav>
+    );
+};
+
+/**
+ * The cover's title rolling over to the next, like a counter: `custom` is +1
+ * for a later year, -1 for an earlier one, 0 for a member switch (a fade).
+ * A little blur on the way through softens the hand-over between the two.
+ */
+const TITLE_ROLL = {
+    enter: (direction: number) => ({
+        opacity: 0,
+        y: direction * 28,
+        filter: 'blur(6px)',
+    }),
+    center: {
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        transition: GLIDE,
+    },
+    exit: (direction: number) => ({
+        opacity: 0,
+        y: direction * -28,
+        filter: 'blur(6px)',
+        transition: { duration: 0.3, ease: COVER_EASE },
+    }),
+};
+
+/**
+ * Every year with a report, as a row of links, this one marked: on the club's
+ * cover the club's years, on a member's that member's own.
+ */
+const YearPicker: React.FC<{
+    year: number;
+    years: number[];
+    /** The member whose cover this is, to keep to their reports. */
+    member?: TeamMember;
+    accent: string;
+}> = ({ year, years, member, accent }) => {
+    if (years.length < 2) return null;
+    return (
+        <motion.nav layout="position" transition={GLIDE} className="mt-12" aria-label="Other years">
+            <p className="font-sans text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
+                {member ? `${member.name}'s years` : 'Every year'}
+            </p>
+            <ul className="mt-4 flex flex-wrap justify-center gap-2">
+                {years.map((y) => (
+                    <li key={y} className="relative">
+                        {/* One marker for the current year, sliding to the
+                            next rather than blinking out and in again. */}
+                        {y === year && (
+                            <motion.span
+                                layoutId="retrospective-year"
+                                aria-hidden="true"
+                                className="absolute inset-0 rounded-full bg-slate-100/10"
+                                style={{ boxShadow: `inset 0 0 0 1px ${accent}` }}
+                                transition={GLIDE}
                             />
+                        )}
+                        {y === year ? (
                             <span
-                                className="text-sm font-medium"
-                                style={{ color: accentOf(member) }}
+                                aria-current="page"
+                                className="relative block rounded-full px-4 py-1.5 text-sm tabular-nums text-slate-50 transition-colors duration-500"
                             >
-                                {member.name}
+                                {y}
                             </span>
-                        </Link>
+                        ) : (
+                            <Link
+                                to={retrospectivePath(y, member?.name)}
+                                className="relative block rounded-full px-4 py-1.5 text-sm tabular-nums text-slate-400 ring-1 ring-slate-100/15 transition-colors duration-500 hover:text-slate-200"
+                            >
+                                {y}
+                            </Link>
+                        )}
                     </li>
                 ))}
             </ul>
-        </nav>
+        </motion.nav>
     );
 };
 
@@ -199,8 +298,7 @@ const RetrospectivePage: React.FC = () => {
         [year, memberName, sources]
     );
 
-    const member = mine?.member;
-    const accent = accentOf(member);
+    const accent = COPPER;
     const art = useMemo(
         () => (club ? yearArt(club.films) : mine ? yearArt(mine.films.club, mine.films.log) : []),
         [club, mine]
@@ -215,20 +313,25 @@ const RetrospectivePage: React.FC = () => {
                   ),
         [year, mine, sources]
     );
+    // The years with a report like this one: the club's, or this member's.
+    const years = useMemo(
+        () => (memberName ? memberYears(memberName, sources) : yearsWithData(sources)),
+        [memberName, sources]
+    );
     const slides = useMemo(() => {
-        if (club) return clubDeck(club);
+        if (club) return clubDeck(club, years.find((y) => y > club.year) ?? null);
         if (mine) {
             const others = withReports.filter((m) => m !== mine.member);
-            return memberDeck(mine, others, accentOf(mine.member));
+            return memberDeck(mine, others, COPPER);
         }
         return [];
-    }, [club, mine, withReports]);
+    }, [club, mine, withReports, years]);
     // Whose deck this is, in the corner of every slide.
     const faces = useMemo(
         () =>
             (mine ? [mine.member] : (club?.roster ?? [])).map((m) => ({
                 name: m.name,
-                color: accentOf(m),
+                color: FACE_RING,
             })),
         [club, mine]
     );
@@ -292,6 +395,14 @@ const RetrospectivePage: React.FC = () => {
         setLingering(true);
         window.setTimeout(() => setLingering(false), FADE_OUT_MS + 200);
     }, []);
+    // The iris opens out of the play control and closes back into it, wherever
+    // that is on the screen at the time.
+    const playButton = useRef<HTMLButtonElement>(null);
+    const [iris, setIris] = useState<IrisOrigin | null>(null);
+    const aimIris = useCallback(() => {
+        const rect = playButton.current?.getBoundingClientRect();
+        setIris(rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 } : null);
+    }, []);
     const slideParam = params.get('slide');
     // Held until the logs are in, so a linked slide is counted in the full deck.
     const playing = started && slideParam !== null && slides.length > 0 && logsReady;
@@ -314,6 +425,7 @@ const RetrospectivePage: React.FC = () => {
     }, [playing, hasMusic, startMusic]);
 
     const play = () => {
+        aimIris();
         autoStart.current = false;
         setStarted(true);
         setMusicOff(false);
@@ -344,6 +456,7 @@ const RetrospectivePage: React.FC = () => {
     };
 
     const close = useCallback(() => {
+        aimIris();
         autoStart.current = false;
         stopMusic();
         linger();
@@ -356,17 +469,24 @@ const RetrospectivePage: React.FC = () => {
             },
             { replace: true }
         );
-    }, [stopMusic, linger, setParams]);
+    }, [aimIris, stopMusic, linger, setParams]);
 
     // Back past the first slide takes the slide out of the address: that's a
-    // close, made with the browser's button rather than ours.
+    // close, made with the browser's button rather than ours. Only the slide
+    // *leaving* the address counts: React Router applies navigations as a
+    // transition, so play's own `?slide=1` lands a render after `started`,
+    // and in between there's no slide yet without anything having closed.
+    const hadSlide = useRef(slideParam !== null);
     useEffect(() => {
-        if (started && slideParam === null) {
+        const had = hadSlide.current;
+        hadSlide.current = slideParam !== null;
+        if (started && had && slideParam === null) {
+            aimIris();
             stopMusic();
             linger();
             setStarted(false);
         }
-    }, [started, slideParam, stopMusic, linger]);
+    }, [started, slideParam, aimIris, stopMusic, linger]);
 
     // The page behind the deck doesn't scroll while the deck is up.
     useEffect(() => {
@@ -377,6 +497,20 @@ const RetrospectivePage: React.FC = () => {
             document.body.style.overflow = previous;
         };
     }, [playing]);
+
+    // Which way the title rolls: a later year comes up from below, an earlier
+    // one down from above, like a counter; a member switch in the same year
+    // just fades. Adjusted during render, so the new title's first frame
+    // already knows. Compared as the address's own strings: a malformed year
+    // is NaN, which never equals itself.
+    const report = `${yearParam}/${memberName ?? ''}`;
+    const [shown, setShown] = useState({ report, year });
+    const [direction, setDirection] = useState(0);
+    if (report !== shown.report) {
+        setShown({ report, year });
+        const step = year - shown.year;
+        setDirection(Number.isNaN(step) ? 0 : Math.sign(step));
+    }
 
     // A member's report may be nothing but log entries, which arrive after the
     // first render; wait for them before saying there's nothing.
@@ -394,96 +528,151 @@ const RetrospectivePage: React.FC = () => {
     }
 
     const title = mine ? `${mine.member.name}'s ${year}` : String(year);
+    // Play was pressed, and the deck is waiting on the logs to open.
+    const waiting = started && slideParam !== null && !playing;
 
     return (
         <>
-            <section className="relative isolate flex min-h-[calc(100svh-5rem)] items-center overflow-hidden px-4 py-16">
-                <Mosaic images={art} strength={0.45} />
-                <div className="relative mx-auto w-full max-w-2xl text-center">
-                    {mine && (
-                        <div
-                            className="mx-auto mb-6 w-fit rounded-full p-1"
-                            style={{ boxShadow: `0 0 0 2px ${accent}` }}
-                        >
-                            <CircularImage
-                                src={mine.member.image}
-                                alt={mine.member.name}
-                                size="w-24 h-24 sm:w-32 sm:h-32"
-                            />
-                        </div>
-                    )}
-                    <Eyebrow color={accent}>The Criterion Club · Retrospective</Eyebrow>
-                    <h1 className="mt-4 font-serif text-5xl leading-none text-slate-50 sm:text-7xl">
-                        {title}
-                    </h1>
-                    <p className="mt-5 font-serif text-lg italic text-slate-300 sm:text-xl">
-                        A year in review
-                    </p>
-                    <button
-                        type="button"
-                        onClick={play}
-                        disabled={!logsReady}
-                        className="mt-10 inline-flex items-center gap-3 rounded-full px-7 py-3 font-sans text-base font-semibold text-page shadow-lg transition-transform hover:scale-[1.03] disabled:cursor-wait disabled:opacity-60"
-                        style={{ backgroundColor: accent }}
+            <MotionConfig reducedMotion="user">
+                <section className="relative isolate flex min-h-[calc(100svh-5rem)] items-center overflow-hidden px-4 py-16">
+                    <CoverWall
+                        wallKey={`${year}/${mine?.member.name ?? ''}`}
+                        images={art}
+                        strength={0.45}
+                    />
+                    <motion.div
+                        className="relative mx-auto w-full max-w-2xl text-center"
+                        initial={false}
+                        animate={
+                            playing
+                                ? { scale: 0.94, opacity: 0, filter: 'blur(6px)' }
+                                : { scale: 1, opacity: 1, filter: 'blur(0px)' }
+                        }
+                        transition={STEP_BACK}
                     >
-                        <PlayIcon className="h-5 w-5" />
-                        {logsReady ? 'Play' : 'Setting up the projector…'}
-                    </button>
-                    <fieldset className="mt-8">
-                        <legend className="mx-auto mb-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                            Choose the score
-                        </legend>
-                        <div className="flex flex-wrap justify-center gap-2">
-                            {[...choices, { id: SILENCE, label: 'No music' }].map((choice) => {
-                                const selected = choice.id === (hasMusic ? choiceId : SILENCE);
-                                return (
-                                    <button
-                                        key={choice.id}
-                                        type="button"
-                                        onClick={() => choose(choice.id)}
-                                        aria-pressed={selected}
-                                        className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
-                                            selected
-                                                ? 'bg-slate-100/10 text-slate-50'
-                                                : 'text-slate-400 ring-1 ring-slate-100/15 hover:text-slate-200'
-                                        }`}
-                                        style={
-                                            selected
-                                                ? { boxShadow: `inset 0 0 0 1px ${accent}` }
-                                                : undefined
-                                        }
+                        <AnimatePresence initial={false} mode="popLayout">
+                            {mine && (
+                                <motion.div
+                                    key={mine.member.name}
+                                    layout="position"
+                                    className="mx-auto mb-6 w-fit rounded-full p-1"
+                                    style={{ boxShadow: `0 0 0 2px ${accent}` }}
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={GLIDE}
+                                >
+                                    <CircularImage
+                                        src={mine.member.image}
+                                        alt={mine.member.name}
+                                        size="w-24 h-24 sm:w-32 sm:h-32"
+                                    />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                        {/* Everything under the face glides as one when the face
+                            comes or goes, or the cover's height changes. */}
+                        <motion.div layout="position" transition={GLIDE}>
+                            <Eyebrow color={accent}>The Criterion Club · Retrospective</Eyebrow>
+                            <div className="relative mt-4">
+                                <AnimatePresence
+                                    initial={false}
+                                    mode="popLayout"
+                                    custom={direction}
+                                >
+                                    <motion.h1
+                                        key={title}
+                                        custom={direction}
+                                        variants={TITLE_ROLL}
+                                        initial="enter"
+                                        animate="center"
+                                        exit="exit"
+                                        className="font-serif text-5xl leading-none text-slate-50 sm:text-7xl"
                                     >
-                                        {choice.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </fieldset>
-                    <ReportPicker year={year} members={withReports} current={mine?.member} />
-                </div>
-            </section>
+                                        {title}
+                                    </motion.h1>
+                                </AnimatePresence>
+                            </div>
+                            <p className="mt-5 font-serif text-lg italic text-slate-300 sm:text-xl">
+                                A year in review
+                            </p>
+                            {/* Always "Play": pressed before the logs are in, it
+                                holds the press and the deck opens when they
+                                arrive, a spinner in place of the icon meanwhile. */}
+                            <button
+                                ref={playButton}
+                                type="button"
+                                onClick={play}
+                                aria-busy={waiting}
+                                className={`mt-10 inline-flex items-center gap-3 rounded-full px-7 py-3 font-sans text-base font-semibold text-page shadow-lg transition-transform hover:scale-[1.03] ${
+                                    waiting ? 'cursor-wait' : ''
+                                }`}
+                                style={{ backgroundColor: accent }}
+                            >
+                                {waiting ? (
+                                    <span
+                                        className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent"
+                                        aria-hidden="true"
+                                    />
+                                ) : (
+                                    <PlayIcon className="h-5 w-5" />
+                                )}
+                                Play
+                            </button>
+                            <fieldset className="mt-8 min-w-0">
+                                <legend className="mx-auto mb-3 font-sans text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                                    Choose the score
+                                </legend>
+                                <ScorePicker
+                                    choices={[
+                                        { id: SILENCE, label: 'No music', apart: true },
+                                        ...choices,
+                                    ]}
+                                    selectedId={hasMusic ? choiceId : SILENCE}
+                                    onChoose={choose}
+                                    accent={accent}
+                                />
+                            </fieldset>
+                            <ReportPicker
+                                year={year}
+                                members={withReports}
+                                current={mine?.member}
+                            />
+                            <YearPicker
+                                year={year}
+                                years={years}
+                                member={mine?.member}
+                                accent={accent}
+                            />
+                        </motion.div>
+                    </motion.div>
+                </section>
+            </MotionConfig>
 
-            {playing && (
-                <Story
-                    slides={slides}
-                    art={art}
-                    index={index}
-                    onIndexChange={setSlide}
-                    onClose={close}
-                    accent={accent}
-                    faces={faces}
-                    music={
-                        nowPlaying
-                            ? {
-                                  label: nowPlaying.label,
-                                  off: musicOff,
-                                  onToggleOff: toggleMusicOff,
-                                  blocked: soundtrack.status === 'blocked',
-                              }
-                            : undefined
-                    }
-                />
-            )}
+            <AnimatePresence custom={iris}>
+                {playing && (
+                    <Story
+                        origin={iris}
+                        slides={slides}
+                        art={art}
+                        index={index}
+                        onIndexChange={setSlide}
+                        onClose={close}
+                        accent={accent}
+                        faces={faces}
+                        music={
+                            nowPlaying
+                                ? {
+                                      label: nowPlaying.label,
+                                      off: musicOff,
+                                      onToggleOff: toggleMusicOff,
+                                      blocked: soundtrack.status === 'blocked',
+                                  }
+                                : undefined
+                        }
+                    />
+                )}
+            </AnimatePresence>
 
             {hasMusic && !musicOff && (playing || lingering) && (
                 <SoundtrackDock

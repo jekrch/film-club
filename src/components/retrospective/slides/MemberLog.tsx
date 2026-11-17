@@ -1,6 +1,5 @@
 import React from 'react';
 import type { LoggedFilm, MemberRetrospective } from '../../../utils/retrospectiveUtils';
-import CountUp from '../CountUp';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { give } from '../../../hooks/useSqueeze';
 import { Poster } from './shared';
@@ -47,7 +46,7 @@ const Bookend: React.FC<{ label: string; logged: LoggedFilm }> = ({ label, logge
             className="w-11 sm:w-14"
         />
         <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
+            <p className="text-xs font-medium text-slate-500">
                 {label} · {day(logged)}
             </p>
             <p className="mt-1 line-clamp-2 font-serif text-base italic leading-snug text-slate-100 sm:text-lg">
@@ -65,8 +64,8 @@ const MemberLog: React.FC<MemberLogProps> = ({ log, onOwn, accent, reel }) => {
         <Slide reel={reel}>
             <Reveal>
                 <Eyebrow color={accent}>On your own</Eyebrow>
-                <p className="mt-4 font-serif text-[5.5rem] leading-none text-slate-50 sm:text-[8rem]">
-                    <CountUp value={onOwn} />
+                <p className="mt-4 font-figures figures-trim lining-nums text-[5.5rem] leading-none text-slate-50 sm:text-[8rem]">
+                    {onOwn}
                 </p>
                 <p className="font-serif text-2xl text-slate-200 sm:text-3xl">
                     film{onOwn === 1 ? '' : 's'} on your log

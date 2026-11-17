@@ -7,31 +7,25 @@ import { Poster } from './shared';
 import { numberWord } from './format';
 
 interface ClubPlacesProps {
-    year: number;
     places: NonNullable<ClubRetrospective['places']>;
     accent: string;
 }
 
 const capitalised = (text: string): string => text.replace(/^./, (c) => c.toUpperCase());
 
-/** "Up from six countries in 2025", "Down from 14 countries in 2025", "The same as in 2025". */
-const countryChange = (now: number, before: number, year: number): string => {
+/** "Up from six countries last year", "Down from 14 countries last year", "Same as last year". */
+const countryChange = (now: number, before: number): string => {
     const was = `${numberWord(before)} ${before === 1 ? 'country' : 'countries'}`;
     return now > before
-        ? `Up from ${was} in ${year - 1}`
+        ? `Up from ${was} last year`
         : now < before
-          ? `Down from ${was} in ${year - 1}`
-          : `The same as in ${year - 1}`;
+          ? `Down from ${was} last year`
+          : 'Same as last year';
 };
 
-/** "1979 in 2025, five years older" — how this year's average sits against last year's. */
-const yearChange = (now: number, before: number, year: number): string => {
-    const gap = Math.abs(now - before);
-    const span = `${numberWord(gap)} ${gap === 1 ? 'year' : 'years'}`;
-    return now === before
-        ? `The same as in ${year - 1}`
-        : `${before} in ${year - 1}, ${span} ${now > before ? 'newer' : 'older'}`;
-};
+/** "1979 last year": last year's average, left to speak for itself. */
+const yearChange = (now: number, before: number): string =>
+    now === before ? 'Same as last year' : `${before} last year`;
 
 /** A film at one end of the year's span: its poster, which end, its title and year. */
 const End: React.FC<{ label: string; film: ClubPlacesProps['places']['oldest'] }> = ({
@@ -41,9 +35,7 @@ const End: React.FC<{ label: string; film: ClubPlacesProps['places']['oldest'] }
     <div className="flex min-w-0 items-center gap-3">
         <Poster src={film.poster} title={film.title} className="w-12" />
         <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:text-xs">
-                {label}
-            </p>
+            <p className="text-xs font-medium text-slate-500 sm:text-sm">{label}</p>
             <p className="mt-1 font-serif text-base leading-snug text-slate-200 italic sm:text-lg">
                 {film.title}
             </p>
@@ -58,7 +50,7 @@ const End: React.FC<{ label: string; film: ClubPlacesProps['places']['oldest'] }
  * beside the average release year; the oldest and newest at either end. Both
  * counts are set against the year before when there was one.
  */
-const ClubPlaces: React.FC<ClubPlacesProps> = ({ year, places, accent }) => {
+const ClubPlaces: React.FC<ClubPlacesProps> = ({ places, accent }) => {
     const still = prefersReducedMotion();
     const { countries, decades, averageYear, oldest, newest, previousYear } = places;
     const most = Math.max(...countries.map((c) => c.y));
@@ -75,7 +67,7 @@ const ClubPlaces: React.FC<ClubPlacesProps> = ({ year, places, accent }) => {
                 </h2>
                 {previousYear && (
                     <p className="mt-2 text-base text-slate-400 sm:text-lg">
-                        {countryChange(countries.length, previousYear.countries, year)}.
+                        {countryChange(countries.length, previousYear.countries)}.
                     </p>
                 )}
             </Reveal>
@@ -114,7 +106,7 @@ const ClubPlaces: React.FC<ClubPlacesProps> = ({ year, places, accent }) => {
                                     }}
                                     initial={still ? false : { scaleY: 0 }}
                                     animate={{ scaleY: 1 }}
-                                    transition={{ delay: 1.1 + i * 0.08, duration: 0.6 }}
+                                    transition={{ delay: 0.5 + i * 0.06, duration: 0.6 }}
                                 />
                                 <span className="text-[10px] text-slate-400 sm:text-xs">
                                     {decade.name.replace(/^\d\d/, "'")}
@@ -123,7 +115,7 @@ const ClubPlaces: React.FC<ClubPlacesProps> = ({ year, places, accent }) => {
                         ))}
                     </div>
                     <div className="sm:text-right">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:text-xs">
+                        <p className="text-xs font-medium text-slate-500 sm:text-sm">
                             Average year
                         </p>
                         <p className="font-serif text-4xl leading-none text-slate-50 sm:text-5xl">
@@ -131,7 +123,7 @@ const ClubPlaces: React.FC<ClubPlacesProps> = ({ year, places, accent }) => {
                         </p>
                         {previousYear?.averageYear != null && (
                             <p className="mt-1 text-sm text-slate-400">
-                                {yearChange(averageYear, previousYear.averageYear, year)}
+                                {yearChange(averageYear, previousYear.averageYear)}
                             </p>
                         )}
                     </div>
