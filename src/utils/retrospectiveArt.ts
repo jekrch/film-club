@@ -2,6 +2,7 @@ import { findFilmSummary } from '../api/filmSummaries';
 import { filmData, type Film } from '../types/film';
 import type { FrameImage } from './frameSources';
 import { getFilmBackdrops } from './filmUtils';
+import { isImageSource } from './imageUrl';
 import type { LoggedFilm } from './retrospectiveUtils';
 
 /**
@@ -12,7 +13,7 @@ import type { LoggedFilm } from './retrospectiveUtils';
 const STILLS_PER_FILM = 4;
 
 const usable = (url: string | null | undefined): url is string =>
-    !!url && url.startsWith('http') && !url.includes('N/A');
+    isImageSource(url) && !url.includes('N/A');
 
 /**
  * A film's art as the mosaic lays it: the one-sheet first, then a handful of

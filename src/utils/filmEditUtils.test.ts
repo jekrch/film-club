@@ -106,6 +106,12 @@ describe('parseFilmForm', () => {
             error: expect.stringContaining('Background image:'),
         });
     });
+
+    it("accepts a still kept in the site's own images, so the form takes its own value", () => {
+        const backdropImage = '/images/films/tt0116650-backdrop.jpg';
+        const parsed = parseFilmForm({ ...EMPTY_FILM_FORM, backdropImage });
+        expect(parsed).toEqual({ values: expect.objectContaining({ backdropImage }) });
+    });
 });
 
 describe('buildFilmPatch', () => {

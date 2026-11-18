@@ -27,6 +27,12 @@ describe('keyArtOrder', () => {
             'https://s3.amazonaws.com/criterion-production/a.jpg',
         ]);
     });
+
+    it("counts the site's own stills as drawable, since they're same-origin", () => {
+        const local = '/images/films/tt0116650-backdrop.jpg';
+        const criterion = 'https://s3.amazonaws.com/criterion-production/a.jpg';
+        expect(keyArtOrder([criterion, local], '')).toEqual([local, criterion]);
+    });
 });
 
 describe('fullSize', () => {

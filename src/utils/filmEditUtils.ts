@@ -1,6 +1,6 @@
 import type { FilmOverride, FilmPatch } from '../api/clubApi';
 import type { Film } from '../types/film';
-import { parseImageUrl } from './imageUrl';
+import { parseSiteImageUrl } from './imageUrl';
 
 /**
  * The pure half of the film editor: what the form holds, what the club record
@@ -139,10 +139,10 @@ export function parseFilmForm(form: FilmFormValues): FilmParseResult {
         return { error: 'The club has not been going that long — check the year.' };
     }
 
-    const poster = parseImageUrl(form.poster);
+    const poster = parseSiteImageUrl(form.poster);
     if ('error' in poster) return { error: `Cover image: ${poster.error}` };
 
-    const backdrop = parseImageUrl(form.backdropImage);
+    const backdrop = parseSiteImageUrl(form.backdropImage);
     if ('error' in backdrop) return { error: `Background image: ${backdrop.error}` };
 
     return {

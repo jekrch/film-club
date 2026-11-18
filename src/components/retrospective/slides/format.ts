@@ -90,8 +90,101 @@ export const yearOnYear = (
  * Whether the year's standout is its score, which the count slide then keeps
  * quiet about, so as not to give it away.
  */
-export const isScoreStandout = (standout: Standout | null): boolean =>
+export const isScoreStandout = (standout: Standout<string> | null): boolean =>
     standout?.kind === 'highest-score' || standout?.kind === 'lowest-score';
+
+/** What a film from each country is called, where the club has met one or may. */
+const DEMONYMS: Record<string, string> = {
+    Argentina: 'Argentine',
+    Australia: 'Australian',
+    Austria: 'Austrian',
+    Belgium: 'Belgian',
+    Brazil: 'Brazilian',
+    Canada: 'Canadian',
+    China: 'Chinese',
+    Czechoslovakia: 'Czechoslovak',
+    Denmark: 'Danish',
+    'East Germany': 'East German',
+    Egypt: 'Egyptian',
+    Finland: 'Finnish',
+    France: 'French',
+    Germany: 'German',
+    Greece: 'Greek',
+    'Hong Kong': 'Hong Kong',
+    Hungary: 'Hungarian',
+    India: 'Indian',
+    Iran: 'Iranian',
+    Ireland: 'Irish',
+    Israel: 'Israeli',
+    Italy: 'Italian',
+    Japan: 'Japanese',
+    Mexico: 'Mexican',
+    Netherlands: 'Dutch',
+    Norway: 'Norwegian',
+    Poland: 'Polish',
+    Portugal: 'Portuguese',
+    Romania: 'Romanian',
+    Senegal: 'Senegalese',
+    'South Korea': 'South Korean',
+    'Soviet Union': 'Soviet',
+    Spain: 'Spanish',
+    Sweden: 'Swedish',
+    Switzerland: 'Swiss',
+    Taiwan: 'Taiwanese',
+    Turkey: 'Turkish',
+    'United Kingdom': 'British',
+    'United States': 'American',
+    'West Germany': 'West German',
+    Yugoslavia: 'Yugoslav',
+};
+
+/** "an American film", "a French film", or "a film from Bhutan" for one without a name here. */
+export const filmFrom = (country: string): string => {
+    const demonym = DEMONYMS[country];
+    if (!demonym) return `a film from ${country}`;
+    return withArticle(`${demonym} film`);
+};
+
+/** What a film of each genre is called, as OMDb names the genres; "a horror film" otherwise. */
+const GENRE_NOUNS: Record<string, string> = {
+    Adventure: 'adventure',
+    Animation: 'animated film',
+    Biography: 'biopic',
+    Comedy: 'comedy',
+    Documentary: 'documentary',
+    Drama: 'drama',
+    'Film-Noir': 'film noir',
+    History: 'historical film',
+    Musical: 'musical',
+    Mystery: 'mystery',
+    Romance: 'romance',
+    'Sci-Fi': 'science-fiction film',
+    Sport: 'sports film',
+    Thriller: 'thriller',
+    Western: 'western',
+};
+
+const withArticle = (noun: string): string => `${/^[aeiou]/i.test(noun) ? 'an' : 'a'} ${noun}`;
+
+/**
+ * One kind of film, for a sentence: "an American film", "a film from the
+ * 1960s", "a film noir", "a film in Japanese".
+ */
+export const filmOfKind = (
+    category: 'country' | 'decade' | 'genre' | 'language',
+    value: string
+): string => {
+    switch (category) {
+        case 'country':
+            return filmFrom(value);
+        case 'decade':
+            return `a film from the ${value}`;
+        case 'genre':
+            return withArticle(GENRE_NOUNS[value] ?? `${value.toLowerCase()} film`);
+        case 'language':
+            return `a film in ${value}`;
+    }
+};
 
 /** "1.5" stays, "7.0" reads "7". */
 export const formatScore = (score: number): string =>

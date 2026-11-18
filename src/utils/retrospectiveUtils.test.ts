@@ -895,6 +895,288 @@ describe('the year’s standout', () => {
     });
 });
 
+describe('a member’s standout', () => {
+    /**
+     * Three films screened in `year`, each scored as `scores` gives (andy,
+     * gabe, jacob, joey); everything else about them the same every year.
+     */
+    const yearOf = (year: number, scores: ClubRating[]) =>
+        [1, 2, 3].map((i) =>
+            film(`tt${year}00${i}`, `${year} film ${i}`, `${i}/1/${year}`, 'Andy', scores, {
+                runtime: '100 min',
+                country: 'United States',
+                language: 'English',
+                year: '1980',
+            })
+        );
+    const standoutOf = (member: string, year: number, ...years: Film[][]) =>
+        buildMemberRetrospective(
+            year,
+            member,
+            { ...sources, films: years.flat(), watched: {} },
+            NOW
+        )?.standout;
+
+    it('sets their score against their own other years, not anyone else’s', () => {
+        // Everyone else is level; Jacob scored 2024 highest of his years.
+        const years = [
+            yearOf(2023, four(9, 9, 6, 9)),
+            yearOf(2024, four(5, 5, 8, 5)),
+            yearOf(2025, four(7, 7, 7, 7)),
+        ];
+        expect(standoutOf('Jacob', 2024, ...years)).toMatchObject({
+            kind: 'highest-score',
+            years: [
+                { year: 2023, value: 6 },
+                { year: 2024, value: 8 },
+                { year: 2025, value: 7 },
+            ],
+            next: { value: 7, years: [2025] },
+        });
+        expect(standoutOf('Jacob', 2023, ...years)?.kind).toBe('lowest-score');
+    });
+
+    it('leaves out the years before they joined', () => {
+        // Gabe joined in 2023; his 9 on a 2020 film was a catch-up.
+        expect(CLUB_YEARS.gabe.joined).toBe(2023);
+        const years = [
+            yearOf(2020, four(6, 9, 6, 6)),
+            yearOf(2023, four(6, 6, 6, 6)),
+            yearOf(2024, four(6, 8, 6, 6)),
+            yearOf(2025, four(6, 7, 6, 6)),
+        ];
+        expect(standoutOf('Gabe', 2024, ...years)).toMatchObject({
+            kind: 'highest-score',
+            years: [
+                { year: 2023, value: 6 },
+                { year: 2024, value: 8 },
+                { year: 2025, value: 7 },
+            ],
+        });
+    });
+
+    it('measures how far they sat from the room when their scores hold level', () => {
+        // Jacob gives 6 every year; the room moves away from him and back.
+        const years = [
+            yearOf(2023, four(6, 6, 6, 6)),
+            yearOf(2024, four(3, 3, 6, 3)),
+            yearOf(2025, four(5, 5, 6, 5)),
+        ];
+        expect(standoutOf('Jacob', 2024, ...years)).toMatchObject({
+            kind: 'divided',
+            next: { value: 1, years: [2025] },
+        });
+        expect(standoutOf('Jacob', 2023, ...years)?.kind).toBe('agreed');
+    });
+
+    it('takes what the films were from their own picks, not the club’s year', () => {
+        // Everyone gives everything a 6, so only the films can differ. In
+        // 2024 Jacob picked three Japanese films; in 2025 Andy picked three
+        // French ones, which say nothing about Jacob's picks.
+        const picks = (year: number, selector: string, language: string, from: number) =>
+            [0, 1, 2].map((i) =>
+                film(
+                    `tt${year}${selector}${i}`,
+                    `${selector}'s ${year} pick ${i + 1}`,
+                    `${from + i}/1/${year}`,
+                    selector,
+                    four(6, 6, 6, 6),
+                    { runtime: '100 min', country: 'United States', language, year: '1980' }
+                )
+            );
+        const years = [
+            picks(2023, 'Jacob', 'English', 1),
+            picks(2024, 'Jacob', 'Japanese', 1),
+            picks(2025, 'Jacob', 'English', 1),
+            picks(2025, 'Andy', 'French', 6),
+        ];
+        expect(standoutOf('Jacob', 2024, ...years)).toMatchObject({
+            kind: 'least-english',
+            share: { count: 3, of: 3 },
+            next: { value: 0, years: [2023, 2025] },
+        });
+        // Andy's French picks are no record of Jacob's, and Andy's only year
+        // of picks is 2025, with nothing of his to set it against: both fall
+        // back to matching their best score on an American film.
+        expect(standoutOf('Jacob', 2025, ...years)?.kind).toBe('country-favourite');
+        expect(standoutOf('Andy', 2025, ...years)?.kind).toBe('country-favourite');
+    });
+
+    it('tells them the year their picks went over best, never worst', () => {
+        // Jacob gives 6 to everything and picks three a year; the others give
+        // his picks 5, then 8, then 6.
+        const picksOf = (year: number, room: number) =>
+            [1, 2, 3].map((i) =>
+                film(
+                    `tt${year}00${i}`,
+                    `${year} pick ${i}`,
+                    `${i}/1/${year}`,
+                    'Jacob',
+                    four(room, room, 6, room),
+                    {
+                        runtime: '100 min',
+                        country: 'United States',
+                        language: 'English',
+                        year: '1980',
+                    }
+                )
+            );
+        const years = [picksOf(2023, 5), picksOf(2024, 8), picksOf(2025, 6)];
+        expect(standoutOf('Jacob', 2024, ...years)).toMatchObject({
+            kind: 'picks-loved',
+            years: [
+                { year: 2023, value: 5.3 },
+                { year: 2024, value: 7.5 },
+                { year: 2025, value: 6 },
+            ],
+            next: { value: 6, years: [2025] },
+        });
+        // 2023's picks fared worst of his years, which is nothing to tell him:
+        // he gets the fallback, a match of his best on an American film.
+        expect(standoutOf('Jacob', 2023, ...years)?.kind).toBe('country-favourite');
+    });
+
+    it('averages a year of two picks, and owns up to leaving out a year of one', () => {
+        // Jacob gives 6 to everything; the room gives his picks 5, 8, 6 and 9,
+        // but 2026's 9 is a single pick.
+        const picksOf = (year: number, room: number, n: number) =>
+            Array.from({ length: n }, (_, i) =>
+                film(
+                    `tt${year}00${i}`,
+                    `${year} pick ${i}`,
+                    `${i + 1}/1/${year}`,
+                    'Jacob',
+                    four(room, room, 6, room),
+                    {
+                        country: 'United States',
+                    }
+                )
+            );
+        const years = [
+            picksOf(2023, 5, 2),
+            picksOf(2024, 8, 2),
+            picksOf(2025, 6, 2),
+            picksOf(2026, 9, 1),
+        ];
+        expect(standoutOf('Jacob', 2024, ...years)).toMatchObject({
+            kind: 'picks-loved',
+            years: [
+                { year: 2023, value: 5.3 },
+                { year: 2024, value: 7.5 },
+                { year: 2025, value: 6 },
+            ],
+            thin: [2026],
+        });
+    });
+
+    it('falls back to their best score on a film from one country', () => {
+        // Jacob picks nothing and averages 6 every year; his best French film
+        // was 2024's, while his best American one was 2025's.
+        const yearOf = (year: number, us: [number, number], french: number) => [
+            ...us.map((score, i) =>
+                film(
+                    `tt${year}00${i}`,
+                    `${year} US ${i}`,
+                    `${i + 1}/1/${year}`,
+                    'Andy',
+                    four(6, 6, score, 6),
+                    {
+                        country: 'United States',
+                    }
+                )
+            ),
+            film(`tt${year}009`, `${year} French`, `9/1/${year}`, 'Andy', four(6, 6, french, 6), {
+                country: 'France',
+            }),
+        ];
+        const years = [yearOf(2023, [6, 6], 6), yearOf(2024, [5, 5], 8), yearOf(2025, [7, 4], 7)];
+        expect(standoutOf('Jacob', 2024, ...years)).toMatchObject({
+            kind: 'country-favourite',
+            subject: 'France',
+            years: [
+                { year: 2023, value: 6 },
+                { year: 2024, value: 8 },
+                { year: 2025, value: 7 },
+            ],
+            next: { value: 7, years: [2025] },
+        });
+        expect(standoutOf('Jacob', 2024, ...years)?.films[0].title).toBe('2024 French');
+    });
+
+    /** One film Jacob scored, of the kinds `overrides` gives; everyone else gives it a 6. */
+    const one = (id: string, date: string, jacob: number, overrides: Partial<Film> = {}) =>
+        film(id, `Film ${id}`, date, 'Andy', four(6, 6, jacob, 6), {
+            country: 'United States',
+            language: 'English',
+            year: '1985',
+            genre: 'Drama',
+            ...overrides,
+        });
+
+    it('settles for matching their best when nothing else sets the year apart', () => {
+        const years = [[one('tt1', '1/1/2023', 7)], [one('tt2', '1/1/2024', 7)]];
+        expect(standoutOf('Jacob', 2024, ...years)).toMatchObject({
+            kind: 'country-favourite',
+            subject: 'United States',
+            next: { value: 7, years: [2023] },
+        });
+    });
+
+    it('tells a year with no best of any kind by a first, the best-scored one', () => {
+        // 2025 is below his best on every kind he'd met before, but it brought
+        // his first Japanese film, from the 1950s, a romance.
+        const years = [
+            [one('tt1', '1/1/2023', 6)],
+            [one('tt2', '1/1/2024', 6)],
+            [
+                one('tt3', '1/1/2025', 5),
+                one('tt4', '2/1/2025', 6, {
+                    country: 'Japan',
+                    language: 'Japanese',
+                    year: '1953',
+                    genre: 'Romance',
+                }),
+            ],
+        ];
+        expect(standoutOf('Jacob', 2025, ...years)).toMatchObject({
+            kind: 'country-favourite',
+            subject: 'Japan',
+            years: [{ year: 2025, value: 6 }],
+            next: null,
+        });
+    });
+
+    it('has nothing to say in a year they scored no club film', () => {
+        const years = [
+            yearOf(2023, four(6, 6, 6, 6)),
+            yearOf(2024, four(6, 6, 7, 6)),
+            yearOf(2025, four(6, 6, 8, 6)),
+        ];
+        const report = buildMemberRetrospective(
+            2026,
+            'Jacob',
+            {
+                ...sources,
+                films: years.flat(),
+                watched: {
+                    Jacob: [
+                        {
+                            imdbID: 'tt0000900',
+                            watchDate: '2026-03-01',
+                            score: 7,
+                            scoreQualifier: null,
+                            blurb: null,
+                            updatedAt: '2026-03-01T00:00:00Z',
+                        },
+                    ],
+                },
+            },
+            NOW
+        );
+        expect(report?.standout).toBeNull();
+    });
+});
+
 describe('buildMemberRetrospective', () => {
     it('counts club films and log films as two figures', () => {
         expect(jacob2026().count).toMatchObject({
@@ -996,6 +1278,49 @@ describe('buildMemberRetrospective', () => {
 
     it('lists their picks without scoring them', () => {
         expect(jacob2026().picks!.map((f) => f.imdbID)).toEqual([irma.imdbID, nadja.imdbID]);
+    });
+
+    describe('their best pick of all their years', () => {
+        // Jacob's picks, one a year from 2022, each a flat score from the room.
+        const pick = (year: number, score: number, month = 1) =>
+            film(`tt${year}0${month}`, `${year}/${month}`, `${month}/1/${year}`, 'Jacob', [
+                ...four(score, score, score, score),
+                // A guest's 0 doesn't move a member's average.
+                makeRating({ user: 'greg', score: 0 }),
+            ]);
+        const bestIn = (year: number, ...picks: Film[]) =>
+            buildMemberRetrospective(year, 'Jacob', { ...sources, films: picks, watched: {} }, NOW)
+                ?.bestPick;
+
+        it('marks the year whose pick the members scored highest, later years included', () => {
+            const picks = [pick(2022, 6), pick(2023, 8), pick(2024, 7)];
+            expect(bestIn(2023, ...picks)).toEqual({ films: [picks[1]], average: 8, tied: false });
+            expect(bestIn(2022, ...picks)).toBeNull();
+            expect(bestIn(2024, ...picks)).toBeNull();
+        });
+
+        it('averages each film over the members with the club the year it was watched', () => {
+            // Gabe joined in 2023: his 10 on the 2022 pick is left out.
+            const early = pick(2022, 7);
+            early.movieClubInfo!.clubRatings[1] = makeRating({ user: 'gabe', score: 10 });
+            const picks = [early, pick(2023, 7.2), pick(2024, 6)];
+            expect(bestIn(2023, ...picks)?.average).toBe(7.2);
+        });
+
+        it('says when another pick shares the highest average, this year or another', () => {
+            const picks = [pick(2022, 8), pick(2023, 8, 1), pick(2023, 8, 2), pick(2024, 6)];
+            expect(bestIn(2023, ...picks)).toEqual({
+                films: [picks[1], picks[2]],
+                average: 8,
+                tied: true,
+            });
+            expect(bestIn(2022, ...picks)).toMatchObject({ films: [picks[0]], tied: true });
+        });
+
+        it('needs three scored picks over more than one year', () => {
+            expect(bestIn(2023, pick(2022, 6), pick(2023, 8))).toBeNull();
+            expect(bestIn(2023, pick(2023, 6, 1), pick(2023, 8, 2), pick(2023, 7, 3))).toBeNull();
+        });
     });
 
     it('finds where they broke from the room', () => {

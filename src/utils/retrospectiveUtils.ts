@@ -186,16 +186,54 @@ export type StandoutKind =
     | 'longest'
     | 'most-months';
 
-export interface Standout {
-    kind: StandoutKind;
+/**
+ * The ways a member's year can stand out from their own other years with the
+ * club. Never against another member, and never a repeat of the club's own
+ * figures: a score is theirs, on any film they scored, and anything about the
+ * films themselves (where they're from, how old, how long) is about their own
+ * picks alone. How many films they saw is left to the count slide.
+ */
+export type MemberStandoutKind =
+    | 'highest-score'
+    | 'lowest-score'
+    | 'most-countries'
+    | 'most-languages'
+    | 'least-english'
+    | 'least-american'
+    | 'oldest'
+    | 'agreed'
+    | 'divided'
+    | 'newest'
+    | 'longest'
+    | 'picks-loved'
+    | FavouriteKind;
+
+/** The categories a member's best score on one kind of film can be told by. */
+export type FavouriteCategory = 'country' | 'decade' | 'genre' | 'language';
+
+/** "Your highest score ever for a French film": their best on one kind of film. */
+export type FavouriteKind = `${FavouriteCategory}-favourite`;
+
+export interface Standout<K extends string = StandoutKind> {
+    kind: K;
     /** The figure in every year with one, earliest first, as the slide prints it. */
     years: { year: number; value: number }[];
-    /** The closest any other year came: the figure, and every year that reached it. */
-    next: { value: number; years: number[] };
+    /**
+     * The closest any other year came: the figure, and every year that reached
+     * it. Null for a member's first of a kind of film, which no year came near.
+     */
+    next: { value: number; years: number[] } | null;
     /** For a share of the year's films: how many, out of how many. */
     share: { count: number; of: number } | null;
+    /**
+     * Years left out of an average of a member's picks for having only one
+     * pick in them, which the slide owns up to in a footnote. Empty otherwise.
+     */
+    thin?: number[];
     /** The films that make the point, the most telling first, for the stills behind the slide. */
     films: Film[];
+    /** For a record within one kind of film: what kind, such as the country it came from. */
+    subject?: string;
 }
 
 export interface ClubRetrospective {
@@ -401,7 +439,25 @@ export interface MemberRetrospective {
     /** Their selections this year, in the order they were watched. */
     picks: Film[] | null;
 
+    /**
+     * Their picks this year with the highest members' average of every pick
+     * they've made, any year, later ones included, compared at the tenth the
+     * slide prints. `tied` when any other pick, this year's or another's,
+     * shares that average. Null for a year without one, or for a member with
+     * fewer than {@link BEST_PICK_MIN_PICKS} scored picks or picks in only one
+     * year.
+     */
+    bestPick: { films: Film[]; average: number; tied: boolean } | null;
+
     breakaway: { film: Film; score: number; othersAverage: number; divergence: number } | null;
+
+    /**
+     * The one way this year stood out from their other years with the club:
+     * the first of the member standouts, in order, that it holds outright at
+     * the precision the slide prints. Scores come from every club film they
+     * scored; everything else from their own picks.
+     */
+    standout: Standout<MemberStandoutKind> | null;
 
     log: {
         busiestMonth: MonthCount;
@@ -1321,6 +1377,12 @@ const STANDOUTS: { kind: StandoutKind; measure: MeasureName; most: boolean }[] =
 const STANDOUT_MIN_YEARS = 3;
 /** A year with fewer films than this has no average or share worth comparing. */
 const STANDOUT_MIN_FILMS = 3;
+/**
+ * A year with fewer of a member's picks than this has no average or share of
+ * them worth comparing. Lower than {@link STANDOUT_MIN_FILMS}: two or three a
+ * year is a full year of picks.
+ */
+const STANDOUT_MIN_PICKS = 2;
 
 /** The members with the club in a year. */
 const membersIn = (year: number, sources: RetrospectiveSources): TeamMember[] =>
@@ -1338,24 +1400,37 @@ const figureIn = (
     return measure.figure(films, membersIn(year, sources));
 };
 
+/** Every year with a club screening, earliest first. */
+const clubYears = (films: Film[]): number[] =>
+    [...new Set(films.map(clubYear).filter((y): y is number => y !== null))].sort((a, b) => a - b);
+
 /**
- * The first standout the year holds outright against every other year with
- * club films, later ones included, compared as the slide prints them, so a
- * tie on the page is no record.
+ * The first of `standouts` the year holds outright against every other of
+ * `years` with a figure, later ones included, compared as the slide prints
+ * them, so a tie on the page is no record.
  */
-const standoutIn = (year: number, sources: RetrospectiveSources): Standout | null => {
-    const years = [
-        ...new Set(sources.films.map(clubYear).filter((y): y is number => y !== null)),
-    ].sort((a, b) => a - b);
-    const byMeasure = new Map<MeasureName, ({ year: number; shown: number } & Figure)[]>();
-    const figuresOf = (name: MeasureName) => {
+const recordIn = <K extends string, M extends string>(
+    year: number,
+    years: number[],
+    standouts: { kind: K; measure: M; most: boolean; subject?: string }[],
+    figureOf: (measure: M, year: number) => Figure | null,
+    shownOf: (measure: M, value: number) => number,
+    /**
+     * How many years, this one among them, it takes to stand out, and whether
+     * matching the best of the others will do: a member's last resorts, so
+     * that every year they were there has something of its own.
+     */
+    { minYears = STANDOUT_MIN_YEARS, ties = false }: { minYears?: number; ties?: boolean } = {}
+): Standout<K> | null => {
+    const byMeasure = new Map<M, ({ year: number; shown: number } & Figure)[]>();
+    const figuresOf = (name: M) => {
         if (!byMeasure.has(name)) {
             byMeasure.set(
                 name,
                 years.flatMap((y) => {
-                    const figure = figureIn(name, y, sources);
+                    const figure = figureOf(name, y);
                     return figure
-                        ? [{ year: y, shown: MEASURES[name].shown(figure.value), ...figure }]
+                        ? [{ year: y, shown: shownOf(name, figure.value), ...figure }]
                         : [];
                 })
             );
@@ -1363,22 +1438,301 @@ const standoutIn = (year: number, sources: RetrospectiveSources): Standout | nul
         return byMeasure.get(name)!;
     };
 
-    for (const { kind, measure, most } of STANDOUTS) {
+    for (const { kind, measure, most, subject } of standouts) {
         const figures = figuresOf(measure);
         const mine = figures.find((f) => f.year === year);
         const others = figures.filter((f) => f.year !== year);
-        if (!mine || figures.length < STANDOUT_MIN_YEARS) continue;
-        if (!others.every((o) => (most ? mine.shown > o.shown : mine.shown < o.shown))) continue;
+        if (!mine || figures.length < minYears) continue;
+        const beats = (o: { shown: number }) =>
+            most
+                ? mine.shown > o.shown || (ties && mine.shown === o.shown)
+                : mine.shown < o.shown || (ties && mine.shown === o.shown);
+        if (!others.every(beats)) continue;
         const next = (most ? Math.max : Math.min)(...others.map((o) => o.shown));
         return {
             kind,
             years: figures.map((f) => ({ year: f.year, value: f.shown })),
-            next: { value: next, years: others.filter((o) => o.shown === next).map((o) => o.year) },
+            next: others.length
+                ? { value: next, years: others.filter((o) => o.shown === next).map((o) => o.year) }
+                : null,
             share: mine.share ?? null,
             films: most ? mine.films : [...mine.films].reverse(),
+            ...(subject === undefined ? {} : { subject }),
         };
     }
     return null;
+};
+
+/**
+ * Fewer scored picks than this, all years together, and the best of them is
+ * hardly the best of anything.
+ */
+const BEST_PICK_MIN_PICKS = 3;
+
+/**
+ * Their picks in `year` with the highest members' average, at a tenth, of every
+ * pick they've made with the club. Each film's average is the members with the
+ * club the year it was watched, theirs among them, as
+ * {@link MEMBER_MEASURES.picksLoved} takes it, so guests don't move it.
+ */
+const bestPickIn = (
+    year: number,
+    member: TeamMember,
+    sources: RetrospectiveSources
+): MemberRetrospective['bestPick'] => {
+    const scored = sources.films.flatMap((film) => {
+        const watched = clubYear(film);
+        if (watched === null || isPodFilm(film)) return [];
+        if (!sameName(film.movieClubInfo?.selector, member.name)) return [];
+        const average = mean(memberScoresOn(film, membersIn(watched, sources)));
+        return average === null ? [] : [{ film, year: watched, average }];
+    });
+    if (scored.length < BEST_PICK_MIN_PICKS) return null;
+    if (new Set(scored.map((s) => s.year)).size < 2) return null;
+    const top = Math.max(...scored.map((s) => toTenth(s.average)));
+    const best = scored.filter((s) => toTenth(s.average) === top);
+    const theirs = best.filter((s) => s.year === year);
+    if (!theirs.length) return null;
+    return { films: theirs.map((s) => s.film), average: top, tied: best.length > 1 };
+};
+
+/** The first standout the year holds outright against every other year with club films. */
+const standoutIn = (year: number, sources: RetrospectiveSources): Standout | null =>
+    recordIn(
+        year,
+        clubYears(sources.films),
+        STANDOUTS,
+        (name, y) => figureIn(name, y, sources),
+        (name, value) => MEASURES[name].shown(value)
+    );
+
+// Member standout: how their year differed from their own others
+
+interface MemberMeasure {
+    /**
+     * Which of the year's club films it's taken over: every one they scored,
+     * for a measure of their scores, or only their own picks, for a measure of
+     * the films, which would otherwise be the club's figure over again.
+     */
+    over: 'scored' | 'picks';
+    /** Their figure for a year, from those films. */
+    figure: (films: FilmWithDate[], name: string, members: TeamMember[]) => Figure | null;
+    shown: (value: number) => number;
+    rate: boolean;
+}
+
+/** One of the club's measures of the films, taken over a member's own picks. */
+const ofTheirPicks = (measure: Measure): MemberMeasure => ({
+    ...measure,
+    over: 'picks',
+    figure: (films, _name, members) => measure.figure(films, members),
+});
+
+/** A member's own score on a film, or null when they gave none. */
+const theirScoreOn = (film: Film, name: string): number | null => {
+    const rating = film.movieClubInfo?.clubRatings.find((r) => sameName(r.user, name));
+    return validScore(rating?.score) ? rating!.score : null;
+};
+
+const MEMBER_MEASURES = {
+    /**
+     * Their average score over the club films they scored, popcorn pods
+     * included: the figure their scores slide prints.
+     */
+    score: {
+        over: 'scored',
+        rate: true,
+        shown: toTenth,
+        figure: (films, name) => averaged(films, (film) => theirScoreOn(film, name)),
+    },
+    countries: ofTheirPicks(MEASURES.countries),
+    languages: ofTheirPicks(MEASURES.languages),
+    notEnglish: ofTheirPicks(MEASURES.notEnglish),
+    notAmerican: ofTheirPicks(MEASURES.notAmerican),
+    releaseYear: ofTheirPicks(MEASURES.releaseYear),
+    runtime: ofTheirPicks(MEASURES.runtime),
+    /**
+     * How the club received their picks: the members' average score on each,
+     * theirs among them, averaged. The same per-film average the club deck
+     * uses, so guests don't move it. Only ever a high: a year their picks went
+     * down less well is no record to tell them about.
+     */
+    picksLoved: {
+        over: 'picks',
+        rate: true,
+        shown: toTenth,
+        figure: (films, _name, members) =>
+            averaged(films, (film) => mean(memberScoresOn(film, members))),
+    },
+    /**
+     * How far their score sat from the rest of the room's average on a film,
+     * either way, on average. The room is the other members with the club that
+     * year; a guest's score doesn't move it. Popcorn pods aren't in it.
+     */
+    apart: {
+        over: 'scored',
+        rate: true,
+        shown: toTenth,
+        figure: (films, name, members) =>
+            averaged(
+                films.filter((film) => !film.popcornPod),
+                (film) => {
+                    const theirs = theirScoreOn(film, name);
+                    const room = mean(
+                        memberScoresOn(
+                            film,
+                            members.filter((m) => !sameName(m.name, name))
+                        )
+                    );
+                    return theirs === null || room === null ? null : Math.abs(theirs - room);
+                }
+            ),
+    },
+} satisfies Record<string, MemberMeasure>;
+
+/**
+ * Their best score on one kind of film in a year: from one country, of one
+ * decade, genre or language, as the almanac counts a film under them. A record
+ * one film can hold, so a member with few picks, or a kind of film the club
+ * rarely meets, still has something of their own to say.
+ */
+const bestOf = (category: FavouriteCategory, value: string): MemberMeasure => ({
+    over: 'scored',
+    rate: false,
+    shown: toTenth,
+    figure: (films, name) => {
+        const ranked = films
+            .filter((film) => categoryValuesOf(film, category).includes(value))
+            .map((film) => ({ film, score: theirScoreOn(film, name) }))
+            .filter((f): f is { film: FilmWithDate; score: number } => f.score !== null)
+            .sort((a, b) => b.score - a.score);
+        return ranked.length ? { value: ranked[0].score, films: ranked.map((f) => f.film) } : null;
+    },
+});
+
+/**
+ * The order their favourites are tried in: where a film is from first, then
+ * when, then what kind, and its language last, which mostly repeats its country.
+ */
+const FAVOURITE_CATEGORIES: FavouriteCategory[] = ['country', 'decade', 'genre', 'language'];
+
+/** A fixed measure, or their best score on one kind of film: `"genre:Horror"`. */
+type MemberMeasureName = keyof typeof MEMBER_MEASURES | `${FavouriteCategory}:${string}`;
+
+const memberMeasure = (name: MemberMeasureName): MemberMeasure => {
+    const split = name.indexOf(':');
+    return split === -1
+        ? MEMBER_MEASURES[name as keyof typeof MEMBER_MEASURES]
+        : bestOf(name.slice(0, split) as FavouriteCategory, name.slice(split + 1));
+};
+
+const MEMBER_STANDOUTS: { kind: MemberStandoutKind; measure: MemberMeasureName; most: boolean }[] =
+    [
+        { kind: 'highest-score', measure: 'score', most: true },
+        { kind: 'lowest-score', measure: 'score', most: false },
+        { kind: 'picks-loved', measure: 'picksLoved', most: true },
+        { kind: 'most-countries', measure: 'countries', most: true },
+        { kind: 'most-languages', measure: 'languages', most: true },
+        { kind: 'least-english', measure: 'notEnglish', most: true },
+        { kind: 'least-american', measure: 'notAmerican', most: true },
+        { kind: 'oldest', measure: 'releaseYear', most: false },
+        { kind: 'agreed', measure: 'apart', most: false },
+        { kind: 'divided', measure: 'apart', most: true },
+        { kind: 'newest', measure: 'releaseYear', most: true },
+        { kind: 'longest', measure: 'runtime', most: true },
+    ];
+
+/**
+ * The first member standout their year holds outright against every other
+ * year they were with the club and had a figure for: a year they picked
+ * nothing has none of the measures of their picks. Failing all of those, their
+ * best score on one kind of film they saw this year, against their best on it
+ * in other years ({@link bestOf}).
+ */
+const memberStandoutIn = (
+    year: number,
+    member: TeamMember,
+    sources: RetrospectiveSources
+): Standout<MemberStandoutKind> | null => {
+    const theirFilmsIn = (y: number, over: MemberMeasure['over']) =>
+        clubFilmsIn(sources.films, y).filter((film) =>
+            over === 'scored'
+                ? theirScoreOn(film, member.name) !== null
+                : !isPodFilm(film) && sameName(film.movieClubInfo?.selector, member.name)
+        );
+    const years = clubYears(sources.films).filter((y) => inClubIn(member, y));
+    const minFilms = (measure: MemberMeasure) =>
+        measure.over === 'picks' ? STANDOUT_MIN_PICKS : STANDOUT_MIN_FILMS;
+    // Their favourites, category by category: within each, the kinds of film
+    // they've met in the most years first, where a record means the most.
+    const scored = years.map((y) => theirFilmsIn(y, 'scored'));
+    const categoryOf = (kind: FavouriteKind) => kind.replace('-favourite', '') as FavouriteCategory;
+    const valuesOf = (films: Film[], kind: FavouriteKind) =>
+        new Set(films.flatMap((film) => categoryValuesOf(film, categoryOf(kind))));
+    const favourites = FAVOURITE_CATEGORIES.flatMap((category) => {
+        const valuesIn = (films: Film[]) => valuesOf(films, `${category}-favourite`);
+        const theirs = scored.map(valuesIn);
+        const yearsWith = (value: string) => theirs.filter((v) => v.has(value)).length;
+        return [...valuesIn(theirFilmsIn(year, 'scored'))]
+            .sort((a, b) => yearsWith(b) - yearsWith(a) || a.localeCompare(b))
+            .map((value) => ({
+                kind: `${category}-favourite` as const,
+                measure: `${category}:${value}` as const,
+                most: true,
+                subject: value,
+            }));
+    });
+    const recordOf = (
+        standouts: typeof favourites | typeof MEMBER_STANDOUTS,
+        options?: { minYears?: number; ties?: boolean }
+    ) =>
+        recordIn<MemberStandoutKind, MemberMeasureName>(
+            year,
+            years,
+            standouts,
+            (name, y) => {
+                const measure = memberMeasure(name);
+                const films = theirFilmsIn(y, measure.over);
+                if (measure.rate && films.length < minFilms(measure)) return null;
+                return measure.figure(films, member.name, membersIn(y, sources));
+            },
+            (name, value) => memberMeasure(name).shown(value),
+            options
+        );
+    // A kind of film they met for the first time this year, the one they
+    // scored highest first, so a first is told on a good note.
+    const bestScoreOn = (value: string, category: FavouriteCategory) =>
+        Math.max(
+            ...theirFilmsIn(year, 'scored')
+                .filter((film) => categoryValuesOf(film, category).includes(value))
+                .map((film) => theirScoreOn(film, member.name) ?? -Infinity)
+        );
+    const firsts = favourites
+        .filter(
+            (f) => scored.filter((films) => valuesOf(films, f.kind).has(f.subject)).length === 1
+        )
+        .sort(
+            (a, b) =>
+                bestScoreOn(b.subject, categoryOf(b.kind)) -
+                bestScoreOn(a.subject, categoryOf(a.kind))
+        );
+    // Every year they were there gets something of its own. Failing an
+    // outright record, a best on one kind of film beats one other year of it,
+    // or matches their best on it, or is the first of its kind they've met.
+    const standout =
+        recordOf([...MEMBER_STANDOUTS, ...favourites]) ??
+        recordOf(favourites, { minYears: 2 }) ??
+        recordOf(favourites, { minYears: 2, ties: true }) ??
+        recordOf(firsts, { minYears: 1 });
+    if (!standout) return null;
+    // An average of their picks leaves out a year with a single pick; say so.
+    const fixed = MEMBER_STANDOUTS.find((s) => s.kind === standout.kind);
+    const measure = fixed && memberMeasure(fixed.measure);
+    const thin =
+        measure?.over === 'picks' && measure.rate
+            ? years.filter((y) => theirFilmsIn(y, 'picks').length === 1)
+            : [];
+    return thin.length ? { ...standout, thin } : standout;
 };
 
 // ---------------------------------------------------------------------------
@@ -1928,7 +2282,9 @@ export const buildMemberRetrospective = (
         count,
         scores,
         picks: theirPicks.length ? theirPicks : null,
+        bestPick: bestPickIn(year, member, sources),
         breakaway,
+        standout: memberStandoutIn(year, member, sources),
         log: logSlide,
         taste,
         director,

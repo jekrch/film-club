@@ -1,6 +1,6 @@
 import type { ProfilePatch } from '../api/clubApi';
 import type { BackdropMode, InterviewItem, TeamMember } from '../types/team';
-import { parseImageUrl, parseProfileImageUrl } from './imageUrl';
+import { parseImageUrl, parseSiteImageUrl } from './imageUrl';
 import { BACKDROP_FILM_LIMIT } from './profileBackdrop';
 
 /**
@@ -148,7 +148,7 @@ export function parseProfileForm(form: ProfileFormValues): ProfileParseResult {
 
     // Both links are URLs, but only the image may also be a site path — so they
     // get different parsers and have to name themselves in the message.
-    const image = parseProfileImageUrl(form.image);
+    const image = parseSiteImageUrl(form.image);
     if ('error' in image) return { error: `Profile picture: ${image.error}` };
 
     const url = parseImageUrl(form.url);

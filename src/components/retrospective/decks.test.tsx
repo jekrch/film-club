@@ -162,6 +162,7 @@ describe('retrospective decks', () => {
             'scores',
             'picks',
             'breakaway',
+            'standout',
             'log',
             'taste',
             'words',
@@ -169,6 +170,150 @@ describe('retrospective decks', () => {
             'closing',
         ]);
         deck.forEach((slide) => expect(renderSlide(slide.node)).toBeTruthy());
+    });
+
+    it('gives a member their own standout, set against their other years', () => {
+        // Three years of three films each; Jacob scored 2024 highest of his.
+        const yearOf = (year: number, jacob: number) =>
+            [1, 2, 3].map((i) =>
+                makeFilm({
+                    imdbID: `tt${year}00${i}`,
+                    title: `${year} film ${i}`,
+                    movieClubInfo: makeClubInfo({
+                        watchDate: `${i}/1/${year}`,
+                        clubRatings: four(6, 6, jacob, 6),
+                    }),
+                })
+            );
+        const report = buildMemberRetrospective(
+            2024,
+            'Jacob',
+            {
+                ...sources,
+                films: [...yearOf(2023, 5), ...yearOf(2024, 8), ...yearOf(2025, 6.5)],
+                watched: {},
+            },
+            NOW
+        )!;
+        const deck = memberDeck(report, [], '#7dd3fc');
+        const standout = renderSlide(deck.find((s) => s.id === 'standout')!.node);
+        expect(standout).toContain('What set your 2024 apart');
+        expect(standout).toContain('Your most generous year');
+        expect(standout).toContain('The next highest was 6.5, in 2025.');
+    });
+
+    it('names the country and the film for a member’s best score from it', () => {
+        // Jacob averages 6 every year, as far from the room in 2024 as in
+        // 2025; his best French film was 2024's.
+        const yearOf = (year: number, [us1, us2, french]: number[]) =>
+            [
+                ['United States', us1, 'An American'],
+                ['United States', us2, 'Another American'],
+                ['France', french, 'Le Film'],
+            ].map(([country, score, title], i) =>
+                makeFilm({
+                    imdbID: `tt${year}00${i}`,
+                    title: `${title} (${year})`,
+                    country: country as string,
+                    movieClubInfo: makeClubInfo({
+                        selector: 'Andy',
+                        watchDate: `${i + 1}/1/${year}`,
+                        clubRatings: four(6, 6, score as number, 6),
+                    }),
+                })
+            );
+        const report = buildMemberRetrospective(
+            2024,
+            'Jacob',
+            {
+                ...sources,
+                films: [
+                    ...yearOf(2023, [6, 6, 6]),
+                    ...yearOf(2024, [5, 5, 8]),
+                    ...yearOf(2025, [7, 4, 7]),
+                ],
+                watched: {},
+            },
+            NOW
+        )!;
+        const slide = memberDeck(report, [], '#7dd3fc').find((s) => s.id === 'standout')!;
+        const text = renderSlide(slide.node);
+        expect(text).toContain('Your highest score ever for a French film');
+        expect(text).toContain('your score for Le Film (2024)');
+        expect(text).toContain('The next highest was 7.0, in 2025.');
+    });
+
+    it('tells a member’s match or first without claiming a record', () => {
+        const one = (id: string, date: string, jacob: number, country = 'United States') =>
+            makeFilm({
+                imdbID: id,
+                title: `Film ${id}`,
+                country,
+                language: 'English',
+                year: '1985',
+                genre: 'Drama',
+                movieClubInfo: makeClubInfo({
+                    selector: 'Andy',
+                    watchDate: date,
+                    clubRatings: four(6, 6, jacob, 6),
+                }),
+            });
+        const slideFor = (year: number, films: ReturnType<typeof one>[]) => {
+            const report = buildMemberRetrospective(
+                year,
+                'Jacob',
+                { ...sources, films, watched: {} },
+                NOW
+            )!;
+            const deck = memberDeck(report, [], '#7dd3fc');
+            return renderSlide(deck.find((s) => s.id === 'standout')!.node);
+        };
+
+        const matched = slideFor(2024, [one('tt1', '1/1/2023', 7), one('tt2', '1/1/2024', 7)]);
+        expect(matched).toContain('Your highest score ever for an American film');
+        expect(matched).toContain('Matched in 2023.');
+        expect(matched).not.toContain('The next highest');
+
+        const first = slideFor(2024, [
+            one('tt1', '1/1/2023', 7),
+            one('tt2', '1/1/2024', 5),
+            one('tt3', '2/1/2024', 6, 'Japan'),
+        ]);
+        expect(first).toContain('Your first Japanese film');
+        expect(first).toContain('your score for Film tt3');
+        expect(first).not.toContain('by year');
+    });
+
+    it('stars the chart and footnotes a year left out for one pick', () => {
+        const picksOf = (year: number, room: number, n: number) =>
+            Array.from({ length: n }, (_, i) =>
+                makeFilm({
+                    imdbID: `tt${year}00${i}`,
+                    title: `${year} pick ${i}`,
+                    movieClubInfo: makeClubInfo({
+                        selector: 'Jacob',
+                        watchDate: `${i + 1}/1/${year}`,
+                        clubRatings: four(room, room, 6, room),
+                    }),
+                })
+            );
+        const films = [
+            ...picksOf(2023, 5, 2),
+            ...picksOf(2024, 8, 2),
+            ...picksOf(2025, 6, 2),
+            ...picksOf(2026, 9, 1),
+        ];
+        const report = buildMemberRetrospective(
+            2024,
+            'Jacob',
+            { ...sources, films, watched: {} },
+            NOW
+        )!;
+        const slide = memberDeck(report, [], '#7dd3fc').find((s) => s.id === 'standout')!;
+        const text = renderSlide(slide.node);
+        expect(text).toContain('The year your picks went over best');
+        expect(text).toContain('by year*');
+        expect(text).toContain('* 2026 had only one pick, so it’s left out.');
     });
 
     it('saves a standout score for its own slide, after the calendar', () => {

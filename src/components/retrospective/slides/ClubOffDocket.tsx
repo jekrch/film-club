@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchFilmSummary } from '../../../api/filmSummaries';
 import { getTeamMemberByName } from '../../../types/team';
+import { isImageSource } from '../../../utils/imageUrl';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
 import Slide, { Eyebrow, Reveal } from '../Slide';
 import { give } from '../../../hooks/useSqueeze';
@@ -46,7 +47,7 @@ const ClubOffDocket: React.FC<ClubOffDocketProps> = ({ offDocket, sharedStills, 
             ...sharedStills,
             ...(fetched && fetched.id === leadID ? fetched.urls.slice(1) : []),
         ]),
-    ].filter((url) => url && url.startsWith('http') && !url.includes('N/A'));
+    ].filter((url) => isImageSource(url) && !url.includes('N/A'));
     return (
         <Slide>
             <Reveal>

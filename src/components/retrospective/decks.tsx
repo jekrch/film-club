@@ -2,6 +2,7 @@ import type { Film } from '../../types/film';
 import type { TeamMember } from '../../types/team';
 import { COPPER } from '../../utils/chartTheme';
 import { getFilmBackdrops } from '../../utils/filmUtils';
+import { isImageSource } from '../../utils/imageUrl';
 import { stillsFor } from '../../utils/retrospectiveArt';
 import type { ClubRetrospective, MemberRetrospective } from '../../utils/retrospectiveUtils';
 import { keyArtOrder } from './posterImage';
@@ -27,6 +28,7 @@ import MemberLog from './slides/MemberLog';
 import MemberPicks from './slides/MemberPicks';
 import MemberScores from './slides/MemberScores';
 import MemberShelf from './slides/MemberShelf';
+import MemberStandout from './slides/MemberStandout';
 import MemberTaste from './slides/MemberTaste';
 import TitleCard from './slides/TitleCard';
 import WordsSlide from './slides/WordsSlide';
@@ -54,8 +56,7 @@ const PINNED_KEY_ART: Record<string, Record<number, string>> = {
 };
 
 /** A club film's own stills, read off the record the report already holds. */
-const filmStills = (film: Film): string[] =>
-    getFilmBackdrops(film).filter((url) => url.startsWith('http'));
+const filmStills = (film: Film): string[] => getFilmBackdrops(film).filter(isImageSource);
 
 /** Stills of films known only by id (logged films, reviews), interleaved. */
 const stillsOfIds = (ids: string[]): string[] =>
@@ -347,7 +348,14 @@ export const memberDeck = (
         !!report.picks && {
             id: 'picks',
             stills: stillsOfFilms(report.picks),
-            node: <MemberPicks picks={report.picks} stillsOf={filmStills} accent={accent} />,
+            node: (
+                <MemberPicks
+                    picks={report.picks}
+                    bestPick={report.bestPick}
+                    stillsOf={filmStills}
+                    accent={accent}
+                />
+            ),
         }
     );
     add(
@@ -355,6 +363,20 @@ export const memberDeck = (
             id: 'breakaway',
             stills: filmStills(report.breakaway.film),
             node: <MemberBreakaway breakaway={report.breakaway} accent={accent} />,
+        }
+    );
+    add(
+        !!report.standout && {
+            id: 'standout',
+            stills: stillsOfFilms(report.standout.films.slice(0, 4)),
+            node: (
+                <MemberStandout
+                    year={report.year}
+                    inProgress={report.inProgress}
+                    standout={report.standout}
+                    accent={accent}
+                />
+            ),
         }
     );
     add(

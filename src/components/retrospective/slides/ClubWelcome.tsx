@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Easing } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { prefersReducedMotion } from '../../../utils/motion';
 import type { ClubRetrospective } from '../../../utils/retrospectiveUtils';
@@ -22,8 +22,8 @@ const AT = {
     eyebrow: 0.3,
     line: 0.6,
     face: 2.0,
-    name: 3.3,
-    film: 3.8,
+    name: 4.7,
+    film: 5.2,
 } as const;
 
 /**
@@ -33,7 +33,19 @@ const AT = {
  */
 const ROLL_FROM = -450;
 const ROLL_TURN = -400;
-const ROLL = { type: 'spring', stiffness: 45, damping: 8, mass: 0.9 } as const;
+
+/**
+ * The roll itself: a slow coast that eases to a stop just past centre, then
+ * one soft rock back and a smaller one forward before it rests. The overshoot
+ * and its turn are kept in the same wheel ratio as the roll, so the rock
+ * reads as the face teetering rather than sliding.
+ */
+const ROLL_S = 3.0;
+const ROLL_TIMES = [0, 0.68, 0.86, 1];
+const ROLL_EASE: Easing[] = [[0.25, 0.6, 0.3, 1], 'easeInOut', 'easeInOut'];
+const ROLL_X = [ROLL_FROM, 12, -4, 0];
+const ROLL_ROTATE = [ROLL_TURN, 10, -3.5, 0];
+const ROLL = { duration: ROLL_S, times: ROLL_TIMES, ease: ROLL_EASE, delay: AT.face };
 
 /** Fades up into place at `at` seconds, or simply is there for reduced motion. */
 const Arrive: React.FC<{
@@ -78,12 +90,15 @@ const ClubWelcome: React.FC<ClubWelcomeProps> = ({ year, welcome, accent }) => {
                     className="mx-auto w-fit rounded-full p-1"
                     style={{ boxShadow: `0 0 0 2px ${accent}` }}
                     initial={still ? false : { x: ROLL_FROM, rotate: ROLL_TURN, opacity: 0 }}
-                    animate={{ x: 0, rotate: 0, opacity: 1 }}
+                    animate={
+                        still
+                            ? { x: 0, rotate: 0, opacity: 1 }
+                            : { x: ROLL_X, rotate: ROLL_ROTATE, opacity: 1 }
+                    }
                     transition={{
-                        // A little past and back again, like it rolled in a touch too fast.
-                        x: { ...ROLL, delay: AT.face },
-                        rotate: { ...ROLL, delay: AT.face },
-                        opacity: { duration: 0.2, delay: AT.face },
+                        x: ROLL,
+                        rotate: ROLL,
+                        opacity: { duration: 0.4, delay: AT.face },
                     }}
                 >
                     <CircularImage

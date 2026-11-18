@@ -1,50 +1,18 @@
 import React from 'react';
 import { MAX_SCORE } from '../../../utils/ratingEditUtils';
 import type { Standout, StandoutKind } from '../../../utils/retrospectiveUtils';
-import Slide, { Eyebrow, Reveal } from '../Slide';
-import { YearColumns } from './shared';
-import { beat, listNames } from './format';
+import StandoutSlide from './StandoutSlide';
+import {
+    COUNT,
+    MONTHS_OF_YEAR,
+    RELEASE,
+    SCORE,
+    SHARE,
+    SPREAD,
+    type StandoutCopy,
+} from './standoutScales';
 
-/** How a figure reads, and how tall its column stands among the others, 0 to 1. */
-interface Scale {
-    format: (value: number) => string;
-    scale: (values: number[]) => (value: number) => number;
-}
-
-const tenths = (value: number): string => value.toFixed(1);
-const whole = (value: number): string => String(value);
-const percent = (value: number): string => `${value}%`;
-const ofMost = (values: number[]) => (value: number) => value / Math.max(...values);
-
-const SCORE: Scale = { format: tenths, scale: () => (value) => value / MAX_SCORE };
-const COUNT: Scale = { format: whole, scale: ofMost };
-const SHARE: Scale = { format: percent, scale: () => (value) => value / 100 };
-const SPREAD: Scale = { format: tenths, scale: ofMost };
-/**
- * Release years all sit around 1980, so the columns start a decade below the
- * earliest rather than at zero, where they'd stand level.
- */
-const RELEASE: Scale = {
-    format: whole,
-    scale: (values) => {
-        const floor = Math.floor(Math.min(...values) / 10) * 10 - 10;
-        const top = Math.max(...values);
-        return (value) => (value - floor) / (top - floor);
-    },
-};
-
-interface Copy {
-    headline: string;
-    /** What the big figure counts, under it. */
-    unit: string;
-    /** "The next highest was 6.5, in 2022": the word after "next". */
-    next: string;
-    /** The chart's label. */
-    chart: string;
-    scale: Scale;
-}
-
-const COPY: Record<StandoutKind, Copy> = {
+const COPY: Record<StandoutKind, StandoutCopy> = {
     'highest-score': {
         headline: 'Our highest-scoring year',
         unit: `our average score, out of ${MAX_SCORE}`,
@@ -141,7 +109,7 @@ const COPY: Record<StandoutKind, Copy> = {
         unit: 'months with a screening',
         next: 'most',
         chart: 'Months with a screening, by year',
-        scale: { format: whole, scale: () => (value) => value / 12 },
+        scale: MONTHS_OF_YEAR,
     },
 };
 
@@ -152,62 +120,16 @@ interface ClubStandoutProps {
     accent: string;
 }
 
-/**
- * The one way the year stood out from all the others: said in a line, its
- * figure set large, the closest any other year came, and every year's figure
- * in a row of columns with this one in the accent.
- */
-const ClubStandout: React.FC<ClubStandoutProps> = ({ year, inProgress, standout, accent }) => {
-    const copy = COPY[standout.kind];
-    const { format, scale } = copy.scale;
-    const value = standout.years.find((y) => y.year === year)!.value;
-    const figure = standout.share
-        ? `${standout.share.count} of ${standout.share.of}`
-        : format(value);
-
-    return (
-        <Slide>
-            <Reveal>
-                <Eyebrow color={accent}>What set {year} apart</Eyebrow>
-                <h2 className="mt-3 font-serif text-3xl leading-tight text-balance text-slate-50 sm:text-5xl">
-                    {copy.headline}
-                    {inProgress ? ', so far' : ''}
-                </h2>
-            </Reveal>
-
-            <Reveal step={1}>
-                <p
-                    className="mt-6 font-figures figures-trim text-[5.5rem] leading-none lining-nums tabular-nums sm:mt-8 sm:text-[8rem]"
-                    style={{ color: accent }}
-                >
-                    {figure}
-                </p>
-                <p className="mt-2 text-lg text-slate-300 sm:text-xl">{copy.unit}</p>
-            </Reveal>
-
-            <Reveal step={2}>
-                <p className="mt-4 text-lg text-slate-400 sm:text-xl">
-                    The next {copy.next} was {format(standout.next.value)}, in{' '}
-                    {listNames(standout.next.years.map(String))}.
-                </p>
-            </Reveal>
-
-            <Reveal step={3}>
-                <div className="mt-8 sm:mt-10">
-                    <YearColumns
-                        label={copy.chart}
-                        columns={standout.years}
-                        year={year}
-                        format={format}
-                        scale={scale(standout.years.map((y) => y.value))}
-                        accent={accent}
-                        delay={beat(3) + 0.2}
-                        tall
-                    />
-                </div>
-            </Reveal>
-        </Slide>
-    );
-};
+/** The one way the club's year stood out from all its others. */
+const ClubStandout: React.FC<ClubStandoutProps> = ({ year, inProgress, standout, accent }) => (
+    <StandoutSlide
+        eyebrow={`What set ${year} apart`}
+        year={year}
+        inProgress={inProgress}
+        standout={standout}
+        copy={COPY[standout.kind]}
+        accent={accent}
+    />
+);
 
 export default ClubStandout;

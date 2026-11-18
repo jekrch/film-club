@@ -53,19 +53,36 @@ export function parseImageUrl(raw: string | null | undefined): ImageUrlResult {
 }
 
 /**
- * The same rule for a member's own avatar, which may additionally be a path
- * into the site's `public/images`.
+ * Whether `url` is a path into the site's own `public/` (`/images/andy.jpg`).
+ * It has to be site-absolute and single-slashed: `//host/x` is a
+ * protocol-relative URL to another origin wearing a path's clothes.
+ */
+export const isSiteImagePath = (url: string): boolean =>
+    url.startsWith('/') && !url.startsWith('//') && !url.includes('..');
+
+/**
+ * Whether a stored image value is something an `<img>` on this site can load:
+ * a full URL, or a path into the site's own `public/images`. Stills are kept
+ * there when the only copies online are too small to fill a screen.
+ */
+export const isImageSource = (url: string | null | undefined): url is string =>
+    !!url && (url.startsWith('http') || isSiteImagePath(url));
+
+/**
+ * The same rule for a field whose stored value may also be a path into the
+ * site's `public/images`: a member's avatar, and a club film's cover and
+ * background.
  *
- * That exception exists because all six profiles are stored that way
- * (`/images/andy.jpg`), and a field that refused its own current value would
- * fail the first time someone edited the bio next to it. A path has to be
- * site-absolute and single-slashed: `//host/x` is a protocol-relative URL to
- * another origin wearing a path's clothes.
+ * That exception exists because those values are stored that way
+ * (`/images/andy.jpg`, `/images/films/<id>-backdrop.jpg`), and a field that
+ * refused its own current value would fail the first time someone edited the
+ * field next to it.
  *
  * Mirrors `validateProfileImage` in `worker/src/validate.ts`, which is the copy
- * that is actually trusted.
+ * that is actually trusted. The worker's film fields still take `https` only,
+ * which is fine while the form sends just the fields that changed.
  */
-export function parseProfileImageUrl(raw: string | null | undefined): ImageUrlResult {
+export function parseSiteImageUrl(raw: string | null | undefined): ImageUrlResult {
     const trimmed = (raw ?? '').trim();
     if (trimmed.startsWith('/')) {
         if (trimmed.length > IMAGE_URL_LIMIT) {
@@ -73,7 +90,7 @@ export function parseProfileImageUrl(raw: string | null | undefined): ImageUrlRe
                 error: `That path is ${trimmed.length} characters; the limit is ${IMAGE_URL_LIMIT}.`,
             };
         }
-        if (trimmed.startsWith('//') || trimmed.includes('..')) {
+        if (!isSiteImagePath(trimmed)) {
             return { error: 'A site image path looks like /images/andy.jpg.' };
         }
         return { value: trimmed };

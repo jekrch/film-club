@@ -20,6 +20,7 @@
  */
 
 import { EDITOR_API_URL } from '../../config/editorEnv';
+import { isImageSource, isSiteImagePath } from '../../utils/imageUrl';
 
 const WIDTH = 1080;
 const HEIGHT = 1920;
@@ -103,13 +104,17 @@ export const canvasUrl = (url: string, proxy: string = EDITOR_API_URL): string =
     return url;
 };
 
-/** Whether the canvas can draw this image, directly or through the proxy. */
+/**
+ * Whether the canvas can draw this image, directly or through the proxy. One
+ * of the site's own (`/images/…`) is same-origin and never taints it.
+ */
 const drawable = (url: string, proxy: string): boolean =>
-    !NO_CORS.test(url) ? CORS_HOSTS.test(url) || (!!proxy && PROXIED.test(url)) : !!proxy;
+    isSiteImagePath(url) ||
+    (!NO_CORS.test(url) ? CORS_HOSTS.test(url) || (!!proxy && PROXIED.test(url)) : !!proxy);
 
 /** Stills in the order to try them: the ones the canvas can draw first, each list's order kept. */
 export const keyArtOrder = (urls: string[], proxy: string = EDITOR_API_URL): string[] => {
-    const usable = [...new Set(urls.filter((url) => url?.startsWith('http')))];
+    const usable = [...new Set(urls.filter(isImageSource))];
     return [
         ...usable.filter((url) => drawable(url, proxy)),
         ...usable.filter((url) => !drawable(url, proxy)),

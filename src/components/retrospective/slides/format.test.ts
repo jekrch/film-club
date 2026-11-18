@@ -1,4 +1,4 @@
-import { posterFigures, posterFilename, yearOnYear } from './format';
+import { filmFrom, filmOfKind, posterFigures, posterFilename, yearOnYear } from './format';
 
 const years = (...counts: number[]) =>
     counts.map((withClub, i) => ({ year: 2026 - counts.length + 1 + i, withClub }));
@@ -65,5 +65,23 @@ describe('posterFigures', () => {
 describe('posterFilename', () => {
     it('names the file for the year and the member', () => {
         expect(posterFilename(2026, 'Jacob')).toMatch(/^criterion-club-2026-[a-z]+\.jpg$/);
+    });
+});
+
+describe('filmFrom', () => {
+    it('names a film by where it was made, with the article it takes', () => {
+        expect(filmFrom('United States')).toBe('an American film');
+        expect(filmFrom('France')).toBe('a French film');
+        expect(filmFrom('Italy')).toBe('an Italian film');
+        expect(filmFrom('Bhutan')).toBe('a film from Bhutan');
+    });
+});
+
+describe('filmOfKind', () => {
+    it('names a kind of film by its decade, genre or language', () => {
+        expect(filmOfKind('decade', '1960s')).toBe('a film from the 1960s');
+        expect(filmOfKind('genre', 'Film-Noir')).toBe('a film noir');
+        expect(filmOfKind('genre', 'Action')).toBe('an action film');
+        expect(filmOfKind('language', 'Arabic')).toBe('a film in Arabic');
     });
 });
