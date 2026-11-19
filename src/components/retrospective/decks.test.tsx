@@ -136,6 +136,7 @@ describe('retrospective decks', () => {
         expect(deck.map((s) => s.id)).toEqual([
             'title',
             'count',
+            'welcome-greg',
             'calendar',
             'places',
             'together',

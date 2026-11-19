@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import SearchPalette from './SearchPalette';
 import Navbar from '../layout/Navbar';
 import { serveWatchedLogs } from '../../test-utils/watchedFetch';
+import { MODAL_ANIMATION_MS } from '../../hooks/useModalPresence';
 
 // The auth control in the nav has nothing to do with search, and wants a
 // provider and Google's script to render.
@@ -97,16 +98,29 @@ describe('Navbar search', () => {
         expect(screen.getByRole('dialog', { name: 'Search the site' })).toBeInTheDocument();
     });
 
-    it('toggles on ⌘K and Ctrl+K', async () => {
-        renderNav();
-        act(() => {
-            fireEvent.keyDown(window, { key: 'k', metaKey: true });
-        });
-        expect(screen.getByRole('dialog', { name: 'Search the site' })).toBeInTheDocument();
+    it('toggles on ⌘K and Ctrl+K', () => {
+        // Fake timers so the exit animation's unmount timer runs on cue. On real
+        // timers a loaded full-suite run could push it past `waitFor`'s timeout.
+        jest.useFakeTimers();
+        try {
+            renderNav();
+            act(() => {
+                fireEvent.keyDown(window, { key: 'k', metaKey: true });
+            });
+            const dialog = screen.getByRole('dialog', { name: 'Search the site' });
+            expect(dialog).toBeInTheDocument();
 
-        act(() => {
-            fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
-        });
-        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+            act(() => {
+                fireEvent.keyDown(window, { key: 'k', ctrlKey: true });
+            });
+            expect(dialog).toHaveClass('animate-modal-panel-out');
+
+            act(() => {
+                jest.advanceTimersByTime(MODAL_ANIMATION_MS);
+            });
+            expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 });
