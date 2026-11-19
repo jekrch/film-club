@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import CircularImage from '../components/common/CircularImage';
-import { TeamMember, teamMembers } from '../types/team';
+import { TeamMember, teamMembers, isCommitteeMember as isCommittee } from '../types/team';
 import { Film, filmData } from '../types/film';
 import { parseWatchDate } from '../utils/filmUtils';
 import PageLayout from '../components/layout/PageLayout';
@@ -12,8 +12,6 @@ import HeroBanner from '../components/common/HeroBanner';
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-// A queue position is what puts a member in the selection rotation.
-const isCommittee = (member: TeamMember) => typeof member.queue === 'number' && member.queue > 0;
 const committee = teamMembers.filter(isCommittee);
 const friends = teamMembers.filter((member) => !isCommittee(member));
 

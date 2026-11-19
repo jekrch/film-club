@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EyeIcon, FilmIcon, PlusIcon, QueueListIcon } from '@heroicons/react/24/outline';
 
@@ -10,6 +10,7 @@ import Button from '../components/common/Button';
 import WallEventRow from '../components/wall/WallEventRow';
 import LogFilmDialog from '../components/wall/LogFilmDialog';
 import EditLogDialog from '../components/wall/EditLogDialog';
+import WallSearchPanel, { WallSearchToggle } from '../components/wall/WallSearch';
 import { KIND_ACCENT } from '../components/wall/wallAccents';
 import type { IconComponent } from '../components/common/trophyIcons';
 import { entryFrameSource, filmFrameSource, type FrameSource } from '../utils/frameSources';
@@ -20,13 +21,18 @@ import { ALL_MEMBERS, entriesFor, useWatchedLog } from '../hooks/useWatchedLog';
 import { watchedPathFor, watchedRowId } from '../utils/watchedUtils';
 import {
     buildWall,
+    eventMembers,
     groupByMonth,
     mergeTrophyRows,
     narrowWall,
+    rankWallRows,
+    refineWall,
     wallKinds,
     type LogEvent,
     type WallEvent,
     type WallEventKind,
+    type WallOrder,
+    type WallRow,
 } from '../utils/wallUtils';
 
 /**
@@ -133,6 +139,20 @@ const eventFrameSource = (event: WallEvent): FrameSource | null => {
 const LOG_BUTTON_CLASS =
     'inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-blue-500/50 bg-blue-500/10 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.12em] text-blue-200 transition-colors duration-200 hover:border-blue-400 hover:bg-blue-500/20 hover:text-blue-100';
 
+/** One run of the timeline under a heading: a month, or the whole ranking. */
+interface WallSection {
+    key: string;
+    label: string;
+    /** What the heading counts: the month's events, or every ranked row. */
+    count: number;
+    rows: WallRow[];
+}
+
+/** Whether a keystroke landed somewhere that takes text, where `/` is just a slash. */
+const isTyping = (target: EventTarget | null): boolean =>
+    target instanceof HTMLElement &&
+    (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
+
 const WallPage: React.FC = () => {
     const { configured, status, member, canEditAs } = useClubAuth();
     const canLog = configured && status === 'signed-in' && member !== null;
@@ -176,22 +196,82 @@ const WallPage: React.FC = () => {
     /** The kinds this club has actually recorded — no chip for an empty filter. */
     const present = useMemo(() => wallKinds(events), [events]);
 
-    const filtered = useMemo(() => narrowWall(events, kinds), [events, kinds]);
+    // The search panel. Typing is deferred so the field never waits on the wall
+    // redrawing under it.
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [focusSignal, setFocusSignal] = useState(0);
+    const [query, setQuery] = useState('');
+    const deferredQuery = useDeferredValue(query);
+    const [members, setMembers] = useState<Set<string>>(new Set());
+    const [order, setOrder] = useState<WallOrder>('newest');
+    const refined = query.trim() !== '' || members.size > 0 || order !== 'newest';
 
-    // Paged in events rather than in boxes, so "40 of 112" counts the same
-    // things the heading does. The fold happens inside each month, after the
-    // cut: a month never splits a same-day run, so folding per month gives the
-    // same boxes as folding the whole page would.
-    const months = useMemo(
-        () =>
-            groupByMonth(filtered.slice(0, visible)).map((month) => ({
-                ...month,
-                rows: mergeTrophyRows(month.events),
-            })),
-        [filtered, visible]
+    /** The members with anything on the wall, in roster order — no chip for nobody. */
+    const presentMembers = useMemo(() => {
+        const names = new Set(events.flatMap(eventMembers));
+        return ALL_MEMBERS.filter((name) => names.has(name.toLowerCase()));
+    }, [events]);
+
+    const filtered = useMemo(
+        () => refineWall(narrowWall(events, kinds), { query: deferredQuery, members }),
+        [events, kinds, deferredQuery, members]
     );
-    const shown = Math.min(visible, filtered.length);
-    const { containerRef: timelineRef, prepareReplay } = useListEntrance(months);
+
+    // By date, paged in events rather than in boxes, so "40 of 112" counts the
+    // same things the heading does. The fold happens inside each month, after
+    // the cut: a month never splits a same-day run, so folding per month gives
+    // the same boxes as folding the whole page would.
+    //
+    // By score there are no months to fold within, and a ranking has to be
+    // folded before it is cut (see `rankWallRows`), so it pages in rows.
+    const ranked = useMemo(
+        () => (order === 'newest' ? null : rankWallRows(filtered, order)),
+        [filtered, order]
+    );
+    const total = ranked ? ranked.length : filtered.length;
+    const sections = useMemo<WallSection[]>(() => {
+        if (ranked) {
+            if (ranked.length === 0) return [];
+            return [
+                {
+                    key: `ranked-${order}`,
+                    label: order === 'highest' ? 'Highest scored' : 'Lowest scored',
+                    count: ranked.length,
+                    rows: ranked.slice(0, visible),
+                },
+            ];
+        }
+        return groupByMonth(filtered.slice(0, visible)).map((month) => ({
+            key: month.key,
+            label: month.label,
+            count: month.events.length,
+            rows: mergeTrophyRows(month.events),
+        }));
+    }, [ranked, filtered, order, visible]);
+    const shown = Math.min(visible, total);
+    const { containerRef: timelineRef, prepareReplay } = useListEntrance(sections);
+
+    // `/` opens the search from anywhere on the page, as it does on most sites
+    // that have one, and pulls focus back into it if it's already open.
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey) return;
+            if (isTyping(event.target) || document.querySelector('[role="dialog"]')) return;
+            event.preventDefault();
+            setSearchOpen(true);
+            setFocusSignal((count) => count + 1);
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, []);
+
+    const resetRefinement = () => {
+        prepareReplay();
+        setQuery('');
+        setMembers(new Set());
+        setOrder('newest');
+        setVisible(PAGE_SIZE);
+    };
 
     // Drawn from the newest events rather than the whole history, so the banner
     // shows what the club has been watching lately instead of a decade's
@@ -213,8 +293,10 @@ const WallPage: React.FC = () => {
         reapply();
         setJustLogged({ imdbID, title });
         // A wall narrowed to screenings or lists would swallow the new row,
-        // which reads exactly like a save that didn't take.
+        // which reads exactly like a save that didn't take. So would a search,
+        // another member's name, or a ranking that puts it forty rows down.
         setKinds((current) => (current.size === 0 || current.has('log') ? current : new Set()));
+        if (refined) resetRefinement();
     };
 
     const toggle = (kind: WallEventKind) => {
@@ -269,12 +351,20 @@ const WallPage: React.FC = () => {
                 <AccentCard className="mb-12">
                     <div className="mb-6 flex flex-wrap items-center gap-3">
                         <h4 className="text-xl font-bold text-slate-100">
-                            {loadingLogs
-                                ? 'Events'
-                                : `${filtered.length} Event${filtered.length !== 1 ? 's' : ''}`}
+                            {loadingLogs ? 'Events' : `${total} Event${total !== 1 ? 's' : ''}`}
                         </h4>
                         <span className="h-px flex-grow bg-slate-700/60" />
                         <div className="flex flex-wrap gap-1.5">
+                            {!loadingLogs && (
+                                <WallSearchToggle
+                                    open={searchOpen}
+                                    refined={refined}
+                                    onToggle={() => {
+                                        setSearchOpen((open) => !open);
+                                        setFocusSignal((count) => count + 1);
+                                    }}
+                                />
+                            )}
                             {FILTERS.filter((filter) => present.has(filter.kind)).map(
                                 ({ kind, label, Icon }) => (
                                     <Button
@@ -304,6 +394,38 @@ const WallPage: React.FC = () => {
                         </div>
                     </div>
 
+                    <WallSearchPanel
+                        open={searchOpen}
+                        focusSignal={focusSignal}
+                        query={query}
+                        onQueryChange={(next) => {
+                            setQuery(next);
+                            setVisible(PAGE_SIZE);
+                        }}
+                        members={presentMembers}
+                        selected={members}
+                        onToggleMember={(name) => {
+                            prepareReplay();
+                            setMembers((current) => {
+                                const next = new Set(current);
+                                const key = name.toLowerCase();
+                                if (!next.delete(key)) next.add(key);
+                                return next;
+                            });
+                            setVisible(PAGE_SIZE);
+                        }}
+                        order={order}
+                        onOrderChange={(next) => {
+                            if (next === order) return;
+                            prepareReplay();
+                            setOrder(next);
+                            setVisible(PAGE_SIZE);
+                        }}
+                        refined={refined}
+                        onReset={resetRefinement}
+                        onClose={() => setSearchOpen(false)}
+                    />
+
                     {canLog && justLogged && (
                         <p className="mb-6 text-sm text-jade-300" role="status">
                             Logged {justLogged.title}.{' '}
@@ -326,13 +448,26 @@ const WallPage: React.FC = () => {
                     <div ref={timelineRef}>
                         {loadingLogs ? (
                             <p className="py-6 text-center text-sm text-slate-500">Loading…</p>
-                        ) : months.length === 0 ? (
-                            <p className="py-6 text-center italic text-slate-400">
-                                Nothing here yet. Watch something.
-                            </p>
+                        ) : sections.length === 0 ? (
+                            refined ? (
+                                <div className="flex flex-col items-center gap-2 py-6 text-center">
+                                    <p className="italic text-slate-400">
+                                        {order !== 'newest' && filtered.length > 0
+                                            ? 'Nothing scored matches that.'
+                                            : 'Nothing matches that.'}
+                                    </p>
+                                    <Button variant="link" size="xs" onClick={resetRefinement}>
+                                        Show everything
+                                    </Button>
+                                </div>
+                            ) : (
+                                <p className="py-6 text-center italic text-slate-400">
+                                    Nothing here yet. Watch something.
+                                </p>
+                            )
                         ) : (
                             <div className="space-y-8">
-                                {months.map((month, monthIndex) => (
+                                {sections.map((month, monthIndex) => (
                                     <section key={month.key}>
                                         <div
                                             data-entrance={`month-${month.key}`}
@@ -343,7 +478,7 @@ const WallPage: React.FC = () => {
                                             </h5>
                                             <span className="h-px flex-grow bg-slate-700/60" />
                                             <span className="text-xs tabular-nums text-slate-600">
-                                                {month.events.length}
+                                                {month.count}
                                             </span>
                                         </div>
 
@@ -361,7 +496,7 @@ const WallPage: React.FC = () => {
                                                     // boundary — the months are headings
                                                     // over one timeline, not four.
                                                     connected={
-                                                        monthIndex < months.length - 1 ||
+                                                        monthIndex < sections.length - 1 ||
                                                         index < month.rows.length - 1
                                                     }
                                                     onEdit={editHandler(row.lead)}
@@ -373,7 +508,7 @@ const WallPage: React.FC = () => {
                             </div>
                         )}
 
-                        {shown < filtered.length && (
+                        {shown < total && (
                             <div
                                 data-entrance="show-more"
                                 className="mt-8 flex flex-col items-center gap-2"
@@ -386,7 +521,7 @@ const WallPage: React.FC = () => {
                                     Show more
                                 </Button>
                                 <span className="text-xs uppercase tracking-widest text-slate-600">
-                                    {shown} of {filtered.length}
+                                    {shown} of {total}
                                 </span>
                             </div>
                         )}

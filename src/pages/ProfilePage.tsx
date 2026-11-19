@@ -29,6 +29,7 @@ import { useClubAuth } from '../auth/GoogleAuth';
 import { useMemberProfile } from '../hooks/useMemberProfile';
 import { useProfileData } from '../hooks/useProfileData';
 import { profileBackdropSources } from '../utils/profileBackdrop';
+import { isCommitteeMember } from '../types/team';
 
 const ProfilePage: React.FC = () => {
     const { memberName } = useParams<{ memberName: string }>();
@@ -79,8 +80,14 @@ const ProfilePage: React.FC = () => {
         shown.interview && shown.interview.length > MAX_INTERVIEW_ITEMS_BEFORE_SCROLL;
     const collapsedInterviewMaxHeight = 'max-h-80';
     const hasEnoughControversialFilms = mostControversialFilms.length >= 1;
+    // A friend of the club who hasn't selected or scored a club film would only
+    // get a card reading "Films Selected: 0", so they get no stats section at all.
+    const hasClubActivity =
+        !!currentUserStats &&
+        (currentUserStats.totalSelections > 0 || currentUserStats.avgGivenScore !== null);
     const hasStats =
         currentUserStats &&
+        (isCommitteeMember(member) || hasClubActivity) &&
         Object.entries(currentUserStats).some(
             ([key, val]) =>
                 (val !== null && val !== 0 && (!Array.isArray(val) || val.length > 0)) ||

@@ -6,6 +6,8 @@ import {
     mergeTrophyRows,
     narrowWall,
     offDocketNotes,
+    rankWallRows,
+    refineWall,
     type ClubWatchEvent,
     type LateReviewEvent,
     type ListEvent,
@@ -661,5 +663,47 @@ describe('formatMonth', () => {
 
     it('passes through anything that is not a month key', () => {
         expect(formatMonth('nonsense')).toBe('nonsense');
+    });
+});
+
+describe('refineWall', () => {
+    const events = () => buildWall(sources);
+    const ids = (list: WallEvent[]) => list.map((event) => event.id);
+
+    it('leaves the wall alone when nothing is asked', () => {
+        const all = events();
+        expect(refineWall(all, { query: '  ', members: new Set() })).toBe(all);
+    });
+
+    it('matches every word, anywhere, ignoring case and accents', () => {
+        const all = events();
+        expect(ids(refineWall(all, { query: 'THERAPÍST', members: new Set() }))).toEqual([
+            'list-jacob-therapists',
+        ]);
+        // The list's owner and a film on it, from two different fields.
+        expect(ids(refineWall(all, { query: 'jacob cached', members: new Set() }))).toEqual([
+            'list-jacob-therapists',
+        ]);
+    });
+
+    it("keeps a member's own events, and the screenings they picked", () => {
+        const kept = refineWall(events(), { query: '', members: new Set(['gabe']) });
+        // His list is undated, so it never reached the wall to be kept.
+        expect(kept.map((event) => event.kind).sort()).toEqual(['club-watch', 'log']);
+        // Gabe rated A Club Film, but Mark picked it.
+        expect(kept.some((event) => event.id === 'club-tt0000001')).toBe(false);
+    });
+});
+
+describe('rankWallRows', () => {
+    it('ranks scored rows and drops the rest', () => {
+        const all = buildWall(sources);
+        const highest = rankWallRows(all, 'highest').map((row) => row.lead.id);
+        const lowest = rankWallRows(all, 'lowest').map((row) => row.lead.id);
+
+        // Gabe's 7 over the club's 6.5; lists and unrated screenings fall away.
+        expect(highest).toHaveLength(2);
+        expect(highest[1]).toBe('club-tt0000001');
+        expect(lowest).toEqual([...highest].reverse());
     });
 });

@@ -362,4 +362,78 @@ describe('WallPage', () => {
         fireEvent.click(screen.getByRole('button', { name: /Lists/ }));
         expect(rows()).toHaveLength(2);
     });
+
+    describe('search', () => {
+        const openSearch = () =>
+            fireEvent.click(screen.getByRole('button', { name: 'Search the log' }));
+
+        it('stays folded away until asked for', async () => {
+            await renderWall();
+            expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
+
+            openSearch();
+            expect(screen.getByRole('searchbox', { name: 'Search the log' })).toHaveFocus();
+        });
+
+        it('narrows to events whose films, members, or words match every term', async () => {
+            await renderWall();
+            openSearch();
+
+            fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'therapist' } });
+            expect(rows()).toHaveLength(1);
+            expect(rows()[0]).toHaveTextContent(/Even Your Therapist/);
+
+            // Two words, two fields: Gabe's name and his review.
+            fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'gabe twice' } });
+            expect(rows()).toHaveLength(1);
+            expect(rows()[0]).toHaveTextContent(/Gabe\s*logged/);
+
+            fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'zzz' } });
+            expect(screen.getByText('Nothing matches that.')).toBeInTheDocument();
+            fireEvent.click(screen.getByRole('button', { name: 'Show everything' }));
+            expect(rows()).toHaveLength(3);
+        });
+
+        it('filters to what a member did', async () => {
+            await renderWall();
+            openSearch();
+
+            const members = within(screen.getByRole('group', { name: 'Filter by member' }));
+            fireEvent.click(members.getByRole('button', { name: 'Jacob' }));
+            expect(rows()).toHaveLength(1);
+            expect(rows()[0]).toHaveTextContent(/Jacob\s*started a list/);
+
+            // Mark picked the screening, so he brings it along.
+            fireEvent.click(members.getByRole('button', { name: 'Mark' }));
+            expect(rows()).toHaveLength(2);
+        });
+
+        it('ranks scored rows by score, leaving out what carries none', async () => {
+            await renderWall();
+            openSearch();
+
+            fireEvent.click(screen.getByRole('radio', { name: 'Highest' }));
+            expect(screen.getByRole('heading', { name: 'Highest scored' })).toBeInTheDocument();
+            expect(rows()).toHaveLength(2);
+            expect(rows()[0]).toHaveTextContent(/Gabe\s*logged/);
+            // The screening keeps the trophy handed out at it.
+            expect(rows()[1]).toHaveTextContent(/Togetherness trophy/);
+
+            fireEvent.click(screen.getByRole('radio', { name: 'Lowest' }));
+            expect(rows()[0]).toHaveTextContent(/The club watched/);
+
+            fireEvent.click(screen.getByRole('radio', { name: 'Newest' }));
+            expect(rows()).toHaveLength(3);
+        });
+
+        it('keeps its settings when folded, and says so on the button', async () => {
+            await renderWall();
+            openSearch();
+            fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'therapist' } });
+
+            fireEvent.click(screen.getByRole('button', { name: 'Hide search' }));
+            expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
+            expect(rows()).toHaveLength(1);
+        });
+    });
 });

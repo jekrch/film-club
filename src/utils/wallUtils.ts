@@ -681,3 +681,141 @@ export const mergeTrophyRows = (events: WallEvent[]): WallRow[] => {
 
     return rows;
 };
+
+/**
+ * How the wall is read: in the order things happened, which is what it is for,
+ * or by score, for the reader hunting the best (or worst) of what's on it.
+ */
+export type WallOrder = 'newest' | 'highest' | 'lowest';
+
+/**
+ * The members an event belongs to, lowercased, for the member filter.
+ *
+ * Who *did* it rather than everyone it mentions: the member who logged, reviewed,
+ * or made the list, the one who picked the screening, the one handed the trophy.
+ * A screening's raters are left out on purpose — everyone rates nearly every
+ * screening, so counting them would make the filter keep every screening for
+ * every member and narrow nothing.
+ */
+export const eventMembers = (event: WallEvent): string[] => {
+    const names = (() => {
+        switch (event.kind) {
+            case 'club-watch':
+                return [event.selector];
+            case 'log':
+            case 'late-review':
+                return [event.member];
+            case 'list':
+                return [event.list.owner];
+            case 'trophy':
+                return [event.trophy.recipient];
+        }
+    })();
+    return names.filter((name): name is string => !!name).map((name) => name.toLowerCase());
+};
+
+/**
+ * The one score an event is about, or null when it carries none.
+ *
+ * A screening's is the club's average and a log's or late review's is the
+ * member's own. The two never mix as *records* (see the note atop this file),
+ * but the reader sorting by score is asking which nights and which films went
+ * over best, and the number printed on each row is the honest answer to that.
+ */
+export const eventScore = (event: WallEvent): number | null => {
+    switch (event.kind) {
+        case 'club-watch':
+            return event.average;
+        case 'log':
+            return event.entry.score;
+        case 'late-review':
+            return event.rating.score;
+        case 'list':
+        case 'trophy':
+            return null;
+    }
+};
+
+/** Lowercased with accents folded, so "amelie" finds Amélie. */
+const foldForSearch = (text: string): string =>
+    text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+/** Everything a search over an event may match: its names, titles, and words. */
+const searchText = (event: WallEvent): string => {
+    const parts: (string | null | undefined)[] = (() => {
+        switch (event.kind) {
+            case 'club-watch':
+                return [
+                    event.film.title,
+                    event.film.year,
+                    event.selector,
+                    ...(event.film.movieClubInfo?.clubRatings ?? []).map((rating) => rating.blurb),
+                ];
+            case 'log':
+                return [event.entry.title, event.entry.year, event.member, event.entry.blurb];
+            case 'late-review':
+                return [event.film.title, event.film.year, event.member, event.rating.blurb];
+            case 'list':
+                return [event.list.name, event.list.owner, event.list.description, ...event.titles];
+            case 'trophy':
+                return [
+                    event.film.title,
+                    event.trophy.award,
+                    event.trophy.recipient,
+                    event.trophy.note,
+                ];
+        }
+    })();
+    return foldForSearch(parts.filter(Boolean).join(' \n '));
+};
+
+export interface WallRefinement {
+    /** Free text; every word in it has to appear somewhere in an event. */
+    query: string;
+    /** Lowercased member names. Empty means everyone, as the kind chips do. */
+    members: Set<string>;
+}
+
+/**
+ * The events a search and a member selection leave on the wall, in wall order.
+ *
+ * Words match independently and anywhere, so "gabe alien" finds Gabe's log of
+ * *Aliens* without the reader having to know which field held which word.
+ */
+export const refineWall = (
+    events: WallEvent[],
+    { query, members }: WallRefinement
+): WallEvent[] => {
+    const words = foldForSearch(query).split(/\s+/).filter(Boolean);
+    if (words.length === 0 && members.size === 0) return events;
+
+    return events.filter((event) => {
+        if (members.size > 0 && !eventMembers(event).some((name) => members.has(name))) {
+            return false;
+        }
+        if (words.length === 0) return true;
+        const text = searchText(event);
+        return words.every((word) => text.includes(word));
+    });
+};
+
+/**
+ * The wall's rows ranked by score, for the score orders.
+ *
+ * Folded into rows *before* ranking, so a screening still carries the trophies
+ * handed out at it — ranking events first would scatter a night's awards away
+ * from the film they were for. A row whose lead carries no score (a list, a
+ * trophy given on its own day, a screening nobody rated) has no place in a
+ * ranking and is left out. Ties keep wall order, so the newer of two 8s leads.
+ */
+export const rankWallRows = (
+    events: WallEvent[],
+    order: Exclude<WallOrder, 'newest'>
+): WallRow[] => {
+    const direction = order === 'highest' ? -1 : 1;
+    return mergeTrophyRows(events)
+        .map((row) => ({ row, score: eventScore(row.lead) }))
+        .filter((entry): entry is { row: WallRow; score: number } => entry.score !== null)
+        .sort((a, b) => direction * (a.score - b.score))
+        .map(({ row }) => row);
+};

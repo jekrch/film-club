@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState, type FC } from 'react';
 import { motion } from 'framer-motion';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { Cross as Hamburger } from 'hamburger-react';
 import NavAuthControl from '../../auth/NavAuthControl';
 import { PillarMark } from './CorinthianPillar';
+import SearchPalette from '../search/SearchPalette';
+import { isApplePlatform, useSearchHotkey } from '../../hooks/useSearchHotkey';
 
 const links = [
     { to: '/', label: 'Home' },
@@ -47,8 +50,49 @@ const mobileLink = ({ isActive }: { isActive: boolean }) =>
             : 'border-transparent text-slate-400 hover:border-slate-600 hover:text-slate-100'
     );
 
+/**
+ * The search trigger: the glyph and nothing else, so it sits in the nav as quietly
+ * as the links do. The shortcut is in its tooltip for whoever wants it.
+ *
+ * No focus outline, unlike every other button: closing the palette hands focus
+ * back here, and a ring left standing on the nav afterwards reads as stuck.
+ */
+const SearchTrigger: FC<{ onOpen: () => void; className?: string }> = ({ onOpen, className }) => {
+    const [shortcut] = useState(() => (isApplePlatform() ? '⌘K' : 'Ctrl+K'));
+    return (
+        <button
+            type="button"
+            onClick={onOpen}
+            aria-label="Search"
+            aria-keyshortcuts="Meta+K Control+K"
+            title={`Search (${shortcut})`}
+            className={classNames(
+                'flex items-center justify-center rounded-full text-slate-400 outline-none transition-colors duration-200 hover:text-slate-100 focus-visible:outline-none',
+                className
+            )}
+        >
+            <MagnifyingGlassIcon className="h-[18px] w-[18px]" aria-hidden="true" />
+        </button>
+    );
+};
+
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    const openSearch = useCallback(() => {
+        setIsMenuOpen(false);
+        setIsSearchOpen(true);
+    }, []);
+    const toggleSearch = useCallback(() => {
+        setIsMenuOpen(false);
+        setIsSearchOpen((open) => !open);
+    }, []);
+    useSearchHotkey(toggleSearch);
+
+    // Back and Forward move the page out from under the palette; it goes too.
+    const { pathname } = useLocation();
+    useEffect(() => setIsSearchOpen(false), [pathname]);
 
     return (
         // Transparent, separated from the page by a hairline rather than by a bar
@@ -82,7 +126,10 @@ const Navbar = () => {
                                 </NavLink>
                             ))}
                         </div>
-                        <NavAuthControl />
+                        <div className="flex items-center gap-5">
+                            <SearchTrigger onOpen={openSearch} className="-m-1.5 p-1.5" />
+                            <NavAuthControl />
+                        </div>
                     </div>
 
                     {/* Mobile menu button. hamburger-react supplies aria-expanded itself;
@@ -110,7 +157,18 @@ const Navbar = () => {
                 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
-                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <div className="relative px-2 pt-2 pb-3 pr-14 space-y-1 sm:px-3 sm:pr-14">
+                    {/* Search, in the menu's top corner: a 48px box under the
+                        hamburger's own, at the same inset from the edge, so the
+                        glyph hangs directly beneath the toggle that revealed it. */}
+                    <motion.div
+                        className="absolute right-4 top-1 sm:right-6"
+                        initial={false}
+                        animate={{ opacity: isMenuOpen ? 1 : 0 }}
+                        transition={{ duration: 0.2, delay: isMenuOpen ? 0.08 : 0 }}
+                    >
+                        <SearchTrigger onOpen={openSearch} className="h-12 w-12" />
+                    </motion.div>
                     {links.map((link, index) => (
                         <motion.div
                             key={link.to}
@@ -140,6 +198,8 @@ const Navbar = () => {
                     </div>
                 </div>
             </motion.div>
+
+            <SearchPalette isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </nav>
     );
 };
