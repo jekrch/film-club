@@ -41,7 +41,7 @@ export const teamMembers: TeamMember[] = teamMembersData;
 export const isCommitteeMember = (member: TeamMember): boolean =>
     typeof member.queue === 'number' && member.queue > 0;
 
-export const getTeamMemberByName =(name: string): TeamMember | undefined => {
+export const getTeamMemberByName = (name: string): TeamMember | undefined => {
     return teamMembers.find((member) => member.name.toLowerCase() === name.toLowerCase());
 };
 

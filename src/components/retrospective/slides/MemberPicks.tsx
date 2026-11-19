@@ -49,8 +49,7 @@ const MemberPicks: React.FC<MemberPicksProps> = ({ picks, bestPick, stillsOf, ac
                                         style={{ color: accent }}
                                     >
                                         {bestPick.tied ? 'Tied for the highest' : 'The highest'}{' '}
-                                        average of all your picks ·{' '}
-                                        {formatScore(bestPick.average)}
+                                        average of all your picks · {formatScore(bestPick.average)}
                                     </p>
                                 )}
                                 <FilmStrip stills={stillsOf(film)} className="mt-2 max-w-sm" />
