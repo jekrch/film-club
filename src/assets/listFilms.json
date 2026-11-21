@@ -5601,6 +5601,114 @@
       }
     ]
   },
+  "tt0099329": {
+    "imdbID": "tt0099329",
+    "title": "Cry-Baby",
+    "year": "1990",
+    "poster": "https://m.media-amazon.com/images/M/MV5BYTQ4ZWM2NzQtOTM0MC00ZTIyLWI3MTEtZWZjN2U5ZDBhOGU1XkEyXkFqcGc@._V1_QL75_UX380_CR0,6,380,562_.jpg",
+    "runtime": "85 min",
+    "genre": "Comedy, Musical",
+    "director": "John Waters",
+    "writer": "John Waters",
+    "imdbRating": "6.5",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "6.5/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "72%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "63/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "wkk5_7OH0kE",
+    "tagline": "Good girls want him bad. Bad girls want him worse.",
+    "plot": "A prim and proper schoolgirl goes against her society grandmother's wishes when she dates a motorcycle-riding juvenile delinquent.",
+    "cast": [
+      {
+        "name": "Johnny Depp",
+        "character": "Wade 'Cry-Baby' Walker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/k2xt6EUxQDwYRKIyI4IBdZxfs8n.jpg",
+        "tmdbId": 85
+      },
+      {
+        "name": "Amy Locane",
+        "character": "Allison Vernon-Williams",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/cirtiN86Xn02JnMQBYxwXi0NmXm.jpg",
+        "tmdbId": 21412
+      },
+      {
+        "name": "Susan Tyrrell",
+        "character": "Ramona Rickettes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9fpVbAHId4DSvUbB7BzzBuBpDpN.jpg",
+        "tmdbId": 59369
+      },
+      {
+        "name": "Stephen Mailer",
+        "character": "Baldwin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/fuJqymGujtXKPkL2E6xNf1mqFfM.jpg",
+        "tmdbId": 170977
+      },
+      {
+        "name": "Iggy Pop",
+        "character": "Belvedere Rickettes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/kZwFoGujhS3D39R1uyuyNbgSPr0.jpg",
+        "tmdbId": 13604
+      },
+      {
+        "name": "Ricki Lake",
+        "character": "Pepper Walker",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/e49u3hZXgOuhBMMDxOVgY2Mrt8s.jpg",
+        "tmdbId": 70233
+      },
+      {
+        "name": "Traci Lords",
+        "character": "Wanda Woodward",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/y7xFjyOuxDUuqCGdhtP0Kttigil.jpg",
+        "tmdbId": 10826
+      },
+      {
+        "name": "Darren E. Burrows",
+        "character": "Milton Hackett",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wEsvPPgvJn1cxB0dBEkewpnIO33.jpg",
+        "tmdbId": 16428
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/2PQTdo555CTsSfgPWCHv7sxmDxR.jpg",
+      "https://image.tmdb.org/t/p/w1280/hExj5Q2lrXZCjZQT0N9j3MHpa9n.jpg",
+      "https://image.tmdb.org/t/p/w1280/hu9wKWL0x1QhgXn55lWEKRbX58G.jpg",
+      "https://image.tmdb.org/t/p/w1280/55QrCbCfWnlsIlcUg5q7GbxRVnN.jpg",
+      "https://image.tmdb.org/t/p/w1280/pWwuDpNJbAaPNH6pWORbyN6FD8F.jpg",
+      "https://image.tmdb.org/t/p/w1280/h4PssxRuDQsrWde1yJfE5aweLDp.jpg"
+    ],
+    "crew": [
+      {
+        "name": "John Waters",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4foU1kJ24CJwz2RVZgyc7oxMs4i.jpg",
+        "tmdbId": 10367
+      },
+      {
+        "name": "John Waters",
+        "job": "Writer",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/4foU1kJ24CJwz2RVZgyc7oxMs4i.jpg",
+        "tmdbId": 10367
+      },
+      {
+        "name": "David Insley",
+        "job": "Director of Photography",
+        "profileUrl": null,
+        "tmdbId": 59370
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0100506": {
     "imdbID": "tt0100506",
     "title": "Rockula",
