@@ -1259,6 +1259,114 @@
     ],
     "tmdbVersion": 4
   },
+  "tt0037913": {
+    "imdbID": "tt0037913",
+    "title": "Mildred Pierce",
+    "year": "1945",
+    "poster": "https://m.media-amazon.com/images/M/MV5BNmNhYmE4YWYtMDM3My00YzVhLWIyZTMtNzlmYTUzZmUxM2FjXkEyXkFqcGc@._V1_QL75_UX380_CR0,5,380,562_.jpg",
+    "runtime": "111 min",
+    "genre": "Crime, Drama, Film-Noir",
+    "director": "Michael Curtiz",
+    "writer": "Ranald MacDougall, James M. Cain, William Faulkner",
+    "imdbRating": "7.9",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Rotten Tomatoes",
+        "value": "88%"
+      },
+      {
+        "source": "Metacritic",
+        "value": "88/100"
+      }
+    ],
+    "omdbVersion": 2,
+    "trailerKey": "KoOr_OoHbv4",
+    "tagline": "Please don't tell anyone what Mildred Pierce did!",
+    "plot": "A hard-working mother inches towards disaster as she divorces her husband and starts a successful restaurant business to support her spoiled daughter.",
+    "cast": [
+      {
+        "name": "Joan Crawford",
+        "character": "Mildred Pierce",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/r37awXZaJWCBjMA56kxcN5xiIBE.jpg",
+        "tmdbId": 31550
+      },
+      {
+        "name": "Jack Carson",
+        "character": "Wally Fay",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/lOYGfx1zbsrhpqzL1svLE1LmFYe.jpg",
+        "tmdbId": 2672
+      },
+      {
+        "name": "Zachary Scott",
+        "character": "Monte Beragon",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xpaQEamAxrDU0yrbol8MERwcIJt.jpg",
+        "tmdbId": 31551
+      },
+      {
+        "name": "Eve Arden",
+        "character": "Ida Corwin",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/54He7YAbDOob0T0dkd4rULfbARz.jpg",
+        "tmdbId": 860
+      },
+      {
+        "name": "Ann Blyth",
+        "character": "Veda Pierce Forrester",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gIc8T4aXqZJZp6z0Be51C17vhRm.jpg",
+        "tmdbId": 31844
+      },
+      {
+        "name": "Bruce Bennett",
+        "character": "Albert 'Bert' Pierce",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/70GxHSRcIsgSsTVl0hzjxLEA4s7.jpg",
+        "tmdbId": 30303
+      },
+      {
+        "name": "Lee Patrick",
+        "character": "Maggie Biederhof",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/zlLezqw2Klyw1qt0uxePQtC9NZ6.jpg",
+        "tmdbId": 5740
+      },
+      {
+        "name": "Moroni Olsen",
+        "character": "Inspector Peterson",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/xJ56TNofwpQH3b0UAs8spNq35OR.jpg",
+        "tmdbId": 18586
+      }
+    ],
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/iWAijx2874J0QgNVXwqW24IMRai.jpg",
+      "https://image.tmdb.org/t/p/w1280/sT7F9fWjqEVm3DQ8Tgowzah8Dmw.jpg",
+      "https://image.tmdb.org/t/p/w1280/mrl9X8HwXRrDedet1jMBNQceLsB.jpg",
+      "https://image.tmdb.org/t/p/w1280/3LWYqIcecZxsJpYVEUTRKA70zmd.jpg",
+      "https://image.tmdb.org/t/p/w1280/mFeHT7mQIccx9gpwEf33UUrUfDm.jpg",
+      "https://image.tmdb.org/t/p/w1280/coi7bJ8npbpX9jm50WvKeg2lTna.jpg"
+    ],
+    "crew": [
+      {
+        "name": "Michael Curtiz",
+        "job": "Director",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/AnxPuEsdjPTJ6uIaHY0KdgBeu7t.jpg",
+        "tmdbId": 4109
+      },
+      {
+        "name": "Ranald MacDougall",
+        "job": "Screenplay",
+        "profileUrl": null,
+        "tmdbId": 31843
+      },
+      {
+        "name": "Ernest Haller",
+        "job": "Director of Photography",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/mOCqO38x83AF9aJ7iCZ7Qqn9hvr.jpg",
+        "tmdbId": 2774
+      }
+    ],
+    "tmdbVersion": 4
+  },
   "tt0038854": {
     "imdbID": "tt0038854",
     "title": "The Postman Always Rings Twice",
