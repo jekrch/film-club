@@ -12,6 +12,18 @@
     "updatedAt": "2026-11-28T05:00:04Z"
   },
   {
+    "imdbID": "tt38077943",
+    "watchDate": "2026-11-28",
+    "score": null,
+    "scoreQualifier": null,
+    "blurb": null,
+    "image": null,
+    "posterImage": null,
+    "trailerKey": null,
+    "hideTrailer": false,
+    "updatedAt": "2026-11-28T05:00:09Z"
+  },
+  {
     "imdbID": "tt0038577",
     "watchDate": "2026-11-27",
     "score": 5,
