@@ -17770,5 +17770,217 @@
       "trophyInfo": null,
       "trophyNotes": null
     }
+  },
+  {
+    "title": "You Can See Everything",
+    "year": "2026",
+    "rated": "R",
+    "released": "16 Oct 2026",
+    "runtime": "174 min",
+    "genre": "Documentary, Biography",
+    "director": "Nathan Fielder, Lance Oppenheim",
+    "writer": "N/A",
+    "actors": "Billy Evans, Nathan Fielder, Elizabeth Holmes",
+    "plot": "Thirty-four days before she's sent to prison, notorious Silicon Valley founder Elizabeth Holmes invites a skeptical film crew to document her every move. What begins as an intimate portrait of an enigmatic felon becomes a mind-bending three-year journey into the abyss.",
+    "language": "English",
+    "country": "United States",
+    "awards": "N/A",
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDkwNGRiNjYtZTQ4MC00MWFhLWI3MjYtNzk1MDY2ZTNiY2Q4XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+    "ratings": [
+      {
+        "source": "Internet Movie Database",
+        "value": "7.9/10"
+      },
+      {
+        "source": "Metacritic",
+        "value": "98/100"
+      }
+    ],
+    "metascore": "98",
+    "imdbRating": "7.9",
+    "imdbVotes": "165",
+    "imdbID": "tt45368240",
+    "type": "movie",
+    "dVD": "N/A",
+    "boxOffice": "N/A",
+    "production": "N/A",
+    "website": "N/A",
+    "response": "True",
+    "tmdbCrewDataFetched": true,
+    "tmdbDataVersion": 4,
+    "musicComposer": "Ari Balouzian",
+    "editor": "Adam Locke-Norton",
+    "cinematographer": "David Bolen",
+    "productionDesigner": "Alex DiGerlando",
+    "costumeDesigner": "Katina Danabassis",
+    "cast": [
+      {
+        "name": "Elizabeth Holmes",
+        "character": "Self",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s7ej8dZ7zncd4nPBrkBUbArnTJl.jpg"
+      },
+      {
+        "name": "Nathan Fielder",
+        "character": "Self",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/x0UOcjml8WnBfnb89QOh0iXM0w0.jpg"
+      },
+      {
+        "name": "Billy Evans",
+        "character": "Self",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tLOCcMkylvIES7ZKFv6Dks6XmD.jpg"
+      },
+      {
+        "name": "Amanda Seyfried",
+        "character": "Self / Elizabeth Holmes",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gtBUIpZ3dvLpOMIVORxE6sHSyZj.jpg"
+      },
+      {
+        "name": "Christopher Abbott",
+        "character": "Billy Evans",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bE7zzh60RXydH3p632ZZSmsTlcn.jpg"
+      },
+      {
+        "name": "Lance Oppenheim",
+        "character": "Self",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/h12zgCaZ24imkZlw0nry9T9mjGD.jpg"
+      },
+      {
+        "name": "Christian Rasmus Holmes IV",
+        "character": "Self",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m27JLpdojcJXaRM9gGUaomSUz0a.jpg"
+      },
+      {
+        "name": "Noel Anne Holmes",
+        "character": "Self",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ja5uFBObNtfDTCq8ETefkoxoV47.jpg"
+      },
+      {
+        "name": "Gary Wilmes",
+        "character": "A24 Executive",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6HdPMSnldhYWdJiH3yvWDUNDFGs.jpg"
+      },
+      {
+        "name": "Phillip Andre Botello",
+        "character": "A24 Executive",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wzLtwcPc8VGYwBqeHl9d7gMVixL.jpg"
+      },
+      {
+        "name": "Nick Choksi",
+        "character": "Friend",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vL3esAIG5zAghhSkBgGIBqqNqrw.jpg"
+      },
+      {
+        "name": "Ramesh Balwani",
+        "character": "Self (archive footage) (uncredited)",
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vdY9Cd0XYszVNPjCQC4iD3KblBG.jpg"
+      }
+    ],
+    "personProfiles": {
+      "nathan fielder": {
+        "tmdbId": 1212667,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/x0UOcjml8WnBfnb89QOh0iXM0w0.jpg"
+      },
+      "lance oppenheim": {
+        "tmdbId": 1405665,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/h12zgCaZ24imkZlw0nry9T9mjGD.jpg"
+      },
+      "ari balouzian": {
+        "tmdbId": 1966583,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/jtuiVE9M1D8ALzLltv1tfCKJfMt.jpg"
+      },
+      "adam locke-norton": {
+        "tmdbId": 1512982,
+        "profileUrl": null
+      },
+      "david bolen": {
+        "tmdbId": 1426834,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/9wpcAoP5uV1B5s1EKKbBUbLrzuB.jpg"
+      },
+      "alex digerlando": {
+        "tmdbId": 966515,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/efmjGOsua5vWkMDh79bFJYEFIoa.jpg"
+      },
+      "katina danabassis": {
+        "tmdbId": 1949332,
+        "profileUrl": null
+      },
+      "elizabeth holmes": {
+        "tmdbId": 2269143,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/s7ej8dZ7zncd4nPBrkBUbArnTJl.jpg"
+      },
+      "billy evans": {
+        "tmdbId": 6462200,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/tLOCcMkylvIES7ZKFv6Dks6XmD.jpg"
+      },
+      "amanda seyfried": {
+        "tmdbId": 71070,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/gtBUIpZ3dvLpOMIVORxE6sHSyZj.jpg"
+      },
+      "christopher abbott": {
+        "tmdbId": 984629,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/bE7zzh60RXydH3p632ZZSmsTlcn.jpg"
+      },
+      "christian rasmus holmes iv": {
+        "tmdbId": 6552342,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/m27JLpdojcJXaRM9gGUaomSUz0a.jpg"
+      },
+      "noel anne holmes": {
+        "tmdbId": 6552346,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/ja5uFBObNtfDTCq8ETefkoxoV47.jpg"
+      },
+      "gary wilmes": {
+        "tmdbId": 78404,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/6HdPMSnldhYWdJiH3yvWDUNDFGs.jpg"
+      },
+      "phillip andre botello": {
+        "tmdbId": 1386927,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/wzLtwcPc8VGYwBqeHl9d7gMVixL.jpg"
+      },
+      "nick choksi": {
+        "tmdbId": 1693304,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vL3esAIG5zAghhSkBgGIBqqNqrw.jpg"
+      },
+      "ramesh balwani": {
+        "tmdbId": 2269144,
+        "profileUrl": "https://image.tmdb.org/t/p/w185/vdY9Cd0XYszVNPjCQC4iD3KblBG.jpg"
+      }
+    },
+    "tagline": "See it to believe it.",
+    "budget": 7000000,
+    "revenue": 102882572,
+    "keywords": [
+      "california",
+      "husband wife relationship",
+      "texas",
+      "silicon valley",
+      "business woman",
+      "reenactment",
+      "voyeurism",
+      "disgraced",
+      "meta",
+      "independent film",
+      "crime documentary",
+      "suspenseful",
+      "fraudster",
+      "intense",
+      "biographical documentary"
+    ],
+    "trailerKey": "IEx8D1Wb__U",
+    "backdropImages": [
+      "https://image.tmdb.org/t/p/w1280/fnIcdPVaO4JAzfLhv8OVEqFK6a7.jpg",
+      "https://image.tmdb.org/t/p/w1280/rrbbzCyS45yooXpUGJatfptlHYI.jpg",
+      "https://image.tmdb.org/t/p/w1280/nhIL3O4W9h5V5JbNQm7yjoDk3So.jpg",
+      "https://image.tmdb.org/t/p/w1280/gsSAPAcHDSQOSIDZVm1alSZpDCv.jpg",
+      "https://image.tmdb.org/t/p/w1280/edYRAs5wYv9QC4VrHcnUEeiaUHv.jpg",
+      "https://image.tmdb.org/t/p/w1280/9rPqDhrZu82mI3ckisMWIKKJod8.jpg"
+    ],
+    "movieClubInfo": {
+      "selector": null,
+      "watchDate": null,
+      "clubRatings": [],
+      "trophyInfo": null,
+      "trophyNotes": null
+    },
+    "popcornPod": true
   }
 ]
