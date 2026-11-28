@@ -159,17 +159,17 @@ export const parseWatchDate = (dateString: string | null | undefined): Date | nu
  */
 export const isPodFilm = (film: Film): boolean => !!film.popcornPod || !!film.holidayPod;
 
-/** A holiday pod the club hasn't met for yet: no watch date. */
-export const isUpcomingHolidayPod = (film: Film): boolean =>
-    !!film.holidayPod && !film.movieClubInfo?.watchDate;
+/** A pod (popcorn or holiday) the club hasn't met for yet: no watch date. */
+export const isUpcomingPod = (film: Film): boolean =>
+    isPodFilm(film) && !film.movieClubInfo?.watchDate;
 
 /**
  * The official "Up Next" pick: the first film without a watch date that isn't
- * a holiday pod. An undated holiday pod is upcoming too, but it is a seasonal
- * extra rather than the rotation's next selection, so it never takes this slot.
+ * a pod. An undated pod is upcoming too, but it is an extra rather than the
+ * rotation's next selection, so it never takes this slot.
  */
 export const findUpNextFilm = (films: Film[]): Film | undefined =>
-    films.find((film) => !film.movieClubInfo?.watchDate && !film.holidayPod);
+    films.find((film) => !film.movieClubInfo?.watchDate && !isPodFilm(film));
 
 export const getAllFilmCreditsForPerson = (
     personName: string,

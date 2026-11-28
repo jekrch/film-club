@@ -10,7 +10,8 @@ Two kinds of edit are applied:
 - **Per-film**, under `films.<id>.film` — selector, watch date, poster, and
   backdrop image, plus two fields the worker never writes and that are set by
   hand in overrides.json: `holidayPod` (which holiday a seasonal screening is
-  for) and `backdropImages` (a curated set of stills, replacing TMDb's pick).
+  for), `popcornPod` (a theatrical outing rather than a selection), and
+  `backdropImages` (a curated set of stills, replacing TMDb's pick).
 
 **The override always wins**; there is no timestamp comparison. Once a member
 sets a value on the site, the sheet's cell for that field is ignored.
@@ -48,7 +49,7 @@ FIRST_ADDED_RATING_FIELDS = ("scoreAddedAt", "blurbAddedAt")
 # The club-record fields a member may set on the film itself, mapped to where
 # they live in a film entry. `selector` and `watchDate` sit inside
 # `movieClubInfo`; the images are top-level, beside OMDb's own `poster`, as is
-# `holidayPod`.
+# `holidayPod` and `popcornPod`.
 # A whitelist for the same reason as the tuple above: `updatedBy`/`updatedAt` are
 # provenance for humans reading overrides.json and must never reach films.json.
 OVERRIDABLE_FILM_FIELDS = {
@@ -57,6 +58,7 @@ OVERRIDABLE_FILM_FIELDS = {
     "poster": (None, "poster"),
     "backdropImage": (None, "backdropImage"),
     "holidayPod": (None, "holidayPod"),
+    "popcornPod": (None, "popcornPod"),
     "backdropImages": (None, "backdropImages"),
 }
 
@@ -104,7 +106,7 @@ def _apply_film_fields(film, film_fields, imdb_id, divergences):
         if value is None and container is None:
             # An absent image is how a film without curated art is already
             # stored; a null one would reach an <img src>. Likewise a film that
-            # isn't a holiday pod simply has no `holidayPod`.
+            # isn't a pod simply has no `holidayPod` or `popcornPod`.
             target.pop(key, None)
         else:
             target[key] = value

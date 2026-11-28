@@ -25,7 +25,7 @@ const MemberShelf: React.FC<MemberShelfProps> = ({ trophies, lists, accent }) =>
                 <div className="relative isolate">
                     <PalmFrond className="absolute -top-10 -right-16 -z-10 h-72 w-72 opacity-[0.08] sm:-top-16 sm:-right-24 sm:h-[30rem] sm:w-[30rem]" />
                     <Reveal>
-                        <Eyebrow color={accent}>Your trophies</Eyebrow>
+                        <Eyebrow color={accent}>Your shelf</Eyebrow>
                         <WreathedCount count={won.length} />
                     </Reveal>
                     {/* Each trophy on its own ruled line, two columns where there's room. */}

@@ -352,7 +352,6 @@ export const memberDeck = (
                 <MemberPicks
                     picks={report.picks}
                     bestPick={report.bestPick}
-                    stillsOf={filmStills}
                     accent={accent}
                 />
             ),

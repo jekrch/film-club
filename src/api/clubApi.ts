@@ -82,6 +82,8 @@ export interface FilmOverride {
     backdropImage?: string | null;
     /** Which holiday a seasonal screening is for. Set by hand; no editor writes it. */
     holidayPod?: string;
+    /** A theatrical outing rather than a selection. Set by hand; no editor writes it. */
+    popcornPod?: boolean;
     /** Curated scene stills, replacing TMDb's. Set by hand; no editor writes it. */
     backdropImages?: string[];
     updatedBy: string;

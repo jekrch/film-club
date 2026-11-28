@@ -11,7 +11,7 @@ import {
     getAllFilmCreditsForPerson,
     findUpNextFilm,
     isPodFilm,
-    isUpcomingHolidayPod,
+    isUpcomingPod,
 } from './filmUtils';
 import { makeClubInfo, makeFilm, makeRating } from '../test-utils/factories';
 
@@ -296,13 +296,24 @@ describe('filmUtils', () => {
         });
 
         it('flags a holiday pod as upcoming only until it has a watch date', () => {
-            expect(isUpcomingHolidayPod(upcomingPod)).toBe(true);
-            expect(isUpcomingHolidayPod(upNext)).toBe(false);
+            expect(isUpcomingPod(upcomingPod)).toBe(true);
+            expect(isUpcomingPod(upNext)).toBe(false);
             const met = makeFilm({
                 holidayPod: 'halloween',
                 movieClubInfo: makeClubInfo({ watchDate: '10/31/2026' }),
             });
-            expect(isUpcomingHolidayPod(met)).toBe(false);
+            expect(isUpcomingPod(met)).toBe(false);
+        });
+
+        it('treats an undated popcorn pod as upcoming, never as up next', () => {
+            const popcorn = makeFilm({
+                imdbID: 'tt4',
+                popcornPod: true,
+                movieClubInfo: makeClubInfo({ selector: '', watchDate: null }),
+            });
+            expect(isUpcomingPod(popcorn)).toBe(true);
+            expect(findUpNextFilm([watched, popcorn, upNext])?.imdbID).toBe('tt3');
+            expect(findUpNextFilm([watched, popcorn])).toBeUndefined();
         });
 
         it('counts both kinds of pod as outside the rotation', () => {

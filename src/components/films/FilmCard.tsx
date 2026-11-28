@@ -12,7 +12,7 @@ import {
     RIBBON_FOLD_CLIP_RIGHT,
 } from './PopcornPod';
 import { HolidayPodStamp, getHolidayTheme } from './HolidayPod';
-import { isUpcomingHolidayPod } from '../../utils/filmUtils';
+import { isPodFilm, isUpcomingPod as isUndatedPod } from '../../utils/filmUtils';
 import { UserIcon } from '@heroicons/react/20/solid';
 import { GlobeEuropeAfricaIcon } from '@heroicons/react/24/solid';
 
@@ -121,18 +121,18 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
           })
         : null;
 
-    // A seasonal screening outside the rotation. It is never the "Up Next" pick,
-    // even undated; until it has a date it is flagged as upcoming instead.
+    // A pod (popcorn or holiday) is outside the rotation. It is never the "Up
+    // Next" pick, even undated; until it has a date it is flagged as upcoming.
     const holidayTheme = getHolidayTheme(film.holidayPod);
-    const isUpcomingPod = isUpcomingHolidayPod(film);
+    const isUpcomingPod = isUndatedPod(film);
     const HolidayBarCorner = holidayTheme?.BarCorner;
 
     // Determine if the "Up Next" elements should be shown
     // True if there's no watch date BUT there is a selector assigned
-    const showUpNext = !watchDateFormatted && selectorName && !film.holidayPod;
+    const showUpNext = !watchDateFormatted && selectorName && !isPodFilm(film);
 
     // Director and country stand in for the score tiles while there are no
-    // scores to show: the up-next pick, or a holiday pod nobody has scored yet.
+    // scores to show: the up-next pick, or a pod nobody has scored yet.
     const showFilmInfo = showUpNext || (isUpcomingPod && ratingEntries.length === 0);
 
     // A "Hollywood Popcorn Pod" outing rather than a club selection: the poster
@@ -337,7 +337,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, cardSize }) => {
                                     )}
                                     {isUpcomingPod && (
                                         <span
-                                            className={`font-semibold ${holidayTheme?.upcomingText ?? ''}`}
+                                            className={`font-semibold ${holidayTheme?.upcomingText ?? (film.popcornPod ? 'text-amber-400/90' : '')}`}
                                         >
                                             Upcoming
                                         </span>

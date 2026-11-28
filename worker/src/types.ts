@@ -255,6 +255,8 @@ export interface FilmOverride {
      * keeps it because `mergeFilm` (index.ts) spreads the stored record.
      */
     holidayPod?: string;
+    /** A theatrical outing rather than a selection. Hand-set like `holidayPod`. */
+    popcornPod?: boolean;
     /**
      * A curated set of scene stills, replacing the ones the sync takes from
      * TMDb. Hand-set like `holidayPod`, and kept across edits the same way.

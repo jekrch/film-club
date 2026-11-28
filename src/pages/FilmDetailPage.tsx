@@ -12,7 +12,7 @@ import {
     formatRuntime,
     getFilmBackdrop,
     getFilmBackdrops,
-    isUpcomingHolidayPod,
+    isUpcomingPod as isUndatedPod,
     parseGenres,
     parseWatchDate,
 } from '../utils/filmUtils';
@@ -200,7 +200,7 @@ const FilmDetailPage = () => {
     );
     const MAX_RATING = 9;
     const holidayTheme = getHolidayTheme(film.holidayPod);
-    const isUpcomingPod = isUpcomingHolidayPod(film);
+    const isUpcomingPod = isUndatedPod(film);
     const canWatch = linkCheckStatus === 'valid' && !!watchUrl;
 
     // Time elapsed between this screening and the club's adjacent screenings.
@@ -353,7 +353,9 @@ const FilmDetailPage = () => {
                                         {film.tagline}
                                     </p>
                                 )}
-                                {film.popcornPod && <PopcornPodDisclaimer />}
+                                {film.popcornPod && (
+                                    <PopcornPodDisclaimer upcoming={isUpcomingPod} />
+                                )}
                                 {film.holidayPod && (
                                     <HolidayPodDisclaimer
                                         holiday={film.holidayPod}
@@ -629,7 +631,7 @@ const FilmDetailPage = () => {
                                             </div>
                                         </div>
                                     )}
-                                    {/* An undated holiday pod isn't the up-next
+                                    {/* An undated pod isn't the up-next
                                             pick, so nothing else on the page says
                                             the club is still to meet for it. */}
                                     {isUpcomingPod && (
@@ -640,7 +642,7 @@ const FilmDetailPage = () => {
                                                     Watch Date
                                                 </span>
                                                 <span
-                                                    className={`mt-0.5 block font-serif text-base ${holidayTheme?.upcomingText ?? 'text-slate-300'}`}
+                                                    className={`mt-0.5 block font-serif text-base ${holidayTheme?.upcomingText ?? (film.popcornPod ? 'text-amber-400/90' : 'text-slate-300')}`}
                                                 >
                                                     Upcoming
                                                 </span>

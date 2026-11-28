@@ -5,7 +5,7 @@ import { TeamMember, teamMembers as teamMembersData } from '../types/team';
 import { calculateClubAverage } from '../utils/ratingUtils';
 import SelectionCommitteeHero from '../components/home/SelectionCommitteeHero';
 import OffDocketStrip from '../components/home/OffDocketStrip';
-import { findUpNextFilm, isUpcomingHolidayPod, parseWatchDate } from '../utils/filmUtils';
+import { findUpNextFilm, isUpcomingPod, parseWatchDate } from '../utils/filmUtils';
 import { identifyCurrentSelector } from '../utils/teamUtils';
 import { buildWall, offDocketNotes, type OffDocketNote } from '../utils/wallUtils';
 import PageLayout from '../components/layout/PageLayout';
@@ -138,12 +138,14 @@ const HomePage = () => {
                     (parseWatchDate(a.movieClubInfo?.watchDate)?.getTime() ?? 0)
             );
 
-        // Newest first, left to right: the up-next pick leads, then any holiday
-        // pod the club meets for before it, then what's been watched.
-        const upcomingHolidayPods = allFilms.filter(isUpcomingHolidayPod);
+        // Newest first, left to right: the up-next pick leads, then any pod the
+        // club hasn't met for yet, then what's been watched. Pods are reversed
+        // because films.json is in the order films were added, so the newest
+        // pod sits right after the up-next pick.
+        const upcomingPods = allFilms.filter(isUpcomingPod).reverse();
         const recentPicks = [
             ...(foundUpNextFilm ? [foundUpNextFilm] : []),
-            ...upcomingHolidayPods,
+            ...upcomingPods,
             ...watchedFilmsSorted.slice(0, 8),
         ];
         setRecentClubPicks(recentPicks);

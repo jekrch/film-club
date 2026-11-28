@@ -34,14 +34,22 @@ export const RIBBON_FOLD_CLIP_RIGHT = 'polygon(0 0, 100% 0, 100% 100%)';
 /**
  * The prose counterpart to the stamp, for the detail page — where there's room
  * to say plainly what the poster treatment only implies. Sits directly under the
- * tagline so it's read before any of the film's credentials are.
+ * tagline so it's read before any of the film's credentials are. An upcoming
+ * pod says so, since nobody has done the pod (or, for some, seen it) yet.
  */
-export const PopcornPodDisclaimer: React.FC = () => (
+export const PopcornPodDisclaimer: React.FC<{ upcoming?: boolean }> = ({ upcoming = false }) => (
     <div className="mb-4 rounded-md border-l-4 border-amber-500/80 bg-amber-500/10 px-4 py-3">
         <p className="text-sm leading-relaxed text-amber-100/90">
             <span className="font-bold uppercase tracking-wide text-amber-300">Disclaimer:</span>{' '}
-            this film is <em>not</em> criterion and we did not <em>select</em> it. We happened to
-            all see it in theaters, did a pod, and scored it out of 9.
+            this film is <em>not</em> criterion and we did not <em>select</em> it.{' '}
+            {upcoming ? (
+                <>
+                    It's in theaters, some of us still need to see it, and we haven't done the pod
+                    yet. It'll be scored out of 9.
+                </>
+            ) : (
+                <>We happened to all see it in theaters, did a pod, and scored it out of 9.</>
+            )}
         </p>
     </div>
 );

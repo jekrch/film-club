@@ -3,7 +3,8 @@ import { Film, filmData as allFilmsData } from '../types/film'; // Ensure filmDa
 import { teamMembers } from '../types/team';
 import {
     getAllFilmCreditsForPerson,
-    isUpcomingHolidayPod,
+    isPodFilm,
+    isUpcomingPod,
     parseWatchDate,
     PersonCredit,
 } from '../utils/filmUtils'; // Assuming this util exists
@@ -204,22 +205,18 @@ export const useFilmDetails = (imdbId?: string): UseFilmDetailsReturn => {
                 return dateA - dateB || (a.title ?? '').localeCompare(b.title ?? '');
             });
 
-        const upcomingHolidayPods = allFilmsData.filter(isUpcomingHolidayPod);
+        const upcomingPods = allFilmsData.filter(isUpcomingPod);
 
         // The "up next" pick is a film with a selector but no watch date.
         const upNextFilm =
             allFilmsData.find(
                 (f) =>
                     f.movieClubInfo?.selector &&
-                    !f.holidayPod &&
+                    !isPodFilm(f) &&
                     !parseWatchDate(f.movieClubInfo?.watchDate)
             ) ?? null;
 
-        const timeline = [
-            ...watchedTimeline,
-            ...upcomingHolidayPods,
-            ...(upNextFilm ? [upNextFilm] : []),
-        ];
+        const timeline = [...watchedTimeline, ...upcomingPods, ...(upNextFilm ? [upNextFilm] : [])];
 
         const currentIndex = timeline.findIndex((f) => f.imdbID === film.imdbID);
         if (currentIndex === -1) return empty;
