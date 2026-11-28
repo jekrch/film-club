@@ -185,12 +185,10 @@ export const clubDeck = (
     add(
         !!report.selections && {
             id: 'picks',
-            // Each row carries its own frame, so the room behind stays quiet.
             reel: stillsOfFilms(report.selections.flatMap((s) => s.films)),
             node: (
                 <ClubSelections
                     selections={report.selections}
-                    stillsOf={filmStills}
                     accent={accent}
                     reel={stillsOfFilms(report.selections.flatMap((s) => s.films))}
                 />

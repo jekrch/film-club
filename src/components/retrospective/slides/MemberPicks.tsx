@@ -7,7 +7,7 @@ import Slide, { Eyebrow, Reveal } from '../Slide';
 import { give } from '../../../hooks/useSqueeze';
 import { prefersReducedMotion } from '../../../utils/motion';
 import { beat, formatScore, MONTHS, numberWord } from './format';
-import { Poster } from './shared';
+import PosterHand from './PosterHand';
 
 interface MemberPicksProps {
     picks: Film[];
@@ -38,18 +38,13 @@ const directorOf = (film: Film): string | null => {
 const MemberPicks: React.FC<MemberPicksProps> = ({ picks, bestPick, accent }) => {
     const best = new Set(bestPick?.films.map((f) => f.imdbID));
     const [lifted, setLifted] = useState<number | null>(null);
-    // Once anything has been lifted, the hand moves at once: the dealing
-    // delays are for its arrival only.
-    const [dealt, setDealt] = useState(false);
-    const lift = (i: number | null) => {
-        setDealt(true);
-        setLifted(i);
-    };
     const still = prefersReducedMotion();
     const count = picks.length;
-    const middle = (count - 1) / 2;
     // A lone pick stands larger, with no hand to fan.
-    const width = count === 1 ? 'w-36 sm:w-44' : 'w-28 sm:w-36 lg:w-40';
+    const sizes =
+        count === 1
+            ? '[--card:9rem] sm:[--card:11rem]'
+            : '[--card:7rem] sm:[--card:9rem] lg:[--card:10rem]';
 
     return (
         <Slide>
@@ -68,56 +63,15 @@ const MemberPicks: React.FC<MemberPicksProps> = ({ picks, bestPick, accent }) =>
                 className="flex flex-col items-center lg:flex-row lg:items-center lg:gap-12"
                 style={{ marginTop: give('2.25rem', '1rem'), gap: give('2rem', '1rem') }}
             >
-                {/* The hand: each poster turned a little further from the
-                middle and dropped along an arc, the middle one on top. */}
-                <div className="flex shrink-0 justify-center pt-3 pb-5" role="list">
-                    {picks.map((film, i) => {
-                        const offset = i - middle;
-                        const isBest = !!bestPick && best.has(film.imdbID);
-                        const up = lifted === i;
-                        const rest = { y: Math.abs(offset) * 10, rotate: offset * 7, scale: 1 };
-                        return (
-                            <motion.div
-                                key={film.imdbID}
-                                role="listitem"
-                                className={`relative ${i > 0 ? '-ml-8 sm:-ml-12' : ''}`}
-                                style={{ zIndex: up ? 10 : count - Math.ceil(Math.abs(offset)) }}
-                                initial={still ? false : { opacity: 0, y: 60, rotate: 0 }}
-                                animate={
-                                    up
-                                        ? { opacity: 1, y: -14, rotate: 0, scale: 1.06 }
-                                        : { opacity: 1, ...rest }
-                                }
-                                transition={{
-                                    type: 'spring',
-                                    stiffness: 220,
-                                    damping: 22,
-                                    delay: dealt ? 0 : beat(1 + i * 0.8),
-                                }}
-                                onHoverStart={() => lift(i)}
-                                onHoverEnd={() => lift(null)}
-                            >
-                                <div
-                                    className="rounded-sm"
-                                    style={
-                                        isBest
-                                            ? {
-                                                  boxShadow: `0 0 0 2px ${accent}, 0 12px 40px -10px ${accent}`,
-                                              }
-                                            : { boxShadow: '0 16px 30px -12px rgba(0,0,0,0.8)' }
-                                    }
-                                >
-                                    <Poster
-                                        src={film.poster}
-                                        title={film.title}
-                                        to={`/films/${film.imdbID}`}
-                                        className={width}
-                                    />
-                                </div>
-                            </motion.div>
-                        );
-                    })}
-                </div>
+                <PosterHand
+                    films={picks}
+                    sizeClass={sizes}
+                    lifted={lifted}
+                    onLift={setLifted}
+                    lit={(film) => !!bestPick && best.has(film.imdbID)}
+                    accent={accent}
+                    className="shrink-0 pb-4"
+                />
 
                 {/* The programme: a note for each film, in the hand's order. */}
                 <ol className="w-full min-w-0 flex-1">
@@ -143,8 +97,8 @@ const MemberPicks: React.FC<MemberPicksProps> = ({ picks, bestPick, accent }) =>
                                     delay: beat(2 + i * 0.6),
                                     ease: 'easeOut',
                                 }}
-                                onMouseEnter={() => lift(i)}
-                                onMouseLeave={() => lift(null)}
+                                onMouseEnter={() => setLifted(i)}
+                                onMouseLeave={() => setLifted(null)}
                             >
                                 <Link
                                     to={`/films/${film.imdbID}`}
@@ -152,9 +106,7 @@ const MemberPicks: React.FC<MemberPicksProps> = ({ picks, bestPick, accent }) =>
                                 >
                                     {film.title}
                                 </Link>
-                                <p className="mt-1 truncate text-sm text-slate-400">
-                                    {details.join(' · ')}
-                                </p>
+                                <p className="mt-1 text-sm text-slate-400">{details.join(' · ')}</p>
                                 {isBest && (
                                     <p
                                         className="mt-1.5 text-xs uppercase tracking-widest sm:text-sm"

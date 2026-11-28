@@ -10,11 +10,19 @@ interface PosterProps {
     title: string;
     /** A club film's page; omitted for a film with none. */
     to?: string;
+    /** No grow on hover, for a poster that moves some other way when pointed at. */
+    steady?: boolean;
     className?: string;
 }
 
 /** A one-sheet at 2:3, linking to its film. A film with no poster gets its title on a card. */
-export const Poster: React.FC<PosterProps> = ({ src, title, to, className = 'w-24' }) => {
+export const Poster: React.FC<PosterProps> = ({
+    src,
+    title,
+    to,
+    steady = false,
+    className = 'w-24',
+}) => {
     const image =
         src && !src.includes('N/A') ? (
             <img
@@ -30,7 +38,10 @@ export const Poster: React.FC<PosterProps> = ({ src, title, to, className = 'w-2
     return (
         <div className={`shrink-0 ${className}`}>
             {to ? (
-                <Link to={to} className="block transition-transform hover:scale-[1.03]">
+                <Link
+                    to={to}
+                    className={steady ? 'block' : 'block transition-transform hover:scale-[1.03]'}
+                >
                     {image}
                 </Link>
             ) : (
